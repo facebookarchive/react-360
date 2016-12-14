@@ -20,7 +20,8 @@ We use GitHub Issues for bugs and support tracking for the preview
 
 ### Additional Information
 
-* React VR version: [FILL THIS OUT: both react-vr and react-vr-web]
+* react-vr package version: [FILL THIS OUT]
+* react-vr-web package version: [FILL THIS OUT]
 * Operating System: [FILL THIS OUT: MacOS, Linux, or Windows?]
 * Graphics Card: [FILL THIS OUT: NVIDA, ATI, Intel? Which Driver?]
 * Browser: [FILL THIS OUT: Carmel, Chrome, Edge, Safari? Which version?]
