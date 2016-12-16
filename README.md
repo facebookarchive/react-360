@@ -13,7 +13,7 @@ To get started, download the [React VR Prerelease.zip](https://s3.amazonaws.com/
 react-vr init PROJECT_NAME
 ```
 
-where `PROJECT_NAME` is the name of your new application. Once it's been created and the dependencies are installed, start the application server by running
+where `PROJECT_NAME` is the name of your new application. Once it's been created and the dependencies are installed, change your working directory to `PROJECT_NAME` and start the application server by running
 
 ```
 npm start
