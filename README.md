@@ -7,7 +7,33 @@ React VR is a framework for the creation of VR applications that run in your web
 
 ## Getting Started with React VR
 
-To get started, download the [React VR Prerelease.zip](https://s3.amazonaws.com/static.oculus.com/reactvr/React_VR_Prerelease.zip) from Oculus. It contains sample projects, documentation, and a `package.json` config file for fetching React VR from npm. Once installed, use the cli to create a new VR project by running
+### Samples
+
+To get started, download the [React VR Prerelease.zip](https://s3.amazonaws.com/static.oculus.com/reactvr/React_VR_Prerelease.zip) from Oculus. It contains sample projects, documentation, and a `package.json` config file for fetching React VR from npm, just navigate to the root folder of the package on your file system and run
+
+```
+npm install
+```
+
+When completed you can start the server to view the content
+
+```
+npm start
+```
+
+Now point your browser at `http://localhost:8081/vr/`
+
+Once you have finished exploring the samples it is time to create your first project. First stop your packager and then navigate to a folder outside of preview under which you will place your project.
+
+### Your first project
+
+You must now install the react-vr-cli
+
+```
+npm install -g react-vr-cli
+```
+
+Once installed, use the cli to create a new VR project by running
 
 ```
 react-vr init PROJECT_NAME
