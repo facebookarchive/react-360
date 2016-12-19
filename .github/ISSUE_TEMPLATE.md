@@ -10,6 +10,10 @@ We use GitHub Issues for bugs and support tracking for the preview
 
 #### Actual behavior
 
+#### Logs
+
+[FILL THIS OUT: please provide console.log and packager/server logs]
+
 ### Reproduction
 
 [FILL THIS OUT: Try to reproduce your bug in a minimal example, maybe you could alter one of the samples to demonstrate the problem]
