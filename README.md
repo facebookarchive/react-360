@@ -21,7 +21,7 @@ When completed you can start the server to view the content
 npm start
 ```
 
-Now point your browser at `http://localhost:8081/vr/`
+Now point your browser at `http://localhost:8081/Samples/`
 
 Once you have finished exploring the samples it is time to create your first project. First stop your packager and then navigate to a folder outside of preview under which you will place your project.
 
