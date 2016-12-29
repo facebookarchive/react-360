@@ -11,9 +11,10 @@ provide generalized input handlers that are raised by similar actions on each
 platform.</p><p>If you&#x27;re looking for simple, button-style, <code>onClick</code> behavior, that is
 provided out of the box by <a href="docs/vrbutton.html" target="_blank">VrButton</a>.</p><h2><a class="anchor" name="cursor-visibility"></a>Cursor Visibility <a class="hash-link" href="docs/input.html#cursor-visibility">#</a></h2><p>When the user is in a VR headset, it can be difficult to tell exactly what
 components are currently in focus. To help with this, we provide a visible
-application-level cursor that sits at the center of the field of vision.</p><p>There are two settings that control the cursor behavior, both of which are
-passed at initialization time.</p><ul><li><code>cursorEnabled</code> - If set to true, the cursor will be visible</li><li><code>cursorAutoHide</code> - If set to true, and the cursor is enabled, the cursor will
-only be visible when hovering over components that have event handlers.</li></ul><p>These settings are set at initialization time, which means they can be defined
+application-level cursor that sits at the center of the field of vision.</p><p>The <code>cursorVisibility</code> setting, passed at initialization time, controls the cursor
+visibility and can have the following values:</p><ul><li><code>hidden</code> - No cursor is visible. This is the default.</li><li><code>visible</code> - Cursor is always displayed.</li><li><code>auto</code> - Visibility is computed each frame by React VR. Cursor is visible
+when hovering over components that have input event handlers, for example
+&lt;VrButton&gt; or a &lt;View&gt; to which you&#x27;ve attached handlers.</li></ul><p>These settings are set at initialization time, which means they can be defined
 in one of two different places. The first is in your <code>index.html</code> page:
 <code>ReactVR.init()</code> takes a map of options as its third argument.</p><div class="prism language-javascript">&lt;<span class="token operator">!</span><span class="token operator">--</span> vr<span class="token operator">/</span>index<span class="token punctuation">.</span>html <span class="token operator">--</span><span class="token operator">&gt;</span>
 &lt;script<span class="token operator">&gt;</span>
@@ -22,8 +23,7 @@ ReactVR<span class="token punctuation">.</span><span class="token function">init
   document<span class="token punctuation">.</span>body<span class="token punctuation">,</span>
  <span class="token comment" spellcheck="true"> // third argument is a map of initialization options
 </span>  <span class="token punctuation">{</span>
-    cursorEnabled<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-    cursorAutoHide<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    cursorVisibility<span class="token punctuation">:</span> <span class="token string">&#x27;visible&#x27;</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">)</span><span class="token punctuation">;</span>
 &lt;<span class="token operator">/</span>script<span class="token operator">&gt;</span></div><p>Alternatively, if you want these options to be compiled into your application,
@@ -32,8 +32,7 @@ are passed as the last argument when the <code>VRInstance</code> is constructed.
 </span>
 const vr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">VRInstance</span><span class="token punctuation">(</span>bundle<span class="token punctuation">,</span> <span class="token string">&#x27;YourProject&#x27;</span><span class="token punctuation">,</span> parent<span class="token punctuation">,</span> <span class="token punctuation">{</span>
  <span class="token comment" spellcheck="true"> // Custom initialization options go here
-</span>  cursorEnabled<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-  cursorAutoHide<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+</span>  cusorVisibility<span class="token punctuation">:</span> <span class="token string">&#x27;visible&#x27;</span><span class="token punctuation">,</span>
 
   <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>options<span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div><h2><a class="anchor" name="supported-input-events"></a>Supported Input Events <a class="hash-link" href="docs/input.html#supported-input-events">#</a></h2><h3><a class="anchor" name="onenter"></a><code>onEnter</code> <a class="hash-link" href="docs/input.html#onenter">#</a></h3><p>This event raises whenever the platform cursor begins intersecting with a
@@ -67,4 +66,4 @@ user looks at it, or hovers with the mouse cursor:</p><div class="prism language
       &lt;<span class="token operator">/</span>Text<span class="token operator">&gt;</span>
     <span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></div></div><div class="docs-prevnext"><a class="docs-prev" href="docs/3dcoordinates-and-transforms.html#content">← Prev</a><a class="docs-next" href="docs/fonts.html#content">Next →</a></div><noscript></noscript></div></section><footer class="nav-footer"><section class="sitemap"><a href="./index.html" class="nav-home"><img src="img/header_logo.png" alt="React Native" width="66" height="58"></a><div><h5>Docs</h5><a href="docs/getting-started.html">Getting Started</a><a href="docs/tutorial.html">Tutorial</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"></a><section class="copyright">Copyright © 2016 Facebook Inc.</section></footer></div><div id="fb-root"></div><script src="js/scripts.js"></script></body></html>
+<span class="token punctuation">}</span></div></div><div class="docs-prevnext"><a class="docs-prev" href="docs/3dcoordinates-and-transforms.html#content">← Prev</a><a class="docs-next" href="docs/fonts.html#content">Next →</a></div><p class="edit-page-block">You can <a target="_blank" href="https://github.com/facebookincubator/react-vr/blob/master/docs/Input.md">edit the content above on GitHub</a> and send us a pull request!</p></div></section><footer class="nav-footer"><section class="sitemap"><a href="./index.html" class="nav-home"><img src="img/header_logo.png" alt="React Native" width="66" height="58"></a><div><h5>Docs</h5><a href="docs/getting-started.html">Getting Started</a><a href="docs/tutorial.html">Tutorial</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"></a><section class="copyright">Copyright © 2016 Facebook Inc.</section></footer></div><div id="fb-root"></div><script src="js/scripts.js"></script></body></html>
