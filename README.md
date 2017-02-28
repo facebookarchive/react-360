@@ -4,6 +4,21 @@ React VR is a framework for the creation of VR applications that run in your web
 
 > There's no code here yet—we're only releasing a very early preview for now—but we want to gather community feedback as soon as possible.  We're actively working to solidify APIs and prepare for external contributions prior to open-sourcing.
 
+## Prerequisites
+
+You must have [npm](https://www.npmjs.com/) installed and the version must be `3.0` or above.
+
+You can check your npm version by running:
+
+```
+npm -v
+```
+
+If your version number is less than `3.0`, you can update by running:
+
+```
+npm update npm -g
+```
 
 ## Getting Started with React VR
 
