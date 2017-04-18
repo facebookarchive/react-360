@@ -18,7 +18,7 @@ npm install -g react-vr-cli
 Or
 
 ```
-yarn global install react-vr-cli
+yarn global add react-vr-cli
 ```
 
 You'll only need to install this CLI once. It will alert you when it's out of date, and provide instruction on how to update it.
