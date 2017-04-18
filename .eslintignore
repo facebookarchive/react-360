@@ -1,0 +1,4 @@
+**/ReactVR/js/defs/*
+website/
+**/*.bundle.js
+**/node_modules/*

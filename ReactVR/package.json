@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "react-vr-web",
+  "version": "1.0.0",
+  "description": "A framework for building VR applications with React",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebookincubator/react-vr.git"
+  },
+  "bugs": "https://github.com/facebookincubator/react-vr/issues",
+  "main": "ReactVR.js",
+  "files": [
+    "js",
+    "LICENSE",
+    "PATENTS",
+    "ReactVR.js",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": "~15.4.1",
+    "react-native": "~0.42.0"
+  },
+  "dependencies": {
+    "ovrui": "~1.0.0"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "haste": {
+    "defaultPlatform": "vr",
+    "platforms": ["vr"],
+    "providesModuleNodeModules": [
+      "react-native",
+      "react-vr"
+    ]
+  },
+  "moduleNameMapper": {
+    "^[./a-zA-Z0-9$_-]+\\.(bmp|gif|jpg|jpeg|png|psd|svg|webp)$": "RelativeImageStub"
+  },
+  "modulePathIgnorePatterns": [
+    "<rootDir>/node_modules/react-native/Libraries/react-native/",
+    "<rootDir>/node_modules/react-native/packager/"
+  ],
+  "transformIgnorePatterns": [
+    "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|react-vr)"
+  ],
+  "setupFiles": [
+    "<rootDir>/node_modules/react-native/jest/setup.js",
+    "<rootDir>/node_modules/react-vr/jest/setup.js"
+  ]
+}

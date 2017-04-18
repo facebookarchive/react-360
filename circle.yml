@@ -1,0 +1,33 @@
+general:
+  branches:
+    ignore:
+      - gh-pages # list of branches to ignore
+machine:
+  node:
+    version: 6.2.0
+dependencies:
+  override:
+    - npm install
+    - pushd website && npm install && popd
+    - pushd react-vr-cli && npm install && popd
+  cache_directories:
+    - "website/node_modules"
+    - "react-vr-cli/node_modules"
+    - "node_modules"
+
+test:
+  override:
+    - npm run flow -- check
+    - npm run test
+    # test website generation
+    - cd website && node ./server/generate.js
+
+deployment:
+  website:
+    branch: master
+    commands:
+      # generate docs website
+      - git config --global user.email "reactjs-bot@users.noreply.github.com"
+      - git config --global user.name "Website Deployment Script"
+      - echo "machine github.com login reactjs-bot password $GITHUB_TOKEN" > ~/.netrc
+      - cd website && GIT_USER=reactjs-bot npm run gh-pages

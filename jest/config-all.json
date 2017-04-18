@@ -1,0 +1,35 @@
+{
+  "automock": true,
+  "transform": {
+    "^.+\\.js$": "jest/preprocessor.js"
+  },
+  "setupFiles": [
+    "jest/setup-local.js"
+  ],
+  "transformIgnorePatterns": [
+    "/node_modules/"
+  ],
+  "testPathIgnorePatterns": [
+    "/docs/",
+    "/node_modules/",
+    "/scripts/",
+    "/website/",
+    "/react-vr-cli/",
+    ".res.js"
+  ],
+  "modulePathIgnorePatterns": [
+    "<rootDir>/docs/",
+    "<rootDir>/node_modules/",
+    "<rootDir>/scripts/",
+    "<rootDir>/website/"
+  ],
+  "haste": {
+    "defaultPlatform": "vr",
+    "platforms": [
+      "vr"
+    ]
+  },
+  "unmockedModulePathPatterns": [
+    "node_modules"
+  ]
+}
