@@ -1,4 +1,4 @@
-# React VR [![npm version](https://badge.fury.io/js/react-native.svg)](https://badge.fury.io/js/react-native)
+# React VR [![npm version](https://badge.fury.io/js/react-vr.svg)](https://badge.fury.io/js/react-vr)
 
 React VR is a framework for the creation of VR applications that run in your web browser. It pairs modern APIs like WebGL and WebVR with the declarative power of React, producing experiences that can be consumed through a variety of devices. Leveraging web technologies and the existing React ecosystem, React VR aims to simplify the construction of 360 experiences and democratize the creation of VR content. If you're familiar with React, you can now build in VR – learn once, write anywhere.
 
