@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "react-vr-web",
   "version": "1.0.0",
   "description": "A framework for building VR applications with React",
