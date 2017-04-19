@@ -12,7 +12,6 @@ previous: getting-started
 In accordance with the ancient traditions of our people, our first React VR project doesn't do much other than display "hello" over a panorama. You can look at its source code file `index.vr.js` in the starter project folder. This file is the entry point for your React VR application.
 
 ```
-'use strict';
 import React from 'react';
 import { AppRegistry, asset, Pano, Text, View } from 'react-vr';
 
