@@ -16,7 +16,7 @@ module.exports = config => ({
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node -e \\"console.log('open browser at http:/localhost:8081/vr/\\\\n\\\\n');\\" && node node_modules/react-native/local-cli/cli.js start",
+    "start": "node -e \\"console.log('open browser at http://localhost:8081/vr/\\\\n\\\\n');\\" && node node_modules/react-native/local-cli/cli.js start",
     "bundle": "node node_modules/react-vr/scripts/bundle.js",
     "open": "node -e \\"require('xopen')('http://localhost:8081/vr/')\\"",
     "devtools": "react-devtools",
