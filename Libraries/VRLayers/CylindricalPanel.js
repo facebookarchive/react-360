@@ -36,7 +36,7 @@ const invariant = require('invariant');
  *     radius: distanceFromTheViewer
  *   }}>
  *   ... Child components ...
- * </CylindrialPanel>
+ * </CylindricalPanel>
  * ```
  *
  * The width and height of the cylinder must be specified and the width also correspond to how much
