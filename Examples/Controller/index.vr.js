@@ -15,10 +15,7 @@ class PressState extends React.Component {
     if (nextProps.pressed !== this.props.pressed) {
       return true;
     }
-    if (nextState.hasFocus !== this.state.hasFocus) {
-      return true;
-    }
-    return false;
+    return nextState.hasFocus !== this.state.hasFocus;
   }
 
   render() {
