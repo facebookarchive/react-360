@@ -57,7 +57,7 @@ getLatestVersion().then(version => {
       console.log(chalk.green('  npm update -g react-vr-cli'));
     }
   }
-  if (args.length === 0) {
+  if (args.length === 0 || args[0] === '--help') {
     printUsageAndExit();
   }
   if (args[0] === 'init') {
