@@ -6,9 +6,9 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebookincubator/react-vr.git"
+    "url": "https://github.com/facebook/react-vr.git"
   },
-  "bugs": "https://github.com/facebookincubator/react-vr/issues",
+  "bugs": "https://github.com/facebook/react-vr/issues",
   "main": "Libraries/react-vr.js",
   "files": [
     "jest/setup.js",
