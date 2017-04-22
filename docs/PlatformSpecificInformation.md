@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
 });
 ```
 
-This will result in a container having `flex: 1` on both platforms, a red background color on iOS, and a blue background color on Android.
+This will result in a container having `flex: 1` on all platforms, a red background color on iOS, a blue background color on Android and an orange background color on vr
 
 ## Platform-specific extensions
 
-When your platform-specific code is more complex, consider splitting the code out into separate files. React Native  detects when a file has a `.ios.` or `.android.` extension and loads the relevant platform file from other components as required.
+When your platform-specific code is more complex, consider splitting the code out into separate files. React Native detects when a file has a `.ios.`, `.android.` or `.vr.` extension and loads the relevant platform file from other components as required.
 
 For example, say you have the following files in your project:
 
