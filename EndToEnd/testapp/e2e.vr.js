@@ -1,14 +1,7 @@
 'use strict';
 
 import React from 'react';
-import {
-  AppRegistry,
-  asset,
-  NativeModules,
-  Pano,
-  Text,
-  View,
-} from 'react-vr';
+import {AppRegistry, NativeModules, Text, View} from 'react-vr';
 
 window.NativeModules = NativeModules;
 
@@ -32,6 +25,6 @@ class End2End extends React.Component {
       </View>
     );
   }
-};
+}
 
 AppRegistry.registerComponent('End2End', () => End2End);

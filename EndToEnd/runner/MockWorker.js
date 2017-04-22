@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import fs from 'fs';
-import path from 'path';
 import vm from 'vm';
 import {_getObjectFromURL} from './MockURL';
 
