@@ -24,8 +24,6 @@ export default class RCTCylindricalPanel extends RCTBaseView {
    */
   constructor(guiSys) {
     super();
-    // create the ambient light as a child of an empty UIView
-    // this allows embedding in layouts
 
     this.material = new THREE.MeshBasicMaterial({
       wireframe: false,
@@ -75,7 +73,7 @@ export default class RCTCylindricalPanel extends RCTBaseView {
         this.subScene._rttWidth = value.width;
         this.subScene._rttHeight = value.height;
         this.cylinder.geometry.dispose();
-        // The subtended angle given the fraction of the layer (layerDenisity) cover by the
+        // The subtended angle given the fraction of the layer (layerDensity) covered by the
         // layerWidth
         const delta = 2 * Math.PI * this.props._layerWidth / this.props._layerDensity;
         // The same calculation as shell
@@ -159,7 +157,7 @@ export default class RCTCylindricalPanel extends RCTBaseView {
   }
 
   /**
-   * Describes the properies representable by this view type and merges
+   * Describes the properties representable by this view type and merges
    * with super type
    */
   static describe() {
