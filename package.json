@@ -31,6 +31,7 @@
     "cross-env": "^3.2.4",
     "eslint": "^3.17.0",
     "eslint-config-fbjs": "^1.1.1",
+    "eslint-config-prettier": "^1.7.0",
     "eslint-plugin-babel": "^4.1.0",
     "eslint-plugin-flowtype": "^2.30.0",
     "eslint-plugin-prettier": "^2.0.1",
