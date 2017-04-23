@@ -19,7 +19,7 @@ jest
   .mock('Cylinder', () => mockComponent('Cylinder'))
   .mock('CylindricalPanel', () => mockComponent('CylindricalPanel'))
   .mock('DirectionalLight', () => mockComponent('DirectionalLight'))
-  .mock('Mesh', () => mockComponent('Mesh'))
+  .mock('Model', () => mockComponent('Model'))
   .mock('Pano', () => mockComponent('Pano'))
   .mock('Plane', () => mockComponent('Plane'))
   .mock('PointLight', () => mockComponent('PointLight'))
