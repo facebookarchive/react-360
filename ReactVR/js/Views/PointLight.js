@@ -29,7 +29,7 @@ export default class RCTPointLight extends RCTBaseView {
     this.view = new OVRUI.UIView(guiSys);
     this.view.add(light);
     // In "physically correct" mode, the product of color * intensity is
-    // interpreted as luminous intensity measured in candela.
+    // interpreted as luminous intensity measured in candelas.
     Object.defineProperty(this.props, 'intensity', {
       set: value => {
         light.intensity = value;
@@ -63,7 +63,7 @@ export default class RCTPointLight extends RCTBaseView {
   }
 
   /**
-   * Describes the properies representable by this view type and merges
+   * Describes the properties representable by this view type and merges
    * with super type
    */
   static describe() {

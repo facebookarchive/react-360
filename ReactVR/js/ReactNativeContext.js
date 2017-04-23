@@ -449,7 +449,7 @@ export class ReactNativeContext {
     const cameraParent = this._cameraParentFromTag[rootTag];
 
     // worldMatrix is null if no <Scene> or <Scene> has no transform property.
-    // We may have set cameraParentFromeTag[rootTag] to null (and printed a
+    // We may have set cameraParentFromTag[rootTag] to null (and printed a
     // console warning) if there was a <Scene> transform but the camera already
     // had a parent. Return immediately in both cases.
     if (!worldMatrix || !cameraParent) {
@@ -480,7 +480,7 @@ export class ReactNativeContext {
     // parent hierarchy (if no parent, matrix and matrixWorld are identical).
 
     // We disable cameraParent.matrixAutoUpdate, since we update the matrix here
-    // manually and we explicitely call updateMatrixWorld (which recomputes the
+    // manually and we explicitly call updateMatrixWorld (which recomputes the
     // global transform of an object and its children).
     cameraParent.matrixAutoUpdate = false;
     cameraParent.matrix.fromArray(worldMatrix);

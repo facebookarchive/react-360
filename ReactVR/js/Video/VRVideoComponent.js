@@ -57,9 +57,9 @@ export default class VRVideoComponent {
   }
 
   /**
-  * @param videoDef defination of a video to play
+  * @param videoDef definition of a video to play
   * @param videoDef.src url of video if the streamingType is none
-  * @param videoDef.stereoType the type of spliting video to stereo texture, can be none/horizontal/vertical
+  * @param videoDef.stereoType the type of splitting video to stereo texture, can be none/horizontal/vertical
   */
   setVideo(videoDef: VideoDef) {
     this._freeVideoPlayer();

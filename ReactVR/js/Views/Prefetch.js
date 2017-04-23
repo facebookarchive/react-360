@@ -94,7 +94,7 @@ export default class RCTPrefetch extends RCTBaseView {
   }
 
   /**
-   * Describes the properies representable by this view type and merges
+   * Describes the properties representable by this view type and merges
    * with super type
    */
   static describe() {

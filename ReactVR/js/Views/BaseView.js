@@ -306,7 +306,7 @@ export default class RCTBaseView {
   }
 
   /**
-   * Remove a child a specfic index
+   * Remove a child a specific index
    * @param index - index within child to remove, will also child view
    *                from three.js scene
    */
@@ -348,7 +348,7 @@ export default class RCTBaseView {
    * {@link UIManager}.
    *
    * @param commandId code of the command
-   * @param args optional arguments for the command
+   * @param commandArgs optional arguments for the command
    */
   receiveCommand(commandId: number, commandArgs: any) {
     switch (commandId) {

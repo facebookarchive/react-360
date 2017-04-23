@@ -106,7 +106,7 @@ export default class Networking extends Module {
 
   /**
    * handleText
-   * responseData for test encoding is receieved as a string and can be
+   * responseData for test encoding is received as a string and can be
    * directly sent to React
    * @param requestId - ID used by React
    * @param responseData - string input returned by runtime fetch
@@ -126,7 +126,7 @@ export default class Networking extends Module {
 
   /**
    * handleBase64
-   * responseData for base64 encoding is receieved as a blob which needs to be converted
+   * responseData for base64 encoding is received as a blob which needs to be converted
    * to base64 before sending over to React
    * @param requestId - ID used by React
    * @param responseData - Blob input returned by runtime fetch
