@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: 'client.js',
-  contents:
-`// Auto-generated content.
+  contents: `// Auto-generated content.
 // This file contains the boilerplate to set up your React app.
 // If you want to modify your application, start in "index.vr.js"
 

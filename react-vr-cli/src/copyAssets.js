@@ -18,7 +18,7 @@ function copyAssets(binDir, dest) {
   fs.mkdirSync(assetsDest);
   fs.readdir(assets, (err, files) => {
     if (!err) {
-      files.map((file) => {
+      files.map(file => {
         if (!file.isDirectory) {
           const fileSrc = path.join(assets, file);
           const fileDest = path.join(assetsDest, file);

@@ -14,7 +14,6 @@
 const NativeModules = require('NativeModules');
 const UIManager = NativeModules.UIManager;
 
-
 // Make sure we only print out the connection message once
 let logged = false;
 
@@ -34,7 +33,9 @@ function setupDevtools() {
   const hostname = 'localhost';
   const ws = new window.WebSocket('ws://' + hostname + ':' + port + '/devtools');
   // this is accessed by the eval'd backend code
-  const FOR_BACKEND = { // eslint-disable-line no-unused-vars
+  /* eslint-disable no-unused-vars */
+  const FOR_BACKEND = {
+    /* eslint-enable no-unused-vars */
     resolveRNStyle: require('flattenStyle'),
     wall: {
       listen(fn) {
@@ -105,9 +106,7 @@ function setupDevtools() {
     });
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on('react-devtools', attachToDevtools);
     if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__.reactDevtoolsAgent) {
-      attachToDevtools(
-        window.__REACT_DEVTOOLS_GLOBAL_HOOK__.reactDevtoolsAgent
-      );
+      attachToDevtools(window.__REACT_DEVTOOLS_GLOBAL_HOOK__.reactDevtoolsAgent);
     }
     ws.onmessage = handleMessage;
   }

@@ -19,8 +19,8 @@ function getLatestVersion() {
     try {
       const packager = getPackager();
       // run `packager config get registry`
-      const response =
-        child_process.execSync(packager + ' config get registry', {encoding: 'utf8'})
+      const response = child_process
+        .execSync(packager + ' config get registry', {encoding: 'utf8'})
         .trim()
         .split('\n');
       let registry = response[response.length - 1];
@@ -32,27 +32,29 @@ function getLatestVersion() {
         registry += '/';
       }
       const chunks = [];
-      https.get(registry + 'react-vr-cli/latest', (res) => {
-        const statusCode = res.statusCode;
-        if (statusCode !== 200) {
-          resolve(null);
-          return;
-        }
-        res.setEncoding('utf8');
-        res.on('data', (d) => {
-          chunks.push(d);
-        });
-        res.on('end', () => {
-          try {
-            const parsed = JSON.parse(chunks.join(''));
-            resolve(parsed.version);
-          } catch (e) {
+      https
+        .get(registry + 'react-vr-cli/latest', res => {
+          const statusCode = res.statusCode;
+          if (statusCode !== 200) {
             resolve(null);
+            return;
           }
+          res.setEncoding('utf8');
+          res.on('data', d => {
+            chunks.push(d);
+          });
+          res.on('end', () => {
+            try {
+              const parsed = JSON.parse(chunks.join(''));
+              resolve(parsed.version);
+            } catch (e) {
+              resolve(null);
+            }
+          });
+        })
+        .on('error', e => {
+          resolve(null);
         });
-      }).on('error', (e) => {
-        resolve(null);
-      });
     } catch (e) {
       resolve(null);
     }

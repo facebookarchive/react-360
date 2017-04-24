@@ -182,7 +182,7 @@ function _validateTransform(key, value, transformation) {
       );
       invariant(
         typeof value === 'number' || value.indexOf('deg') > -1 || value.indexOf('rad') > -1,
-        'Rotate transform must be expressed in degrees (deg) or radians ' + '(rad): %s',
+        'Rotate transform must be expressed in degrees (deg) or radians (rad): %s',
         stringifySafe(transformation)
       );
       break;
@@ -196,7 +196,7 @@ function _validateTransform(key, value, transformation) {
       );
       invariant(
         value.indexOf('deg') > -1 || value.indexOf('rad') > -1,
-        'Rotate transform must be expressed in degrees (deg) or radians ' + '(rad): %s',
+        'Rotate transform must be expressed in degrees (deg) or radians (rad): %s',
         stringifySafe(transformation)
       );
       break;

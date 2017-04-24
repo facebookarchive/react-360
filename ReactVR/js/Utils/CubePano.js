@@ -35,8 +35,8 @@ export function CubePanoBufferGeometry(size, columns, rows, expansionCoef) {
 
   for (let i = 0; i < vertexCount; i++) {
     const v = vs[i];
-    positions[i * 3 + 0] = ((v >> 2 & 1) * 2 - 1) * halfSide;
-    positions[i * 3 + 1] = ((v >> 1 & 1) * 2 - 1) * halfSide;
+    positions[i * 3 + 0] = (((v >> 2) & 1) * 2 - 1) * halfSide;
+    positions[i * 3 + 1] = (((v >> 1) & 1) * 2 - 1) * halfSide;
     positions[i * 3 + 2] = ((v & 1) * 2 - 1) * halfSide;
   }
 

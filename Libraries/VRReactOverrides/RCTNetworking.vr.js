@@ -37,7 +37,6 @@ function generateRequestId(): number {
  * requestId to each network request that can be used to abort that request later on.
  */
 class RCTNetworking extends NativeEventEmitter {
-
   constructor() {
     super(RCTNetworkingNative);
   }
@@ -53,10 +52,9 @@ class RCTNetworking extends NativeEventEmitter {
     timeout: number,
     callback: (requestId: number) => any
   ) {
-    const body =
-      typeof data === 'string' ? {string: data} :
-      data instanceof FormData ? {formData: getParts(data)} :
-      data;
+    const body = typeof data === 'string'
+      ? {string: data}
+      : data instanceof FormData ? {formData: getParts(data)} : data;
     const requestId = generateRequestId();
     RCTNetworkingNative.sendRequest(
       method,
@@ -81,7 +79,7 @@ class RCTNetworking extends NativeEventEmitter {
 }
 
 function getParts(data) {
-  return data.getParts().map((part) => {
+  return data.getParts().map(part => {
     part.headers = convertHeadersMapToArray(part.headers);
     return part;
   });

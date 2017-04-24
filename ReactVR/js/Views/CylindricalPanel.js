@@ -81,8 +81,8 @@ export default class RCTCylindricalPanel extends RCTBaseView {
         // is also a reasonable approximation of the chord (within 95%)
         // as our angle is small and dealing with px height rather than angles a proprtion of an arc
         // is used
-        const halfHeight = this.props._layerRadius *
-          (Math.PI * value.height / this.props._layerDensity);
+        const halfHeight =
+          this.props._layerRadius * (Math.PI * value.height / this.props._layerDensity);
         this.cylinder.geometry = new THREE.CylinderGeometry(
           this.props._layerRadius,
           this.props._layerRadius,

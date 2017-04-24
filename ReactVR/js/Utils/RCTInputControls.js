@@ -65,11 +65,9 @@ RCTInputControls.prototype = Object.assign(Object.create(Object.prototype), {
   isConfirmEvent: function(event) {
     // Currently WebVR can only recognize XboxController as 'standard' mapping. But it seems key 0 is the primary key
     // for most gamepad controller. We should revisit this once the functionality of mapping is fully implemented.
-    return (event.type === 'GamepadInputEvent' &&
-      event.button === 0 &&
-      event.eventType === 'keyup') ||
-      (event.type === 'KeyboardInputEvent' &&
-        event.code === 'Space' &&
-        event.eventType === 'keyup');
+    return (
+      (event.type === 'GamepadInputEvent' && event.button === 0 && event.eventType === 'keyup') ||
+      (event.type === 'KeyboardInputEvent' && event.code === 'Space' && event.eventType === 'keyup')
+    );
   },
 });

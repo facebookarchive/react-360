@@ -16,7 +16,7 @@ function createFile(dest, file) {
   const dir = path.join(dest, file.path);
   ensureDir(dir);
   return new Promise((resolve, reject) => {
-    fs.writeFile(path.join(dest, file.path, file.filename), file.contents, (err) => {
+    fs.writeFile(path.join(dest, file.path, file.filename), file.contents, err => {
       if (err) {
         return reject(err);
       }

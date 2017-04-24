@@ -25,20 +25,21 @@
     "react-native": "~0.42.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.1",
+    "babel-eslint": "^7.2.3",
     "babel-jest": "^17.0.2",
     "babel-preset-react-native": "^1.9.0",
     "cross-env": "^3.2.4",
     "eslint": "^3.17.0",
     "eslint-config-fbjs": "^1.1.1",
-    "eslint-plugin-babel": "^4.1.0",
-    "eslint-plugin-flowtype": "^2.30.0",
+    "eslint-config-prettier": "^1.7.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-flowtype": "^2.32.1",
     "eslint-plugin-prettier": "^2.0.1",
-    "eslint-plugin-react": "^6.10.0",
+    "eslint-plugin-react": "^6.10.3",
     "flow-bin": "^0.43.1",
     "jest": "^17.0.3",
     "jsdom": "^9.10.0",
-    "ovrui": "*",
+    "prettier": "^1.0.0",
     "react": "~15.4.1",
     "react-native": "~0.42.0",
     "three": "^0.80.1"
@@ -47,6 +48,7 @@
     "flow": "flow",
     "lint": "eslint Libraries/ ReactVR/ react-vr-cli/",
     "pretest": "cross-env BABEL_DISABLE_CACHE=1 node jest/prepareE2E.js",
+    "prettier": "node node_modules/.bin/prettier --print-width 100 --single-quote --no-bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --write \"{Libraries,react-vr-cli,ReactVR}/**/*.js\"",
     "test": "jest --config jest/config-all.json",
     "test-unit": "jest --config jest/config-unit.json"
   }

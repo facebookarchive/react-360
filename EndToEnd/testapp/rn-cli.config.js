@@ -17,7 +17,9 @@ var config = {
   },
 
   getBlacklistRE() {
-    return blacklist([]);
+    return blacklist([
+      /.*[/\\]ReactVR[/\\]OVRUI[/\\]package\.json/,
+    ]);
   },
 
   getAssetExts() {
@@ -33,6 +35,11 @@ var config = {
   getProvidesModuleNodeModules() {
     return ['react-native', 'react-vr'];
   },
+
+  extraNodeModules: {
+    'ovrui':
+      path.resolve(__dirname, '..', '..', 'OVRUI', 'src', 'OVRUI.js'),
+  },
 };
 
 function getRoots() {
@@ -44,4 +51,3 @@ function getRoots() {
 }
 
 module.exports = config;
-

@@ -9,7 +9,15 @@
  * @flow
  */
 
-const MEDIA_EVENT_TYPES = ['canplay', 'durationchange', 'ended', 'error', 'timeupdate', 'pause', 'playing'];
+const MEDIA_EVENT_TYPES = [
+  'canplay',
+  'durationchange',
+  'ended',
+  'error',
+  'timeupdate',
+  'pause',
+  'playing',
+];
 
 /**
  * The basic video player
@@ -42,8 +50,9 @@ export default class BasicVideoPlayer {
   }
 
   hasEnoughData(): boolean {
-    return !!this.videoElement &&
-      this.videoElement.readyState === this.videoElement.HAVE_ENOUGH_DATA;
+    return (
+      !!this.videoElement && this.videoElement.readyState === this.videoElement.HAVE_ENOUGH_DATA
+    );
   }
 
   _bindMediaEvents() {

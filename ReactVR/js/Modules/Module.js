@@ -9,9 +9,15 @@
  * @flow
  */
 
-export type ModuleDescription = [string, {
-  [const: string]: any,
-}, Array<string>, Array<number>, Array<number>];
+export type ModuleDescription = [
+  string,
+  {
+    [const: string]: any,
+  },
+  Array<string>,
+  Array<number>,
+  Array<number>,
+];
 
 /**
  * Modules are platform-specific implementations of functionality that can

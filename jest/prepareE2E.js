@@ -7,8 +7,6 @@ const path = require('path');
 console.log('Running full test suite.');
 console.log('If you want to skip the end-to-end tests, run `npm run test-unit`\n');
 
-const isGitHubRepo = fs.existsSync(path.resolve(__dirname, '..', '.git'));
-
 if (!process.env.SKIPBUILD) {
 
 console.log('Building React VR apps for end-to-end testing.');
@@ -17,7 +15,7 @@ console.log('  SKIPBUILD=1 npm test');
 
 function buildScript(root, input, output) {
   const cliLocation = require.resolve('react-native/local-cli/cli.js');
-  const configLocation = isGitHubRepo ? path.resolve(root, 'rn-cli.config.js') : path.resolve('rn-cli.config.js');
+  const configLocation = path.resolve(root, 'rn-cli.config.js');
   return new Promise(function(resolve, reject) {
     const npm = child_process.spawn(
       (/^win/.test(process.platform) ? 'node.exe' : 'node'),
@@ -34,6 +32,7 @@ function buildScript(root, input, output) {
         'false',
         '--config',
         configLocation,
+        '--reset-cache'
       ],
       {stdio: 'inherit', cwd: root}
     );

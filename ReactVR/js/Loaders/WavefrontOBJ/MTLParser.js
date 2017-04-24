@@ -262,7 +262,12 @@ export function readTextureOptions(remainder: string): Texture {
       const chan = args[index + 1];
       if (
         // Explicit checks for flowtype safety
-        chan === 'r' || chan === 'g' || chan === 'b' || chan === 'm' || chan === 'l' || chan === 'z'
+        chan === 'r' ||
+        chan === 'g' ||
+        chan === 'b' ||
+        chan === 'm' ||
+        chan === 'l' ||
+        chan === 'z'
       ) {
         options.imfchan = chan;
       }
