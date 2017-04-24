@@ -18,7 +18,7 @@ var config = {
 
   getBlacklistRE() {
     return blacklist([
-      /.*[/\\]ReactVR[/\\]OVRUI[/\\]package\.json/,
+      /.*[/\\]OVRUI[/\\]package\.json/,
     ]);
   },
 
