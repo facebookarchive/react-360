@@ -10,11 +10,21 @@
  */
 
 import * as VRAudioBufferManager from './VRAudioBufferManager';
+import MediaError from './MediaError';
 
 import type VRAudioContext from './VRAudioContext';
 
+type MediaEventType =
+  | 'canplay'
+  | 'ended'
+  | 'durationchange'
+  | 'timeupdate'
+  | 'pause'
+  | 'playing'
+  | 'error';
+
 export type MediaEvent = {
-  type: 'canplay' | 'ended',
+  type: MediaEventType,
   timeStamp: number,
   target: any,
 };
@@ -31,12 +41,16 @@ export default class VRAudioBufferSource {
   _playbackTime: number;
   _startTime: number;
   _isPlaying: boolean;
+  _error: ?MediaError;
+  _ended: boolean;
 
   constructor(vrAudioContext: VRAudioContext) {
     this._vrAudioContext = vrAudioContext;
     this._playbackTime = 0;
     this._startTime = 0;
     this._isPlaying = false;
+    this._error = null;
+    this._ended = false;
     this.onMediaEvent = undefined;
   }
 
@@ -49,23 +63,42 @@ export default class VRAudioBufferSource {
     this.stopSourceNode();
     this._playbackTime = 0;
     this._buffer = null;
+    this._error = null;
+    this._ended = false;
 
     this.url = url;
-    VRAudioBufferManager.fetch(url, this._vrAudioContext, (buffer: ?AudioBuffer, error) => {
-      if (error) {
-        console.warn('Failed to fetch audio:', url);
-      } else {
-        this._buffer = buffer;
-        this._onMediaEvent({
-          type: 'canplay',
-          timeStamp: Date.now(),
-          target: {
-            ended: false,
-            error: null,
-          },
-        });
+    VRAudioBufferManager.fetch(
+      url,
+      this._vrAudioContext,
+      (buffer: ?AudioBuffer, error: ?MediaError) => {
+        if (error) {
+          console.warn('Failed to fetch audio:', url);
+          this._error = error;
+          this._onMediaEvent(this.createMediaEvent('error'));
+        } else {
+          this._buffer = buffer;
+          this._onMediaEvent(this.createMediaEvent('canplay'));
+          this._onMediaEvent(this.createMediaEvent('durationchange'));
+        }
       }
-    });
+    );
+  }
+
+  createMediaEvent(type: MediaEventType): MediaEvent {
+    const duration = this._buffer ? this._buffer.duration : 0;
+    const currentTime = this._isPlaying
+      ? this._vrAudioContext.getWebAudioContext().currentTime - this._startTime + this._playbackTime
+      : this._playbackTime;
+    return {
+      type: type,
+      timeStamp: Date.now(),
+      target: {
+        currentTime: currentTime,
+        duration: duration,
+        ended: this._ended,
+        error: this._error,
+      },
+    };
   }
 
   getSourceNode() {
@@ -81,6 +114,7 @@ export default class VRAudioBufferSource {
   play() {
     if (this._isPlaying) return;
     this.playSourceNode();
+    this._onMediaEvent(this.createMediaEvent('playing'));
   }
 
   playSourceNode() {
@@ -91,14 +125,8 @@ export default class VRAudioBufferSource {
     sourceNode.onended = () => {
       this.stopSourceNode();
       this._playbackTime = 0;
-      this._onMediaEvent({
-        type: 'ended',
-        timeStamp: Date.now(),
-        target: {
-          ended: true,
-          error: null,
-        },
-      });
+      this._ended = true;
+      this._onMediaEvent(this.createMediaEvent('ended'));
     };
     if (!this._buffer) {
       console.warn('play() called before audio loaded for url', this.url);
@@ -106,6 +134,7 @@ export default class VRAudioBufferSource {
     }
     sourceNode.buffer = this._buffer;
     sourceNode.start(0, this._playbackTime);
+    this._ended = false;
     this._isPlaying = true;
     this._startTime = this._vrAudioContext.getWebAudioContext().currentTime;
   }
@@ -138,6 +167,7 @@ export default class VRAudioBufferSource {
     this._playbackTime = this._vrAudioContext.getWebAudioContext().currentTime -
       this._startTime +
       this._playbackTime;
+    this._onMediaEvent(this.createMediaEvent('pause'));
   }
 
   stop() {
@@ -145,6 +175,8 @@ export default class VRAudioBufferSource {
 
     this.stopSourceNode();
     this._playbackTime = 0;
+    this._ended = true;
+    this._onMediaEvent(this.createMediaEvent('ended'));
   }
 
   stopSourceNode() {
@@ -155,6 +187,12 @@ export default class VRAudioBufferSource {
       this._sourceNode = undefined;
     }
     this._isPlaying = false;
+  }
+
+  frame() {
+    if (this._isPlaying) {
+      this._onMediaEvent(this.createMediaEvent('timeupdate'));
+    }
   }
 
   dispose() {

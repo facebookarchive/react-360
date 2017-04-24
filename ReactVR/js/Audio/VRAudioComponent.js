@@ -173,6 +173,12 @@ export default class VRAudioComponent {
     }
   }
 
+  frame() {
+    if (this._source) {
+      this._source.frame();
+    }
+  }
+
   dispose() {
     this._disconnectNodes();
     this._freeSource();

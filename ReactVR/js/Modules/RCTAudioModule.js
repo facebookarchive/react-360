@@ -25,6 +25,8 @@ const MEDIA_EVENT_CALLBACK_NAME = {
   ended: 'onAudioEnded',
   error: 'onAudioError',
   timeupdate: 'onAudioTimeUpdate',
+  playing: 'onAudioPlaying',
+  pause: 'onAudioPause',
 };
 
 /**
@@ -236,6 +238,9 @@ export default class RCTAudioModule extends Module {
   frame(camera: any) {
     if (this.audioContext) {
       this.audioContext.frame(camera);
+    }
+    for (const key in this._components) {
+      this._components[key].frame();
     }
   }
 }

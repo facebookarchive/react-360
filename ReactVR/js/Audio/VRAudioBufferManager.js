@@ -8,10 +8,11 @@
  *
  * @flow
  */
+import {MEDIA_ERR_NETWORK, MEDIA_ERR_DECODE, default as MediaError} from './MediaError';
 
 import type VRAudioContext from './VRAudioContext';
 
-type OnLoadHandler = (?AudioBuffer, any) => void;
+type OnLoadHandler = (buffer: ?AudioBuffer, error: ?MediaError) => void;
 
 // A simple dictionary cache and a simple request batch
 // TODO: we should use expire time to update/clean cache
@@ -47,20 +48,29 @@ export function fetch(url: string, audioContext: VRAudioContext, onLoad: OnLoadH
           function(message) {
             _onRequestError(
               url,
-              '[VRAudioBufferSource] Decoding failure: ' + url + ' (' + message + ')'
+              new MediaError(
+                MEDIA_ERR_DECODE,
+                '[VRAudioBufferSource] Decoding failure: ' + url + ' (' + message + ')'
+              )
             );
           }
         );
       } else {
         _onRequestError(
           url,
-          '[VRAudioBufferSource] XHR Error: ' + url + ' (' + xhr.statusText + ')'
+          new MediaError(
+            MEDIA_ERR_NETWORK,
+            '[VRAudioBufferSource] XHR Error: ' + url + ' (' + xhr.statusText + ')'
+          )
         );
       }
     };
 
     xhr.onerror = function(event) {
-      _onRequestError(url, '[VRAudioBufferSource] XHR Network failure: ' + url);
+      _onRequestError(
+        url,
+        new MediaError(MEDIA_ERR_NETWORK, '[VRAudioBufferSource] XHR Network failure: ' + url)
+      );
     };
 
     xhr.send();
@@ -90,7 +100,7 @@ function _onRequestSucceed(url: string, buffer: AudioBuffer) {
   });
 }
 
-function _onRequestError(url: string, error: any) {
+function _onRequestError(url: string, error: MediaError) {
   const pendingRequest = _pendingRequest[url];
   delete _pendingRequest[url];
   pendingRequest.map(_onLoad => {
