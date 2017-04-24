@@ -148,6 +148,24 @@ export default class VRAudioComponent {
     }
   }
 
+  seekTo(playbackTime: number) {
+    if (this._source) {
+      const source = this._source;
+      this._disconnectNodes();
+      source.seekTo(playbackTime);
+      if (source.isPlaying) {
+        this._connectNodes();
+      }
+    }
+  }
+
+  pause() {
+    if (this._source) {
+      this._source.pause();
+      this._disconnectNodes();
+    }
+  }
+
   stop() {
     if (this._source) {
       this._source.stop();

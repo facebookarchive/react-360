@@ -169,6 +169,23 @@ export default class RCTAudioModule extends Module {
   }
 
   /**
+   * seek to a position in an audio
+   * @param {string} handle - The audio handle.
+   * @param {number} position - The audio position to seek to
+   */
+  seekTo(handle: string, position: number) {
+    this._components[handle].seekTo(position);
+  }
+
+  /**
+   * pause the audio
+   * @param {string} handle - The audio handle.
+   */
+  pause(handle: string) {
+    this._components[handle].pause();
+  }
+
+  /**
    * stop the audio
    * @param {string} handle - The audio handle.
    */

@@ -20,6 +20,8 @@ import merge from '../Utils/merge';
 import * as OVRUI from 'ovrui';
 import getSupportedFormats from '../Audio/getSupportedFormats';
 
+const COMMAND_SEEK_TO = 1;
+
 export default class RCTSound extends RCTBaseView {
   /**
    * constructor: allocates the required resources and sets defaults
@@ -29,7 +31,6 @@ export default class RCTSound extends RCTBaseView {
     this.view = new OVRUI.UIView(guiSys);
     this._counter = 0;
     this._handle = null;
-    this._prevHandle = null;
 
     Object.defineProperty(this.props, 'autoPlay', {
       set: value => {
@@ -72,6 +73,8 @@ export default class RCTSound extends RCTBaseView {
         const audioModule = this.UIManager._rnctx.AudioModule;
         if (this.props._playStatus === 'stop') {
           audioModule.stop(this._handle);
+        } else if (this.props._playStatus === 'pause') {
+          audioModule.pause(this._handle);
         } else if (this.props._playStatus === 'play') {
           audioModule.play(this._handle);
         }
@@ -118,16 +121,16 @@ export default class RCTSound extends RCTBaseView {
 
         // User might have set source to null to remove the audio.
         if (!this.props._source) {
-          this._prevHandle = this._handle;
+          const prevHandle = this._handle;
           this._handle = null;
-          if (this._prevHandle) {
-            audioModule.unload(this._prevHandle);
+          if (prevHandle) {
+            audioModule.unload(prevHandle);
           }
           return;
         }
 
         // Generate unique handle and register it with AudioModule.
-        this._prevHandle = this._handle;
+        const prevHandle = this._handle;
         this._counter += 1;
         this._handle = [url, this.view.uuid, this._counter].join('-');
         audioModule.addHandle(this._handle);
@@ -147,10 +150,6 @@ export default class RCTSound extends RCTBaseView {
           if ((this.props._autoPlay && status !== 'stop') || status === 'play') {
             audioModule.play(handle);
           }
-          // Unload previous audio.
-          if (this._prevHandle) {
-            audioModule.unload(this._prevHandle);
-          }
         };
         const onEnded = handle => {
           if (handle !== this._handle) {
@@ -168,6 +167,11 @@ export default class RCTSound extends RCTBaseView {
             [],
           ]);
         };
+
+        // Unload previous audio.
+        if (prevHandle) {
+          audioModule.unload(prevHandle);
+        }
 
         // Register callbacks and load audio.
         audioModule._addMediaEventListener(this._handle, 'canplay', onCanPlay);
@@ -196,6 +200,18 @@ export default class RCTSound extends RCTBaseView {
     super.dispose();
   }
 
+  receiveCommand(commandId, commandArgs) {
+    super.receiveCommand(commandId, commandArgs);
+    switch (commandId) {
+      case COMMAND_SEEK_TO:
+        if (this._handle) {
+          const position = commandArgs ? commandArgs[0] : 0;
+          this.UIManager._rnctx.AudioModule.seekTo(this._handle, position);
+        }
+        break;
+    }
+  }
+
   /**
    * Describes the properies representable by this view type and merges
    * with super type
@@ -209,6 +225,9 @@ export default class RCTSound extends RCTBaseView {
         loop: 'boolean',
         playStatus: 'string',
         source: 'object',
+      },
+      Commands: {
+        seekTo: COMMAND_SEEK_TO,
       },
     });
   }

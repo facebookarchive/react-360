@@ -14,6 +14,8 @@ const LayoutAndTransformPropTypes = require('LayoutAndTransformPropTypes');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const UIManager = require('UIManager');
+const ReactNative = require('ReactNative');
 const StyleSheetPropType = require('StyleSheetPropType');
 const View = require('View');
 
@@ -86,7 +88,7 @@ const Sound = React.createClass({
      * Controls the playback status.  If not set, the value of `autoPlay` determines
      * whether the audio plays when the component is loaded.
      */
-    playStatus: PropTypes.oneOf(['play', 'stop']),
+    playStatus: PropTypes.oneOf(['play', 'pause', 'stop']),
 
     /**
      * Value of the audio volume. Minimum is zero, which mutes the sound, and the suggested
@@ -107,6 +109,14 @@ const Sound = React.createClass({
       playStatus: null,
       source: null,
     };
+  },
+
+  _seekTo(timeSec) {
+    UIManager.dispatchViewManagerCommand(
+      ReactNative.findNodeHandle(this),
+      UIManager.Sound.Commands.seekTo,
+      [timeSec]
+    );
   },
 
   _onEnded: function() {
