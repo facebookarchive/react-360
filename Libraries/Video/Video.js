@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const requireNativeComponent = require('requireNativeComponent');
 const StyleSheetPropType = require('StyleSheetPropType');
@@ -111,6 +112,14 @@ const Video = React.createClass({
      * Default is 1.0
      */
     volume: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Video',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      volume: true,
+    },
   },
 
   getDefaultProps: function() {

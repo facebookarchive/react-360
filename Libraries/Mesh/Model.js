@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -100,6 +101,13 @@ const Model = React.createClass({
      * Specifying true for this property will cause the object to be displayed as a wireframe
      */
     wireframe: PropTypes.bool,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Model',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+    },
   },
 
   getDefaultProps() {

@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -77,6 +78,15 @@ const Plane = React.createClass({
      * height of the box in meters
      */
     dimHeight: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Plane',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      dimWidth: true,
+      dimHeight: true,
+    },
   },
 
   getDefaultProps() {

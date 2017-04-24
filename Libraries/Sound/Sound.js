@@ -14,6 +14,7 @@ const LayoutAndTransformPropTypes = require('LayoutAndTransformPropTypes');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const UIManager = require('UIManager');
 const ReactNative = require('ReactNative');
 const StyleSheetPropType = require('StyleSheetPropType');
@@ -105,6 +106,14 @@ const Sound = React.createClass({
      * `volume={0.5}`
      */
     volume: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Sound',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      volume: true,
+    },
   },
 
   getDefaultProps: function() {

@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -48,6 +49,16 @@ const PointLight = React.createClass({
      * In "physically correct" mode, decay = 2 leads to physically realistic light falloff.
      */
     decay: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'PointLight',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      intensity: true,
+      distance: true,
+      decay: true,
+    },
   },
 
   getDefaultProps: function() {

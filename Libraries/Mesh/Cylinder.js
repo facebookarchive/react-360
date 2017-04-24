@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -100,6 +101,17 @@ const Cylinder = React.createClass({
      * higher numbers corresponds to a smoother cylinder
      */
     segments: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Cylinder',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      radiusTop: true,
+      radiusBottom: true,
+      dimHeight: true,
+      segments: true,
+    },
   },
 
   getDefaultProps() {

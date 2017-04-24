@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -87,6 +88,16 @@ const Sphere = React.createClass({
      * sphere but will be slower to render
      */
     heightSegments: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Sphere',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      radius: true,
+      widthSegments: true,
+      heightSegments: true,
+    },
   },
 
   getDefaultProps() {

@@ -14,6 +14,7 @@ const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -46,6 +47,14 @@ const AmbientLight = React.createClass({
      * Intensity of the light
      */
     intensity: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'AmbientLight',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      intensity: true,
+    },
   },
 
   getDefaultProps: function() {
