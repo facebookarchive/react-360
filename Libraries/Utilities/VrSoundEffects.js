@@ -147,7 +147,7 @@ export function volume(formats: MultiFormatResource | Resource, volume: number) 
     console.warn('VrSoundEffects: volume cannot be negative', volume);
     return;
   }
-  AudioModule.setGain(url, volume);
+  AudioModule.setVolume(url, volume);
 }
 
 /**

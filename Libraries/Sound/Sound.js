@@ -80,6 +80,12 @@ const Sound = React.createClass({
     loop: PropTypes.bool,
 
     /**
+     * Whether the audio is muted.
+     * Default is `false`.
+     */
+    muted: PropTypes.bool,
+
+    /**
      * Option callback evoked when audio is done playing.
      **/
     onEnded: PropTypes.func,

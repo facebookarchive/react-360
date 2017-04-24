@@ -51,7 +51,17 @@ export default class RCTSound extends RCTBaseView {
         this.props._volume = value;
         if (this._handle) {
           const audioModule = this.UIManager._rnctx.AudioModule;
-          audioModule.setGain(this._handle, this.props._volume);
+          audioModule.setVolume(this._handle, this.props._volume);
+        }
+      },
+    });
+
+    Object.defineProperty(this.props, 'muted', {
+      set: value => {
+        this.props._muted = value;
+        if (this._handle) {
+          const audioModule = this.UIManager._rnctx.AudioModule;
+          audioModule.setMuted(this._handle, this.props._muted);
         }
       },
     });
@@ -138,7 +148,10 @@ export default class RCTSound extends RCTBaseView {
 
         // Apply current settings
         if (this.props._volume) {
-          audioModule.setGain(this._handle, this.props._volume);
+          audioModule.setVolume(this._handle, this.props._volume);
+        }
+        if (this.props._muted) {
+          audioModule.setMuted(this._handle, this.props._muted);
         }
 
         const onCanPlay = handle => {
@@ -223,6 +236,7 @@ export default class RCTSound extends RCTBaseView {
         autoPlay: 'boolean',
         volume: 'number',
         loop: 'boolean',
+        muted: 'boolean',
         playStatus: 'string',
         source: 'object',
       },

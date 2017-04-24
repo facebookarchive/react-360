@@ -218,16 +218,25 @@ export default class RCTAudioModule extends Module {
   }
 
   /**
-   * Set gain of the sound source within the scene.
+   * Set volume of the sound source within the scene.
    * @param {string} handle - The audio handle.
-   * @param {number} gain - gain
+   * @param {number} volume - volume
    */
-  setGain(handle: string, gain: number) {
-    if (typeof gain !== 'number') {
-      console.warn('AudioModule setGain expected args (handle: string, gain: number)');
+  setVolume(handle: string, volume: number) {
+    if (typeof volume !== 'number') {
+      console.warn('AudioModule setVolume expected args (handle: string, volume: number)');
       return;
     }
-    this._components[handle].gain = gain;
+    this._components[handle].volume = volume;
+  }
+
+  /**
+   * Set the muted attributed of the audio
+   * @param {string} handle - The audio handle.
+   * @param {boolean} muted - Whether the audio should be muted.
+   */
+  setMuted(handle: string, muted: boolean) {
+    this._components[handle].muted = muted;
   }
 
   /**
