@@ -63,10 +63,7 @@ class SliderState extends React.Component {
     if (nextProps.value !== this.props.value) {
       return true;
     }
-    if (nextState.hasFocus !== this.state.hasFocus) {
-      return true;
-    }
-    return false;
+    return nextState.hasFocus !== this.state.hasFocus;
   }
 
   render() {
@@ -157,7 +154,7 @@ class ControllerState extends React.Component {
 const ControllerList = controllers => {
   if (controllers.length < 1) {
     return (
-      <View style={{backgroundColor: '#000000', padding: 0.2}}>
+      <View style={{backgroundColor: 'black', padding: 0.2}}>
         <Text>No controllers</Text>
       </View>
     );
@@ -212,7 +209,7 @@ class ControllerDemo extends React.Component {
 
 const styles = StyleSheet.create({
   waiting: {
-    backgroundColor: '#000000',
+    backgroundColor: 'black',
     fontSize: 0.3,
     layoutOrigin: [0.5, 0.5],
     paddingLeft: 0.2,

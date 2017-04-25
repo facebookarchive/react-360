@@ -23,7 +23,7 @@ class Button extends React.Component {
             borderRadius: 20,
             height: this.state.open ? 120 : 60,
             margin: 10,
-            width: this.state.open ? 200 : 100 }}
+            width: this.state.open ? 200 : 100}}
           source={{
             uri: 'https://facebook.github.io/react/img/logo_og.png',
           }}
