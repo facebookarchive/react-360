@@ -72,7 +72,7 @@ declare module 'ovrui' {
     setImage(uri: string, cb: (loaded: boolean, width: number, height: number) => void): void,
     setImageColor(value: number): void,
     setImageTexture(value: any): void,
-    setImmediateListener(listener: ?{eventType: any, callback: () => void}): void;
+    setImmediateListener(listener: ?{eventType: any, callback: () => void}): void,
     setInset(value: Array<number>): void,
     setInsetSize(value: Array<number>): void,
     setIsInteractable(value: boolean): void,

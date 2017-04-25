@@ -10,10 +10,10 @@
  */
 'use strict';
 
-const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
@@ -83,6 +83,16 @@ const Box = React.createClass({
      * depth of the box in meters
      */
     dimDepth: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Box',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      dimWidth: true,
+      dimHeight: true,
+      dimDepth: true,
+    },
   },
 
   getDefaultProps() {

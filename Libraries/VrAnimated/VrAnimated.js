@@ -70,19 +70,21 @@ class AnimatedValueArray extends AnimatedImplementation.ValueComposite {
 const ColorArrayFromHexARGB = function(hex) {
   hex = Math.floor(hex);
   return [
-    (hex >> 24 & 255) / 255, // a
-    (hex >> 16 & 255) / 255, // r
-    (hex >> 8 & 255) / 255, // g
+    ((hex >> 24) & 255) / 255, // a
+    ((hex >> 16) & 255) / 255, // r
+    ((hex >> 8) & 255) / 255, // g
     (hex & 255) / 255, //b
   ];
 };
 
 const ColorArrayToHexRGBA = function(color) {
-  return (color[1] * 255 << 24 ^
-    color[2] * 255 << 16 ^
-    color[3] * 255 << 8 ^
-    color[0] * 255 << 0) >>>
-    0;
+  return (
+    (((color[1] * 255) << 24) ^
+      ((color[2] * 255) << 16) ^
+      ((color[3] * 255) << 8) ^
+      ((color[0] * 255) << 0)) >>>
+    0
+  );
 };
 
 class AnimatedValueColor extends AnimatedImplementation.ValueComposite {

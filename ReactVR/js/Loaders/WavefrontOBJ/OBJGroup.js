@@ -124,7 +124,7 @@ export default class OBJGroup {
 
     if (knownIndex === undefined) {
       // We have not encountered this vertex yet, so put it in position
-      const location = this.geometry.position.length / 3 | 0;
+      const location = (this.geometry.position.length / 3) | 0;
       this.geometry.position.push(vertex[0]);
       this.geometry.position.push(vertex[1]);
       this.geometry.position.push(vertex[2]);

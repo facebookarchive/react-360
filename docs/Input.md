@@ -141,7 +141,7 @@ are passed as the last argument when the `VRInstance` is constructed.
 
 const vr = new VRInstance(bundle, 'YourProject', parent, {
   // Custom initialization options go here
-  cusorVisibility: 'visible',
+  cursorVisibility: 'visible',
 
   ...options,
 });

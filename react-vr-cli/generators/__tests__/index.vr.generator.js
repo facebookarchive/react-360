@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: 'client.js',
-  contents:
-`import 'react-native';
+  contents: `import 'react-native';
 import 'react-vr';
 import React from 'react';
 import Index from '../index.vr.js';

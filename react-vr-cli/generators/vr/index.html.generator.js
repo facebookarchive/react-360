@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: 'index.html',
-  contents:
-`<html>
+  contents: `<html>
   <head>
     <title>${config.name}</title>
     <style>body { margin: 0; }</style>

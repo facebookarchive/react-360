@@ -41,7 +41,7 @@ declare module 'three' {
   }
 
   declare class PlaneBufferGeometry extends BufferGeometry {
-    constructor(number, number): PlaneBufferGeometry;
+    constructor(number, number): PlaneBufferGeometry,
   }
 
   declare class SphereBufferGeometry extends BufferGeometry {

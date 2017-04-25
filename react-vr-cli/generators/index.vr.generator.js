@@ -13,7 +13,6 @@ module.exports = config => ({
 import {
   AppRegistry,
   asset,
-  StyleSheet,
   Pano,
   Text,
   View,

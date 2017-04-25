@@ -253,9 +253,9 @@ const Text = React.createClass({
     if (this.props.onStartShouldSetResponder || this._hasPressHandler()) {
       if (!this._handlers) {
         this._handlers = {
-          onStartShouldSetResponder: (): bool => {
-            const shouldSetFromProps = this.props.onStartShouldSetResponder &&
-                this.props.onStartShouldSetResponder();
+          onStartShouldSetResponder: (): boolean => {
+            const shouldSetFromProps =
+              this.props.onStartShouldSetResponder && this.props.onStartShouldSetResponder();
             const setResponder = shouldSetFromProps || this._hasPressHandler();
             if (setResponder && !this.touchableHandleActivePressIn) {
               // Attach and bind all the other handlers only the first time a touch
@@ -299,25 +299,22 @@ const Text = React.createClass({
           },
           onResponderGrant: function(e: SyntheticEvent, dispatchID: string) {
             this.touchableHandleResponderGrant(e, dispatchID);
-            this.props.onResponderGrant &&
-              this.props.onResponderGrant.apply(this, arguments);
+            this.props.onResponderGrant && this.props.onResponderGrant.apply(this, arguments);
           }.bind(this),
           onResponderMove: function(e: SyntheticEvent) {
             this.touchableHandleResponderMove(e);
-            this.props.onResponderMove &&
-              this.props.onResponderMove.apply(this, arguments);
+            this.props.onResponderMove && this.props.onResponderMove.apply(this, arguments);
           }.bind(this),
           onResponderRelease: function(e: SyntheticEvent) {
             this.touchableHandleResponderRelease(e);
-            this.props.onResponderRelease &&
-              this.props.onResponderRelease.apply(this, arguments);
+            this.props.onResponderRelease && this.props.onResponderRelease.apply(this, arguments);
           }.bind(this),
           onResponderTerminate: function(e: SyntheticEvent) {
             this.touchableHandleResponderTerminate(e);
             this.props.onResponderTerminate &&
               this.props.onResponderTerminate.apply(this, arguments);
           }.bind(this),
-          onResponderTerminationRequest: function(): bool {
+          onResponderTerminationRequest: function(): boolean {
             // Allow touchable or props.onResponderTerminationRequest to deny
             // the request
             let allowTermination = this.touchableHandleResponderTerminationRequest();
@@ -359,9 +356,9 @@ type RectOffset = {
   left: number,
   right: number,
   bottom: number,
-}
+};
 
-var PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
+const PRESS_RECT_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 
 const RCTText = createReactNativeComponentClass(viewConfig);
 let RCTVirtualText = RCTText;

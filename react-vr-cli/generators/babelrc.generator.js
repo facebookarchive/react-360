@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: '.babelrc',
-  contents:
-`{
+  contents: `{
   "presets": ["react-native"]
 }
 `,

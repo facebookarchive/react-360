@@ -46,7 +46,7 @@ describe('RefCountCache', () => {
 
   it('runs cleanup methods on removed references', () => {
     const cleaned = {};
-    const cache = new RefCountCache((path, entry) => cleaned[path] = entry);
+    const cache = new RefCountCache((path, entry) => (cleaned[path] = entry));
     const obj = {};
     cache.addEntry('objpath', obj);
     cache.addReference('objpath');

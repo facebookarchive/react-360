@@ -329,7 +329,8 @@ export class ReactNativeContext {
     switch (event.eventType) {
       case OVRUI.GuiSysEventType.HIT_CHANGED:
         if (
-          this.lastHit !== event.args.currentHit || this.lastSource !== event.args.currentSource
+          this.lastHit !== event.args.currentHit ||
+          this.lastSource !== event.args.currentSource
         ) {
           this.lastHit = event.args.currentHit;
           this.lastSource = event.args.currentSource;
@@ -346,32 +347,34 @@ export class ReactNativeContext {
    */
   _onUIViewEvent(event: UIViewEvent) {
     switch (event.eventType) {
-      case OVRUI.UIViewEventType.FOCUS_LOST: {
-        const viewTag = event.view ? this.getHitTag(event.view) : undefined;
-        const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
-        const payload = {
-          target: targetTag,
-          source: event.args.source,
-        };
-        if (viewTag) {
-          // Dispatch exit event
-          this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topExit', payload]);
+      case OVRUI.UIViewEventType.FOCUS_LOST:
+        {
+          const viewTag = event.view ? this.getHitTag(event.view) : undefined;
+          const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
+          const payload = {
+            target: targetTag,
+            source: event.args.source,
+          };
+          if (viewTag) {
+            // Dispatch exit event
+            this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topExit', payload]);
+          }
         }
-      }
-      break;
-      case OVRUI.UIViewEventType.FOCUS_GAINED: {
-        const viewTag = event.view ? this.getHitTag(event.view) : undefined;
-        const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
-        const payload = {
-          target: targetTag,
-          source: event.args.source,
-        };
-        if (viewTag) {
-          // Dispatch enter event
-          this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topEnter', payload]);
+        break;
+      case OVRUI.UIViewEventType.FOCUS_GAINED:
+        {
+          const viewTag = event.view ? this.getHitTag(event.view) : undefined;
+          const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
+          const payload = {
+            target: targetTag,
+            source: event.args.source,
+          };
+          if (viewTag) {
+            // Dispatch enter event
+            this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topEnter', payload]);
+          }
         }
-      }
-      break;
+        break;
       default:
         break;
     }

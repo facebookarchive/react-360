@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: '.gitignore',
-  contents:
-`.DS_Store
+  contents: `.DS_Store
 *~
 *.log
 *.js.meta

@@ -719,10 +719,10 @@ export default class UIManager extends Module {
     const w = view.YGNode.getComputedWidth();
     const h = view.YGNode.getComputedHeight();
     while (view) {
-      x += view.YGNode.getComputedLeft() -
-        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
-      y += view.YGNode.getComputedTop() -
-        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+      x +=
+        view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+      y +=
+        view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
     this._rnctx.invokeCallback(callback, [x, y, w, h]);
@@ -744,10 +744,10 @@ export default class UIManager extends Module {
     const w = view.YGNode.getComputedWidth();
     const h = view.YGNode.getComputedHeight();
     while (view) {
-      x += view.YGNode.getComputedLeft() -
-        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
-      y += view.YGNode.getComputedTop() -
-        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+      x +=
+        view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+      y +=
+        view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
     this._rnctx.invokeCallback(callback, [x, y, w, h]);
@@ -779,10 +779,10 @@ export default class UIManager extends Module {
     const w = view.YGNode.getComputedWidth();
     const h = view.YGNode.getComputedHeight();
     while (view && view.tag !== ancestorTag) {
-      x += view.YGNode.getComputedLeft() -
-        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
-      y += view.YGNode.getComputedTop() -
-        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+      x +=
+        view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+      y +=
+        view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
     this._rnctx.invokeCallback(successCallback, [x, y, w, h]);
@@ -801,10 +801,10 @@ export default class UIManager extends Module {
       this._rnctx.invokeCallback(successCallback, []);
       return;
     }
-    const x = view.YGNode.getComputedLeft() -
-      view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
-    const y = view.YGNode.getComputedTop() -
-      view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+    const x =
+      view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+    const y =
+      view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
     const w = view.YGNode.getComputedWidth();
     const h = view.YGNode.getComputedHeight();
     this._rnctx.invokeCallback(successCallback, [x, y, w, h]);

@@ -52,7 +52,7 @@ const Image = React.createClass({
   propTypes: {
     ...View.propTypes,
     style: StyleSheetPropType(ImageStylePropTypes),
-   /**
+    /**
      * `uri` is a string representing the resource identifier for the image, which
      * could be an http address, a local file path, or a static image
      * resource (which should be wrapped in the `require('./path/to/image.png')` function).
@@ -165,15 +165,19 @@ const Image = React.createClass({
       /**
        * by default set the renderGroup if any transform as been set
        */
-      if (nativeProps.style && nativeProps.style['renderGroup'] === undefined && nativeProps.style.transform) {
+      if (
+        nativeProps.style &&
+        nativeProps.style['renderGroup'] === undefined &&
+        nativeProps.style.transform
+      ) {
         nativeProps.style.renderGroup = true;
       }
 
       if (this.context.isInAParentText) {
         // RCTTextInlineImage isn't implemented yet
-        return <RKImage {...nativeProps}/>;
+        return <RKImage {...nativeProps} />;
       } else {
-        return <RKImage {...nativeProps}/>;
+        return <RKImage {...nativeProps} />;
       }
     }
     return null;

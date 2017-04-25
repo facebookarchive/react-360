@@ -77,17 +77,14 @@ describe('RCTModel', () => {
     const m = new Model();
     m.props.source = {obj: {uri: 'mesh.obj'}};
     // Wait for the loader
-    setTimeout(
-      () => {
-        try {
-          expect(loadOBJMock.mock.calls[0]).toEqual(['mesh.obj']);
-          done();
-        } catch (err) {
-          done.fail(err);
-        }
-      },
-      1
-    );
+    setTimeout(() => {
+      try {
+        expect(loadOBJMock.mock.calls[0]).toEqual(['mesh.obj']);
+        done();
+      } catch (err) {
+        done.fail(err);
+      }
+    }, 1);
   });
 
   it('removes any references when disposed', done => {
@@ -97,18 +94,15 @@ describe('RCTModel', () => {
       mtl: {uri: 'mesh.mtl'},
     };
     // Wait for the loader
-    setTimeout(
-      () => {
-        try {
-          m.dispose();
-          expect(removeOBJReferenceMock.mock.calls[0]).toEqual(['mesh.obj']);
-          expect(removeMTLReferenceMock.mock.calls[0]).toEqual(['mesh.mtl']);
-          done();
-        } catch (err) {
-          done.fail(err);
-        }
-      },
-      1
-    );
+    setTimeout(() => {
+      try {
+        m.dispose();
+        expect(removeOBJReferenceMock.mock.calls[0]).toEqual(['mesh.obj']);
+        expect(removeMTLReferenceMock.mock.calls[0]).toEqual(['mesh.mtl']);
+        done();
+      } catch (err) {
+        done.fail(err);
+      }
+    }, 1);
   });
 });

@@ -283,14 +283,14 @@ const VrButton = React.createClass({
   _isKeyReleased: function(event) {
     // Currently WebVR can only recognize XboxController as 'standard' mapping. But it seems key 0 is the primary key
     // for most gamepad controller. We should revisit this once the functionality of mapping is fully implemented.
-    return (event.type === 'GamepadInputEvent' &&
-      event.button === 0 &&
-      event.eventType === 'keyup') ||
+    return (
+      (event.type === 'GamepadInputEvent' && event.button === 0 && event.eventType === 'keyup') ||
       (event.type === 'KeyboardInputEvent' &&
         event.code === 'Space' &&
         event.eventType === 'keyup') ||
       (event.type === 'MouseInputEvent' && event.button === 0 && event.eventType === 'mouseup') ||
-      (event.type === 'TouchInputEvent' && event.eventType === 'touchend');
+      (event.type === 'TouchInputEvent' && event.eventType === 'touchend')
+    );
   },
 
   /**
@@ -301,17 +301,19 @@ const VrButton = React.createClass({
   _isKeyPressed: function(event) {
     // Currently WebVR can only recognize XboxController as 'standard' mapping. But it seems key 0 is the primary key
     // for most gamepad controller. We should revisit this once the functionality of mapping is fully implemented.
-    return (event.type === 'GamepadInputEvent' &&
-      event.button === 0 &&
-      event.eventType === 'keydown' &&
-      !event.repeat) ||
+    return (
+      (event.type === 'GamepadInputEvent' &&
+        event.button === 0 &&
+        event.eventType === 'keydown' &&
+        !event.repeat) ||
       (event.type === 'KeyboardInputEvent' &&
         event.code === 'Space' &&
         event.eventType === 'keydown' &&
         !event.repeat) ||
       (event.type === 'MouseInputEvent' && event.button === 0 && event.eventType === 'mousedown') ||
       (event.type === 'TouchInputEvent' &&
-        (event.eventType === 'touchstart' || event.eventType === 'touchmove'));
+        (event.eventType === 'touchstart' || event.eventType === 'touchmove'))
+    );
   },
 
   _onInput: function(event) {

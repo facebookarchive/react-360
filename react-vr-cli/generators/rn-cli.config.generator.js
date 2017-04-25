@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: 'rn-cli.config.js',
-  contents:
-`'use strict';
+  contents: `'use strict';
 
 var path = require('path');
 var blacklist = require('./node_modules/react-native/packager/blacklist');

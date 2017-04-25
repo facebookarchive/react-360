@@ -9,10 +9,9 @@
 
 /* eslint-disable */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: 'package.json',
-  contents:
-`{
+  contents: `{
   "name": "${config.name}",
   "version": "0.0.1",
   "private": true,

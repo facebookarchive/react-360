@@ -7,10 +7,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-module.exports = (config) => ({
+module.exports = config => ({
   filename: '.flowconfig',
-  contents:
-`[ignore]
+  contents: `[ignore]
 .*/node_modules/.*
 
 [include]

@@ -10,10 +10,10 @@
  */
 'use strict';
 
-const ColorPropType = require('ColorPropType');
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
+const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
@@ -74,6 +74,13 @@ const Pano = React.createClass({
      * Option onLoadEnd callback called on success or failure
      **/
     onLoadEnd: PropTypes.func,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'Pano',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+    },
   },
 
   _onLoad: function() {

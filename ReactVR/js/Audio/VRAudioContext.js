@@ -17,8 +17,8 @@ import type {Camera} from 'three';
  * The basic wraper of audio context in VR
  */
 
-const IS_SUPPORTED = window.hasOwnProperty('webkitAudioContext') ||
-  window.hasOwnProperty('AudioContext');
+const IS_SUPPORTED =
+  window.hasOwnProperty('webkitAudioContext') || window.hasOwnProperty('AudioContext');
 const ContextConstructor = IS_SUPPORTED ? window.AudioContext || window.webkitAudioContext : null;
 if (window.hasOwnProperty('webkitAudioContext') && !window.hasOwnProperty('AudioContext')) {
   console.log('Outdated version of Web Audio API detected.');

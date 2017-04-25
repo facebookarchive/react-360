@@ -17,7 +17,7 @@ import type VRAudioContext from './VRAudioContext';
 import type {MediaEvent} from './VRAudioBufferSource';
 import type {Vector3, Euler} from 'three';
 
-const DEFAULT_GAIN = 1.0;
+const DEFAULT_VOLUME = 1.0;
 const DEFAULT_PANNING_MODEL = 'HRTF';
 const DEFAULT_DISTANCE_MODEL = 'inverse';
 const DEFAULT_CONE_INNER_ANGLE = 60;
@@ -37,6 +37,8 @@ export default class VRAudioComponent {
   _source: ?VRAudioBufferSource;
   _rotation: Euler;
   _vrAudioContext: VRAudioContext;
+  _volume: number;
+  _muted: boolean;
 
   constructor(vrAudioContext: VRAudioContext, audioConfig: AudioConfig) {
     this._vrAudioContext = vrAudioContext;
@@ -45,8 +47,11 @@ export default class VRAudioComponent {
     this._position = new THREE.Vector3(0, 0, 0);
     this._rotation = new THREE.Euler(0, 0, 0, 'XYZ');
 
+    this._volume = DEFAULT_VOLUME;
+    this._muted = false;
+
     this._gain = this._vrAudioContext.getWebAudioContext().createGain();
-    this._gain.gain.value = DEFAULT_GAIN;
+    this.updateGainValue();
 
     // Only create a panner node when position or rotation is set.
     // Otherwise, default to non-spatialized audio.
@@ -148,10 +153,39 @@ export default class VRAudioComponent {
     }
   }
 
+  seekTo(playbackTime: number) {
+    if (this._source) {
+      const source = this._source;
+      this._disconnectNodes();
+      source.seekTo(playbackTime);
+      if (source.isPlaying) {
+        this._connectNodes();
+      }
+    }
+  }
+
+  pause() {
+    if (this._source) {
+      this._source.pause();
+      this._disconnectNodes();
+    }
+  }
+
   stop() {
     if (this._source) {
       this._source.stop();
       this._disconnectNodes();
+    }
+  }
+
+  updateGainValue() {
+    const gain = this._muted ? 0 : this._volume;
+    this._gain.gain.value = gain;
+  }
+
+  frame() {
+    if (this._source) {
+      this._source.frame();
     }
   }
 
@@ -191,11 +225,21 @@ export default class VRAudioComponent {
     }
   }
 
-  get gain(): number {
-    return this._gain.gain.value;
+  get volume(): number {
+    return this._volume;
   }
 
-  set gain(value: number) {
-    this._gain.gain.value = value;
+  set volume(value: number) {
+    this._volume = value;
+    this.updateGainValue();
+  }
+
+  get muted(): boolean {
+    return this._muted;
+  }
+
+  set muted(value: boolean) {
+    this._muted = value;
+    this.updateGainValue();
   }
 }

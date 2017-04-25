@@ -17,7 +17,7 @@ const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 const DEVICE_BACK_EVENT = 'hardwareBackPress';
 
 type BackPressEventName = $Enum<{
-  backPress: string;
+  backPress: string,
 }>;
 
 const _backPressSubscriptions = new Set();
@@ -25,7 +25,7 @@ const _backPressSubscriptions = new Set();
 RCTDeviceEventEmitter.addListener(DEVICE_BACK_EVENT, function() {
   const backPressSubscriptions = new Set(_backPressSubscriptions);
   let invokeDefault = true;
-  backPressSubscriptions.forEach((subscription) => {
+  backPressSubscriptions.forEach(subscription => {
     if (subscription()) {
       invokeDefault = false;
     }
@@ -52,7 +52,6 @@ RCTDeviceEventEmitter.addListener(DEVICE_BACK_EVENT, function() {
  * ```
  */
 const BackAndroid = {
-
   exitApp: function() {
     DeviceEventManager.invokeDefaultBackPressHandler();
   },
@@ -67,13 +66,9 @@ const BackAndroid = {
     };
   },
 
-  removeEventListener: function(
-    eventName: BackPressEventName,
-    handler: Function
-  ): void {
+  removeEventListener: function(eventName: BackPressEventName, handler: Function): void {
     _backPressSubscriptions.delete(handler);
   },
-
 };
 
 module.exports = BackAndroid;

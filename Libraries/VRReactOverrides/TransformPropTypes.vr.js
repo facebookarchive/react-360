@@ -25,16 +25,13 @@ const NumberOrArrayOfNumberPropType = ReactPropTypes.oneOfType([
 ]);
 
 const TransformMatrixPropType = function(
-  props : Object,
-  propName : string,
-  componentName : string,
+  props: Object,
+  propName: string,
+  componentName: string,
   ...rest
-) : ?Error {
+): ?Error {
   if (props.transform && props.transformMatrix) {
-    return new Error(
-      'transformMatrix and transform styles cannot be used on the same ' +
-      'component'
-    );
+    return new Error('transformMatrix and transform styles cannot be used on the same component');
   }
   return ArrayOfNumberPropType(props, propName, componentName, ...rest);
 };

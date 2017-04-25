@@ -52,9 +52,10 @@ const AccessibilityComponentType = [
   'radiobutton_unchecked',
 ];
 
-const forceTouchAvailable = (UIManager.RCTView &&
-  UIManager.RCTView.Constants &&
-  UIManager.RCTView.Constants.forceTouchAvailable) ||
+const forceTouchAvailable =
+  (UIManager.RCTView &&
+    UIManager.RCTView.Constants &&
+    UIManager.RCTView.Constants.forceTouchAvailable) ||
   false;
 
 const statics = {

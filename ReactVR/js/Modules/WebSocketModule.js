@@ -43,6 +43,7 @@ export default class WebSocketModule extends Module {
    */
   connect(url: string, protocols: string | Array<string>, options: any, socketId: number) {
     const socket = new WebSocket(url, protocols);
+    socket.binaryType = 'arraybuffer';
     this._sockets[String(socketId)] = socket;
 
     // set the onclose, onerror and onmessage functions so that the
@@ -63,10 +64,23 @@ export default class WebSocketModule extends Module {
       this._rnctx.callFunction('RCTDeviceEventEmitter', 'emit', ['websocketFailed', payload]);
     };
     socket.onmessage = event => {
+      let data = event.data;
+      if (data instanceof ArrayBuffer) {
+        // Convert arraybuffer to string because the current bridge format is
+        // automatically stringified to account for metadata and to speed up
+        // older versions of Blink. We may be able to avoid this indirection
+        // later on.
+        const arr = new Uint8Array(data);
+        const str = new Array(arr.byteLength);
+        for (let i = 0; i < str.length; i++) {
+          str[i] = String.fromCharCode(arr[i]);
+        }
+        data = btoa(str.join(''));
+      }
       const payload = {
         id: socketId,
         type: typeof event.data === 'string' ? 'string' : 'binary',
-        data: event.data,
+        data: data,
       };
       this._rnctx.callFunction('RCTDeviceEventEmitter', 'emit', ['websocketMessage', payload]);
     };
@@ -82,7 +96,7 @@ export default class WebSocketModule extends Module {
    * internal function to send the data
    * maps the React socketID to the instance of WebSocket
    */
-  _send(data: any, socketId: number) {
+  _send(data: string | ArrayBuffer, socketId: number) {
     const socket = this._sockets[String(socketId)];
     if (!socket) {
       throw new Error('Error while sending data to WebSocket: no such socket');
@@ -96,7 +110,7 @@ export default class WebSocketModule extends Module {
    * @param data - data from react
    * @param socketId - React socket id
    */
-  send(data: any, socketId: number) {
+  send(data: string, socketId: number) {
     this._send(data, socketId);
   }
 
@@ -106,8 +120,13 @@ export default class WebSocketModule extends Module {
    * @param data - data from react
    * @param socketId - React socket id
    */
-  sendBinary(data: any, socketId: number) {
-    this._send(data, socketId);
+  sendBinary(data: string, socketId: number) {
+    const chars = atob(data);
+    const array = new Uint8Array(chars.length);
+    for (let i = 0; i < chars.length; i++) {
+      array[i] = chars.charCodeAt(i) & 255;
+    }
+    this._send(array.buffer, socketId);
   }
 
   /**
