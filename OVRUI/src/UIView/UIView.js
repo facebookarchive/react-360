@@ -280,21 +280,21 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
   updateBillboard: (function(updateContext) {
     // Similar to Three.js Object3D.lookAt, except view faces the screen
     // instead of the camera. (Should only be called when not in VR.)
-    let thisPosition = new THREE.Vector3();
-    let camPosition = new THREE.Vector3();
-    let camAxisX = new THREE.Vector3();
-    let camAxisY = new THREE.Vector3();
-    let camAxisZ = new THREE.Vector3();
-    let newAxisX = new THREE.Vector3();
-    let newAxisY = new THREE.Vector3();
-    let newAxisZ = new THREE.Vector3();
-    let up = new THREE.Vector3(0, 1, 0);
-    let rotationMatrix = new THREE.Matrix4();
-    let parentMatrixWorldInverse = new THREE.Matrix4();
-    let parentRotationInverse = new THREE.Matrix4();
+    const thisPosition = new THREE.Vector3();
+    const camPosition = new THREE.Vector3();
+    const camAxisX = new THREE.Vector3();
+    const camAxisY = new THREE.Vector3();
+    const camAxisZ = new THREE.Vector3();
+    const newAxisX = new THREE.Vector3();
+    const newAxisY = new THREE.Vector3();
+    const newAxisZ = new THREE.Vector3();
+    const up = new THREE.Vector3(0, 1, 0);
+    const rotationMatrix = new THREE.Matrix4();
+    const parentMatrixWorldInverse = new THREE.Matrix4();
+    const parentRotationInverse = new THREE.Matrix4();
 
     return function(updateContext) {
-      let camMatrixWorld = updateContext.camera.matrixWorld;
+      const camMatrixWorld = updateContext.camera.matrixWorld;
       thisPosition.setFromMatrixPosition(this.matrixWorld);
       camPosition.setFromMatrixPosition(camMatrixWorld);
       camMatrixWorld.extractBasis(camAxisX, camAxisY, camAxisZ);
@@ -361,14 +361,14 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
     this.targetFrame[2] = width;
     this.targetFrame[3] = height;
     if (animator) {
-      let self = this;
-      let startFrame = [this.frame[0], this.frame[1], this.frame[2], this.frame[3]];
-      let startTime = Date.now();
+      const self = this;
+      const startFrame = [this.frame[0], this.frame[1], this.frame[2], this.frame[3]];
+      const startTime = Date.now();
       const animState = this.frame[2] === 0 && this.frame[3] === 0 && animator.create
         ? animator.create
         : animator.update;
 
-      let frameAnimation = function(curTime) {
+      const frameAnimation = function(curTime) {
         const deltaTime = curTime - startTime;
         const dt = animState
           ? AnimationFunctions[animState.type](Math.min(1, deltaTime / animator.duration))
@@ -754,23 +754,13 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
   // This function determine whether this view can be the target of a hit event.
   shouldAcceptHitEvent: function() {
     // We do not accept the hit event if this view is not supposed to receive it.
-    if (
-      this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_NONE
-    ) {
-      return false;
-    }
-    return true;
+    return !(this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_NONE);
   },
 
   // This function determine whether this view's subviews can be the target of hit event.
   shouldInterceptHitEvent: function() {
     // We intercept the hit event if the subviews are not supposed to receive it.
-    if (
-      this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_ONLY
-    ) {
-      return true;
-    }
-    return false;
+    return this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_ONLY;
   },
 
   forceRaycastTest: function(enabled) {
@@ -781,8 +771,8 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
   // We should find a better way of copying this
   /* eslint-disable */
   raycast: (function() {
-    var inverseMatrix = new THREE.Matrix4();
-    var ray = new THREE.Ray();
+    const inverseMatrix = new THREE.Matrix4();
+    const ray = new THREE.Ray();
 
     let vTL = new THREE.Vector3();
     let vTR = new THREE.Vector3();
@@ -815,12 +805,12 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       return intersect;
     }
 
-    var intersectionNormalized = new THREE.Vector3();
-    var intersectionPoint = new THREE.Vector3();
-    var intersectionPointWorld = new THREE.Vector3();
+    const intersectionNormalized = new THREE.Vector3();
+    const intersectionPoint = new THREE.Vector3();
+    const intersectionPointWorld = new THREE.Vector3();
 
     return function raycast(raycaster, intersects) {
-      var material = this.material;
+      const material = this.material;
 
       if (!this.forceRaycastTestEnabled) {
         if (material === undefined) return;
@@ -863,7 +853,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       intersectionPointWorld.copy(intersect);
       intersectionPointWorld.applyMatrix4(this.matrixWorld);
 
-      var distance = raycaster.ray.origin.distanceTo(intersectionPointWorld);
+      const distance = raycaster.ray.origin.distanceTo(intersectionPointWorld);
 
       if (distance < raycaster.near || distance > raycaster.far) return;
 
