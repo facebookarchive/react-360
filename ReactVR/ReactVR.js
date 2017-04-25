@@ -15,6 +15,7 @@ import bundleFromRoot from './js/bundleFromRoot';
 import createRootView from './js/createRootView';
 import Module from './js/Modules/Module';
 import VRInstance from './js/VRInstance';
+import {BasicVideoPlayer, setCustomizedVideoPlayer} from './js/Video/OVRVideo';
 
 import {ReactNativeContext} from './js/ReactNativeContext';
 
@@ -23,3 +24,5 @@ export {createRootView};
 export {Module};
 export {ReactNativeContext};
 export {VRInstance};
+export {BasicVideoPlayer};
+export {setCustomizedVideoPlayer};
