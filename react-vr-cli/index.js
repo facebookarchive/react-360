@@ -65,12 +65,12 @@ getLatestVersion().then(version => {
     if (!rawName) {
       printUsageAndExit();
     }
-    if (rawName.match(/[~!@#%^&*()-+=;:{}\[\]\/.,<>'"]/)) {
+    if (rawName.match(/[~!@#%^&*()+=;:{}\[\]\/.,<>'"]/)) {
       console.log('Invalid project name: ' + chalk.red(rawName));
       process.exit(1);
     }
     // Sanitize the name and check that it's a valid variable name
-    const name = rawName.replace(/\s+/g, '_');
+    const name = rawName.replace(/[-\s]+/g, '_');
     try {
       eval(`const ${name} = null`); // eslint-disable-line no-eval
     } catch (e) {
