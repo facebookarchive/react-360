@@ -1,4 +1,11 @@
-'use strict';
+/**
+ * This example gathers input from gamepad devices. It displays a set of button
+ * states for each connected controller, using the number of buttons and axes
+ * from each controller to display their current positions.
+ *
+ * This demonstrates how to gather gamepad input, as well as determine which
+ * gamepads are connected and listen to connect / disconnect events.
+ */
 
 import React from 'react';
 import {AppRegistry, asset, NativeModules, Pano, StyleSheet, Text, View} from 'react-vr';
