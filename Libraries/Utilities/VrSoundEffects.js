@@ -159,7 +159,7 @@ export function unload(formats: MultiFormatResource | Resource, volume: number) 
   if (loadedSounds[url]) {
     loadedSoundsRefs[url] -= 1;
     if (loadedSoundsRefs[url] === 0) {
-      AudioModule.dispose(url);
+      AudioModule.unload(url);
       delete loadedSounds[url];
       delete loadedSoundsRefs[url];
     }
