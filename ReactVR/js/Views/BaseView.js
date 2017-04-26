@@ -169,7 +169,7 @@ export default class RCTBaseView {
         configurable: true,
         set: value => {
           if (value == null) {
-            value = 0.0;
+            value = 1.0;
           }
           this.view.setOpacity(value);
         },

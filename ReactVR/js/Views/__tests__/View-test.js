@@ -198,7 +198,7 @@ describe('RCTView', () => {
     v._aspectRatio(null);
 
     expect(v.view.setOpacity.mock.calls.length).toBe(1);
-    expect(v.view.setOpacity.mock.calls[0][0]).toEqual(0);
+    expect(v.view.setOpacity.mock.calls[0][0]).toEqual(1);
     expect(v.view.setBackgroundColor.mock.calls.length).toBe(1);
     expect(v.view.setBackgroundColor.mock.calls[0][0]).toEqual(0);
     expect(v.view.setBorderColor.mock.calls.length).toBe(1);
