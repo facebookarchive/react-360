@@ -14,7 +14,7 @@
 
 const Platform = {
   OS: 'vr',
-  select: (obj: Object) => 'vr' in obj ? obj.vr : obj.default,
+  select: (obj: Object) => ('vr' in obj ? obj.vr : obj.default),
 };
 
 module.exports = Platform;

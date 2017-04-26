@@ -70,8 +70,8 @@ function applyUpdates(node, currentOpacity, updateContext, index, clipRect) {
       dist = Math.max(0, updateContext.camera.far - dist);
     }
     // shift up the by 9 give 512 additional levels for each descretized depth
-    updateContext.distances[index] = Math.floor(dist * RENDERSORT_DISTANCE_MULTIPLIER) <<
-      RENDERSORT_DISTANCE_SHIFT;
+    updateContext.distances[index] =
+      Math.floor(dist * RENDERSORT_DISTANCE_MULTIPLIER) << RENDERSORT_DISTANCE_SHIFT;
   }
 
   updateContext.renderOrder++;
@@ -551,12 +551,13 @@ export default class GuiSys {
         // and almostHit are set per-view with hitSlop and cursorVisibilitySlop.
         autoVisible = this._cursor.lastHit !== null && this._cursor.lastHit.isInteractable;
         if (!autoVisible) {
-          autoVisible = this._cursor.lastAlmostHit !== null &&
-            this._cursor.lastAlmostHit.isInteractable;
+          autoVisible =
+            this._cursor.lastAlmostHit !== null && this._cursor.lastAlmostHit.isInteractable;
         }
       }
       // Always hide gaze cursor when mouse cursor is detected.
-      this.cursorMesh.visible = this._cursor.drawsCursor &&
+      this.cursorMesh.visible =
+        this._cursor.drawsCursor &&
         (this.cursorVisibility === 'visible' || autoVisible) &&
         lastOrigin !== null &&
         lastDirection !== null;

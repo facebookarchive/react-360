@@ -543,7 +543,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       this.imageOpacity = 1.0;
       this.imageMaterial.color.set(DEFAULT_IMAGE_COLOR);
     } else {
-      this.imageOpacity = typeof args[0] === 'number' ? (args[0] >> 24 & 0xff) / 255.0 : 1.0;
+      this.imageOpacity = typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
       this.imageMaterial.color.set.apply(this.imageMaterial.color, args);
     }
     this.imageMaterial.needsUpdate = true;
@@ -556,7 +556,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       this.backgroundMaterial.color.set(DEFAULT_BACKGROUND_COLOR);
       this.backgroundMaterial.visible = false;
     } else {
-      this.backgroundOpacity = typeof args[0] === 'number' ? (args[0] >> 24 & 0xff) / 255.0 : 1.0;
+      this.backgroundOpacity = typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
       this.backgroundMaterial.color.set.apply(this.backgroundMaterial.color, args);
       this.backgroundMaterial.visible = true;
     }
@@ -569,7 +569,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       this.borderOpacity = 1.0;
       this.borderMaterial.color.set(DEFAULT_BORDER_COLOR);
     } else {
-      this.borderOpacity = typeof args[0] === 'number' ? (args[0] >> 24 & 0xff) / 255.0 : 1.0;
+      this.borderOpacity = typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
       this.borderMaterial.color.set.apply(this.borderMaterial.color, arguments);
     }
     this.borderMaterial.needsUpdate = true;
@@ -601,10 +601,8 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       newValue[3] !== this.borderWidth[3]
     ) {
       this.borderWidth = newValue.slice();
-      this.borderMaterial.visible = newValue[0] > 0 ||
-        newValue[1] > 0 ||
-        newValue[2] > 0 ||
-        newValue[3] > 0;
+      this.borderMaterial.visible =
+        newValue[0] > 0 || newValue[1] > 0 || newValue[2] > 0 || newValue[3] > 0;
       this.frameDirty = true;
       this.dirtyGeometry = true;
     }
@@ -754,13 +752,16 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
   // This function determine whether this view can be the target of a hit event.
   shouldAcceptHitEvent: function() {
     // We do not accept the hit event if this view is not supposed to receive it.
-    return !(this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_NONE);
+    return !(this.pointerEvents === PointerEvents.NONE ||
+      this.pointerEvents === PointerEvents.BOX_NONE);
   },
 
   // This function determine whether this view's subviews can be the target of hit event.
   shouldInterceptHitEvent: function() {
     // We intercept the hit event if the subviews are not supposed to receive it.
-    return this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_ONLY;
+    return (
+      this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_ONLY
+    );
   },
 
   forceRaycastTest: function(enabled) {
@@ -837,7 +838,8 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       let isAlmostHit = false;
       if (!intersect) {
         // If not intersection with object or hitSlop, check cursorVisibilitySlop
-        const needsUpdate = this.cursorVisibilitySlop[0] > this.hitSlop[0] ||
+        const needsUpdate =
+          this.cursorVisibilitySlop[0] > this.hitSlop[0] ||
           this.cursorVisibilitySlop[1] > this.hitSlop[1] ||
           this.cursorVisibilitySlop[2] > this.hitSlop[2] ||
           this.cursorVisibilitySlop[3] > this.hitSlop[3];

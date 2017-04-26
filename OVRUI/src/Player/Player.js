@@ -505,7 +505,8 @@ export default class Player {
    * means fullscreen was exited and the sizes are reset.
    */
   handleFullscreenChange() {
-    const element = document.fullscreenElement ||
+    const element =
+      document.fullscreenElement ||
       document.webkitFullscreenElement ||
       document.mozFullScreenElement ||
       document.msFullscreenElement;
@@ -563,13 +564,10 @@ export default class Player {
         this.resize(window.innerWidth, window.innerHeight);
         return;
       }
-      timer = setTimeout(
-        () => {
-          last = now;
-          this.resize(window.innerWidth, window.innerHeight);
-        },
-        delay
-      );
+      timer = setTimeout(() => {
+        last = now;
+        this.resize(window.innerWidth, window.innerHeight);
+      }, delay);
     };
     window.addEventListener('resize', this._resizeHandler);
   }

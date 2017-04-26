@@ -349,7 +349,10 @@ function vgRect(x, y, w, h) {
 
 function vgRoundedRectVarying(x, y, w, h, radBottomRight, radBottomLeft, radTopLeft, radTopRight) {
   if (
-    radTopLeft < 0.001 && radTopRight < 0.001 && radBottomRight < 0.001 && radBottomLeft < 0.001
+    radTopLeft < 0.001 &&
+    radTopRight < 0.001 &&
+    radBottomRight < 0.001 &&
+    radBottomLeft < 0.001
   ) {
     return vgRect(x, y, w, h);
   } else {
@@ -428,7 +431,10 @@ export function vgRoundedBorderRectVarying(
   let y = Math.min(height, borderTop);
   let h = Math.max(y, height - borderBottom) - y;
   if (
-    radTopLeft < 0.001 && radTopRight < 0.001 && radBottomRight < 0.001 && radBottomLeft < 0.001
+    radTopLeft < 0.001 &&
+    radTopRight < 0.001 &&
+    radBottomRight < 0.001 &&
+    radBottomLeft < 0.001
   ) {
     let vals = [
       VG_MOVETO,

@@ -52,9 +52,11 @@ export default class DeviceOrientationControls {
 
   static isSupported() {
     // CONSIDER: Detecting non-mobile scenarios where device orientation can be used (laptops, some tablets)
-    return 'DeviceOrientationEvent' in window &&
+    return (
+      'DeviceOrientationEvent' in window &&
       /Mobi/i.test(navigator.userAgent) &&
-      !/OculusBrowser/i.test(navigator.userAgent);
+      !/OculusBrowser/i.test(navigator.userAgent)
+    );
   }
 
   connect() {

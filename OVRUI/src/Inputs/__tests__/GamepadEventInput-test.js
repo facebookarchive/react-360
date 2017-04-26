@@ -83,21 +83,18 @@ describe('GamepadEventInput', () => {
     const eventInput = new GamepadEventInput();
     gamepadsMock.next = [{buttons: [{pressed: false}, {pressed: true}]}];
     eventInput.getEvents();
-    setTimeout(
-      () => {
-        expect(eventInput.getEvents()).toEqual([
-          {
-            type: 'GamepadInputEvent',
-            eventType: 'keydown',
-            gamepad: 0,
-            button: 1,
-            repeat: true,
-          },
-        ]);
-        done();
-      },
-      1000
-    );
+    setTimeout(() => {
+      expect(eventInput.getEvents()).toEqual([
+        {
+          type: 'GamepadInputEvent',
+          eventType: 'keydown',
+          gamepad: 0,
+          button: 1,
+          repeat: true,
+        },
+      ]);
+      done();
+    }, 1000);
   });
 
   it('fires button release events', () => {

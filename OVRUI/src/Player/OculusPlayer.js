@@ -62,14 +62,11 @@ export function attemptOculusPlayer() {
       while (topNode !== topNode.parent) {
         topNode = topNode.parent;
       }
-      let timeout = setTimeout(
-        function() {
-          topNode.removeEventListener('blur', blurHandler);
-          document.removeEventListener(visibilityEvent, blurHandler);
-          reject();
-        },
-        2000
-      );
+      let timeout = setTimeout(function() {
+        topNode.removeEventListener('blur', blurHandler);
+        document.removeEventListener(visibilityEvent, blurHandler);
+        reject();
+      }, 2000);
       const blurHandler = function(e) {
         if (timeout) {
           clearTimeout(timeout);

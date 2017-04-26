@@ -164,9 +164,8 @@ export default class VRAudioBufferSource {
     if (!this._isPlaying) return;
 
     this.stopSourceNode();
-    this._playbackTime = this._vrAudioContext.getWebAudioContext().currentTime -
-      this._startTime +
-      this._playbackTime;
+    this._playbackTime =
+      this._vrAudioContext.getWebAudioContext().currentTime - this._startTime + this._playbackTime;
     this._onMediaEvent(this.createMediaEvent('pause'));
   }
 
