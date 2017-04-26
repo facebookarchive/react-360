@@ -109,6 +109,9 @@ export default class RCTImage extends RCTBaseView {
       'resizeMode',
       ({
         set: value => {
+          if (value === null) {
+            value = 'stretch';
+          }
           this.view.setResizeMode(value);
         },
       }: Object)
@@ -145,6 +148,9 @@ export default class RCTImage extends RCTBaseView {
       'pointerEvents',
       ({
         set: value => {
+          if (value === null) {
+            value = 'auto';
+          }
           this.view.setPointerEvents(value);
         },
       }: Object)
@@ -154,6 +160,9 @@ export default class RCTImage extends RCTBaseView {
       'hitSlop',
       ({
         set: value => {
+          if (value === null) {
+            value = 0;
+          }
           if (typeof value === 'number') {
             this.view.setHitSlop(value, value, value, value);
           } else {
@@ -172,6 +181,9 @@ export default class RCTImage extends RCTBaseView {
       'tintColor',
       ({
         set: value => {
+          if (value === null) {
+            value = 0xffffffff;
+          }
           this.view.setImageColor(value);
         },
       }: Object)

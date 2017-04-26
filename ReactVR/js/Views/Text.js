@@ -88,6 +88,9 @@ export default class RCTText extends RCTBaseView {
       'numberOfLines',
       ({
         set: value => {
+          if (value === null) {
+            value = 0;
+          }
           this.props._numberOfLines = value;
           this._textDirty = true;
           this.markTextDirty();
@@ -100,6 +103,9 @@ export default class RCTText extends RCTBaseView {
       'isOnLayer',
       ({
         set: value => {
+          if (value === null) {
+            value = false;
+          }
           this._isOnLayer = value;
           this.view.clippingEnabled = value;
           this._textDirty = true;
@@ -113,6 +119,9 @@ export default class RCTText extends RCTBaseView {
       'hitSlop',
       ({
         set: value => {
+          if (value === null) {
+            value = 0;
+          }
           if (typeof value === 'number') {
             this.view.setHitSlop(value, value, value, value);
           } else {
@@ -127,6 +136,9 @@ export default class RCTText extends RCTBaseView {
       'color',
       ({
         set: value => {
+          if (value === null) {
+            value = 0xffffffff;
+          }
           this.style._textColor = value;
           this.markTextDirty();
           this.makeDirty();
@@ -138,6 +150,9 @@ export default class RCTText extends RCTBaseView {
       'fontSize',
       ({
         set: value => {
+          if (value === null) {
+            value = 0.1;
+          }
           this.view.setTextSize(value);
           this._fontSize = value;
           this._textDirty = true;
@@ -155,6 +170,9 @@ export default class RCTText extends RCTBaseView {
       'fontWeight',
       ({
         set: value => {
+          if (value === null) {
+            value = 'normal';
+          }
           // lookup font weight if is named (eg normal or bold)
           const namedWeight = NAMED_FONT_WEIGHT[value];
           const intValue = parseInt(namedWeight ? namedWeight : value, 10);
@@ -171,6 +189,9 @@ export default class RCTText extends RCTBaseView {
       'textShadowRadius',
       ({
         set: value => {
+          if (value === null) {
+            value = 0;
+          }
           this._fontBorderSize = value;
           this.view.setTextAlphaCenter(0.54 - this._fontBorderSize - this._fontWeight / 10000.0);
           this.view.setTextColorCenter(0.54 - this._fontWeight / 10000.0);
@@ -182,6 +203,9 @@ export default class RCTText extends RCTBaseView {
       'textAlign',
       ({
         set: value => {
+          if (value === null) {
+            value = 'auto';
+          }
           this.markTextDirty();
           this.view.setTextHAlign(ALIGN_MAP[value]);
         },
@@ -192,6 +216,9 @@ export default class RCTText extends RCTBaseView {
       'textAlignVertical',
       ({
         set: value => {
+          if (value === null) {
+            value = 'auto';
+          }
           this.markTextDirty();
           this.view.setTextVAlign(ALIGN_VERTICAL_MAP[value]);
         },

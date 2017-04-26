@@ -155,6 +155,9 @@ export default class RCTBaseView {
       'backgroundColor',
       ({
         set: value => {
+          if (value == null) {
+            value = 0;
+          }
           this.view.setBackgroundColor(value);
         },
       }: Object)
@@ -165,6 +168,9 @@ export default class RCTBaseView {
       ({
         configurable: true,
         set: value => {
+          if (value == null) {
+            value = 0.0;
+          }
           this.view.setOpacity(value);
         },
       }: Object)
@@ -174,6 +180,9 @@ export default class RCTBaseView {
       'borderColor',
       ({
         set: value => {
+          if (value == null) {
+            value = 0xff000000;
+          }
           this.view.setBorderColor(value);
         },
       }: Object)
@@ -183,6 +192,9 @@ export default class RCTBaseView {
       'borderRadius',
       ({
         set: value => {
+          if (value == null) {
+            value = 0.0;
+          }
           this._borderRadius = value;
           this._borderRadiusDirty = true;
         },
@@ -193,6 +205,9 @@ export default class RCTBaseView {
       'borderTopLeftRadius',
       ({
         set: value => {
+          if (value == null) {
+            value = 0.0;
+          }
           this._borderTopLeftRadius = value;
           this._borderRadiusDirty = true;
         },
@@ -203,6 +218,9 @@ export default class RCTBaseView {
       'borderTopRightRadius',
       ({
         set: value => {
+          if (value == null) {
+            value = 0.0;
+          }
           this._borderTopRightRadius = value;
           this._borderRadiusDirty = true;
         },
@@ -213,6 +231,9 @@ export default class RCTBaseView {
       'borderBottomLeftRadius',
       ({
         set: value => {
+          if (value == null) {
+            value = 0.0;
+          }
           this._borderBottomLeftRadius = value;
           this._borderRadiusDirty = true;
         },
@@ -223,6 +244,9 @@ export default class RCTBaseView {
       'borderBottomRightRadius',
       ({
         set: value => {
+          if (value == null) {
+            value = 0.0;
+          }
           this._borderBottomRightRadius = value;
           this._borderRadiusDirty = true;
         },
@@ -233,6 +257,9 @@ export default class RCTBaseView {
       'renderGroup',
       ({
         set: value => {
+          if (value == null) {
+            value = false;
+          }
           this.view && (this.view.renderGroup = value);
         },
       }: Object)
@@ -402,6 +429,9 @@ export default class RCTBaseView {
    */
 
   _left(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPositionPercent(Yoga.EDGE_LEFT, parseFloat(value));
     } else {
@@ -410,6 +440,9 @@ export default class RCTBaseView {
   }
 
   _top(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPositionPercent(Yoga.EDGE_TOP, parseFloat(value));
     } else {
@@ -418,6 +451,9 @@ export default class RCTBaseView {
   }
 
   _right(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPositionPercent(Yoga.EDGE_RIGHT, parseFloat(value));
     } else {
@@ -426,6 +462,9 @@ export default class RCTBaseView {
   }
 
   _bottom(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPositionPercent(Yoga.EDGE_BOTTOM, parseFloat(value));
     } else {
@@ -434,6 +473,9 @@ export default class RCTBaseView {
   }
 
   _margin(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_ALL, parseFloat(value));
     } else {
@@ -442,6 +484,9 @@ export default class RCTBaseView {
   }
 
   _marginVertical(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_VERTICAL, parseFloat(value));
     } else {
@@ -450,6 +495,9 @@ export default class RCTBaseView {
   }
 
   _marginHorizontal(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_HORIZONTAL, parseFloat(value));
     } else {
@@ -458,6 +506,9 @@ export default class RCTBaseView {
   }
 
   _marginTop(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_TOP, parseFloat(value));
     } else {
@@ -466,6 +517,9 @@ export default class RCTBaseView {
   }
 
   _marginBottom(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_BOTTOM, parseFloat(value));
     } else {
@@ -474,6 +528,9 @@ export default class RCTBaseView {
   }
 
   _marginLeft(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_LEFT, parseFloat(value));
     } else {
@@ -482,6 +539,9 @@ export default class RCTBaseView {
   }
 
   _marginRight(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMarginPercent(Yoga.EDGE_RIGHT, parseFloat(value));
     } else {
@@ -490,6 +550,9 @@ export default class RCTBaseView {
   }
 
   _padding(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_ALL, parseFloat(value));
     } else {
@@ -498,6 +561,9 @@ export default class RCTBaseView {
   }
 
   _paddingVertical(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_VERTICAL, parseFloat(value));
     } else {
@@ -506,6 +572,9 @@ export default class RCTBaseView {
   }
 
   _paddingHorizontal(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_HORIZONTAL, parseFloat(value));
     } else {
@@ -514,6 +583,9 @@ export default class RCTBaseView {
   }
 
   _paddingTop(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_TOP, parseFloat(value));
     } else {
@@ -522,6 +594,9 @@ export default class RCTBaseView {
   }
 
   _paddingBottom(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_BOTTOM, parseFloat(value));
     } else {
@@ -530,6 +605,9 @@ export default class RCTBaseView {
   }
 
   _paddingLeft(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_LEFT, parseFloat(value));
     } else {
@@ -538,6 +616,9 @@ export default class RCTBaseView {
   }
 
   _paddingRight(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setPaddingPercent(Yoga.EDGE_RIGHT, parseFloat(value));
     } else {
@@ -546,67 +627,88 @@ export default class RCTBaseView {
   }
 
   _borderWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setBorder(Yoga.EDGE_ALL, value);
   }
 
   _borderTopWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setBorder(Yoga.EDGE_TOP, value);
   }
 
   _borderRightWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setBorder(Yoga.EDGE_RIGHT, value);
   }
 
   _borderBottomWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setBorder(Yoga.EDGE_BOTTOM, value);
   }
 
   _borderLeftWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setBorder(Yoga.EDGE_LEFT, value);
   }
 
   _position(value: any): void {
-    this.YGNode.setPositionType(MAP_CSS_POSITION[value]);
+    this.YGNode.setPositionType(value !== null ? MAP_CSS_POSITION[value] : 0);
   }
 
   _alignContent(value: any): void {
-    this.YGNode.setAlignContent(MAP_CSS_ALIGN[value]);
+    this.YGNode.setAlignContent(value !== null ? MAP_CSS_ALIGN[value] : 0);
   }
 
   _alignItems(value: any): void {
-    this.YGNode.setAlignItems(MAP_CSS_ALIGN[value]);
+    this.YGNode.setAlignItems(value !== null ? MAP_CSS_ALIGN[value] : 0);
   }
 
   _alignSelf(value: any): void {
-    this.YGNode.setAlignSelf(MAP_CSS_ALIGN[value]);
+    this.YGNode.setAlignSelf(value !== null ? MAP_CSS_ALIGN[value] : 0);
   }
 
   _flexDirection(value: any): void {
-    this.YGNode.setFlexDirection(MAP_CSS_FLEX_DIRECTION[value]);
+    this.YGNode.setFlexDirection(value !== null ? MAP_CSS_FLEX_DIRECTION[value] : Yoga.UNDEFINED);
   }
 
   _flexWrap(value: any): void {
-    this.YGNode.setFlexWrap(MAP_CSS_WRAP[value]);
+    this.YGNode.setFlexWrap(value !== null ? MAP_CSS_WRAP[value] : Yoga.UNDEFINED);
   }
 
   _justifyContent(value: any): void {
-    this.YGNode.setJustifyContent(MAP_CSS_JUSTIFY[value]);
+    this.YGNode.setJustifyContent(value !== null ? MAP_CSS_JUSTIFY[value] : 0);
   }
 
   _overflow(value: any): void {
     this.view.clippingEnabled = value === Yoga.OVERFLOW_HIDDEN;
-    this.YGNode.setOverflow(MAP_CSS_OVERFLOW[value]);
+    this.YGNode.setOverflow(value !== null ? MAP_CSS_OVERFLOW[value] : 0);
   }
 
   _display(value: any): void {
-    this.YGNode.setDisplay(MAP_CSS_DISPLAY[value]);
+    this.YGNode.setDisplay(value !== null ? MAP_CSS_DISPLAY[value] : 0);
   }
 
   _flex(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setFlex(value);
   }
 
   _flexBasis(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setFlexBasisPercent(parseFloat(value));
     } else {
@@ -615,14 +717,23 @@ export default class RCTBaseView {
   }
 
   _flexGrow(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setFlexGrow(value);
   }
 
   _flexShrink(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setFlexShrink(value);
   }
 
   _width(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setWidthPercent(parseFloat(value));
     } else {
@@ -631,6 +742,9 @@ export default class RCTBaseView {
   }
 
   _height(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setHeightPercent(parseFloat(value));
     } else {
@@ -639,6 +753,9 @@ export default class RCTBaseView {
   }
 
   _minWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMinWidthPercent(parseFloat(value));
     } else {
@@ -647,6 +764,9 @@ export default class RCTBaseView {
   }
 
   _minHeight(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMinHeightPercent(parseFloat(value));
     } else {
@@ -655,6 +775,9 @@ export default class RCTBaseView {
   }
 
   _maxWidth(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMaxWidthPercent(parseFloat(value));
     } else {
@@ -663,6 +786,9 @@ export default class RCTBaseView {
   }
 
   _maxHeight(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     if (_isPercent(value)) {
       this.YGNode.setMaxHeightPercent(parseFloat(value));
     } else {
@@ -671,6 +797,9 @@ export default class RCTBaseView {
   }
 
   _aspectRatio(value: any): void {
+    if (value === null) {
+      value = Yoga.UNDEFINED;
+    }
     this.YGNode.setAspectRatio(value);
   }
 

@@ -64,7 +64,7 @@ declare module 'ovrui' {
     forceRaycastTest(value: boolean): void,
     remove(view: any): void,
     setBackgroundColor(value: number): void,
-    setBillboarding(value: boolean): void,
+    setBillboarding(value: string): void,
     setBorderColor(value: number): void,
     setBorderWidth(widths: any): void,
     setBorderRadius(widths: ?Array<number>): void,
@@ -88,8 +88,8 @@ declare module 'ovrui' {
     setTextSize(size: number): void,
     setTextAlphaCenter(value: number): void,
     setTextColorCenter(value: number): void,
-    setTextHAlign(value: number): void,
-    setTextVAlign(value: number): void,
+    setTextHAlign(value: string): void,
+    setTextVAlign(value: string): void,
   }
 
   declare class UIViewEvent {
