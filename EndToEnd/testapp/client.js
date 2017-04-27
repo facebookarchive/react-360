@@ -4,8 +4,7 @@ function init(bundle, parent, options) {
   const vr = new VRInstance(bundle, 'End2End', parent, {
     ...options,
   });
-  vr.render = function() {
-  };
+  vr.render = function() {};
   // Begin the animation loop
   vr.start();
   window.vr = vr;
