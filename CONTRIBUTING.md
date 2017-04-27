@@ -19,7 +19,7 @@ Before submitting a pull request, please make sure you have done the following:
 
 ## Copyright Notice for Files
 
-Copy and paste this to the tope of your new files:
+Copy and paste this to the top of your new files:
 
 ```
 /**
