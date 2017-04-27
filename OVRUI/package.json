@@ -29,7 +29,7 @@
     "rollup-watch": "^2.5.0"
   },
   "scripts": {
-    "lib": "babel src --out-dir lib --copy-files",
+    "lib": "babel src --out-dir lib --copy-files --presets=es2015,flow --no-babelrc",
     "dist": "rollup -c && babel dist/ovrui.js -o dist/ovrui.min.js --presets=babili --no-babelrc",
     "build": "npm run lib && npm run dist  && node prepend_license.js && echo 'Packaging complete.'",
     "prepublishOnly": "npm run build",
