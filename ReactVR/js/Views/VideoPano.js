@@ -100,13 +100,7 @@ export default class RCTVideoPano extends RCTPano {
   }
 
   setSource(value) {
-    const url = value ? value.uri : null;
-    if (value && !url) {
-      console.warn("<VideoPano> source must be in format {uri: 'http'}");
-      this.player.setSource(null);
-    } else {
-      this.player.setSource(value);
-    }
+    this.player.setSource(value);
   }
 
   dispose() {

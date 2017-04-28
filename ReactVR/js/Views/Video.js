@@ -84,13 +84,7 @@ export default class RCTVideo extends RCTBaseView {
     // Load/unload video when the source property changes.
     Object.defineProperty(this.props, 'source', {
       set: value => {
-        const url = value ? value.uri : null;
-        if (value && !url) {
-          console.warn("<Video> source must be in format {uri: 'http'}");
-          this.player.setSource(null);
-        } else {
-          this.player.setSource(value);
-        }
+        this.player.setSource(value);
       },
     });
 

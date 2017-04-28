@@ -31,16 +31,7 @@ import {
   Video,
   VideoControl,
   MediaPlayerState,
-  NativeModules,
 } from 'react-vr';
-
-let videoUrl = 'video.webm';
-const supportedFormats = NativeModules.VideoModule.supportedFormats;
-for (let i = 0; i < supportedFormats.length; i++) {
-  if (supportedFormats[i] === 'mp4') {
-    videoUrl = 'video.mp4';
-  }
-}
 
 /**
  * VideoSample created a MediaPlayerState and hook it with video and video control.
@@ -66,7 +57,10 @@ class VideoSample extends React.Component {
           }}>
           <Video
             style={{height: 2.25, width: 4}}
-            source={asset(videoUrl)}
+            source={[
+              asset('video.mp4', {format: 'mp4'}),
+              asset('video.webm', {format: 'webm'}),
+            ]}
             playerState={this.state.playerState}
           />
           <VideoControl style={{height: 0.2, width: 4}} playerState={this.state.playerState} />

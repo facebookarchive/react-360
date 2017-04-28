@@ -30,16 +30,7 @@ import {
   VideoPano,
   VideoControl,
   MediaPlayerState,
-  NativeModules,
 } from 'react-vr';
-
-let videoUrl = 'video.webm';
-const supportedFormats = NativeModules.VideoModule.supportedFormats;
-for (let i = 0; i < supportedFormats.length; i++) {
-  if (supportedFormats[i] === 'mp4') {
-    videoUrl = 'video.mp4';
-  }
-}
 
 /**
  * VideoSample360 created a MediaPlayerState and hook it with video and video control.
@@ -58,7 +49,10 @@ class VideoSample360 extends React.Component {
       <View>
         <VideoPano
           playerState={this.state.playerState}
-          source={asset(videoUrl, {layout: 'SPHERE'})}
+          source={[
+            asset('video.mp4', {format: 'mp4', layout: 'SPHERE'}),
+            asset('video.webm', {format: 'webm', layout: 'SPHERE'}),
+          ]}
         />
         <VideoControl
           style={{

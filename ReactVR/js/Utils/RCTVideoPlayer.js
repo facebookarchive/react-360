@@ -7,6 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+import getSupportedFormats from '../Video/getSupportedFormats';
+
 export type PlayStatus = 'closed' | 'loading' | 'error' | 'ended' | 'paused' | 'playing' | 'ready';
 
 /**
@@ -122,10 +124,47 @@ RCTVideoPlayer.prototype = Object.assign(Object.create(Object.prototype), {
     }
   },
 
+  _chooseSupportSource(source) {
+    if (Array.isArray(source)) {
+      for (let i = 0; i < source.length; i++) {
+        const sourceInst = source[i];
+        if (sourceInst && typeof sourceInst === 'object' && 'uri' in sourceInst) {
+          if ('format' in sourceInst) {
+            if (getSupportedFormats().indexOf(sourceInst.format) > -1) {
+              return sourceInst;
+            }
+          } else {
+            // If the source does not specify its format, we suppose it'll can be chose
+            // whatever format is supported.
+            return sourceInst;
+          }
+        }
+      }
+      // If none of source formats is supported
+      if (__DEV__) {
+        console.warn('No supported video format found in video source');
+      }
+      return null;
+    } else if (source) {
+      return source;
+    } else {
+      return null;
+    }
+  },
+
   setSource(source) {
+    const choseSource = this._chooseSupportSource(source);
     const prevUrl = this._source ? this._source.uri : null;
-    const curUrl = source ? source.uri : null;
-    this._source = source;
+    const curUrl = choseSource ? choseSource.uri : null;
+    if (source && !curUrl) {
+      if (__DEV__) {
+        console.warn(
+          "Video source must be in format {uri: 'http'} " +
+            "or [{uri: 'http', format: 'mp4'}, {uri: 'http', format: 'webm'}, ..]"
+        );
+      }
+    }
+    this._source = choseSource;
 
     // If url change, update handle
     if (prevUrl !== curUrl) {

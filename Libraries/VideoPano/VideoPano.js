@@ -47,15 +47,35 @@ const VideoPano = React.createClass({
     style: StyleSheetPropType(LayoutAndTransformTintPropTypes),
 
     /**
-     * source video in the form of `{uri: 'http', layout: LAYOUT}`
+     * source of video in the form of `{uri: 'http', format: FORMAT, layout: LAYOUT}`
+     *
+     * format(optional): the video format, e.g mp4, webm, etc.
+     *
      * layout(optional): the layout format of 360 video: 'SPHERE' | 'CUBEMAP_32'
+     *
+     * metaData(optional): the video meta data, used for customized video player
+     *
      * If layout is not a supported layout format, it'll by default use 'SPHERE'(equirectangular)
+     * Source can be an array of sources with different formats, and VideoPano will
+     * choose one of the formats that current browser supports. If format is not specified,
+     * it can be chose whatever format is supported.
      */
-    source: PropTypes.shape({
-      uri: PropTypes.string,
-      layout: PropTypes.string,
-    }),
-
+    source: PropTypes.oneOfType([
+      PropTypes.shape({
+        uri: PropTypes.string,
+        format: PropTypes.string,
+        layout: PropTypes.string,
+        metaData: PropTypes.any,
+      }),
+      PropTypes.arrayOf(
+        PropTypes.shape({
+          uri: PropTypes.string,
+          format: PropTypes.string,
+          layout: PropTypes.string,
+          metaData: PropTypes.any,
+        })
+      ),
+    ]),
     /**
      * Source for a poster frame to show until the video starts playing.
      * If not set, nothing will display until first frame of the video

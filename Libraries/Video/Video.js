@@ -47,9 +47,30 @@ const Video = React.createClass({
     style: StyleSheetPropType(LayoutAndTransformTintPropTypes),
 
     /**
-     * source video in the form of `{uri: 'http'}`
+     * source of video in the form of `{uri: 'http', format: FORMAT}`
+     *
+     * format(optional): the video format, e.g mp4, webm, etc.
+     *
+     * metaData(optional): the video meta data, used for customized video player
+     *
+     * Source can be an array of sources with different formats, and VideoPano will
+     * choose one of the formats that current browser supports. If format is not specified,
+     * it can be chose whatever format is supported.
      */
-    source: PropTypes.shape({uri: PropTypes.string}),
+    source: PropTypes.oneOfType([
+      PropTypes.shape({
+        uri: PropTypes.string,
+        format: PropTypes.string,
+        metaData: PropTypes.any,
+      }),
+      PropTypes.arrayOf(
+        PropTypes.shape({
+          uri: PropTypes.string,
+          format: PropTypes.string,
+          metaData: PropTypes.any,
+        })
+      ),
+    ]),
 
     /**
      * Source for a poster frame to show until the video starts playing.
