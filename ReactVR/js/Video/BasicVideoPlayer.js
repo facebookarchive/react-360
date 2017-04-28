@@ -28,6 +28,14 @@ export default class BasicVideoPlayer {
   _muted: boolean;
   _volume: number;
 
+  /**
+   * Subclasses may use this property to define the video format
+   * the video player supports. e.g. If a video player defined
+   * `supportedFormats = ['mp4']`, when playing a .webm format video,
+   * VRVideoComponent will fall back to use other video player.
+   */
+  static supportedFormats: ?Array<string> = null;
+
   constructor() {
     this.videoElement = document.createElement('video');
     this.videoElement.style.display = 'none';

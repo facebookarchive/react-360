@@ -12,6 +12,6 @@
 
 import BasicVideoPlayer from './BasicVideoPlayer';
 import VRVideoComponent from './VRVideoComponent';
-import {setCustomizedVideoPlayer} from './VRVideoPlayer';
+import {addCustomizedVideoPlayer} from './VRVideoPlayer';
 
-export {BasicVideoPlayer, VRVideoComponent, setCustomizedVideoPlayer};
+export {BasicVideoPlayer, VRVideoComponent, addCustomizedVideoPlayer};

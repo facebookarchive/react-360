@@ -13,7 +13,7 @@
  * A wrapper of video player, generating textures for video.
  */
 
-import {getDefaultVideoPlayer} from './VRVideoPlayer';
+import {getVideoPlayer} from './VRVideoPlayer';
 import * as THREE from 'three';
 
 import type {Texture, Vector4} from 'three';
@@ -29,6 +29,7 @@ type StereoType = 'none';
 export type VideoDef = {
   stereoType: StereoType,
   src: string,
+  format: ?string,
   metaData: any,
 };
 
@@ -66,7 +67,7 @@ export default class VRVideoComponent {
     this._freeTexture();
     this._setVideoDef(videoDef);
 
-    this.videoPlayer = new (getDefaultVideoPlayer())();
+    this.videoPlayer = new (getVideoPlayer(this.videoDef))();
     this.videoPlayer.onMediaEvent = this._onMediaEvent;
 
     const texture = new THREE.Texture(this.videoPlayer.videoElement);
@@ -99,6 +100,7 @@ export default class VRVideoComponent {
     this.videoDef = {
       src: videoDef.src,
       stereoType: videoDef.stereoType,
+      format: videoDef.format,
       metaData: videoDef.metaData,
     };
   }

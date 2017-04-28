@@ -156,6 +156,7 @@ RCTVideoPlayer.prototype = Object.assign(Object.create(Object.prototype), {
     const choseSource = this._chooseSupportSource(source);
     const prevUrl = this._source ? this._source.uri : null;
     const curUrl = choseSource ? choseSource.uri : null;
+    const curFormat = choseSource ? choseSource.format : null;
     if (source && !curUrl) {
       if (__DEV__) {
         console.warn(
@@ -184,6 +185,7 @@ RCTVideoPlayer.prototype = Object.assign(Object.create(Object.prototype), {
         this._handle = [curUrl, this._tag, this._counter].join('-');
         this._videoModule.addHandle(this._handle);
         this._videoModule.setUrl(this._handle, curUrl);
+        this._videoModule.setFormat(this._handle, curFormat);
         if (this._source.metaData) {
           this._videoModule.setMetaData(this._handle, this._source.metaData);
         }

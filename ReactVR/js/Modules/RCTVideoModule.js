@@ -22,7 +22,7 @@
  * @extends Module
  */
 
-import getSupportedFormats from '../Video/getSupportedFormats';
+import {getCustomizedSupportedFormats} from '../Video/VRVideoPlayer';
 import VRVideoComponent from '../Video/VRVideoComponent';
 import Module from './Module';
 import MediaEvent from '../Events/MediaEvent';
@@ -47,7 +47,7 @@ export default class RCTVideoModule extends Module {
 
   constructor(rnctx: ReactNativeContext) {
     super('RCTVideoModule');
-    this.supportedFormats = getSupportedFormats() || [];
+    this.supportedFormats = getCustomizedSupportedFormats() || [];
     this._videoDefs = {};
     this._players = {};
     this._rnctx = rnctx;
@@ -138,6 +138,15 @@ export default class RCTVideoModule extends Module {
    */
   setUrl(handle: string, url: string) {
     this._videoDefs[handle].src = url;
+  }
+
+  /**
+   * Set the video format
+   * @param {string} handle - The video handle.
+   * @param {string} format - The video format.
+   */
+  setFormat(handle: string, format: string) {
+    this._videoDefs[handle].format = format;
   }
 
   /**
