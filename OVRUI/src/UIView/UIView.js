@@ -299,19 +299,16 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       camPosition.setFromMatrixPosition(camMatrixWorld);
       camMatrixWorld.extractBasis(camAxisX, camAxisY, camAxisZ);
 
-      // Lock view y-axis to the world y-axis. Prevents rotation around the
-      // camera local z-axis, which looks odd on mobile.
+      // we want a world transform that is in the plane of the camera but with the requirement
+      // that the Y axis is always aligned with the world Y axis
+      // therefore Z axis must be that of the camera Z with 0 Y component in that axis
+      // the y Axis is always up
       newAxisY.copy(up);
-
-      // Compute new z-axis orthogonal to both camera x-axis and world y-axis.
-      newAxisZ.crossVectors(camAxisX, newAxisY).normalize();
-      if (newAxisZ.lengthSq() === 0) {
-        camAxisX.x += 0.0001;
-        newAxisZ.crossVectors(camAxisX, newAxisY).normalize();
-      }
-
-      // Since camAxisX and newAxisY might not be orthogonal to each other,
-      // compute new x-axis (will still be parallel to camera x-axis).
+      // the z axis should be the camera axis but with no y component
+      newAxisZ.copy(camAxisZ);
+      newAxisZ.y = 0;
+      newAxisZ.normalize();
+      // from there we compute X
       newAxisX.crossVectors(newAxisY, newAxisZ).normalize();
 
       rotationMatrix.identity();
