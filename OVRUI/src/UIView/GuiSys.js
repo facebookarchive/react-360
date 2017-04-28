@@ -303,6 +303,7 @@ export default class GuiSys {
       let caster = null;
       let origin = null;
       let direction = null;
+      let maxLength = Infinity;
       // Loop through raycasters until we get a hit from a ray
       // In future diffs, there will be support for multiple cursors and
       // raycasters, but for now we pick the first available one.
@@ -311,6 +312,11 @@ export default class GuiSys {
         caster = this._raycasters[r];
         origin = caster.getRayOrigin(camera);
         direction = caster.getRayDirection(camera);
+        if (typeof caster.getMaxLength === 'function') {
+          maxLength = caster.getMaxLength();
+        } else {
+          maxLength = Infinity;
+        }
         r++;
       }
       if (origin && direction) {
@@ -322,7 +328,9 @@ export default class GuiSys {
           camera.position.z + origin[2]
         );
         raycaster.ray.direction.fromArray(direction);
+        raycaster.ray.direction.normalize();
         raycaster.ray.direction.applyQuaternion(camera.getWorldQuaternion());
+        raycaster.far = maxLength;
         const rotatedDirection = [
           raycaster.ray.direction.x,
           raycaster.ray.direction.y,
@@ -527,17 +535,24 @@ export default class GuiSys {
     // Update cursor based on global transform of camera. Leave matrixAutoUpdate
     // enabled, since we modify cursorMesh.scale when cursorAutoDepth is used.
     if (this.cursorMesh && this.cursorVisibility !== 'hidden' && lastOrigin && lastDirection) {
+      const cameraToCursorX = lastOrigin[0] + lastDirection[0] * cursorZ;
+      const cameraToCursorY = lastOrigin[1] + lastDirection[1] * cursorZ;
+      const cameraToCursorZ = lastOrigin[2] + lastDirection[2] * cursorZ;
       this.cursorMesh.position.set(
-        camera.position.x + lastOrigin[0] + lastDirection[0] * cursorZ,
-        camera.position.y + lastOrigin[1] + lastDirection[1] * cursorZ,
-        camera.position.z + lastOrigin[2] + lastDirection[2] * cursorZ
+        camera.position.x + cameraToCursorX,
+        camera.position.y + cameraToCursorY,
+        camera.position.z + cameraToCursorZ
       );
       this.cursorMesh.rotation.copy(camera.getWorldRotation());
 
       if (this.cursorAutoDepth) {
         // Scale cursor so it appears same size regardless of depth.
         // TODO: Clamping to a max/min depth.
-        const scale = cursorZ;
+        const scale = Math.sqrt(
+          cameraToCursorX * cameraToCursorX +
+            cameraToCursorY * cameraToCursorY +
+            cameraToCursorZ * cameraToCursorZ
+        );
         this.cursorMesh.scale.set(scale, scale, scale);
       }
     }
