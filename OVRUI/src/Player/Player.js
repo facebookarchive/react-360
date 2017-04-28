@@ -184,8 +184,10 @@ export default class Player {
 
     // Set up the Three.js basics: renderer, camera, controls
     const antialias = options.hasOwnProperty('antialias') ? options.antialias : true;
+    const alpha = options.hasOwnProperty('canvasAlpha') ? options.canvasAlpha : true;
     const renderer = new THREE.WebGLRenderer({
       antialias: antialias,
+      alpha: alpha,
     });
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height);
