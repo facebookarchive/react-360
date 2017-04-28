@@ -21,6 +21,7 @@
     'Timers.md', //guides
     'NativeModules.md',
     'PlatformSpecificInformation.md', //guides
+    'VideoPlayer.md', //guides
     ];
   var markdownOrder = orderBasics.concat(orderGuides);
 
