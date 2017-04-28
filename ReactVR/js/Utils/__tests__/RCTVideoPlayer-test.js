@@ -24,6 +24,7 @@ const rnctx = {
     unload: jest.fn(),
     setMuted: jest.fn(),
     setVolume: jest.fn(),
+    setFormat: jest.fn(),
   },
 };
 
