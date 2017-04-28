@@ -84,7 +84,7 @@ RCTResourceManager.prototype = Object.assign(Object.create(Object.prototype), {
   },
 
   /**
-   * register a listener to listen to the resourse update of a url
+   * register a listener to listen to the resource update of a url
    * @param {string} url - The url.
    * @param {function} listener - The listener call back.
    */

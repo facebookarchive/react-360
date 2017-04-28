@@ -27,8 +27,8 @@ onmessage = function(e) {
       importScripts(msg.bundleName);
       Status = 'bundle';
     } catch (e) {
-      // diplay the exception and also attempt to further understand the problem by making the request again
-      // and beautifying the more common reports (such as filename where file:/// is attempted to be apended)
+      // display the exception and also attempt to further understand the problem by making the request again
+      // and beautifying the more common reports (such as filename where file:/// is attempted to be appended)
       // and displaying them
       console.warn(e);
       var xmlhttp = new XMLHttpRequest();

@@ -14,7 +14,7 @@ import * as THREE from 'three';
 import type {Camera} from 'three';
 
 /**
- * The basic wraper of audio context in VR
+ * The basic wrapper of audio context in VR
  */
 
 const IS_SUPPORTED =

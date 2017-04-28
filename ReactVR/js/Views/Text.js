@@ -230,7 +230,7 @@ export default class RCTText extends RCTBaseView {
     this.style.textAlign = 'auto';
     this.style.textAlignVertical = 'auto';
     this.props.numberOfLines = 0;
-    // undefine the text color so that parent color will be used unless explicity set
+    // undefine the text color so that parent color will be used unless explicitly set
     this.style._textColor = undefined;
   }
 
@@ -364,7 +364,7 @@ export default class RCTText extends RCTBaseView {
   }
 
   /**
-   * Describes the properies representable by this view type and merges
+   * Describes the properties representable by this view type and merges
    * with super type
    */
   static describe(): any {

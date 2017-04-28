@@ -293,8 +293,8 @@ export default class UIManager extends Module {
   }
 
   /**
-   * manages children of a specfic tag
-   * Handles moving, adding and removing with a specific order defned in
+   * manages children of a specific tag
+   * Handles moving, adding and removing with a specific order defined in
    * the react code
    * other than tag any value could be null
    * @param tag - Unique react tag id to allow look up of view object
@@ -318,7 +318,7 @@ export default class UIManager extends Module {
       return;
     }
 
-    // deteremine counts with checks for null
+    // determine counts with checks for null
     const numToMove = !moveFrom ? 0 : moveFrom.length;
 
     // We treat moves as an add and a delete
@@ -395,7 +395,7 @@ export default class UIManager extends Module {
       cssNodeToAdd.makeDirty();
     }
 
-    // finally purge the deleted views and their hierachy
+    // finally purge the deleted views and their hierarchy
     for (let i = 0; i < tagsToDelete.length; i++) {
       this.purgeView(this._views[String(tagsToDelete[i])]);
     }
@@ -455,7 +455,7 @@ export default class UIManager extends Module {
    * @param param0 -
    */
   purgeView(view: RCTBaseView) {
-    // make sure any parent views are marked as diry
+    // make sure any parent views are marked as dirty
     view.makeDirty();
     // shutdown the view making sure any resources are released
     view.dispose();
@@ -563,7 +563,7 @@ export default class UIManager extends Module {
    * @param view - view object to operate on
    */
   presentLayout(view: RCTBaseView) {
-    // apply the view specfic layout changes
+    // apply the view specific layout changes
     if (view.presentLayout) {
       view.presentLayout();
     }

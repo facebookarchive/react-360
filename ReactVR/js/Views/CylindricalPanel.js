@@ -79,7 +79,7 @@ export default class RCTCylindricalPanel extends RCTBaseView {
         // The same calculation as shell
         // there is not a direct correlation but for a small angle (<60) the arc of the cylinder
         // is also a reasonable approximation of the chord (within 95%)
-        // as our angle is small and dealing with px height rather than angles a proprtion of an arc
+        // as our angle is small and dealing with px height rather than angles a proportion of an arc
         // is used
         const halfHeight =
           this.props._layerRadius * (Math.PI * value.height / this.props._layerDensity);

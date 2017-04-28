@@ -125,7 +125,7 @@ export default class History extends Module {
   }
 
   /**
-   * Replae the top state onto the history stack. The first argument is the
+   * Replace the top state onto the history stack. The first argument is the
    * state object to place at the top of the stack; the second argument is the
    * new title for the window. An optional third argument is the new URL to
    * display in the navigation bar.

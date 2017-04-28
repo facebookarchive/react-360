@@ -35,7 +35,7 @@ export default class WebSocketModule extends Module {
 
   /**
    * Establish a connection and associate with socketID. socketID is used for future
-   * communcation with React
+   * communication with React
    * @param url - string Url to connect to
    * @param protocols - protocols for creating the WebSocket instance
    * @param options - currently unused

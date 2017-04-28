@@ -41,7 +41,7 @@ export default class RCTSound extends RCTBaseView {
     Object.defineProperty(this.props, 'volume', {
       set: value => {
         if (value < 0) {
-          // Use 0 as our minium volume value, although a WebAudio GainNode
+          // Use 0 as our minimum volume value, although a WebAudio GainNode
           // gain value can be set to negative for phase inversion.
           if (__DEV__) {
             console.warn('<Sound> volume cannot be negative:', value);
@@ -226,7 +226,7 @@ export default class RCTSound extends RCTBaseView {
   }
 
   /**
-   * Describes the properies representable by this view type and merges
+   * Describes the properties representable by this view type and merges
    * with super type
    */
   static describe() {

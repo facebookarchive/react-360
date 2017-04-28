@@ -8,7 +8,7 @@
  */
 
 /**
- * Class for using a local resource and automaticlly update when the resource binded to the url changed.
+ * Class for using a local resource and automatically update when the resource binded to the url changed.
  */
 export function RCTBindedResource(resourceManager) {
   this.resourceManager = resourceManager;
