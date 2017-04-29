@@ -42,7 +42,7 @@ export default class WebSocketModule extends Module {
    * @param socketId - ID used to represent this connection in React
    */
   connect(url: string, protocols: string | Array<string>, options: any, socketId: number) {
-    const socket = new WebSocket(url, protocols);
+    const socket = protocols ? new WebSocket(url, protocols) : new WebSocket(url);
     socket.binaryType = 'arraybuffer';
     this._sockets[String(socketId)] = socket;
 
