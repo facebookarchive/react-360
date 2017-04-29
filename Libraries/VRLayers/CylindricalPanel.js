@@ -31,7 +31,7 @@ const invariant = require('invariant');
  * <CylindricalPanel
  *   layer={{
  *     width: bufferWidthPx,
- *     height: bufferHeigthPx,
+ *     height: bufferHeightPx,
  *     density: numberOfPxForACompleteTurn,
  *     radius: distanceFromTheViewer
  *   }}>
