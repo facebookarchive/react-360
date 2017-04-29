@@ -19,6 +19,7 @@ module.exports = config => ({
     "start": "node -e \\"console.log('open browser at http:/localhost:8081/vr/\\\\n\\\\n');\\" && node node_modules/react-native/local-cli/cli.js start",
     "bundle": "node node_modules/react-vr/scripts/bundle.js",
     "open": "node -e \\"require('xopen')('http://localhost:8081/vr/')\\"",
+    "devtools": "react-devtools",
     "test": "jest"
   },
   "dependencies": {
@@ -33,6 +34,7 @@ module.exports = config => ({
     "babel-jest": "^19.0.0",
     "babel-preset-react-native": "^1.9.1",
     "jest": "^19.0.2",
+    "react-devtools": "^2.1.3",
     "react-test-renderer": "~15.4.1",
     "xopen": "1.0.0"
   },
