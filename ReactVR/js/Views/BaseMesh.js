@@ -75,6 +75,27 @@ export default class RCTBaseMesh extends RCTBaseView {
     this.view = new OVRUI.UIView(guiSys);
 
     Object.defineProperty(
+      this.style,
+      'opacity',
+      ({
+        configurable: true,
+        set: value => {
+          if (value === null) {
+            this._litMaterial.opacity = 1;
+            this._unlitMaterial.opacity = 1;
+            this._litMaterial.transparent = false;
+            this._unlitMaterial.transparent = false;
+          } else {
+            this._litMaterial.opacity = value;
+            this._unlitMaterial.opacity = value;
+            this._litMaterial.transparent = value < 1;
+            this._unlitMaterial.transparent = value < 1;
+          }
+        },
+      }: Object)
+    );
+
+    Object.defineProperty(
       this.props,
       'lit',
       ({
