@@ -73,6 +73,36 @@ function isWebGLSupported() {
   return !!gl;
 }
 
+function isMobileInLandscapeOrientation() {
+  // functionality required for mobile only
+  if (!isMobile) {
+    return false;
+  }
+
+  // use draft screen.orientation type to determine if mobile is landscape orientation
+  var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+  if (orientation) {
+    if (orientation.type === 'landscape-primary' || orientation.type === 'landscape-secondary') {
+      return true;
+    } else if (orientation.type === 'portrait-secondary' || orientation.type === 'portrait-primary') {
+      return false;
+    }
+  }
+
+  // fall back to window.orientation
+  if (!window.orientation) {
+    return false;
+  }
+  let quadrant = Math.round(window.orientation / 90);
+  while (quadrant < 0) {
+    quadrant += 4;
+  }
+  while (quadrant >= 4) {
+    quadrant -= 4;
+  }
+  return quadrant === 1 || quadrant === 3;
+}
+
 /**
  * A Player wraps most of the boilerplate of setting up an embedded VR
  * experience. It constructs a Three.js renderer, and attaches it to the
@@ -106,6 +136,7 @@ export default class Player {
 
     this.isMobile = isMobile;
     this.allowCarmelDeeplink = !!options.allowCarmelDeeplink && isSamsung;
+    this.calculateVerticalFOV = options.calculateVerticalFOV;
 
     let width = options.width;
     let height = options.height;
@@ -167,7 +198,17 @@ export default class Player {
       // Use a single eye camera with a normal FoV but set the depthNear/depthFar
       // based on our spec defaults to prevent browser renders differing from our
       // VRDisplay renders.
-      this._camera = new THREE.PerspectiveCamera(60, width / height, 0.01, 10000.0);
+      let fov;
+      if (isMobileInLandscapeOrientation()) {
+        // clamp range of fov to be reasonable
+        fov = Math.max(30, Math.min(70, 60 / (width / height)));
+      } else {
+        fov = 60;
+      }
+      if (typeof this.calculateVerticalFOV === 'function') {
+        fov = this.calculateVerticalFOV(width, height);
+      }
+      this._camera = new THREE.PerspectiveCamera(fov, width / height, 0.01, 10000.0);
     }
     this._initialAngles = {
       x: this._camera.rotation.x,
@@ -535,6 +576,17 @@ export default class Player {
       }
       this.glRenderer.setPixelRatio(this.pixelRatio);
       this.glRenderer.setSize(width, height, true);
+      let fov;
+      if (isMobileInLandscapeOrientation()) {
+        // clamp the range of fov
+        fov = Math.max(30, Math.min(70, 60 / (width / height)));
+      } else {
+        fov = 60;
+      }
+      if (typeof this.calculateVerticalFOV === 'function') {
+        fov = this.calculateVerticalFOV(width, height);
+      }
+      this._camera.fov = fov;
       this._camera.aspect = width / height;
       this._camera.updateProjectionMatrix();
     }
