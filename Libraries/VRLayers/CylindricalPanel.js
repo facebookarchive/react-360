@@ -31,12 +31,12 @@ const invariant = require('invariant');
  * <CylindricalPanel
  *   layer={{
  *     width: bufferWidthPx,
- *     height: bufferHeigthPx,
+ *     height: bufferHeightPx,
  *     density: numberOfPxForACompleteTurn,
  *     radius: distanceFromTheViewer
  *   }}>
  *   ... Child components ...
- * </CylindrialPanel>
+ * </CylindricalPanel>
  * ```
  *
  * The width and height of the cylinder must be specified and the width also correspond to how much
