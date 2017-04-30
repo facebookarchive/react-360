@@ -30,6 +30,8 @@ jest
   .dontMock('../BaseMesh')
   .dontMock('../../Utils/extractURL')
   .dontMock('../../Utils/Yoga.bundle')
+  .dontMock('../../Loaders/ModelLoaderRegistry')
+  .dontMock('../../Loaders/ObjModelLoader')
   .mock('../../Loaders/WavefrontOBJ/OBJLoader', () => ({
     fetchAndCacheOBJ: loadOBJMock,
     removeOBJReference: removeOBJReferenceMock,
