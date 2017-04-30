@@ -322,10 +322,11 @@ export default class GuiSys {
       if (origin && direction) {
         let firstHit = null;
         let firstAlmostHit = null;
+        const cameraPosition = camera.getWorldPosition();
         raycaster.ray.origin.set(
-          camera.position.x + origin[0],
-          camera.position.y + origin[1],
-          camera.position.z + origin[2]
+          cameraPosition.x + origin[0],
+          cameraPosition.y + origin[1],
+          cameraPosition.z + origin[2]
         );
         raycaster.ray.direction.fromArray(direction);
         raycaster.ray.direction.normalize();
