@@ -13,5 +13,6 @@
 import BasicVideoPlayer from './BasicVideoPlayer';
 import VRVideoComponent from './VRVideoComponent';
 import {addCustomizedVideoPlayer} from './VRVideoPlayer';
+import getSupportedFormats from './getSupportedFormats';
 
-export {BasicVideoPlayer, VRVideoComponent, addCustomizedVideoPlayer};
+export {BasicVideoPlayer, VRVideoComponent, addCustomizedVideoPlayer, getSupportedFormats};

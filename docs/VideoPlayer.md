@@ -30,11 +30,18 @@ One example of using customized video player is to support adaptive bitrate stre
 
 ### Write a MPEG-DASH video player 
 The customized video player needs to extend `BasicVideoPlayer`.
-Also define the supportedFormats for DashVideoPlayer.
+Also define the supportedFormats for DashVideoPlayer. DashVideoPlayer's supported video formats depend on the HTML5 `<video>` element's supported formats
 ```
-import {BasicVideoPlayer} from 'react-vr-web';
+import {BasicVideoPlayer, getSupportedFormats} from 'react-vr-web';
+
+const browserSupportedFormat = getSupportedFormats();
+const dashFormats = ['mp4', 'webm'];
+const dashSupportedFormats = dashFormats.filter((format) => {
+  return browserSupportedFormat.indexOf(format) > -1;
+});
+
 export default class DashVideoPlayer extends BasicVideoPlayer {
-  static supportedFormats: ?Array<string> = ['mp4', 'webm'];
+  static supportedFormats: ?Array<string> = dashSupportedFormats;
 ```
 Create the MPEG-DASH player:
 ```
