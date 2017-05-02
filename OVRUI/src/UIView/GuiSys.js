@@ -200,8 +200,7 @@ export default class GuiSys {
     ];
 
     // Register to events.
-    window.addEventListener('vrdisplayactivate', this._onEnterVR.bind(this));
-    window.addEventListener('vrdisplaydeactivate', this._onExitVR.bind(this));
+    window.addEventListener('vrdisplaypresentchange', this._onPresentChange.bind(this));
   }
 
   /**
@@ -626,12 +625,8 @@ export default class GuiSys {
     }
   }
 
-  _onEnterVR() {
-    this.isVRPresenting = true;
-  }
-
-  _onExitVR() {
-    this.isVRPresenting = false;
+  _onPresentChange(e) {
+    this.isVRPresenting = e.display.isPresenting;
   }
 
   _fireInputEvents(target) {

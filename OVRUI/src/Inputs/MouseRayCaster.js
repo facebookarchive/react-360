@@ -31,11 +31,9 @@ export default class MouseRayCaster extends RayCaster {
     document.addEventListener('touchmove', this._handleTouchEvent);
     document.addEventListener('touchend', this._handleTouchEnd);
     document.addEventListener('touchcancel', this._handleTouchEnd);
-    window.addEventListener('vrdisplayactivate', () => {
-      this._active = false;
-    });
-    window.addEventListener('vrdisplaydeactivate', () => {
-      this._active = true;
+    window.addEventListener('vrdisplaypresentchange', e => {
+      // Disable the mouse when in headset, re-enable when leaving
+      this._active = !e.display.isPresenting;
     });
   }
 

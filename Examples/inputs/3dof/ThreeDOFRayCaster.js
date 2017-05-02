@@ -186,7 +186,7 @@ export default class ThreeDOFRayCaster extends RayCaster {
       return;
     }
     const gamepad = this._getGamepad();
-    if (gamepad && gamepad.pose && gamepad.pose.hasOrientation) {
+    if (gamepad && gamepad.pose && gamepad.pose.orientation) {
       const orientation = gamepad.pose.orientation;
       this._mesh.quaternion.set(orientation[0], orientation[1], orientation[2], orientation[3]);
       if (gamepad.buttons[0] && typeof gamepad.buttons[0] === 'object') {
