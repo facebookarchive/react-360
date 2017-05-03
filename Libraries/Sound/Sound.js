@@ -94,8 +94,24 @@ const Sound = React.createClass({
     /**
      * Controls the playback status.  If not set, the value of `autoPlay` determines
      * whether the audio plays when the component is loaded.
+     * This is going to be renamed to `playControl`, please migrate to use `playControl`
      */
     playStatus: PropTypes.oneOf(['play', 'pause', 'stop']),
+
+    /**
+     * Controls the playback status.  If not set, the value of `autoPlay` determines
+     * whether the audio plays when the component is loaded.
+     */
+    playControl: PropTypes.oneOf(['play', 'pause', 'stop']),
+
+    /**
+     * playerState - playerState is a `MediaPlayerState` that controls video
+     * playback with its inner state. When playerState is set, the value of
+     * `autoPlay`, `muted` `volume` and `playControl` properties are ignored
+     * as they will be set by playerState instead.
+     * See [MediaPlayerState](docs/mediaplayerstate.html)
+     */
+    playerState: PropTypes.object,
 
     /**
      * Value of the audio volume. Minimum is zero, which mutes the sound, and the suggested
@@ -121,9 +137,89 @@ const Sound = React.createClass({
       autoPlay: true,
       volume: 1.0,
       loop: false,
-      playStatus: null,
+      playControl: null,
       source: null,
     };
+  },
+
+  getInitialState: function() {
+    return {
+      volume: 1.0,
+      muted: false,
+    };
+  },
+
+  componentWillMount() {
+    if (__DEV__) {
+      if (this.props.playStatus) {
+        console.warn(
+          'playStatus has been renamed to playControl. Please update your code before v2.0.0'
+        );
+      }
+    }
+    if (this.props.playerState) {
+      this._subscribe(this.props.playerState);
+    }
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (__DEV__) {
+      if (nextProps.playStatus) {
+        console.warn(
+          'playStatus has been renamed to playControl. Please update your code before v2.0.0'
+        );
+      }
+    }
+    if (this.props.playerState !== nextProps.playerState) {
+      if (this.props.playerState) {
+        this._unsubscribe(this.props.playerState);
+      }
+      if (nextProps.playerState) {
+        this._subscribe(nextProps.playerState);
+      }
+    }
+  },
+
+  componentWillUnmount() {
+    if (this.props.playerState) {
+      this._unsubscribe(this.props.playerState);
+    }
+  },
+
+  _subscribe(playerState) {
+    playerState.addListener('play', this._play);
+    playerState.addListener('pause', this._pause);
+    playerState.addListener('seekTo', this._seekTo);
+    playerState.addListener('volumeChange', this._volumeChange);
+    playerState.addListener('mutedChange', this._mutedChange);
+    this.setState({
+      volume: playerState.volume,
+      muted: playerState.muted,
+    });
+  },
+
+  _unsubscribe(playerState) {
+    playerState.removeListener('play', this._play);
+    playerState.removeListener('pause', this._pause);
+    playerState.removeListener('seekTo', this._seekTo);
+    playerState.removeListener('volumeChange', this._volumeChange);
+    playerState.removeListener('mutedChange', this._mutedChange);
+  },
+
+  _play() {
+    UIManager.dispatchViewManagerCommand(
+      ReactNative.findNodeHandle(this),
+      UIManager.Sound.Commands.play,
+      []
+    );
+  },
+
+  _pause() {
+    UIManager.dispatchViewManagerCommand(
+      ReactNative.findNodeHandle(this),
+      UIManager.Sound.Commands.pause,
+      []
+    );
   },
 
   _seekTo(timeSec) {
@@ -132,6 +228,14 @@ const Sound = React.createClass({
       UIManager.Sound.Commands.seekTo,
       [timeSec]
     );
+  },
+
+  _volumeChange(volume) {
+    this.setState({volume: volume});
+  },
+
+  _mutedChange(muted) {
+    this.setState({muted: muted});
   },
 
   _onEnded: function() {
@@ -146,6 +250,19 @@ const Sound = React.createClass({
         console.warn('<Sound> must be a leaf node, props.children will not be rendered');
       }
     }
+    if (props.playStatus && !props.playControl) {
+      props.playControl = props.playStatus;
+      delete props['playStatus'];
+    }
+    if (this.props.playerState) {
+      props.autoPlay = false;
+      props.volume = this.state.volume;
+      props.muted = this.state.muted;
+      // events
+      props.onDurationChange = this.props.playerState.onDurationChange;
+      props.onTimeUpdate = this.props.playerState.onTimeUpdate;
+      props.onPlayStatusChange = this.props.playerState.onPlayStatusChange;
+    }
 
     const source = resolveAssetSource(props.source);
 
@@ -154,9 +271,9 @@ const Sound = React.createClass({
       return (
         <RKSound
           style={[{position: 'absolute'}, props.style]}
-          {...this.props}
+          {...props}
           onEnded={this._onEnded}
-          testID={this.props.testID}
+          testID={props.testID}
           onStartShouldSetResponder={() => true}
           onResponderTerminationRequest={() => false}
         />

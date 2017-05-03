@@ -190,7 +190,7 @@ export default class UIManager extends Module {
       return new RCTScene(guiSys);
     });
     this.registerViewType('Sound', RCTSound.describe(), function() {
-      return new RCTSound(guiSys);
+      return new RCTSound(guiSys, rnctx);
     });
     this.registerViewType('RCTText', RCTText.describe(), function() {
       return new RCTText(guiSys);

@@ -20,17 +20,31 @@ import merge from '../Utils/merge';
 import * as OVRUI from 'ovrui';
 import getSupportedFormats from '../Audio/getSupportedFormats';
 
+export type PlayStatus = 'closed' | 'loading' | 'error' | 'ended' | 'paused' | 'playing' | 'ready';
+
 const COMMAND_SEEK_TO = 1;
+const COMMAND_PLAY = 2;
+const COMMAND_PAUSE = 3;
 
 export default class RCTSound extends RCTBaseView {
   /**
    * constructor: allocates the required resources and sets defaults
    */
-  constructor(guiSys) {
+  constructor(guiSys, rnctx) {
     super();
     this.view = new OVRUI.UIView(guiSys);
+    this._rnctx = rnctx;
+    this._audioModule = rnctx.AudioModule;
     this._counter = 0;
     this._handle = null;
+    this._playStatus = 'closed';
+    this._onCanPlay = this._onCanPlay.bind(this);
+    this._onPlaying = this._onPlaying.bind(this);
+    this._onPause = this._onPause.bind(this);
+    this._onEnded = this._onEnded.bind(this);
+    this._onError = this._onError.bind(this);
+    this._onDurationChange = this._onDurationChange.bind(this);
+    this._onTimeUpdate = this._onTimeUpdate.bind(this);
 
     Object.defineProperty(this.props, 'autoPlay', {
       set: value => {
@@ -50,8 +64,7 @@ export default class RCTSound extends RCTBaseView {
         }
         this.props._volume = value;
         if (this._handle) {
-          const audioModule = this.UIManager._rnctx.AudioModule;
-          audioModule.setVolume(this._handle, this.props._volume);
+          this._audioModule.setVolume(this._handle, this.props._volume);
         }
       },
     });
@@ -60,8 +73,7 @@ export default class RCTSound extends RCTBaseView {
       set: value => {
         this.props._muted = value;
         if (this._handle) {
-          const audioModule = this.UIManager._rnctx.AudioModule;
-          audioModule.setMuted(this._handle, this.props._muted);
+          this._audioModule.setMuted(this._handle, this.props._muted);
         }
       },
     });
@@ -72,21 +84,20 @@ export default class RCTSound extends RCTBaseView {
       },
     });
 
-    Object.defineProperty(this.props, 'playStatus', {
+    Object.defineProperty(this.props, 'playControl', {
       set: value => {
-        this.props._playStatus = value;
+        this.props._playControl = value;
 
         if (!this._handle) {
           return;
         }
 
-        const audioModule = this.UIManager._rnctx.AudioModule;
-        if (this.props._playStatus === 'stop') {
-          audioModule.stop(this._handle);
-        } else if (this.props._playStatus === 'pause') {
-          audioModule.pause(this._handle);
-        } else if (this.props._playStatus === 'play') {
-          audioModule.play(this._handle);
+        if (this.props._playControl === 'stop') {
+          this._audioModule.stop(this._handle);
+        } else if (this.props._playControl === 'pause') {
+          this._audioModule.pause(this._handle);
+        } else if (this.props._playControl === 'play') {
+          this._audioModule.play(this._handle);
         }
       },
     });
@@ -127,15 +138,14 @@ export default class RCTSound extends RCTBaseView {
         }
         this.props._source = value;
 
-        const audioModule = this.UIManager._rnctx.AudioModule;
-
         // User might have set source to null to remove the audio.
         if (!this.props._source) {
           const prevHandle = this._handle;
           this._handle = null;
           if (prevHandle) {
-            audioModule.unload(prevHandle);
+            this._audioModule.unload(prevHandle);
           }
+          this._updatePlayStatus('closed');
           return;
         }
 
@@ -143,53 +153,36 @@ export default class RCTSound extends RCTBaseView {
         const prevHandle = this._handle;
         this._counter += 1;
         this._handle = [url, this.view.uuid, this._counter].join('-');
-        audioModule.addHandle(this._handle);
-        audioModule.setUrl(this._handle, url);
+        this._audioModule.addHandle(this._handle);
+        this._audioModule.setUrl(this._handle, url);
 
         // Apply current settings
         if (this.props._volume) {
-          audioModule.setVolume(this._handle, this.props._volume);
+          this._audioModule.setVolume(this._handle, this.props._volume);
         }
         if (this.props._muted) {
-          audioModule.setMuted(this._handle, this.props._muted);
+          this._audioModule.setMuted(this._handle, this.props._muted);
         }
-
-        const onCanPlay = handle => {
-          if (handle !== this._handle) {
-            return;
-          }
-          // Play audio if in auto-play mode, or status is set to 'play'
-          const status = this.props._playStatus;
-          if ((this.props._autoPlay && status !== 'stop') || status === 'play') {
-            audioModule.play(handle);
-          }
-        };
-        const onEnded = handle => {
-          if (handle !== this._handle) {
-            return;
-          }
-          // Play sound if in loop mode and status not set to 'stop'
-          if (this.props._loop && this.props._playStatus !== 'stop') {
-            audioModule.play(handle);
-          }
-
-          // call onEnded in React
-          this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-            this.getTag(),
-            'topEnded',
-            [],
-          ]);
-        };
 
         // Unload previous audio.
         if (prevHandle) {
-          audioModule.unload(prevHandle);
+          this._audioModule.unload(prevHandle);
         }
 
         // Register callbacks and load audio.
-        audioModule._addMediaEventListener(this._handle, 'canplay', onCanPlay);
-        audioModule._addMediaEventListener(this._handle, 'ended', onEnded);
-        audioModule.load(this._handle);
+        this._audioModule._addMediaEventListener(this._handle, 'canplay', this._onCanPlay);
+        this._audioModule._addMediaEventListener(this._handle, 'ended', this._onEnded);
+        this._audioModule._addMediaEventListener(this._handle, 'playing', this._onPlaying);
+        this._audioModule._addMediaEventListener(this._handle, 'pause', this._onPause);
+        this._audioModule._addMediaEventListener(this._handle, 'error', this._onError);
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'durationchange',
+          this._onDurationChange
+        );
+        this._audioModule._addMediaEventListener(this._handle, 'timeupdate', this._onTimeUpdate);
+        this._audioModule.load(this._handle);
+        this._updatePlayStatus('loading');
       },
     });
   }
@@ -199,16 +192,15 @@ export default class RCTSound extends RCTBaseView {
   presentLayout() {
     super.presentLayout(this);
 
-    const audioModule = this.UIManager._rnctx.AudioModule;
     if (this._handle) {
       const position = this.view.getWorldPosition().toArray();
-      audioModule.setPosition(this._handle, position);
+      this._audioModule.setPosition(this._handle, position);
     }
   }
 
   dispose() {
     if (this._handle) {
-      this.UIManager._rnctx.AudioModule.unload(this._handle);
+      this._audioModule.unload(this._handle);
     }
     super.dispose();
   }
@@ -219,9 +211,97 @@ export default class RCTSound extends RCTBaseView {
       case COMMAND_SEEK_TO:
         if (this._handle) {
           const position = commandArgs ? commandArgs[0] : 0;
-          this.UIManager._rnctx.AudioModule.seekTo(this._handle, position);
+          this._audioModule.seekTo(this._handle, position);
         }
         break;
+      case COMMAND_PLAY:
+        if (this._handle) {
+          this._audioModule.play(this._handle);
+        }
+        break;
+      case COMMAND_PAUSE:
+        if (this._handle) {
+          this._audioModule.pause(this._handle);
+        }
+        break;
+    }
+  }
+
+  _onCanPlay(handle) {
+    if (handle !== this._handle) {
+      return;
+    }
+    this._updatePlayStatus('ready');
+    // Play audio if in auto-play mode, or status is set to 'play'
+    const status = this.props._playControl;
+    if ((this.props._autoPlay && status !== 'stop') || status === 'play') {
+      this._audioModule.play(handle);
+    }
+  }
+
+  _onEnded(handle) {
+    if (handle !== this._handle) {
+      return;
+    }
+    this._updatePlayStatus('ended');
+    // Play sound if in loop mode and status not set to 'stop'
+    if (this.props._loop && this.props._playControl !== 'stop') {
+      this._audioModule.play(handle);
+    }
+
+    // call onEnded in React
+    this._emitEvent('topEnded', []);
+  }
+
+  _onPlaying(handle) {
+    if (handle !== this._handle) {
+      return;
+    }
+    this._updatePlayStatus('playing');
+  }
+
+  _onPause(handle) {
+    if (handle !== this._handle) {
+      return;
+    }
+    this._updatePlayStatus('paused');
+  }
+
+  _onError(handle, event) {
+    if (handle !== this._handle) {
+      return;
+    }
+    this._updatePlayStatus('error');
+  }
+
+  _onDurationChange(handle, event) {
+    if (handle !== this._handle) {
+      return;
+    }
+    const duration = event.target && event.target.duration;
+    if (duration) {
+      this._emitEvent('topDurationChange', {duration: duration});
+    }
+  }
+
+  _onTimeUpdate(handle, event) {
+    if (handle !== this._handle) {
+      return;
+    }
+    const currentTime = event.target && event.target.currentTime;
+    if (currentTime) {
+      this._emitEvent('topTimeUpdate', {currentTime: currentTime});
+    }
+  }
+
+  _emitEvent(eventType, args) {
+    this._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [this.getTag(), eventType, args]);
+  }
+
+  _updatePlayStatus(status) {
+    if (this._playStatus !== status) {
+      this._playStatus = status;
+      this._emitEvent('topPlayStatusChange', {playStatus: this._playStatus});
     }
   }
 
@@ -237,11 +317,13 @@ export default class RCTSound extends RCTBaseView {
         volume: 'number',
         loop: 'boolean',
         muted: 'boolean',
-        playStatus: 'string',
+        playControl: 'string',
         source: 'object',
       },
       Commands: {
         seekTo: COMMAND_SEEK_TO,
+        play: COMMAND_PLAY,
+        pause: COMMAND_PAUSE,
       },
     });
   }
