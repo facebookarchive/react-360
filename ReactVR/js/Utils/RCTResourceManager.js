@@ -30,7 +30,6 @@ RCTResourceManager.prototype = Object.assign(Object.create(Object.prototype), {
    */
   _validProtocols: {
     MonoTexture: 'MonoTexture',
-    StereoTextures: 'StereoTextures',
   },
 
   /**

@@ -67,9 +67,7 @@ export default class RCTVideoModule extends Module {
   }
 
   _createVideoDef(): VideoDef {
-    return {
-      stereoType: 'none',
-    };
+    return {};
   }
 
   _onMediaEvent(handle: string, event: Object) {
@@ -181,14 +179,6 @@ export default class RCTVideoModule extends Module {
       texture: this._players[handle].videoTextures[0],
     };
     this._rnctx.RCTResourceManager.addResource('MonoTexture', handle, monoTextureInfo);
-
-    // Add resource to stereo textures
-    const stereoTextureInfo = {
-      type: 'StereoTextureInfo',
-      textures: this._players[handle].videoTextures,
-      offsetRepeats: this._players[handle].offsetRepeats,
-    };
-    this._rnctx.RCTResourceManager.addResource('StereoTextures', handle, stereoTextureInfo);
   }
 
   /**
@@ -240,7 +230,6 @@ export default class RCTVideoModule extends Module {
    */
   unload(handle: string) {
     this._rnctx.RCTResourceManager.removeResource('MonoTexture', handle);
-    this._rnctx.RCTResourceManager.removeResource('StereoTextures', handle);
     this._players[handle].dispose();
     delete this._players[handle];
     delete this._videoDefs[handle];

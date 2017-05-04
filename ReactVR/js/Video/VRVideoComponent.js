@@ -24,26 +24,14 @@ interface VideoPlayer {
   hasEnoughData(): boolean,
 }
 
-type StereoType = 'none';
-
 export type VideoDef = {
-  stereoType: StereoType,
   src: string,
   format: ?string,
   metaData: any,
 };
 
-// offsetRepeats: uv rect of video textures, one for each eye.
-const monoOffsetRepeats = [new THREE.Vector4(0, 0, 1, 1), new THREE.Vector4(0, 0, 1, 1)];
-const horizontalOffsetRepeats = [
-  new THREE.Vector4(0, 0.5, 1, 0.5),
-  new THREE.Vector4(0, 0, 1, 0.5),
-];
-const verticalOffsetRepeats = [new THREE.Vector4(0, 0, 0.5, 1), new THREE.Vector4(0.5, 0, 0.5, 1)];
-
 export default class VRVideoComponent {
   onMediaEvent: ?(any) => void;
-  offsetRepeats: [] | [Vector4, Vector4];
   videoDef: ?VideoDef;
   videoPlayer: ?VideoPlayer;
   videoTextures: Array<Texture>;
@@ -51,7 +39,6 @@ export default class VRVideoComponent {
   constructor() {
     this.videoPlayer = null;
     this.videoTextures = [];
-    this.offsetRepeats = [];
 
     this.onMediaEvent = undefined;
     (this: any)._onMediaEvent = this._onMediaEvent.bind(this);
@@ -60,7 +47,6 @@ export default class VRVideoComponent {
   /**
   * @param videoDef definition of a video to play
   * @param videoDef.src url of video if the streamingType is none
-  * @param videoDef.stereoType the type of splitting video to stereo texture, can be none/horizontal/vertical
   */
   setVideo(videoDef: VideoDef) {
     this._freeVideoPlayer();
@@ -83,13 +69,6 @@ export default class VRVideoComponent {
 
     if (this.videoDef) {
       const videoDef = this.videoDef;
-      if (videoDef.stereoType === 'horizontal') {
-        this.offsetRepeats = horizontalOffsetRepeats;
-      } else if (videoDef.stereoType === 'vertical') {
-        this.offsetRepeats = verticalOffsetRepeats;
-      } else {
-        this.offsetRepeats = monoOffsetRepeats;
-      }
       if (this.videoPlayer) {
         this.videoPlayer.initializeVideo(videoDef.src, videoDef.metaData);
       }
@@ -99,7 +78,6 @@ export default class VRVideoComponent {
   _setVideoDef(videoDef: VideoDef) {
     this.videoDef = {
       src: videoDef.src,
-      stereoType: videoDef.stereoType,
       format: videoDef.format,
       metaData: videoDef.metaData,
     };
