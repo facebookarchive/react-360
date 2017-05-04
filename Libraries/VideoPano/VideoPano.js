@@ -53,9 +53,13 @@ const VideoPano = React.createClass({
      *
      * layout(optional): the layout format of 360 video: 'SPHERE' | 'CUBEMAP_32'
      *
+     * stereo(optional): the stereo format of 360 video: '2D' | 'TOP_BOTTOM_3D' |
+     * 'BOTTOM_TOP_3D' | 'LEFT_RIGHT_3D' | 'RIGHT_LEFT_3D'
+     *
      * metaData(optional): the video meta data, used for customized video player
      *
      * If layout is not a supported layout format, it'll by default use 'SPHERE'(equirectangular)
+     * If stereo is not a supported stereo format, it'll by default use '2D'
      * Source can be an array of sources with different formats, and VideoPano will
      * choose one of the formats that current browser supports. If format is not specified,
      * it can be chose whatever format is supported.
@@ -65,6 +69,7 @@ const VideoPano = React.createClass({
         uri: PropTypes.string,
         format: PropTypes.string,
         layout: PropTypes.string,
+        stereo: PropTypes.string,
         metaData: PropTypes.any,
       }),
       PropTypes.arrayOf(
@@ -72,6 +77,7 @@ const VideoPano = React.createClass({
           uri: PropTypes.string,
           format: PropTypes.string,
           layout: PropTypes.string,
+          stereo: PropTypes.string,
           metaData: PropTypes.any,
         })
       ),

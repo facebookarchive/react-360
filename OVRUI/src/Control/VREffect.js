@@ -22,8 +22,10 @@ const DEFAULT_RIGHT_BOUNDS = [0.5, 0.0, 0.5, 1.0];
 // Pre-allocate objects
 const leftCamera = new THREE.PerspectiveCamera();
 leftCamera.layers.enable(1);
+leftCamera.viewID = 0;
 const rightCamera = new THREE.PerspectiveCamera();
 rightCamera.layers.enable(2);
+rightCamera.viewID = 1;
 const leftTranslation = new THREE.Vector3();
 const rightTranslation = new THREE.Vector3();
 

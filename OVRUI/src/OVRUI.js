@@ -33,6 +33,7 @@ import {
   TOP,
   SDFFONT_MARKER_COLOR,
 } from './SDFFont/SDFFont';
+import StereoBasicTextureMaterial from './Materials/StereoBasicTextureMaterial';
 import GuiSys from './UIView/GuiSys';
 import {GuiSysEventType, GuiSysEvent, UIViewEventType, UIViewEvent} from './UIView/GuiSysEvent';
 import UIView from './UIView/UIView';
@@ -65,6 +66,9 @@ export {RIGHT};
 export {RIGHT_LINE};
 export {TOP};
 export {SDFFONT_MARKER_COLOR};
+
+// Stereo Material
+export {StereoBasicTextureMaterial};
 
 // UIView
 export {GuiSys};

@@ -18,6 +18,7 @@
 
 import RCTBaseView from './BaseView';
 import merge from '../Utils/merge';
+import StereoOffsetRepeats from '../Utils/StereoOffsetRepeats';
 import {HPanoBufferGeometry} from '../Utils/HPano';
 import {CubePanoBufferGeometry} from '../Utils/CubePano';
 import {RCTBindedResource} from '../Utils/RCTBindedResource';
@@ -69,8 +70,7 @@ export default class RCTPano extends RCTBaseView {
 
     this._sphereGeometry = new THREE.SphereGeometry(1000, 50, 50);
     this._cubeGeometry = new CubePanoBufferGeometry(2000, 3, 2, 1.01);
-    this._material = new THREE.MeshBasicMaterial({
-      wireframe: false,
+    this._material = new OVRUI.StereoBasicTextureMaterial({
       color: 'white',
       side: THREE.DoubleSide,
     });
@@ -179,6 +179,13 @@ export default class RCTPano extends RCTBaseView {
           }
           this._material.map = flatTexture;
           this._material.envMap = cubeTexture;
+        }
+        const stereoFormat = value && value.stereo ? value.stereo : '2D';
+        this._material.stereoOffsetRepeats = StereoOffsetRepeats[stereoFormat];
+        if (!this._material.stereoOffsetRepeats) {
+          console.warn(`Pano: stereo format '${stereoFormat}' not supported.`);
+          // fallback to 2D
+          this._material.stereoOffsetRepeats = StereoOffsetRepeats['2D'];
         }
         this._material.needsUpdate = true;
 

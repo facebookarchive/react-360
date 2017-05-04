@@ -47,10 +47,16 @@ const Pano = React.createClass({
      * or
      * `[{uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'},
      *   {uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'}]` for a cubemap
+     *
+     * stereo(optional): the stereo format of a panorama: '2D' | 'TOP_BOTTOM_3D' |
+     * 'BOTTOM_TOP_3D' | 'LEFT_RIGHT_3D' | 'RIGHT_LEFT_3D'
+     *
+     * If stereo is not a supported stereo format, it'll by default use '2D'
      */
     source: PropTypes.oneOfType([
       PropTypes.shape({
         uri: PropTypes.string,
+        stereo: PropTypes.string,
       }),
       PropTypes.arrayOf(
         PropTypes.shape({
