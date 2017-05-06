@@ -83,6 +83,11 @@ const Model = React.createClass({
     lit: PropTypes.bool,
 
     /**
+    * The transparent property specifies if the Model renders with any transparency.
+    */
+    transparent: PropTypes.bool,
+
+    /**
      * `obj` is a string representing the resource identifier for the Model, this will be
      * an http address
      * The source properties will enable future expansion to support additional formats

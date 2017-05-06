@@ -59,6 +59,11 @@ const Box = React.createClass({
     lit: PropTypes.bool,
 
     /**
+    * The transparent property specifies if the Model renders with any transparency.
+    */
+    transparent: PropTypes.bool,
+
+    /**
      * `texture` is a string specifying the url of the texture to be used for the Model, this will be
      * an http address
      */
