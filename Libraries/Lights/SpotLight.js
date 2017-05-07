@@ -24,7 +24,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * Light originates from a single point, and spreads outward in a cone.
  *
  * Representation of
- * https://threejs.org/docs/index.html#Reference/Lights/SpotLight
+ * https://threejs.org/docs/index.html#api/lights/SpotLight
  */
 const SpotLight = React.createClass({
   mixins: [NativeMethodsMixin],

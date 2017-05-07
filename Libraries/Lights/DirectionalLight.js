@@ -30,7 +30,7 @@ const requireNativeComponent = require('requireNativeComponent');
  *
  * Representation of
  *
- * https://threejs.org/docs/index.html#Reference/Lights/DirectionalLight
+ * https://threejs.org/docs/index.html#api/lights/DirectionalLight
  */
 const DirectionalLight = React.createClass({
   mixins: [NativeMethodsMixin],

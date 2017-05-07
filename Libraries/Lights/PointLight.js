@@ -24,7 +24,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * Light originates from a single point, and spreads outward in all directions.
  *
  * Representation of
- * https://threejs.org/docs/index.html#Reference/Lights/PointLight
+ * https://threejs.org/docs/index.html#api/lights/PointLight
  */
 const PointLight = React.createClass({
   mixins: [NativeMethodsMixin],

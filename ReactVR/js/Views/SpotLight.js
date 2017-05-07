@@ -9,7 +9,7 @@
 
 /**
  * RCTSpotLight: runtime implementation of the <SpotLight >
- * https://threejs.org/docs/index.html#Reference/Lights/SpotLight
+ * https://threejs.org/docs/index.html#api/lights/SpotLight
  * @class RCTSpotLight
  * @extends RCTBaseView
  */

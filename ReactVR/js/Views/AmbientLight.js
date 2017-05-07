@@ -9,7 +9,7 @@
 
 /**
  * RCTAmbientLight: runtime implementation of the <AmbientLight >
- * https://threejs.org/docs/index.html#Reference/Lights/AmbientLight
+ * https://threejs.org/docs/index.html#api/lights/AmbientLight
  * @class RCTAmbientLight
  * @extends RCTBaseView
  * @flow
