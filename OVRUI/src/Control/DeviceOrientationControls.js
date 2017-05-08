@@ -15,6 +15,7 @@
  */
 
 import THREE from '../ThreeShim';
+import MobilePanControls from './MobilePanControls';
 
 import type {Camera} from 'three';
 
@@ -29,6 +30,10 @@ type DeviceOrientationEvent = {
   beta: number,
   gamma: number,
   absolute: boolean,
+};
+
+type DeviceOrientationControlsOptions = {
+  disableTouchPanning?: boolean,
 };
 
 // Unit vectors
@@ -52,12 +57,23 @@ export default class DeviceOrientationControls {
   camera: Camera;
   deviceOrientation: DeviceOrientation;
   enabled: boolean;
+  mobilePanControls: MobilePanControls;
   screenOrientation: number;
   _initialAlpha: number | null;
 
-  constructor(camera: Camera) {
+  constructor(
+    camera: Camera,
+    target: Element | void,
+    options: DeviceOrientationControlsOptions = {}
+  ) {
     this.camera = camera;
     this.enabled = true;
+    this.mobilePanControls = new MobilePanControls(camera, target);
+
+    // Allow touch panning unless explicitly disabled.
+    if (!!options.disableTouchPanning) {
+      this.mobilePanControls.enabled = false;
+    }
 
     // Screen orientation (potrait, landscape, etc.), in radians
     this.screenOrientation = getScreenOrientation();
@@ -135,5 +151,9 @@ export default class DeviceOrientationControls {
     quaternion.multiply(SCREEN_ROTATION); // rotate from device top to a screen normal
     rotation.setFromAxisAngle(Z_UNIT, -orient);
     quaternion.multiply(rotation); // Account for system-level screen rotation
+
+    if (this.mobilePanControls.enabled) {
+      this.mobilePanControls.update();
+    }
   }
 }

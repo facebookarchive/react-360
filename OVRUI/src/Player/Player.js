@@ -17,6 +17,7 @@ import setStyles from './setStyles';
 import VREffect from '../Control/VREffect';
 
 import type {Camera, Scene, Vector3, WebGLRenderer} from 'three';
+import type {AppControlsOptions} from '../Control/AppControls';
 
 type PlayerOptions = {
   allowCarmelDeeplink?: boolean,
@@ -24,6 +25,7 @@ type PlayerOptions = {
   calculateVerticalFOV?: (number, number) => number,
   camera?: Camera,
   canvasAlpha?: boolean,
+  disableTouchPanning?: boolean,
   elementOrId?: string | Element,
   height?: number,
   hideFullscreen?: boolean,
@@ -136,6 +138,7 @@ function isMobileInLandscapeOrientation() {
 export default class Player {
   allowCarmelDeeplink: boolean;
   calculateVerticalFOV: ?(number, number) => number;
+  controlOptions: AppControlsOptions;
   controls: AppControls;
   effect: ?VREffect;
   fixedPixelRatio: boolean;
@@ -162,6 +165,7 @@ export default class Player {
    * and camera controls, and attach them to the specified place in the DOM.
    * Creates a default camera if none is provided.
    * @param options - An optional set of configuration values:
+   *   disableTouchPanning: disable touch to pan camera on mobile. Defaults to false.
    *   elementOrId: the DOM location to mount the player. Can either be a DOM
    *   node, or the string id of a DOM node. Defaults to document.body
    *   camera: A Three.js Camera, to be used with the 3d renderer.
@@ -182,6 +186,9 @@ export default class Player {
     this.isMobile = isMobile;
     this.allowCarmelDeeplink = !!options.allowCarmelDeeplink && isSamsung;
     this.calculateVerticalFOV = options.calculateVerticalFOV;
+
+    // Options passed to AppControls contructor.
+    this.controlOptions = {disableTouchPanning: !!options.disableTouchPanning};
 
     let width = options.width;
     let height = options.height;
@@ -289,7 +296,7 @@ export default class Player {
     renderer.setSize(width, height);
     renderer.setClearColor(0x000000);
     this.glRenderer = renderer;
-    this.controls = new AppControls(this._camera, this.glRenderer.domElement);
+    this.controls = new AppControls(this._camera, this.glRenderer.domElement, this.controlOptions);
     this.onEnterVR = options.onEnterVR;
     this.onExitVR = options.onExitVR;
 

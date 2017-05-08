@@ -18,6 +18,10 @@ import VRControls from './VRControls';
 
 import type {Camera} from 'three';
 
+export type AppControlsOptions = {
+  disableTouchPanning?: boolean,
+};
+
 export interface Controls {
   camera: Camera,
 
@@ -31,10 +35,10 @@ export default class AppControls {
   vrControls: ?VRControls;
   nonVRControls: Controls;
 
-  constructor(camera: Camera, target: Element | void) {
+  constructor(camera: Camera, target: Element | void, options: AppControlsOptions = {}) {
     this._camera = camera;
     this.nonVRControls = DeviceOrientationControls.isSupported()
-      ? new DeviceOrientationControls(camera)
+      ? new DeviceOrientationControls(camera, target, options)
       : new MousePanControls(camera, target);
   }
 

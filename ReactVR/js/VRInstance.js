@@ -21,6 +21,7 @@ import type {Camera} from 'three';
 
 type VRInstanceOptions = {
   allowCarmelDeeplink?: boolean,
+  disableTouchPanning?: boolean,
   assetRoot?: string,
   camera?: Camera,
   cursorVisibility?: 'visible' | 'hidden' | 'auto',
@@ -61,6 +62,7 @@ export default class VRInstance {
    * @param options (optional) - Extra options to configure the VRInstance.
    *   - camera: the Three.js camera. If none, a default camera is created.
    *   - cursorVisibility: sets when the cursor is shown. default=hidden
+   *   - disableTouchPanning: disallow touch to pan camera on mobile. Defaults to false.
    *   - height: a number specifying the height of the VR window, in pixels
    *   - nativeModules: array of native module instances to register
    *   - scene: the Three.js scene to which ReactVR elements are added
@@ -100,6 +102,7 @@ export default class VRInstance {
       onEnterVR: () => this._onEnterVR(),
       onExitVR: () => this._onExitVR(),
       allowCarmelDeeplink: allowCarmelDeeplink,
+      disableTouchPanning: options.disableTouchPanning,
     });
 
     let defaultAssetRoot = 'static_assets/';
