@@ -9,6 +9,7 @@
 
 /**
  * RCTDirectionalLight: runtime implementation of the <DirectionalLight >
+ * https://threejs.org/docs/index.html#api/lights/DirectionalLight
  * Directional light implemented with PointLight with no decay and no distance falloff
  * Workaround for directional lights not correctly functioning, will revisit
  * @class RCTAmbientLight

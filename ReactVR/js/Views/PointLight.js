@@ -9,7 +9,7 @@
 
 /**
  * RCTPointLight: runtime implementation of the <PointLight >
- * https://threejs.org/docs/index.html#Reference/Lights/PointLight
+ * https://threejs.org/docs/index.html#api/lights/PointLight
  * @class RCTAmbientLight
  * @extends RCTBaseView
  */
