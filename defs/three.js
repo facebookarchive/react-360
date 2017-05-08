@@ -49,9 +49,13 @@ declare module 'three' {
   }
 
   declare class Camera extends Object3D {
+    fov: number,
+    aspect: number,
+
     constructor(): Camera,
 
     localToWorld(Vector3): Vector3,
+    updateProjectionMatrix(): this,
   }
 
   declare class Color {
@@ -61,7 +65,11 @@ declare module 'three' {
   }
 
   declare class Euler {
-    copy(e: Euler): void,
+    x: number,
+    y: number,
+    z: number,
+    copy(e: Euler): this,
+    set(number, number, number, string): this,
   }
 
   declare class Geometry {}
@@ -86,7 +94,8 @@ declare module 'three' {
   }
 
   declare class Matrix4 {
-    fromArray(arr: [number, number, number, number]): void,
+    decompose(Vector3, Quaternion, Vector3): this,
+    fromArray(Array<number>): void,
   }
 
   declare class Mesh extends Object3D {
@@ -116,15 +125,36 @@ declare module 'three' {
     children: Array<Object3D>,
     matrixAutoUpdate: boolean,
     matrix: Matrix4,
+    matrixWorld: Matrix4,
+    position: Vector3,
+    quaternion: Quaternion,
+    rotation: Euler,
     uuid: string,
 
     constructor(): Object3D,
     add(obj: Object3D): void,
     remove(obj: Object3D): void,
-    updateMatrixWorld(flag: boolean): void,
+    updateMatrixWorld(flag?: boolean): void,
   }
 
-  declare class Scene {
+  declare class Quaternion {
+    x: number,
+    y: number,
+    z: number,
+    w: number,
+    constructor(number, number, number, number): Quaternion,
+    clone(): Quaternion,
+    fromArray(Array<number> | Float32Array): this,
+    multiply(Quaternion): this,
+    premultiply(Quaternion): this,
+    setFromEuler(Euler): this,
+  }
+
+  declare class Scene extends Object3D {
+    autoUpdate: boolean,
+    background: Color | Texture | null,
+    backgroundLeft: Color | Texture | null,
+    backgroundRight: Color | Texture | null,
     constructor(): Scene,
   }
 
@@ -155,18 +185,35 @@ declare module 'three' {
     z: number,
     constructor(): this,
     constructor(x: number, y: number, z: number): this,
-    fromArray(arr: [number, number, number]): this,
     copy(v: Vector3): this,
     applyEuler(e: Euler): this,
+    applyQuaternion(Quaternion): this,
+    fromArray(arr: [number, number, number] | Float32Array): this,
     normalize(): this,
+    set(number, number, number): this,
     sub(v: Vector3): this,
   }
 
   declare class Vector4 {
     constructor(): this,
     constructor(x: number, y: number, z: number, w: number): this,
-    fromArray(arr: [number, number, number, number]): this,
+    fromArray(arr: [number, number, number, number] | Float32Array): this,
     copy(v: Vector4): this,
+  }
+
+  declare class WebGLRenderer {
+    domElement: Element,
+    localClippingEnabled: boolean,
+    sortObjects: boolean,
+    constructor(): this,
+    getClearAlpha(): number,
+    getClearColor(): Color,
+    getSize(): {width: number, height: number},
+    render(Scene, Camera): this,
+    setClearColor(number | string | Color): this,
+    setPixelRatio(number): this,
+    setRenderTarget(e: ?Element): this,
+    setSize(number, number): this,
   }
 
   declare class AmbientLight {

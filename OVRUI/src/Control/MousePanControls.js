@@ -5,7 +5,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
+
+import type {Camera} from 'three';
 
 const HALF_PI = Math.PI / 2;
 const RADIAN_CONVERT = Math.PI / 180;
@@ -15,6 +19,15 @@ const RADIAN_CONVERT = Math.PI / 180;
  * dragging the mouse on a desktop
  */
 export default class MousePanControls {
+  camera: Camera;
+  enabled: boolean;
+  lastX: ?number;
+  lastY: ?number;
+  pitch: number;
+  target: any;
+  tracking: boolean;
+  yaw: number;
+
   /**
    * Create a MousePanControls instance, and attaches the necessary event
    * listeners
@@ -22,7 +35,7 @@ export default class MousePanControls {
    * @param target - An optional DOM element to attach the mouse events to.
    *   Defaults to the `window` object.
    */
-  constructor(camera, target) {
+  constructor(camera: Camera, target?: Element) {
     this.yaw = camera.rotation.y;
     this.pitch = camera.rotation.x;
     this.camera = camera;
@@ -31,9 +44,9 @@ export default class MousePanControls {
     this.target = target || window;
 
     // Ensure that event handlers are bound to this object
-    this.mouseDownHandler = this.mouseDownHandler.bind(this);
-    this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
-    this.mouseUpHandler = this.mouseUpHandler.bind(this);
+    (this: any).mouseDownHandler = this.mouseDownHandler.bind(this);
+    (this: any).mouseMoveHandler = this.mouseMoveHandler.bind(this);
+    (this: any).mouseUpHandler = this.mouseUpHandler.bind(this);
 
     this.connect();
   }
@@ -55,7 +68,7 @@ export default class MousePanControls {
     this.enabled = false;
   }
 
-  mouseDownHandler(e) {
+  mouseDownHandler(e: MouseEvent) {
     this.tracking = true;
     this.lastX = e.screenX;
     this.lastY = e.screenY;
@@ -65,7 +78,7 @@ export default class MousePanControls {
     this.tracking = false;
   }
 
-  mouseMoveHandler(e) {
+  mouseMoveHandler(e: MouseEvent) {
     if (!this.tracking) {
       return;
     }
@@ -76,8 +89,8 @@ export default class MousePanControls {
       width = this.target.clientWidth;
       height = this.target.clientHeight;
     }
-    const deltaX = e.screenX - this.lastX;
-    const deltaY = e.screenY - this.lastY;
+    const deltaX = typeof this.lastX === 'number' ? e.screenX - this.lastX : 0;
+    const deltaY = typeof this.lastY === 'number' ? e.screenY - this.lastY : 0;
     this.lastX = e.screenX;
     this.lastY = e.screenY;
     this.yaw += deltaX / width * this.camera.fov * this.camera.aspect * RADIAN_CONVERT;
@@ -85,7 +98,7 @@ export default class MousePanControls {
     this.pitch = Math.max(-HALF_PI, Math.min(HALF_PI, this.pitch));
   }
 
-  resetRotation(x, y, z) {
+  resetRotation(x: number, y: number, z: number) {
     this.yaw = y;
     this.pitch = x;
   }

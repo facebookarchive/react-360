@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 /**
@@ -13,6 +15,21 @@
  */
 
 import THREE from '../ThreeShim';
+
+import type {Camera} from 'three';
+
+type DeviceOrientation = {
+  alpha?: number,
+  beta?: number,
+  gamma?: number,
+};
+
+type DeviceOrientationEvent = {
+  alpha: number,
+  beta: number,
+  gamma: number,
+  absolute: boolean,
+};
 
 // Unit vectors
 const Y_UNIT = new THREE.Vector3(0, 1, 0);
@@ -32,7 +49,13 @@ function getScreenOrientation() {
 }
 
 export default class DeviceOrientationControls {
-  constructor(camera) {
+  camera: Camera;
+  deviceOrientation: DeviceOrientation;
+  enabled: boolean;
+  screenOrientation: number;
+  _initialAlpha: number | null;
+
+  constructor(camera: Camera) {
     this.camera = camera;
     this.enabled = true;
 
@@ -42,8 +65,8 @@ export default class DeviceOrientationControls {
     this.deviceOrientation = {};
 
     // Ensure that event handlers are bound to this object
-    this.orientationChangeHandler = this.orientationChangeHandler.bind(this);
-    this.deviceOrientationHandler = this.deviceOrientationHandler.bind(this);
+    (this: any).orientationChangeHandler = this.orientationChangeHandler.bind(this);
+    (this: any).deviceOrientationHandler = this.deviceOrientationHandler.bind(this);
 
     this._initialAlpha = null;
 
@@ -64,9 +87,6 @@ export default class DeviceOrientationControls {
     window.addEventListener('orientationchange', this.orientationChangeHandler);
     window.addEventListener('deviceorientation', this.deviceOrientationHandler);
     this.enabled = true;
-
-    // When starting tracking should be disabled
-    this.tracking = false;
   }
 
   disconnect() {
@@ -79,7 +99,7 @@ export default class DeviceOrientationControls {
     this.screenOrientation = getScreenOrientation();
   }
 
-  deviceOrientationHandler(event) {
+  deviceOrientationHandler(event: DeviceOrientationEvent) {
     const alpha = THREE.Math.degToRad(event.alpha);
     const beta = THREE.Math.degToRad(event.beta);
     const gamma = THREE.Math.degToRad(event.gamma);
@@ -91,7 +111,7 @@ export default class DeviceOrientationControls {
     this.deviceOrientation.gamma = gamma;
   }
 
-  resetRotation(x, y, z) {
+  resetRotation(x: number, y: number, z: number) {
     // No-op
   }
 

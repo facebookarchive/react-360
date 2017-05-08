@@ -5,16 +5,23 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
+import type {Camera} from 'three';
+
 export default class VRControls {
-  constructor(camera, vrDisplay) {
+  camera: Camera;
+  _vrDisplay: VRDisplay;
+
+  constructor(camera: Camera, vrDisplay: VRDisplay) {
     this.camera = camera;
     this._vrDisplay = vrDisplay;
   }
 
-  update(options = {}) {
-    let pose = options.frameData ? options.frameData.pose : null;
+  update(options: {frameData?: VRFrameData} = {}) {
+    const pose = options.frameData ? options.frameData.pose : null;
     if (pose) {
       // Positional tracking from Rift-type headsets
       if (pose.position) {
@@ -26,7 +33,7 @@ export default class VRControls {
     }
   }
 
-  get vrDisplay() {
+  get vrDisplay(): VRDisplay {
     return this._vrDisplay;
   }
 }

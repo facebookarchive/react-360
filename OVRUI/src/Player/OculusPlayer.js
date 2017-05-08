@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 /**
@@ -15,7 +17,7 @@
 // Basic browser detection
 const isChrome = !!window.chrome;
 const isFirefox = !!window.sidebar;
-const isEdge = !!navigator.msLaunchUri;
+const isEdge = !!(navigator: any).msLaunchUri;
 
 // This is only used on Chrome, so we only need the webkit prefix
 const visibilityEvent = 'hidden' in document ? 'visibilitychange' : 'webkitvisibilitychange';
@@ -30,8 +32,8 @@ const visibilityEvent = 'hidden' in document ? 'visibilitychange' : 'webkitvisib
 export function attemptOculusPlayer() {
   const url = 'ovrweb:' + window.location.toString();
   return new Promise((resolve, reject) => {
-    if (isEdge) {
-      msLaunchUri(
+    if (isEdge && typeof navigator.msLaunchUri === 'function') {
+      navigator.msLaunchUri(
         url,
         () => {
           resolve();
@@ -44,7 +46,9 @@ export function attemptOculusPlayer() {
       const iframe = document.createElement('iframe');
       iframe.src = 'about:blank';
       iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+      if (document.body) {
+        document.body.appendChild(iframe);
+      }
       let success = false;
       try {
         iframe.contentWindow.location = url;

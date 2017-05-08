@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 import AppControls from '../Control/AppControls';
@@ -13,6 +15,23 @@ import Overlay from './Overlay';
 import THREE from '../ThreeShim';
 import setStyles from './setStyles';
 import VREffect from '../Control/VREffect';
+
+import type {Camera, Scene, Vector3, WebGLRenderer} from 'three';
+
+type PlayerOptions = {
+  allowCarmelDeeplink?: boolean,
+  antialias?: boolean,
+  calculateVerticalFOV?: (number, number) => number,
+  camera?: Camera,
+  canvasAlpha?: boolean,
+  elementOrId?: string | Element,
+  height?: number,
+  hideFullscreen?: boolean,
+  onEnterVR?: () => void,
+  onExitVR?: () => void,
+  pixelRatio?: number,
+  width?: number,
+};
 
 const isMobile = /Mobi/i.test(navigator.userAgent);
 const isAndroid = /Android/i.test(navigator.userAgent);
@@ -80,11 +99,14 @@ function isMobileInLandscapeOrientation() {
   }
 
   // use draft screen.orientation type to determine if mobile is landscape orientation
-  var orientation = screen.orientation || screen.mozOrientation || screen.msOrientation;
+  const orientation = screen.orientation || screen.mozOrientation || (screen: any).msOrientation;
   if (orientation) {
     if (orientation.type === 'landscape-primary' || orientation.type === 'landscape-secondary') {
       return true;
-    } else if (orientation.type === 'portrait-secondary' || orientation.type === 'portrait-primary') {
+    } else if (
+      orientation.type === 'portrait-secondary' ||
+      orientation.type === 'portrait-primary'
+    ) {
       return false;
     }
   }
@@ -112,6 +134,29 @@ function isMobileInLandscapeOrientation() {
  * default values are used.
  */
 export default class Player {
+  allowCarmelDeeplink: boolean;
+  calculateVerticalFOV: ?(number, number) => number;
+  controls: AppControls;
+  effect: ?VREffect;
+  fixedPixelRatio: boolean;
+  frameData: ?VRFrameData;
+  glRenderer: WebGLRenderer;
+  height: number;
+  isMobile: boolean;
+  onEnterVR: ?() => void;
+  onExitVR: ?() => void;
+  overlay: Overlay;
+  pixelRatio: number;
+  vrDisplay: ?VRDisplay;
+  width: number;
+  _camera: Camera;
+  _compass: Vector3;
+  _el: Element;
+  _initialAngles: {x: number, y: number, z: number};
+  _lastAngle: number;
+  _resizeHandler: ?() => void;
+  _wrapper: HTMLDivElement;
+
   /**
    * Set up the DOM wrapper for a player, as well as the Three.js Renderer
    * and camera controls, and attach them to the specified place in the DOM.
@@ -125,14 +170,14 @@ export default class Player {
    *   height: the height of the player, defaults to the height of the container
    *   pixelRatio: the pixelRatio of device, defaults to window.devicePixelRatio
    */
-  constructor(options = {}) {
+  constructor(options: PlayerOptions = {}) {
     // Autobind event handlers
-    this.attemptEnterVR = this.attemptEnterVR.bind(this);
-    this.attemptEnterFullscreen = this.attemptEnterFullscreen.bind(this);
-    this.enterVR = this.enterVR.bind(this);
-    this.exitVR = this.exitVR.bind(this);
-    this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
-    this.resetAngles = this.resetAngles.bind(this);
+    (this: any).attemptEnterVR = this.attemptEnterVR.bind(this);
+    (this: any).attemptEnterFullscreen = this.attemptEnterFullscreen.bind(this);
+    (this: any).enterVR = this.enterVR.bind(this);
+    (this: any).exitVR = this.exitVR.bind(this);
+    (this: any).handleFullscreenChange = this.handleFullscreenChange.bind(this);
+    (this: any).resetAngles = this.resetAngles.bind(this);
 
     this.isMobile = isMobile;
     this.allowCarmelDeeplink = !!options.allowCarmelDeeplink && isSamsung;
@@ -141,20 +186,28 @@ export default class Player {
     let width = options.width;
     let height = options.height;
     let pixelRatio = options.pixelRatio;
-    this._el = options.elementOrId;
+    let el;
     if (typeof options.elementOrId === 'string') {
-      let el = document.getElementById(options.elementOrId);
-      if (!el) {
-        throw new Error('No DOM element with id: ' + options.elementOrId);
+      const id = options.elementOrId;
+      const elementById = document.getElementById(id);
+      if (!elementById) {
+        throw new Error('No DOM element with id: ' + id);
       }
-      this._el = el;
+      el = elementById;
+    } else {
+      el = options.elementOrId;
     }
-    this._camera = options.camera;
+    const camera = options.camera;
 
     // If container not specified, default to full window.
-    if (!this._el) {
-      this._el = document.body;
+    if (!el) {
+      const body = document.body;
+      if (!body) {
+        throw new Error('Cannot automatically attach the Player to a document with no body');
+      }
+      el = body;
     }
+    this._el = el;
     // If height and width are not provided, detect them from the container.
     let fixedSize = true;
     if (!width) {
@@ -194,7 +247,9 @@ export default class Player {
     }
 
     // If no camera given, use default Three.js setup.
-    if (!this._camera) {
+    if (camera) {
+      this._camera = camera;
+    } else {
       // Use a single eye camera with a normal FoV but set the depthNear/depthFar
       // based on our spec defaults to prevent browser renders differing from our
       // VRDisplay renders.
@@ -226,7 +281,7 @@ export default class Player {
     // Set up the Three.js basics: renderer, camera, controls
     const antialias = options.hasOwnProperty('antialias') ? options.antialias : true;
     const alpha = options.hasOwnProperty('canvasAlpha') ? options.canvasAlpha : true;
-    const renderer = new THREE.WebGLRenderer({
+    const renderer: WebGLRenderer = new THREE.WebGLRenderer({
       antialias: antialias,
       alpha: alpha,
     });
@@ -300,17 +355,20 @@ export default class Player {
     window.addEventListener('vrdisplaydeactivate', this.exitVR);
     // Detect any VR displays, so that we can pick the proper rAF and render
     if ('getVRDisplays' in navigator) {
-      navigator
+      (navigator: any)
         .getVRDisplays()
         .then(displays => {
           if (displays.length) {
-            this.vrDisplay = displays[0];
-            this.controls.setVRDisplay(this.vrDisplay);
-            this.effect = new VREffect(this.glRenderer, this.vrDisplay);
-            this.effect.setSize(width, height);
+            const display = displays[0];
+            this.vrDisplay = display;
+            this.controls.setVRDisplay(display);
+            const effect = new VREffect(this.glRenderer, display);
+            this.effect = effect;
+            const size = renderer.getSize();
+            effect.setSize(size.width, size.height);
             this.onEnterVR && this.onEnterVR();
             // Attempt to immediately present on devices that don't have input
-            return this.effect.requestPresent();
+            return effect.requestPresent();
           }
         })
         .catch(err => {
@@ -325,7 +383,7 @@ export default class Player {
    * @param width - The width of the parent container
    * @param height - The height of the parent container
    */
-  renderFallback(width, height) {
+  renderFallback(width: number, height: number) {
     const fallback = document.createElement('div');
     setStyles(fallback, FALLBACK_STYLES);
     setStyles(fallback, {
@@ -347,7 +405,7 @@ export default class Player {
    */
   frame() {
     const frameOptions = {};
-    if (this.vrDisplay && this.vrDisplay.isPresenting) {
+    if (this.frameData && this.vrDisplay && this.vrDisplay.isPresenting) {
       this.vrDisplay.getFrameData(this.frameData);
       frameOptions.frameData = this.frameData;
     }
@@ -370,10 +428,10 @@ export default class Player {
     }
   }
 
-  _renderUpdate(node, scene, camera) {
+  _renderUpdate(node: any, scene: Scene, camera: Camera) {
     node.onUpdate && node.onUpdate(scene, camera);
-    for (let i in node.children) {
-      this._renderUpdate(node.children[i], scene, camera);
+    for (const child of node.children) {
+      this._renderUpdate(child, scene, camera);
     }
   }
 
@@ -382,9 +440,9 @@ export default class Player {
    * Ideally, it should be called on a rAF loop.
    * @param scene - A Three.js Scene to be rendered
    */
-  render(scene) {
+  render(scene: Scene) {
     this._renderUpdate(scene, scene, this._camera);
-    if (this.vrDisplay && this.vrDisplay.isPresenting) {
+    if (this.effect && this.frameData && this.vrDisplay && this.vrDisplay.isPresenting) {
       this.effect.render(scene, this._camera, this.frameData);
       if (!isMobile) {
         // This render is used to mirror the output to the onscreen
@@ -398,7 +456,7 @@ export default class Player {
     }
   }
 
-  renderOffscreen(scene, camera, target) {
+  renderOffscreen(scene: Scene, camera: Camera, target: Element) {
     this._renderUpdate(scene, scene, camera);
     const oldClearColor = this.glRenderer.getClearColor();
     const oldClearAlpha = this.glRenderer.getClearAlpha();
@@ -420,10 +478,10 @@ export default class Player {
    * be the left eye.
    * @param scene - A Three.js Scene to render with the default mono camera.
    */
-  _renderMonoCamera(scene) {
+  _renderMonoCamera(scene: Scene) {
     // The scene may have a background already, save it and restore it since
     // the Scene object is supplied by the author.
-    let backupScene = scene.background;
+    const backupScene = scene.background;
     // Our convention allows a left and right background to enable stereoscopic
     // cube maps or equirect rendering. Select the left background when rendering
     // only a single eye.
@@ -440,7 +498,7 @@ export default class Player {
    * @param fn - A function to call on the next frame
    * @return A rAF handle that can be canceled
    */
-  requestAnimationFrame(fn) {
+  requestAnimationFrame(fn: () => any) {
     if (this.vrDisplay) {
       return this.vrDisplay.requestAnimationFrame(fn);
     }
@@ -451,7 +509,7 @@ export default class Player {
    * Request to present to the display, via the VR effect
    */
   enterVR() {
-    if (!this.vrDisplay) {
+    if (!this.vrDisplay || !this.effect) {
       return Promise.reject('Cannot enter VR, no display detected');
     }
     return this.effect
@@ -475,8 +533,8 @@ export default class Player {
   /**
    * Stop presenting to the display.
    */
-  exitVR() {
-    if (!this.vrDisplay || !this.vrDisplay.isPresenting) {
+  exitVR(): Promise<void> {
+    if (!this.vrDisplay || !this.vrDisplay.isPresenting || !this.effect) {
       return Promise.reject('Cannot exit, not currently presenting');
     }
     return this.effect.exitPresent().then(
@@ -533,9 +591,9 @@ export default class Player {
    * Attempt to enter fullscreen mode using the prefixed method passed to the
    * handler.
    */
-  attemptEnterFullscreen(fullscreenMethod) {
+  attemptEnterFullscreen(fullscreenMethod: string) {
     document.addEventListener(fullscreenEvent, this.handleFullscreenChange);
-    const canvas = this.glRenderer.domElement;
+    const canvas: any = this.glRenderer.domElement;
     if (typeof canvas[fullscreenMethod] === 'function') {
       canvas[fullscreenMethod]();
     }
@@ -552,7 +610,7 @@ export default class Player {
       document.fullscreenElement ||
       document.webkitFullscreenElement ||
       document.mozFullScreenElement ||
-      document.msFullscreenElement;
+      (document: any).msFullscreenElement;
     if (element === this.glRenderer.domElement) {
       // Entered fullscreen mode
       this.resize(window.innerWidth, window.innerHeight);
@@ -567,7 +625,7 @@ export default class Player {
    * resize the player, adjusting the viewport and css sizes of components, and
    * updating the aspect ratio of the camera.
    */
-  resize(width, height) {
+  resize(width: number, height: number) {
     if (this.glRenderer && this._camera) {
       this._wrapper.style.width = width + 'px';
       this._wrapper.style.height = height + 'px';
@@ -645,10 +703,10 @@ export default class Player {
   }
 
   // Get/Set camera needed so the default camera can be retrieved or adjusted.
-  get camera() {
+  get camera(): Camera {
     return this._camera;
   }
-  set camera(value) {
+  set camera(value: Camera) {
     this._camera = value;
     this._initialAngles = {
       x: value.rotation.x,
@@ -661,7 +719,7 @@ export default class Player {
   }
 
   // Get renderer
-  get renderer() {
+  get renderer(): WebGLRenderer {
     return this.glRenderer;
   }
 }

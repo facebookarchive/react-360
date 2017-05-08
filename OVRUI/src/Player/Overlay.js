@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 import setStyles from './setStyles';
@@ -133,6 +135,13 @@ const SUPPORT_CANCEL_STYLES = {
   cursor: 'pointer',
 };
 
+type ButtonHandler = (...any) => any;
+
+type OverlayOptions = {
+  fullscreenButtonHandler?: ButtonHandler,
+  vrButtonHandler?: ButtonHandler,
+};
+
 /**
  * The overlaid controls for the WebVR Player.
  * It contains a 360 content indicator, and a "View in VR" button.
@@ -140,17 +149,26 @@ const SUPPORT_CANCEL_STYLES = {
  * it is a layout component with no real inner logic.
  */
 export default class Overlay {
+  compass: Element;
+  domElement: HTMLDivElement;
+  fullscreenButton: HTMLAnchorElement;
+  fullscreenButtonHandler: ?ButtonHandler;
+  gyro: ?Element;
+  supportMessage: ?HTMLDivElement;
+  vrButton: HTMLAnchorElement;
+  vrButtonHandler: ?ButtonHandler;
+
   /**
    * Set up all of the DOM nodes around
    * @param options - Optional map of configuration options. The only currently
    *   supported option is vrButtonHandler, a callback that is triggered when
    *   the VR button is clicked on a browser supporting WebVR.
    */
-  constructor(options = {}) {
+  constructor(options: OverlayOptions = {}) {
     this.vrButtonHandler = options.vrButtonHandler;
     this.fullscreenButtonHandler = options.fullscreenButtonHandler;
-    this.handleVRButton = this.handleVRButton.bind(this);
-    this.handleFullscreenButton = this.handleFullscreenButton.bind(this);
+    (this: any).handleVRButton = this.handleVRButton.bind(this);
+    (this: any).handleFullscreenButton = this.handleFullscreenButton.bind(this);
 
     const overlayNode = document.createElement('div');
     setStyles(overlayNode, OVERLAY_STYLES);
@@ -231,14 +249,14 @@ export default class Overlay {
   /**
    * Set the text of the VR button
    */
-  setVRButtonText(text) {
+  setVRButtonText(text: string) {
     this.vrButton.childNodes[1].childNodes[0].nodeValue = text;
   }
 
   /**
    * Set a new callback for the VR button
    */
-  setVRButtonHandler(cb) {
+  setVRButtonHandler(cb: ButtonHandler) {
     this.vrButtonHandler = cb;
   }
 
@@ -267,7 +285,7 @@ export default class Overlay {
    */
   showGyro() {
     if (this.gyro) {
-      this.gyro.style.opacity = 1;
+      (this.gyro: any).style.opacity = 1;
     }
   }
 
@@ -276,7 +294,7 @@ export default class Overlay {
    */
   hideGyro() {
     if (this.gyro) {
-      this.gyro.style.opacity = 0;
+      (this.gyro: any).style.opacity = 0;
     }
   }
 
@@ -318,7 +336,7 @@ export default class Overlay {
     actions.appendChild(learnMore);
     actions.appendChild(cancel);
     message.appendChild(actions);
-    this.domElement.appendChild(this.supportMessage);
+    this.domElement.appendChild(message);
   }
 
   /**
@@ -333,15 +351,15 @@ export default class Overlay {
   /**
    * Set the visibility of the Fullscreen button
    */
-  setFullscreen(show) {
-    this.fullscreen.style.display = fullscreenMethod && show ? 'inline-block' : 'none';
+  setFullscreen(show: boolean) {
+    this.fullscreenButton.style.display = fullscreenMethod && show ? 'inline-block' : 'none';
   }
 
   /**
    * Set the orientation of the compass indicator
    */
-  setCompassAngle(rad) {
+  setCompassAngle(rad: number) {
     const deg = -1 * rad * RAD_TO_DEG;
-    this.compass.style.transform = 'rotate(' + deg + 'deg)';
+    (this.compass: any).style.transform = 'rotate(' + deg + 'deg)';
   }
 }

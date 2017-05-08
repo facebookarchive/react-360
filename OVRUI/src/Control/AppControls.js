@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 // Selects controls based on platform and vr, applying them to object:
@@ -14,22 +16,36 @@ import DeviceOrientationControls from './DeviceOrientationControls';
 import MousePanControls from './MousePanControls';
 import VRControls from './VRControls';
 
+import type {Camera} from 'three';
+
+export interface Controls {
+  camera: Camera,
+
+  constructor(camera: Camera): Controls,
+  resetRotation(number, number, number): void,
+  update(): void,
+}
+
 export default class AppControls {
-  constructor(camera, target) {
+  _camera: Camera;
+  vrControls: ?VRControls;
+  nonVRControls: Controls;
+
+  constructor(camera: Camera, target: Element | void) {
     this._camera = camera;
     this.nonVRControls = DeviceOrientationControls.isSupported()
       ? new DeviceOrientationControls(camera)
       : new MousePanControls(camera, target);
   }
 
-  setVRDisplay(vrDisplay) {
+  setVRDisplay(vrDisplay: ?VRDisplay) {
     if (!vrDisplay) {
       throw new Error('When calling setVRDisplay a non-null value is expected.');
     }
     this.vrControls = new VRControls(this._camera, vrDisplay);
   }
 
-  setCamera(camera) {
+  setCamera(camera: Camera) {
     this._camera = camera;
     this.nonVRControls.camera = camera;
     this.nonVRControls.resetRotation(camera.rotation.x, camera.rotation.y, camera.rotation.z);
@@ -38,11 +54,11 @@ export default class AppControls {
     }
   }
 
-  resetRotation(x, y, z) {
+  resetRotation(x: number, y: number, z: number) {
     this.nonVRControls.resetRotation(x, y, z);
   }
 
-  frame(frameOptions) {
+  frame(frameOptions?: {[key: string]: any}) {
     if (this.vrControls) {
       const display = this.vrControls.vrDisplay;
       if (display && display.isPresenting) {

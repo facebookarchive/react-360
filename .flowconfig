@@ -10,10 +10,11 @@
 [include]
 
 [libs]
-ReactVR/js/defs/
+defs/
 
 [options]
 emoji=true
 
 module.ignore_non_literal_requires=true
+module.name_mapper='^ovrui$' -> '<PROJECT_ROOT>/OVRUI/src/OVRUI.js'
 unsafe.enable_getters_and_setters=true

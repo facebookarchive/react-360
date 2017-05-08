@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 /**
@@ -16,6 +18,8 @@
  */
 
 import THREE from '../ThreeShim';
+
+import type {Scene, Camera} from 'three';
 
 const DEFAULT_LEFT_BOUNDS = [0.0, 0.0, 0.5, 1.0];
 const DEFAULT_RIGHT_BOUNDS = [0.5, 0.0, 0.5, 1.0];
@@ -30,7 +34,14 @@ const leftTranslation = new THREE.Vector3();
 const rightTranslation = new THREE.Vector3();
 
 export default class VREffect {
-  constructor(renderer, vrDisplay) {
+  leftBounds: [number, number, number, number];
+  originalPixelRatio: number;
+  originalSize: {width: number, height: number};
+  renderer: any;
+  rightBounds: [number, number, number, number];
+  vrDisplay: VRDisplay;
+
+  constructor(renderer: any, vrDisplay: VRDisplay) {
     this.renderer = renderer;
     this.vrDisplay = vrDisplay;
     this.leftBounds = DEFAULT_LEFT_BOUNDS;
@@ -92,7 +103,7 @@ export default class VREffect {
     });
   }
 
-  setSize(width, height) {
+  setSize(width: number, height: number) {
     this.originalSize = {width, height};
 
     if (this.vrDisplay && this.vrDisplay.isPresenting) {
@@ -103,7 +114,7 @@ export default class VREffect {
     }
   }
 
-  render(scene, camera, frameData) {
+  render(scene: Scene, camera: Camera, frameData: VRFrameData) {
     if (this.vrDisplay && this.vrDisplay.isPresenting) {
       // Temporarily turn off automatic updates
       const preserveAutoUpdate = scene.autoUpdate;
@@ -151,10 +162,10 @@ export default class VREffect {
       rightCamera.projectionMatrix.elements = frameData.rightProjectionMatrix;
 
       // Prepare the scene backgrounds for each eye if ready
-      let backupScene = scene.background;
+      const backupScene = scene.background;
       // Only allow stereo background rendering if both backgrounds have been set
       // otherwise the user will see the background in only one eye.
-      const isStereoBackgroundReady = scene.backgroundLeft && scene.backgroundRight;
+      const isStereoBackgroundReady = !!scene.backgroundLeft && !!scene.backgroundRight;
 
       // Swap in our left eye background if both backgrounds are ready
       if (isStereoBackgroundReady) {

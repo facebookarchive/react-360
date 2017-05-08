@@ -5,6 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
 
 /**
@@ -38,7 +40,7 @@ const VIEW_VR_PATHS = [
 ];
 /* eslint-enable max-len */
 
-function createGlyph(width, height, color, paths) {
+function createGlyph(width: number, height: number, color: string, paths: Array<string>) {
   if (!width) {
     throw new Error('No width specified!');
   }
@@ -62,18 +64,18 @@ function createGlyph(width, height, color, paths) {
   return svg;
 }
 
-export function createGyroGlyph(width, height, color = '#ffffff') {
+export function createGyroGlyph(width: number, height: number, color: string = '#ffffff') {
   return createGlyph(width, height, color, GYRO_PATHS);
 }
 
-export function createFullscreenGlyph(width, height, color = '#ffffff') {
+export function createFullscreenGlyph(width: number, height: number, color: string = '#ffffff') {
   return createGlyph(width, height, color, FULLSCREEN_PATHS);
 }
 
-export function createCompassGlyph(width, height, color = '#ffffff') {
+export function createCompassGlyph(width: number, height: number, color: string = '#ffffff') {
   return createGlyph(width, height, color, COMPASS_PATHS);
 }
 
-export function createViewInVrGlyph(width, height, color = '#ffffff') {
+export function createViewInVrGlyph(width: number, height: number, color: string = '#ffffff') {
   return createGlyph(width, height, color, VIEW_VR_PATHS);
 }

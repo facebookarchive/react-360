@@ -287,7 +287,6 @@ export default class RCTBaseView {
         }: Object)
       );
     });
-    /* $FlowFixMe */
     this.view = null;
   }
 
@@ -409,7 +408,6 @@ export default class RCTBaseView {
   dispose(): void {
     RCTBaseView.disposeThreeJSObject(this.view);
     Yoga.Node.destroy(this.YGNode);
-    /* $FlowFixMe */
     this.view = null;
   }
 
