@@ -13,6 +13,7 @@
 
 const ColorPropType = require('ColorPropType');
 const LayoutPropTypes = require('LayoutPropTypes');
+const PropTypes = require('react/lib/ReactPropTypes');
 const TransformPropTypes = require('TransformPropTypes');
 
 /**
@@ -22,6 +23,7 @@ const LayoutAndTransformColorPropTypes = {
   ...LayoutPropTypes,
   ...TransformPropTypes,
   color: ColorPropType,
+  opacity: PropTypes.number,
 };
 
 module.exports = LayoutAndTransformColorPropTypes;
