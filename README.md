@@ -37,6 +37,14 @@ When the server has booted, you can access your application by navigating to `ht
 
 The WebVR spec is currently in development, and it will be some time before browsers like Chrome, Firefox, and Edge begin supporting it in stable releases. Recent experimental browsers, and some versions of Chrome for Android, have begun to support the spec. You can follow the tables at [https://webvr.rocks](https://webvr.rocks/) to track support for WebVR.
 
+## Getting Help
+
+Please use these community resources for getting help. We use the GitHub issues for tracking bugs and feature requests and have limited bandwidth to address them.
+
+ - Ask a question on [StackOverflow](https://stackoverflow.com) and tag it with `react-vr`
+ - Chat with fellow developers on [Reactiflux](https://discord.gg/0ZcbPKXt5bWJVmUY) in `#react-vr`
+ - If it turns out that you may have found a bug, please open an issue
+
 ## Opening Issues
 
 If you encounter a bug with React VR, let us know. Search the existing issues and try to make sure your problem doesn't already exist before opening a new issue. It's helpful if you include the version of React VR, Browser, and OS you're using. Please include a stack trace and reduced repro case where appropriate.
