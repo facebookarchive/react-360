@@ -98,7 +98,7 @@ transform: [
 
 * translation is stored as `[1,0,0,0, 0,1,0,0, 0,0,1,0, Tx,Ty,Tz,1]`
 * a scale is represented by `[Sx,0,0,0, 0,Sy,0,0, 0,0,Sz,0, 0,0,0,1]`
-* rotation can be represented the R values in `[R00,R01,R01,0, R10,R11,R12,0, R20,R21,R22,0, 0,0,0,1]`
+* rotation can be represented the R values in `[R00,R01,R02,0, R10,R11,R12,0, R20,R21,R22,0, 0,0,0,1]`
 
 **`matrix`** is the most flexible way of handling transforms and allows developers to use their own JavaScript modules and still be able to interface with React components.
 
