@@ -18,6 +18,9 @@ const rotation = new THREE.Quaternion();
 // Emperically determined multiplier
 const PAN_SPEED = 0.5;
 
+// Minimum fov when zooming in
+const MIN_FOV = 10;
+
 /**
  * MobilePanControls allows manipulation of the camera with touch on mobile.
  */
@@ -40,6 +43,11 @@ export default class MobilePanControls {
     this._panDelta = new THREE.Vector2();
     this._theta = 0;
     this._tracking = false;
+
+    this._pinchLengthStart = 0;
+    this._pinchLengthEnd = 0;
+    this._zoomNeedsUpdate = false;
+    this._originalFov = this._camera.fov;
 
     // Ensure that event handlers are bound to this object
     this._downHandler = this._downHandler.bind(this);
@@ -67,13 +75,18 @@ export default class MobilePanControls {
   }
 
   _downHandler(e) {
-    // Ignore if multiple touches
-    if (e.touches.length !== 1) {
+    this._tracking = true;
+
+    if (e.touches.length > 1) {
+      // Starting pinch-to-zoom
+      const dx = e.touches[0].pageX - e.touches[1].pageX;
+      const dy = e.touches[0].pageY - e.touches[1].pageY;
+      this._pinchLengthStart = Math.sqrt(dx * dx + dy * dy);
+      this._pinchLengthEnd = this.pinchLengthStart;
       return;
     }
     const touch = e.touches[0];
     this._panStart.set(touch.pageX, touch.pageY);
-    this._tracking = true;
   }
 
   _upHandler() {
@@ -82,6 +95,15 @@ export default class MobilePanControls {
 
   _moveHandler(e) {
     if (!this._tracking) {
+      return;
+    }
+
+    if (e.touches.length > 1) {
+      // Moving pinch-to-zoom
+      const dx = e.touches[0].pageX - e.touches[1].pageX;
+      const dy = e.touches[0].pageY - e.touches[1].pageY;
+      this._pinchLengthEnd = Math.sqrt(dx * dx + dy * dy);
+      this._zoomNeedsUpdate = true;
       return;
     }
 
@@ -106,5 +128,18 @@ export default class MobilePanControls {
     const quaternion = this._camera.quaternion;
     rotation.setFromAxisAngle(Y_UNIT, -this._theta);
     quaternion.premultiply(rotation);
+
+    // Update camera FOV
+    if (this._zoomNeedsUpdate) {
+      const zoomFactor = this._pinchLengthStart / this._pinchLengthEnd;
+      this._pinchLengthStart = this._pinchLengthEnd;
+      const newFov = this._camera.fov * zoomFactor;
+      // Stop zooming out upon reaching the original FOV of this camera.
+      if (newFov > MIN_FOV && newFov < this._originalFov) {
+        this._camera.fov = newFov;
+        this._camera.updateProjectionMatrix();
+      }
+      this._zoomNeedsUpdate = false;
+    }
   }
 }
