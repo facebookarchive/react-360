@@ -140,7 +140,7 @@ function LineBreaker(text, fontObject, fontHeight) {
       let g = this.fontObject.data.CharMap[code];
       if (!g) {
         for (let index = 0; index < this.fontObject.fallbacks.length; index++) {
-          let fallbackFontObject = this.fontObject.fallbacks[index];
+          const fallbackFontObject = this.fontObject.fallbacks[index];
           g = fallbackFontObject.data.CharMap[code];
           if (g) {
             curFontObject = fallbackFontObject;
@@ -169,8 +169,8 @@ function LineBreaker(text, fontObject, fontHeight) {
         code = this.text.charCodeAt(this.cursor);
       }
       while (this.cursor < this.text.length && !isBreakable(code)) {
-        let g = font.CharMap[code] || fallback;
-        let w = g.AdvanceX * xScale;
+        const g = font.CharMap[code] || fallback;
+        const w = g.AdvanceX * xScale;
         if (width + w > maxWidth) {
           return {
             position: this.cursor,
@@ -219,11 +219,9 @@ export function splitLines(
   maxLines,
   hasPerPixelClip
 ) {
-  const font = fontObject.data;
-  const xScale = fontHeight / font.FontHeight;
   let lineStart = 0;
   let lastOption = 0;
-  let breaker = new LineBreaker(text, fontObject, fontHeight);
+  const breaker = new LineBreaker(text, fontObject, fontHeight);
   let bk;
   const lines = [];
   let lineWidth = 0;
@@ -342,7 +340,7 @@ export function measureText(fontObject, text, fontHeight) {
     let g = fontObject.data.CharMap[charCode];
     if (!g) {
       for (let index = 0; index < fontObject.fallbacks.length; index++) {
-        let fallbackFontObject = fontObject.fallbacks[index];
+        const fallbackFontObject = fontObject.fallbacks[index];
         g = fallbackFontObject.data.CharMap[charCode];
         if (g) {
           curFontObject = fallbackFontObject;
@@ -428,11 +426,11 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
   if (vAlign === BASELINE) {
     curPos[1] = frame[1] + dim.maxHeight - fontHeight;
   } else if (vAlign === CENTER) {
-    let ma = baseFont.MaxAscent;
-    let md = baseFont.MaxDescent;
-    let fh = baseFont.FontHeight;
+    const ma = baseFont.MaxAscent;
+    const md = baseFont.MaxDescent;
+    const fh = baseFont.FontHeight;
     // one line of full extent of font plus dim.numLines - 1 of fontHeight
-    let maxFontExtent = ma + md + fh * (dim.numLines - 1);
+    const maxFontExtent = ma + md + fh * (dim.numLines - 1);
     curPos[1] = (maxFontExtent / 2 - fh) * yBaseScale;
   } else if (vAlign === CENTER_FIXEDHEIGHT) {
     // for fixed height, we must adjust single-line text by the max ascent because fonts
@@ -460,7 +458,7 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
   let offsetZ = 0.0;
   let lineIndex = 0;
   let index = 0;
-  let textColor = [0xff, 0xff, 0xff, 0xff];
+  const textColor = [0xff, 0xff, 0xff, 0xff];
   const fallback = baseFont.CharMap[42];
   let lastGroupIndex = 0;
   let lastFontObject = fontObject;
@@ -494,7 +492,7 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
     let g = fontObject.data.CharMap[charCode];
     if (!g) {
       for (let index = 0; index < fontObject.fallbacks.length; index++) {
-        let fallbackFontObject = fontObject.fallbacks[index];
+        const fallbackFontObject = fontObject.fallbacks[index];
         g = fallbackFontObject.data.CharMap[charCode];
         if (g) {
           curFontObject = fallbackFontObject;
@@ -509,7 +507,7 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
     const yScale = fontHeight / font.FontHeight;
 
     if (curFontObject !== lastFontObject) {
-      if (lastGroupIndex != index) {
+      if (lastGroupIndex !== index) {
         this.addGroup(lastGroupIndex * 6, (index - lastGroupIndex) * 6, materials.length);
         materials.push(lastFontObject.material);
       }
@@ -607,7 +605,7 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
   this.addAttribute('fontParms', new THREE.BufferAttribute(fontParmsBuffer, 4, true));
   this.addAttribute('textColors', new THREE.BufferAttribute(textColorBuffer, 4, true));
   this.setIndex(new THREE.BufferAttribute(indicesBuffer, 1));
-  if (lastGroupIndex != index) {
+  if (lastGroupIndex !== index) {
     this.addGroup(lastGroupIndex * 6, (index - lastGroupIndex) * 6, materials.length);
     materials.push(lastFontObject.material);
   }
@@ -687,7 +685,7 @@ export function loadFont(fontName, fontTexture, loader) {
     data.CharMap = [];
     data.MaxAscent = 0;
     data.MaxDescent = 0;
-    for (let g in data.Glyphs) {
+    for (const g in data.Glyphs) {
       const glyph = data.Glyphs[g];
       data.CharMap[glyph.CharCode] = glyph;
       const ascent = glyph.BearingY;

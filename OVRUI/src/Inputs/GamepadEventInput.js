@@ -111,7 +111,7 @@ export default class GamepadEventInput extends EventInput {
         const axes = gamepads[id].axes;
         if (axes) {
           for (let axis = 0; axis < axes.length; axis++) {
-            let oldValue = state.axes[axis];
+            const oldValue = state.axes[axis];
             const newValue = axes[axis];
             if (typeof oldValue !== 'number') {
               // initialization should not be a change

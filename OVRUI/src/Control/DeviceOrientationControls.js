@@ -71,7 +71,7 @@ export default class DeviceOrientationControls {
     this.mobilePanControls = new MobilePanControls(camera, target);
 
     // Allow touch panning unless explicitly disabled.
-    if (!!options.disableTouchPanning) {
+    if (options.disableTouchPanning) {
       this.mobilePanControls.enabled = false;
     }
 

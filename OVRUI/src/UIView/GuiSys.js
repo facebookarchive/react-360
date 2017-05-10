@@ -94,7 +94,7 @@ function applyUpdates(node, currentOpacity, updateContext, index, clipRect) {
     node.textClip[2] = clipRect[2];
     node.textClip[3] = clipRect[3];
   }
-  for (let i in node.children) {
+  for (const i in node.children) {
     applyUpdates(node.children[i], currentOpacity, updateContext, index, clipRect);
   }
 }
@@ -103,7 +103,7 @@ function updateBillboard(node, updateContext) {
   if (node.type === 'UIView' && node.billboarding === 'on') {
     node.updateBillboard(updateContext);
   }
-  for (let i in node.children) {
+  for (const i in node.children) {
     updateBillboard(node.children[i], updateContext);
   }
 }
@@ -223,7 +223,7 @@ export default class GuiSys {
   * first argument for the function is Date.now() as is dependable across browsers
   */
   requestFrameFunction(func) {
-    let uid = frameUpdateUID++;
+    const uid = frameUpdateUID++;
     this._requestFrames[uid] = func;
     return uid;
   }
@@ -260,11 +260,11 @@ export default class GuiSys {
     const curTime = Date.now();
     const currentRequests = this._requestFrames;
     this._requestFrames = {};
-    for (let update in currentRequests) {
+    for (const update in currentRequests) {
       currentRequests[update](curTime);
     }
 
-    for (let scene in this._offscreenRenders) {
+    for (const scene in this._offscreenRenders) {
       const sceneParams = this._offscreenRenders[scene];
       this.applyUpdates(sceneParams.camera, sceneParams.scene);
     }
@@ -424,12 +424,12 @@ export default class GuiSys {
   * creates inetraction events that are then distributed to listeners of GuiSys
   */
   updateLastHit(hit, source) {
-    let hitCache = [];
-    let hitImmediateListeners = [];
+    const hitCache = [];
+    const hitImmediateListeners = [];
     let currentHit = hit;
 
     // First pass of hit views in hierachy
-    let hitViews = [];
+    const hitViews = [];
     while (currentHit) {
       if (currentHit.type === 'UIView') {
         hitViews.push(currentHit);
@@ -480,7 +480,7 @@ export default class GuiSys {
     }
 
     // Emit focus lost events
-    for (let id in this._cursor.lastHitCache) {
+    for (const id in this._cursor.lastHitCache) {
       if (!hitCache[id]) {
         this.eventDispatcher.dispatchEvent(
           new UIViewEvent(this._cursor.lastHitCache[id], UIViewEventType.FOCUS_LOST, {
@@ -491,7 +491,7 @@ export default class GuiSys {
       }
     }
     // Emit focus gained events
-    for (let id in hitCache) {
+    for (const id in hitCache) {
       if (!this._cursor.lastHitCache[id]) {
         this.eventDispatcher.dispatchEvent(
           new UIViewEvent(hitCache[id], UIViewEventType.FOCUS_GAINED, {

@@ -240,7 +240,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       // given the geometry's origin is the mid point of width and height
       let x = this.frame[0] + this.frame[2] / 2;
       let y = this.frame[1] - this.frame[3] / 2;
-      let z = this.layoutZOffset * this.guiSys.ZOffsetScale;
+      const z = this.layoutZOffset * this.guiSys.ZOffsetScale;
       if (this.parent && this.parent.frame) {
         x -= this.parent.frame[2] / 2;
         y += this.parent.frame[3] / 2;

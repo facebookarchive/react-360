@@ -9,7 +9,7 @@
 
 // Apply a set of styles to a DOM node
 export default function setStyles(node, styles) {
-  for (let property in styles) {
+  for (const property in styles) {
     let destination = property;
     // Handle prefixed properties
     if (!node.style.hasOwnProperty(destination)) {

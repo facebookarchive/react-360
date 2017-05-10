@@ -56,31 +56,31 @@ function vgTesselateBezier(geom, x1, y1, x2, y2, x3, y3, x4, y4, level) {
     return;
   }
 
-  let x12 = (x1 + x2) * 0.5;
-  let y12 = (y1 + y2) * 0.5;
-  let x23 = (x2 + x3) * 0.5;
-  let y23 = (y2 + y3) * 0.5;
-  let x34 = (x3 + x4) * 0.5;
-  let y34 = (y3 + y4) * 0.5;
-  let x123 = (x12 + x23) * 0.5;
-  let y123 = (y12 + y23) * 0.5;
+  const x12 = (x1 + x2) * 0.5;
+  const y12 = (y1 + y2) * 0.5;
+  const x23 = (x2 + x3) * 0.5;
+  const y23 = (y2 + y3) * 0.5;
+  const x34 = (x3 + x4) * 0.5;
+  const y34 = (y3 + y4) * 0.5;
+  const x123 = (x12 + x23) * 0.5;
+  const y123 = (y12 + y23) * 0.5;
 
-  let dx = x4 - x1;
-  let dy = y4 - y1;
-  let d2 = Math.abs((x2 - x4) * dy - (y2 - y4) * dx);
-  let d3 = Math.abs((x3 - x4) * dy - (y3 - y4) * dx);
+  const dx = x4 - x1;
+  const dy = y4 - y1;
+  const d2 = Math.abs((x2 - x4) * dy - (y2 - y4) * dx);
+  const d3 = Math.abs((x3 - x4) * dy - (y3 - y4) * dx);
 
-  let magSqD = (dx * dx + dy * dy) * 0.0001;
+  const magSqD = (dx * dx + dy * dy) * 0.0001;
 
   if (magSqD <= 0 || (d2 + d3) * (d2 + d3) < magSqD) {
     vgAddPoint(geom, [x4, y4]);
     return;
   }
 
-  let x234 = (x23 + x34) * 0.5;
-  let y234 = (y23 + y34) * 0.5;
-  let x1234 = (x123 + x234) * 0.5;
-  let y1234 = (y123 + y234) * 0.5;
+  const x234 = (x23 + x34) * 0.5;
+  const y234 = (y23 + y34) * 0.5;
+  const x1234 = (x123 + x234) * 0.5;
+  const y1234 = (y123 + y234) * 0.5;
 
   vgTesselateBezier(geom, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1);
   vgTesselateBezier(geom, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1);
@@ -110,21 +110,21 @@ function vgTesselateBezierBorder(
     return;
   }
 
-  let x12A = (x1A + x2A) * 0.5;
-  let y12A = (y1A + y2A) * 0.5;
-  let x23A = (x2A + x3A) * 0.5;
-  let y23A = (y2A + y3A) * 0.5;
-  let x34A = (x3A + x4A) * 0.5;
-  let y34A = (y3A + y4A) * 0.5;
-  let x123A = (x12A + x23A) * 0.5;
-  let y123A = (y12A + y23A) * 0.5;
+  const x12A = (x1A + x2A) * 0.5;
+  const y12A = (y1A + y2A) * 0.5;
+  const x23A = (x2A + x3A) * 0.5;
+  const y23A = (y2A + y3A) * 0.5;
+  const x34A = (x3A + x4A) * 0.5;
+  const y34A = (y3A + y4A) * 0.5;
+  const x123A = (x12A + x23A) * 0.5;
+  const y123A = (y12A + y23A) * 0.5;
 
-  let dxA = x4A - x1A;
-  let dyA = y4A - y1A;
-  let d2A = Math.abs((x2A - x4A) * dyA - (y2A - y4A) * dxA);
-  let d3A = Math.abs((x3A - x4A) * dyA - (y3A - y4A) * dxA);
+  const dxA = x4A - x1A;
+  const dyA = y4A - y1A;
+  const d2A = Math.abs((x2A - x4A) * dyA - (y2A - y4A) * dxA);
+  const d3A = Math.abs((x3A - x4A) * dyA - (y3A - y4A) * dxA);
 
-  let magSqD = (dxA * dxA + dyA * dyA) * 0.0001;
+  const magSqD = (dxA * dxA + dyA * dyA) * 0.0001;
 
   if (magSqD <= 0 || (d2A + d3A) * (d2A + d3A) < magSqD) {
     vgAddPoint(geom, [x4A, y4A]);
@@ -132,24 +132,24 @@ function vgTesselateBezierBorder(
     return;
   }
 
-  let x234A = (x23A + x34A) * 0.5;
-  let y234A = (y23A + y34A) * 0.5;
-  let x1234A = (x123A + x234A) * 0.5;
-  let y1234A = (y123A + y234A) * 0.5;
+  const x234A = (x23A + x34A) * 0.5;
+  const y234A = (y23A + y34A) * 0.5;
+  const x1234A = (x123A + x234A) * 0.5;
+  const y1234A = (y123A + y234A) * 0.5;
 
-  let x12B = (x1B + x2B) * 0.5;
-  let y12B = (y1B + y2B) * 0.5;
-  let x23B = (x2B + x3B) * 0.5;
-  let y23B = (y2B + y3B) * 0.5;
-  let x34B = (x3B + x4B) * 0.5;
-  let y34B = (y3B + y4B) * 0.5;
-  let x123B = (x12B + x23B) * 0.5;
-  let y123B = (y12B + y23B) * 0.5;
+  const x12B = (x1B + x2B) * 0.5;
+  const y12B = (y1B + y2B) * 0.5;
+  const x23B = (x2B + x3B) * 0.5;
+  const y23B = (y2B + y3B) * 0.5;
+  const x34B = (x3B + x4B) * 0.5;
+  const y34B = (y3B + y4B) * 0.5;
+  const x123B = (x12B + x23B) * 0.5;
+  const y123B = (y12B + y23B) * 0.5;
 
-  let x234B = (x23B + x34B) * 0.5;
-  let y234B = (y23B + y34B) * 0.5;
-  let x1234B = (x123B + x234B) * 0.5;
-  let y1234B = (y123B + y234B) * 0.5;
+  const x234B = (x23B + x34B) * 0.5;
+  const y234B = (y23B + y34B) * 0.5;
+  const x1234B = (x123B + x234B) * 0.5;
+  const y1234B = (y123B + y234B) * 0.5;
 
   vgTesselateBezierBorder(
     geom,
@@ -194,12 +194,12 @@ function vgTesselateBezierBorder(
 }
 
 function vgFlattenPaths(commands, w, h) {
-  let geom = {positions: []};
+  const geom = {positions: []};
   let i = 0;
   let p, last;
   let cp1, cp2;
   while (i < commands.length) {
-    let cmd = commands[i];
+    const cmd = commands[i];
     switch (cmd) {
       case VG_MOVETO:
         p = commands[i + 1];
@@ -233,16 +233,16 @@ function vgFlattenPaths(commands, w, h) {
     }
   }
   if (geom.length > 1) {
-    let last_pt = geom.positions.length - 1 * 3;
-    let dx = geom.positions[last_pt + 0] - geom.positions[0];
-    let dy = geom.positions[last_pt + 1] - geom.positions[1];
-    let dist = dx * dx + dy * dy;
+    const last_pt = geom.positions.length - 1 * 3;
+    const dx = geom.positions[last_pt + 0] - geom.positions[0];
+    const dy = geom.positions[last_pt + 1] - geom.positions[1];
+    const dist = dx * dx + dy * dy;
     if (dist < 0.001) {
       geom.length -= 1;
     }
   }
 
-  let uvs = [];
+  const uvs = [];
   if (w > 0 && h > 0) {
     for (let i = 0; i < geom.positions.length; i += 3) {
       uvs.push(geom.positions[i + 0] / w + 0.5);
@@ -259,14 +259,14 @@ function vgFlattenPaths(commands, w, h) {
 }
 
 function vgFlattenPathsBorder(commands, w, h) {
-  let geom = {positions: []};
+  const geom = {positions: []};
   let i = 0;
   let pA, lastA;
   let pB, lastB;
   let cp1A, cp2A;
   let cp1B, cp2B;
   while (i < commands.length) {
-    let cmd = commands[i];
+    const cmd = commands[i];
     switch (cmd) {
       case VG_MOVETO:
         pA = commands[i + 1];
@@ -317,7 +317,7 @@ function vgFlattenPathsBorder(commands, w, h) {
     }
   }
 
-  let uvs = [];
+  const uvs = [];
   if (w > 0 && h > 0) {
     for (let i = 0; i < geom.positions.length; i += 3) {
       uvs.push(geom.positions[i + 0] / w + 0.5);
@@ -334,7 +334,7 @@ function vgFlattenPathsBorder(commands, w, h) {
 }
 
 function vgRect(x, y, w, h) {
-  let vals = [
+  const vals = [
     VG_MOVETO,
     [x, y],
     VG_LINETO,
@@ -356,17 +356,17 @@ function vgRoundedRectVarying(x, y, w, h, radBottomRight, radBottomLeft, radTopL
   ) {
     return vgRect(x, y, w, h);
   } else {
-    let halfw = Math.abs(w) * 0.5;
-    let halfh = Math.abs(h) * 0.5;
-    let rxBL = Math.min(radBottomLeft, halfw);
-    let ryBL = Math.min(radBottomLeft, halfh);
-    let rxBR = Math.min(radBottomRight, halfw);
-    let ryBR = Math.min(radBottomRight, halfh);
-    let rxTR = Math.min(radTopRight, halfw);
-    let ryTR = Math.min(radTopRight, halfh);
-    let rxTL = Math.min(radTopLeft, halfw);
-    let ryTL = Math.min(radTopLeft, halfh);
-    let vals = [
+    const halfw = Math.abs(w) * 0.5;
+    const halfh = Math.abs(h) * 0.5;
+    const rxBL = Math.min(radBottomLeft, halfw);
+    const ryBL = Math.min(radBottomLeft, halfh);
+    const rxBR = Math.min(radBottomRight, halfw);
+    const ryBR = Math.min(radBottomRight, halfh);
+    const rxTR = Math.min(radTopRight, halfw);
+    const ryTR = Math.min(radTopRight, halfh);
+    const rxTL = Math.min(radTopLeft, halfw);
+    const ryTL = Math.min(radTopLeft, halfh);
+    const vals = [
       VG_MOVETO,
       [x, y + ryTL],
       VG_LINETO,
@@ -399,7 +399,7 @@ function vgRoundedRectVarying(x, y, w, h, radBottomRight, radBottomLeft, radTopL
 }
 
 function vgGenerateIndicesConvex(length) {
-  let indices = [];
+  const indices = [];
   for (let i = 2; i < length; i++) {
     indices.push(0);
     indices.push(i - 1);
@@ -426,17 +426,17 @@ export function vgRoundedBorderRectVarying(
   radTopLeft,
   radTopRight
 ) {
-  let x = Math.min(width, borderLeft);
-  let w = Math.max(x, width - borderRight) - x;
-  let y = Math.min(height, borderTop);
-  let h = Math.max(y, height - borderBottom) - y;
+  const x = Math.min(width, borderLeft);
+  const w = Math.max(x, width - borderRight) - x;
+  const y = Math.min(height, borderTop);
+  const h = Math.max(y, height - borderBottom) - y;
   if (
     radTopLeft < 0.001 &&
     radTopRight < 0.001 &&
     radBottomRight < 0.001 &&
     radBottomLeft < 0.001
   ) {
-    let vals = [
+    const vals = [
       VG_MOVETO,
       [baseX, baseY],
       VG_MOVETO,
@@ -459,28 +459,28 @@ export function vgRoundedBorderRectVarying(
     ];
     return vgFlattenPathsBorder(vals);
   } else {
-    let halfWidth = width * 0.5;
-    let halfHeight = height * 0.5;
-    let halfW = w * 0.5;
-    let halfH = h * 0.5;
-    let rxBLOuter = Math.min(radBottomLeft, halfWidth);
-    let ryBLOuter = Math.min(radBottomLeft, halfHeight);
-    let rxBROuter = Math.min(radBottomRight, halfWidth);
-    let ryBROuter = Math.min(radBottomRight, halfHeight);
-    let rxTROuter = Math.min(radTopRight, halfWidth);
-    let ryTROuter = Math.min(radTopRight, halfHeight);
-    let rxTLOuter = Math.min(radTopLeft, halfWidth);
-    let ryTLOuter = Math.min(radTopLeft, halfHeight);
-    let rxBLInner = Math.min(radBottomLeft, halfW);
-    let ryBLInner = Math.min(radBottomLeft, halfH);
-    let rxBRInner = Math.min(radBottomRight, halfW);
-    let ryBRInner = Math.min(radBottomRight, halfH);
-    let rxTRInner = Math.min(radTopRight, halfW);
-    let ryTRInner = Math.min(radTopRight, halfH);
-    let rxTLInner = Math.min(radTopLeft, halfW);
-    let ryTLInner = Math.min(radTopLeft, halfH);
+    const halfWidth = width * 0.5;
+    const halfHeight = height * 0.5;
+    const halfW = w * 0.5;
+    const halfH = h * 0.5;
+    const rxBLOuter = Math.min(radBottomLeft, halfWidth);
+    const ryBLOuter = Math.min(radBottomLeft, halfHeight);
+    const rxBROuter = Math.min(radBottomRight, halfWidth);
+    const ryBROuter = Math.min(radBottomRight, halfHeight);
+    const rxTROuter = Math.min(radTopRight, halfWidth);
+    const ryTROuter = Math.min(radTopRight, halfHeight);
+    const rxTLOuter = Math.min(radTopLeft, halfWidth);
+    const ryTLOuter = Math.min(radTopLeft, halfHeight);
+    const rxBLInner = Math.min(radBottomLeft, halfW);
+    const ryBLInner = Math.min(radBottomLeft, halfH);
+    const rxBRInner = Math.min(radBottomRight, halfW);
+    const ryBRInner = Math.min(radBottomRight, halfH);
+    const rxTRInner = Math.min(radTopRight, halfW);
+    const ryTRInner = Math.min(radTopRight, halfH);
+    const rxTLInner = Math.min(radTopLeft, halfW);
+    const ryTLInner = Math.min(radTopLeft, halfH);
 
-    let vals = [
+    const vals = [
       VG_MOVETO,
       [baseX, baseY + ryTLOuter],
       VG_MOVETO,
@@ -547,7 +547,7 @@ export function vgRoundedBorderRectVarying(
 }
 
 export function vgGenerateIndicesBorder(offset, length) {
-  let indices = [];
+  const indices = [];
   for (let i = 0; i < length; i += 2) {
     const nexti = (i + 2) % length;
     indices.push(i + offset);

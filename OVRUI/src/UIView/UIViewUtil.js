@@ -19,7 +19,7 @@ export function setParams(object, params) {
     return;
   }
 
-  for (let key in params) {
+  for (const key in params) {
     const func = 'set' + key.charAt(0).toUpperCase() + key.slice(1); // capitalize first letter
     if (typeof object[func] !== 'function') {
       console.warn('"' + func + '" is not a function of UIView.');

@@ -16,7 +16,7 @@
 import {getVideoPlayer} from './VRVideoPlayer';
 import * as THREE from 'three';
 
-import type {Texture, Vector4} from 'three';
+import type {Texture} from 'three';
 
 interface VideoPlayer {
   initializeVideo(src: string): void,
