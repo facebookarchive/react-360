@@ -112,6 +112,25 @@ const Video = React.createClass({
     onEnded: PropTypes.func,
 
     /**
+     * Option callback evoked when video duration changed.
+     * event.nativeEvent.duration - the duration of video
+     **/
+    onDurationChange: PropTypes.func,
+
+    /**
+     * Option callback evoked when video currentTime of video changed.
+     * event.nativeEvent.currentTime - the currentTime of video
+     **/
+    onTimeUpdate: PropTypes.func,
+
+    /**
+     * Option callback evoked when video play status changed.
+     * event.nativeEvent.playStatus - the play status of video:
+     * play status is one of 'closed' | 'loading' | 'error' | 'ended' | 'paused' | 'playing' | 'ready'
+     **/
+    onPlayStatusChange: PropTypes.func,
+
+    /**
      * Controls the playback.  If not set, the value of `autoPlay` determines
      * whether the video plays when the component is loaded.
      * Ignored when `playerState` property is set.
@@ -259,6 +278,27 @@ const Video = React.createClass({
     this.props.onEnded && this.props.onEnded();
   },
 
+  _onDurationChange: function(event) {
+    if (this.props.playerState) {
+      this.props.playerState.onDurationChange(event);
+    }
+    this.props.onDurationChange && this.props.onDurationChange(event);
+  },
+
+  _onTimeUpdate: function(event) {
+    if (this.props.playerState) {
+      this.props.playerState.onTimeUpdate(event);
+    }
+    this.props.onTimeUpdate && this.props.onTimeUpdate(event);
+  },
+
+  _onPlayStatusChange: function(event) {
+    if (this.props.playerState) {
+      this.props.playerState.onPlayStatusChange(event);
+    }
+    this.props.onPlayStatusChange && this.props.onPlayStatusChange(event);
+  },
+
   render: function() {
     // default videos to being a render group
     const styleProps = [{renderGroup: true}, this.props.style];
@@ -269,11 +309,12 @@ const Video = React.createClass({
       props.autoPlay = false;
       props.volume = this.state.volume;
       props.muted = this.state.muted;
-      // events
-      props.onDurationChange = this.props.playerState.onDurationChange;
-      props.onTimeUpdate = this.props.playerState.onTimeUpdate;
-      props.onPlayStatusChange = this.props.playerState.onPlayStatusChange;
     }
+
+    // events
+    props.onDurationChange = this._onDurationChange;
+    props.onTimeUpdate = this._onTimeUpdate;
+    props.onPlayStatusChange = this._onPlayStatusChange;
 
     return (
       <RKVideo
