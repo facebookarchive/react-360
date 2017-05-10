@@ -3,7 +3,7 @@
 Before running the website, make sure you've run the following:
 
 ```sh
-cd /3rdParty/ReactNative
+cd /ReactVR/
 npm install
 ```
 

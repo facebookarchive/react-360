@@ -47,7 +47,9 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return position of the head as [X,Y,Z]
+   * Return position of the head as [X,Y,Z].
+   *
+   * If headMatrix is not specified the current orientation of the headset is used.
    */
   positionOfHeadMatrix(headMatrix) {
     const matrix = headMatrix || this.headMatrix;
@@ -55,8 +57,10 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return rotation as Euler angles
-   * if eulerOrder is not specified `YXZ` order is used
+   * Return rotation as Euler angles.
+   *
+   * If headMatrix is not specified the current orientation of the headset is used.
+   * If eulerOrder is not specified `YXZ` order is used, i.e. [Yaw, Pitch, Roll].
    */
   rotationOfHeadMatrix(headMatrix, eulerOrder) {
     const matrix = headMatrix || this.headMatrix;
@@ -64,14 +68,14 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return the horizontal field of view of the camera
+   * Return the horizontal field of view of the camera in degrees.
    */
   horizontalFov() {
     return this.fov;
   }
 
   /**
-   * Return the vertical field of view of the camera
+   * Return the vertical field of view of the camera in degrees.
    */
   verticalFov() {
     return this.fov / this.aspect;
