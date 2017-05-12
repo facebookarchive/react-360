@@ -31,7 +31,7 @@ const resolveAssetSource = require('resolveAssetSource');
  * Example usage:
  * ```
  * <Image style={{height: 2.0, width: 2.0}} source={uri: 'images/waterfall.jpg'}>
- *   <Sound source={uri: 'sounds/waterfall.wav'}>
+ *   <Sound source={uri: 'sounds/waterfall.wav'} />
  * </Image>
  * ```
  *
