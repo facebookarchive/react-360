@@ -172,7 +172,7 @@ declare module 'three' {
   declare class TextureLoader {
     constructor(loader: any): TextureLoader,
     load(path: string): any,
-    setCrossOrigin(flag: boolean): void,
+    setCrossOrigin(origin: 'anonymous' | 'use-credentials'): void,
   }
 
   declare class Vector2 {

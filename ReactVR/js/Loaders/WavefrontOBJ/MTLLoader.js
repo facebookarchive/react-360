@@ -71,7 +71,7 @@ function addTextureMap(
     }
   }
   const loader = new THREE.TextureLoader(THREE.DefaultLoadingManager);
-  loader.setCrossOrigin(true);
+  loader.setCrossOrigin('anonymous');
   const map = loader.load(path);
   map.name = tex.file;
   map.repeat.copy(scale);

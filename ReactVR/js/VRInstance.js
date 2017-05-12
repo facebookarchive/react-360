@@ -200,4 +200,10 @@ export default class VRInstance {
   camera() {
     return this.player.camera;
   }
+
+  registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
+    if (this.rootView && this.rootView.context) {
+      this.rootView.context.registerTextureSource(name, source, options);
+    }
+  }
 }

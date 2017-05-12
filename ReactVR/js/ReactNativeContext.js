@@ -23,6 +23,7 @@ import {RCTInputControls} from './Utils/RCTInputControls';
 import RCTHeadModel from './Utils/RCTHeadModel';
 import RCTVideoModule from './Modules/RCTVideoModule';
 import RCTAudioModule from './Modules/RCTAudioModule';
+import TextureManager from './Utils/TextureManager';
 import Timing from './Modules/Timing';
 import UIManager from './Modules/UIManager';
 import WebSocketModule from './Modules/WebSocketModule';
@@ -140,6 +141,7 @@ export class ReactNativeContext {
   modules: Array<Module>;
   RCTInputControls: RCTInputControls;
   RCTResourceManager: RCTResourceManager;
+  TextureManager: TextureManager;
   Timing: Timing;
   UIManager: UIManager;
   VideoModule: RCTVideoModule;
@@ -175,6 +177,7 @@ export class ReactNativeContext {
     this.HeadModel = new RCTHeadModel(this);
     this.VideoModule = new RCTVideoModule(this);
     this.AudioModule = new RCTAudioModule(this);
+    this.TextureManager = new TextureManager();
     this.GlyphTextures = new GlyphTextures(this);
     this._moduleForTag = [];
     this._cameraParentFromTag = [];
@@ -541,5 +544,9 @@ export class ReactNativeContext {
    **/
   registerModule(module: Module) {
     this.modules.push(module);
+  }
+
+  registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
+    this.TextureManager.registerLocalTextureSource(name, source, options);
   }
 }
