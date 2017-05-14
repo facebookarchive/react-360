@@ -32,6 +32,7 @@ type VRInstanceOptions = {
   nativeModules?: Array<Module>,
   onEnterVR?: () => void,
   onExitVR?: () => void,
+  pixelRatio?: number,
   raycasters?: Array<any>,
   scene?: Scene,
   width?: number,
@@ -103,6 +104,7 @@ export default class VRInstance {
       onExitVR: () => this._onExitVR(),
       allowCarmelDeeplink: allowCarmelDeeplink,
       disableTouchPanning: options.disableTouchPanning,
+      pixelRatio: options.pixelRatio,
     });
 
     let defaultAssetRoot = 'static_assets/';
