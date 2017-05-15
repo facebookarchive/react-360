@@ -14,14 +14,15 @@ import {PlaneBufferGeometry} from 'three';
 import merge from '../Utils/merge';
 
 import type {GuiSys} from 'ovrui';
+import type {ReactNativeContext} from '../ReactNativeContext';
 
 export default class RCTPlane extends RCTBaseMesh {
   _dimWidth: number;
   _dimHeight: number;
   _needsUpdate: boolean;
 
-  constructor(guiSys: GuiSys) {
-    super(guiSys);
+  constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
+    super(guiSys, rnctx);
 
     this._dimWidth = 1;
     this._dimHeight = 1;

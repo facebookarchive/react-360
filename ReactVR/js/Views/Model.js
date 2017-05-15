@@ -15,12 +15,13 @@ import merge from '../Utils/merge';
 
 import type {GuiSys} from 'ovrui';
 import type {MeshInstance} from '../Loaders/ModelLoaderRegistry';
+import type {ReactNativeContext} from '../ReactNativeContext';
 
 export default class RCTModel extends RCTBaseMesh {
   instance: MeshInstance | null;
 
-  constructor(guiSys: GuiSys) {
-    super(guiSys);
+  constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
+    super(guiSys, rnctx);
     this.instance = null;
 
     Object.defineProperty(

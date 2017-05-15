@@ -184,7 +184,7 @@ export default class UIManager extends Module {
       return new RCTPano(guiSys, rnctx);
     });
     this.registerViewType('Model', RCTModel.describe(), function() {
-      return new RCTModel(guiSys);
+      return new RCTModel(guiSys, rnctx);
     });
     this.registerViewType('Scene', RCTScene.describe(), function() {
       return new RCTScene(guiSys);
@@ -220,16 +220,16 @@ export default class UIManager extends Module {
       return new RCTCylindricalPanel(guiSys);
     });
     this.registerViewType('Box', RCTBox.describe(), function() {
-      return new RCTBox(guiSys);
+      return new RCTBox(guiSys, rnctx);
     });
     this.registerViewType('Cylinder', RCTCylinder.describe(), function() {
-      return new RCTCylinder(guiSys);
+      return new RCTCylinder(guiSys, rnctx);
     });
     this.registerViewType('Plane', RCTPlane.describe(), function() {
-      return new RCTPlane(guiSys);
+      return new RCTPlane(guiSys, rnctx);
     });
     this.registerViewType('Sphere', RCTSphere.describe(), function() {
-      return new RCTSphere(guiSys);
+      return new RCTSphere(guiSys, rnctx);
     });
     this.registerViewType('Prefetch', RCTPrefetch.describe(), function() {
       return new RCTPrefetch(guiSys);

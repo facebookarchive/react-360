@@ -14,6 +14,7 @@ import {CylinderBufferGeometry} from 'three';
 import merge from '../Utils/merge';
 
 import type {GuiSys} from 'ovrui';
+import type {ReactNativeContext} from '../ReactNativeContext';
 
 export default class RCTCylinder extends RCTBaseMesh {
   _radiusTop: number;
@@ -22,8 +23,8 @@ export default class RCTCylinder extends RCTBaseMesh {
   _segments: number;
   _needsUpdate: boolean;
 
-  constructor(guiSys: GuiSys) {
-    super(guiSys);
+  constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
+    super(guiSys, rnctx);
 
     this._radiusTop = 0.5;
     this._radiusBottom = 0.5;

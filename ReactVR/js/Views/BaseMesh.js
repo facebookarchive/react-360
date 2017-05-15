@@ -13,63 +13,40 @@ import RCTBaseView from './BaseView';
 
 import extractURL from '../Utils/extractURL';
 import merge from '../Utils/merge';
-import RefCountCache from '../Utils/RefCountCache';
 import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 import * as Yoga from '../Utils/Yoga.bundle';
 
 import type {GuiSys} from 'ovrui';
 import type {Geometry, Texture, Material} from 'three';
+import type {ReactNativeContext} from '../ReactNativeContext';
 
 type ResourceSpecifier = void | null | string | {uri: string};
-
-const textureCache = new RefCountCache(
-  // cleanup method
-  function(path, tex) {
-    tex.dispose();
-  }
-);
-
-function getTextureForURL(url) {
-  if (textureCache.has(url)) {
-    textureCache.addReference(url);
-    return Promise.resolve(textureCache.get(url));
-  }
-  return new Promise((resolve, reject) => {
-    new THREE.TextureLoader().load(
-      url,
-      texture => {
-        textureCache.addEntry(url, texture);
-        resolve(texture);
-      },
-      undefined,
-      error => {
-        reject(error);
-      }
-    );
-  });
-}
 
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
   _lit: boolean;
   _wireframe: boolean;
   _textureURL: null | string;
+  _loadingURL: null | string;
   _texture: null | Texture;
   _litMaterial: Material;
   _unlitMaterial: Material;
   mesh: any;
   _geometry: any;
+  _rnctx: ReactNativeContext;
 
-  constructor(guiSys: GuiSys) {
+  constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
     super();
 
     this._lit = false;
     this._wireframe = false;
     this._textureURL = null;
+    this._loadingURL = null;
     this._texture = null; // Cache for THREE Texture
     this._litMaterial = new THREE.MeshPhongMaterial({color: 0xffffff}); // THREE Material to use when texture or color used, lit === true
     this._unlitMaterial = new THREE.MeshBasicMaterial({color: 0xffffff}); // THREE Material to use when texture or color used, lit === false
+    this._rnctx = rnctx;
 
     this.mesh = null;
     this.view = new OVRUI.UIView(guiSys);
@@ -141,10 +118,14 @@ export default class RCTBaseMesh extends RCTBaseView {
 
   _setTexture(value: ResourceSpecifier) {
     if (!value) {
-      if (this._texture && this._textureURL) {
-        textureCache.removeReference(this._textureURL);
+      if (this._texture) {
+        this._texture = null;
+        if (this._textureURL) {
+          // Release the reference to the original texture
+          this._rnctx.TextureManager.removeReference(this._textureURL);
+          this._textureURL = null;
+        }
       }
-      this._texture = null;
       // Remove texture from textured materials
       this._litMaterial.map = null;
       this._unlitMaterial.map = null;
@@ -156,23 +137,40 @@ export default class RCTBaseMesh extends RCTBaseView {
     if (!url) {
       throw new Error('Invalid value for "texture" property: ' + JSON.stringify(value));
     }
-    getTextureForURL(url).then(
-      texture => {
-        this._textureURL = url;
-        this._texture = texture;
-        // TODO: Provide props on BaseMesh to control these as well
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        texture.minFilter = THREE.LinearFilter;
-        this._litMaterial.map = texture;
-        this._unlitMaterial.map = texture;
-        this._litMaterial.needsUpdate = true;
-        this._unlitMaterial.needsUpdate = true;
-      },
-      err => {
+    this._loadingURL = url;
+    const manager = this._rnctx.TextureManager;
+    manager.addReference(url);
+    manager
+      .getTextureForURL(url)
+      .then(
+        texture => {
+          if (url !== this._loadingURL) {
+            // We've started to load another texture since this request began
+            manager.removeReference(url);
+            return;
+          }
+          this._loadingURL = null;
+          if (this._textureURL) {
+            manager.removeReference(this._textureURL);
+          }
+          this._texture = texture;
+          this._texture.needsUpdate = true;
+          this._textureURL = url;
+          // TODO: Consider providing props on BaseMesh to control these as well
+          this._litMaterial.map = this._texture;
+          this._unlitMaterial.map = this._texture;
+          this._litMaterial.needsUpdate = true;
+          this._unlitMaterial.needsUpdate = true;
+        },
+        err => {
+          manager.removeReference(url);
+          this._loadingURL = null;
+          console.error(err);
+        }
+      )
+      .catch(err => {
         console.error(err);
-      }
-    );
+      });
   }
 
   _setLit(flag: boolean) {
@@ -206,14 +204,18 @@ export default class RCTBaseMesh extends RCTBaseView {
   }
 
   dispose() {
+    if (this._texture) {
+      this._texture = null;
+      if (this._textureURL) {
+        // Release the reference to the original texture
+        this._rnctx.TextureManager.removeReference(this._textureURL);
+        this._textureURL = null;
+      }
+    }
     this._litMaterial.dispose();
     this._unlitMaterial.dispose();
-    if (this._texture && this._textureURL) {
-      textureCache.removeReference(this._textureURL);
-    }
     super.dispose();
     this._geometry = null;
-    this._texture = null;
     this.mesh = null;
   }
 

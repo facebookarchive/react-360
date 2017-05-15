@@ -14,6 +14,7 @@ import {SphereBufferGeometry} from 'three';
 import merge from '../Utils/merge';
 
 import type {GuiSys} from 'ovrui';
+import type {ReactNativeContext} from '../ReactNativeContext';
 
 export default class RCTSphere extends RCTBaseMesh {
   _radius: number;
@@ -21,8 +22,8 @@ export default class RCTSphere extends RCTBaseMesh {
   _widthSegments: number;
   _needsUpdate: boolean;
 
-  constructor(guiSys: GuiSys) {
-    super(guiSys);
+  constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
+    super(guiSys, rnctx);
 
     this._radius = 0.5;
     this._heightSegments = 6;
