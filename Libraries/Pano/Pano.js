@@ -21,18 +21,18 @@ const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformTintPropTypes = require('LayoutAndTransformTintPropTypes');
 
 /**
- * A Sphere of 1000m with center located at the local transform origin
- * by default this is position:'absolute'
+ * A Sphere of 1000m with center located at the local transform origin.
+ * By default this is `position:'absolute'`.
  *
- * Panos are images that allows you to view the scene from every angle: above, below,
- * behind and next to you. These are a core image format for VR applications
- * You can create 360 photos by using special 360 camera hardware and these will be
- * usually in the form of Equirectangular images covering the full 360x180 angles
- * an example is
+ * Panos are images projected onto a sphere that fully surrounds the viewer.
+ * These are a core image format for VR applications.
+ * You can create 360 photos by using special 360 camera hardware. These will be
+ * usually in the form of Equirectangular images covering full 360° horizontal and 180°
+ * vertical angles. Here is an example:
  * ![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Botanischer_garten_panorama_mittel.jpg/1280px-Botanischer_garten_panorama_mittel.jpg)
  *
- * Cubemap images are also supported and to enable this the source url is specified as an
- * array of 6 individual images presented in the order `[+x, -x, +y, -y, +z, -z]`
+ * Cubemap images are also supported by specifying the source url as an
+ * array of 6 individual images, presented in the order `[+x, -x, +y, -y, +z, -z]`
  */
 const Pano = React.createClass({
   mixins: [NativeMethodsMixin],
