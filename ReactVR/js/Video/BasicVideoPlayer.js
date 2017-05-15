@@ -39,6 +39,11 @@ export default class BasicVideoPlayer {
   constructor() {
     this.videoElement = document.createElement('video');
     this.videoElement.style.display = 'none';
+
+    // Prevents the default go to fullscreen behavior on iOS 10+
+    this.videoElement.setAttribute('playsinline', 'playsinline');
+    this.videoElement.setAttribute('webkit-playsinline', 'webkit-playsinline');
+
     if (document.body) {
       document.body.appendChild(this.videoElement);
     }
