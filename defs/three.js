@@ -160,6 +160,7 @@ declare module 'three' {
 
   declare class Texture {
     generateMipmaps: boolean,
+    image: Image | HTMLCanvasElement,
     wrapS: number,
     wrapT: number,
     minFilter: number,

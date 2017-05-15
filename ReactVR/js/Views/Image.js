@@ -45,14 +45,21 @@ export default class RCTImage extends RCTBaseView {
             [],
           ]);
           // only interested in the uri for the source
-          if (value.uri.indexOf('glyph://') === 0) {
-            const name = value.uri.substr(8);
-            const GlyphTextures = this._rnctx.GlyphTextures;
-            GlyphTextures._getTexture(name)
+          if (value.uri.indexOf('texture://') === 0) {
+            this._rnctx.TextureManager
+              .getTextureForURL(value.uri)
               .then(tex => {
                 this.view.setImageTexture(tex);
-                const width = GlyphTextures._getTextureWidth(name);
-                const height = GlyphTextures._getTextureHeight(name);
+                const image = tex.image;
+                let width;
+                let height;
+                if (image instanceof Image) {
+                  width = image.naturalWidth;
+                  height = image.naturalHeight;
+                } else {
+                  width = image.width || 0;
+                  height = image.height || 0;
+                }
                 this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
                   this.getTag(),
                   'topLoad',

@@ -16,10 +16,10 @@ let nextGlyph = 1;
 
 function createGlyph(glyph, name) {
   if (typeof name !== 'string') {
-    name = 'glyph_' + nextGlyph;
+    name = nextGlyph;
     nextGlyph++;
   }
-  const uri = 'glyph://' + name;
+  const uri = 'texture://glyph/' + name;
   GlyphTextures.registerGlyph(name, glyph);
 
   return {uri};

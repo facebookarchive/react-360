@@ -10,7 +10,6 @@
  */
 
 import Module from './Module';
-import {Texture} from 'three';
 
 import type {ReactNativeContext} from '../ReactNativeContext';
 
@@ -28,13 +27,6 @@ type Instruction =
   | ['move', number, number]
   | ['arc', number, number, number, number, number]
   | ['rect', number, number, number, number];
-
-// Map of names to the instructions on how to build them
-const GLYPH_DATA_MAP = {};
-// Cache of generated textures, so each name is only generated once
-const TEXTURE_CACHE: {[name: string]: Texture} = {};
-// Any requests waiting for data
-const PENDING_LOADS = {};
 
 function drawGlyph(
   context: CanvasRenderingContext2D,
@@ -102,59 +94,16 @@ export default class GlyphTextures extends Module {
   }
 
   registerGlyph(name: string, glyph: GlyphData) {
-    GLYPH_DATA_MAP[name] = glyph;
-    if (PENDING_LOADS[name]) {
-      const resolve = PENDING_LOADS[name];
-      delete PENDING_LOADS[name];
-      resolve(glyph);
+    const canvas = document.createElement('canvas');
+    canvas.width = glyph.width;
+    canvas.height = glyph.height;
+    const context = canvas.getContext('2d');
+    if (!context) {
+      throw new Error('Could not generate 2d context of canvas');
     }
-  }
-
-  _getTextureWidth(name: string) {
-    if (!GLYPH_DATA_MAP[name]) {
-      throw new Error('unknown texture glyph: ' + name);
-    }
-    return GLYPH_DATA_MAP[name].width;
-  }
-
-  _getTextureHeight(name: string) {
-    if (!GLYPH_DATA_MAP[name]) {
-      throw new Error('unknown texture glyph: ' + name);
-    }
-    return GLYPH_DATA_MAP[name].height;
-  }
-
-  _getTexture(name: string): Promise<Texture> {
-    if (TEXTURE_CACHE[name]) {
-      return Promise.resolve(TEXTURE_CACHE[name]);
-    }
-    const glyph = GLYPH_DATA_MAP[name];
-
-    const pending = PENDING_LOADS[name];
-    return (pending ||
-      new Promise((resolve, reject) => {
-        if (glyph) {
-          resolve(glyph);
-        } else {
-          // Someone has a requested a glyph, but it hasn't registered yet
-          PENDING_LOADS[name] = resolve;
-        }
-      }))
-      .then((glyph: GlyphData) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = glyph.width;
-        canvas.height = glyph.height;
-        const context = canvas.getContext('2d');
-        if (!context) {
-          throw new Error('Could not generate 2d context of canvas');
-        }
-        context.translate(0.5, 0.5);
-        drawGlyph(context, glyph.instructions, glyph.color);
-        const tex = new Texture(canvas);
-        tex.needsUpdate = true;
-        TEXTURE_CACHE[name] = tex;
-
-        return tex;
-      });
+    context.translate(0.5, 0.5);
+    drawGlyph(context, glyph.instructions, glyph.color);
+    const url = 'glyph/' + name;
+    this._rnctx.TextureManager.registerLocalTextureSource(url, canvas);
   }
 }

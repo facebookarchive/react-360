@@ -432,6 +432,7 @@ export class ReactNativeContext {
     this.HeadModel && this.HeadModel.frame(camera);
     this.VideoModule && this.VideoModule.frame();
     this.AudioModule && this.AudioModule.frame(camera);
+    this.TextureManager.frame();
 
     if (rootTag) {
       this._applySceneTransform(camera, rootTag);

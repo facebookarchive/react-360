@@ -93,6 +93,9 @@ const ReactVR = {
   get asset() {
     return require('asset');
   },
+  get texture() {
+    return require('texture');
+  },
 
   // Direct access to RN properties
   get Animated() {
