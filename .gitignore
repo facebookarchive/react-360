@@ -4,3 +4,4 @@ node_modules
 .DS_Store
 *.log
 EndToEnd/testapp/build
+package_builds
