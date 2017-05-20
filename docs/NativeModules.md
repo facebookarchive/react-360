@@ -75,7 +75,7 @@ const CubeModule = NativeModules.CubeModule;
 render() {
 ...
   <VrButton
-    onClick={()=>CubeModule.changeCubeColor(hexColor)}
+    onClick={()=>CubeModule.changeCubeColor(hexColor)}>
   ...
   </VrButton>
 ..
