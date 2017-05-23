@@ -52,19 +52,79 @@ class VrHeadModelImpl {
    * If headMatrix is not specified the current orientation of the headset is used.
    */
   positionOfHeadMatrix(headMatrix) {
+    console.warn('positionOfHeadMatrix is deprecated.  Please use position instead');
     const matrix = headMatrix || this.headMatrix;
     return VrMath.getTranslation(matrix);
   }
 
   /**
-   * Return rotation as Euler angles.
+   * Return rotation as Euler angles in radians.
    *
    * If headMatrix is not specified the current orientation of the headset is used.
    * If eulerOrder is not specified `YXZ` order is used, i.e. [Yaw, Pitch, Roll].
    */
   rotationOfHeadMatrix(headMatrix, eulerOrder) {
+    console.warn('rotationOfHeadMatrix is deprecated.  Please use rotation, rotationInRadians, ' +
+                 'yawPitchRoll or yawPitchRollInRadians instead');
     const matrix = headMatrix || this.headMatrix;
     return VrMath.getRotation(matrix, eulerOrder);
+  }
+
+  /**
+   * Return position of the head as [X,Y,Z].
+   */
+  position() {
+    return VrMath.getTranslation(this.headMatrix);
+  }
+
+  /**
+   * Return rotation as Euler angles in degrees.
+   *
+   * Returns an array in the form:
+   * [rotation about X axis, rotation about Y axis, rotation about Z axis]
+   */
+  rotation() {
+    return this.rotationInRadians().map(THREE.Math.radToDeg);
+  }
+
+  /**
+   * Return rotation as Euler angles in degrees.
+   *
+   * Returns an array in the form:
+   * [rotation about X axis, rotation about Y axis, rotation about Z axis]
+   */
+  rotationInRadians() {
+    return VrMath.getRotation(this.headMatrix, 'XYZ');
+  }
+
+  /**
+   * Return the rotation in yaw, pitch, roll order in degrees.
+   *
+   * For those new to 3D graphics and who are not former pilots
+   *   Yaw = looking up and down
+   *   Pitch = looking to the left and right
+   *   Roll = tilting your head from side to side
+   *
+   * Returns an array of rotations in the form:
+   * [Y axis, X axis, Z axis]
+   */
+  yawPitchRoll() {
+    return this.yawPitchRollInRadians().map(THREE.Math.radToDeg);
+  }
+
+  /**
+   * Return the rotation in yaw, pitch, roll order in radians.
+   *
+   * For those new to 3D graphics and are not former pilots
+   *   Yaw = looking up and down
+   *   Pitch = looking to the left and right
+   *   Roll = tilting your head from side to side
+   *
+   * Returns an array of rotations in the form:
+   * [Y axis, X axis, Z axis]
+   */
+  yawPitchRollInRadians() {
+    return VrMath.getRotation(this.headMatrix);
   }
 
   /**
