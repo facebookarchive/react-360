@@ -19,6 +19,7 @@ function prepare() {
     const npm = child_process.spawn('npm', ['run', 'build'], {
       stdio: 'inherit',
       cwd: PACKAGES.ovrui,
+      shell: true      
     });
     npm.on('close', code => {
       if (code !== 0) {
@@ -44,7 +45,7 @@ function buildPackage(name, dir) {
   }).then(json => {
     const version = require(json).version;
     return new Promise((resolve, reject) => {
-      const npm = child_process.spawn('npm', ['pack'], {stdio: 'inherit', cwd: dir});
+      const npm = child_process.spawn('npm', ['pack'], {stdio: 'inherit', cwd: dir, shell: true});
       npm.on('close', code => {
         if (code !== 0) {
           reject(code);
