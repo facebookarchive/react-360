@@ -142,6 +142,19 @@ class VrHeadModelImpl {
   }
 
   /**
+   * Return the horizontal field of view of the camera in radians.
+   */
+  horizontalFovInRadians() {
+    return THREE.Math.degToRad(this.horizontalFov());
+  }
+
+  /**
+   * Return the vertical field of view of the camera in radians.
+   */
+  verticalFovInRadians() {
+    return THREE.Math.degToRad(this.verticalFov());
+  }
+  /**
    * Return Head matrix as array of numbers
    */
   getHeadMatrix() {
