@@ -26,6 +26,7 @@ type ResourceSpecifier = void | null | string | {uri: string};
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
   _lit: boolean;
+  _transparent: boolean;
   _wireframe: boolean;
   _textureURL: null | string;
   _loadingURL: null | string;
@@ -40,6 +41,7 @@ export default class RCTBaseMesh extends RCTBaseView {
     super();
 
     this._lit = false;
+    this._transparent = false;
     this._wireframe = false;
     this._textureURL = null;
     this._loadingURL = null;
@@ -60,15 +62,19 @@ export default class RCTBaseMesh extends RCTBaseView {
           if (value === null) {
             this._litMaterial.opacity = 1;
             this._unlitMaterial.opacity = 1;
-            this._litMaterial.transparent = false;
-            this._unlitMaterial.transparent = false;
           } else {
             this._litMaterial.opacity = value;
             this._unlitMaterial.opacity = value;
-            this._litMaterial.transparent = value < 1;
-            this._unlitMaterial.transparent = value < 1;
           }
         },
+      }: Object)
+    );
+
+    Object.defineProperty(
+      this.props,
+      'transparent',
+      ({
+        set: this._setTransparent.bind(this),
       }: Object)
     );
 
@@ -173,6 +179,12 @@ export default class RCTBaseMesh extends RCTBaseView {
       });
   }
 
+  _setTransparent(flag: boolean) {
+    this._transparent = flag;
+    this._litMaterial.transparent = flag;
+    this._unlitMaterial.transparent = flag;
+  }
+
   _setLit(flag: boolean) {
     this._lit = flag;
     const mat = flag ? this._litMaterial : this._unlitMaterial;
@@ -224,6 +236,7 @@ export default class RCTBaseMesh extends RCTBaseView {
       // register the properties sent from react to runtime
       NativeProps: {
         lit: 'boolean',
+        transparent: 'boolean',
         texture: 'object',
         wireframe: 'boolean',
       },
