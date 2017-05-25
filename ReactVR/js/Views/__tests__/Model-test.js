@@ -58,6 +58,9 @@ jest
       MeshPhongMaterial: jest.fn(() => {
         return {dispose() {}};
       }),
+      ShaderMaterial: jest.fn(() => {
+        return {dispose() {}};
+      }),
       BufferGeometry: jest.fn(() => ({})),
       Vector3: jest.fn(() => ({})),
       Vector4: jest.fn(() => ({})),

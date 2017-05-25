@@ -100,6 +100,11 @@ const Cylinder = React.createClass({
      * higher numbers corresponds to a smoother cylinder
      */
     segments: PropTypes.number,
+
+    /**
+     * set material parameters in three.js
+     */
+    materialParameters: PropTypes.object,
   },
 
   viewConfig: {

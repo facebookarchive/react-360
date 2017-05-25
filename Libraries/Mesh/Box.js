@@ -65,6 +65,11 @@ const Box = React.createClass({
     texture: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
 
     /**
+     * set material parameters in three.js
+     */
+    materialParameters: PropTypes.object,
+
+    /**
      * Specifying true for this property will cause the object to be displayed as a wireframe
      */
     wireframe: PropTypes.bool,

@@ -7,6 +7,12 @@ declare module 'three' {
   declare var SmoothShading: number;
   declare var VertexColors: number;
   declare var NoColors: number;
+  declare var NormalBlending: number;
+  declare var FrontSide: number;
+  declare var SrcAlphaFactor: number;
+  declare var OneMinusSrcAlphaFactor: number;
+  declare var AddEquation: number;
+  declare var LessEqualDepth: number;
 
   declare class Box3 {
     max: Vector3,
@@ -91,6 +97,7 @@ declare module 'three' {
     vertexColors: number,
 
     dispose(): void,
+    setValues(any): void,
   }
 
   declare class Matrix4 {
@@ -119,6 +126,10 @@ declare module 'three' {
 
   declare class MultiMaterial extends Material {
     constructor(multi: Array<any>): MultiMaterial,
+  }
+
+  declare class ShaderMaterial extends Material {
+    constructor(): ShaderMaterial,
   }
 
   declare class Object3D {

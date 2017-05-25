@@ -60,6 +60,11 @@ const Sphere = React.createClass({
     lit: PropTypes.bool,
 
     /**
+     * set material parameters in three.js
+     */
+    materialParameters: PropTypes.object,
+
+    /**
      * `texture` is a string specifying the url of the texture to be used for the sphere,
      * this will be an http address
      * the image is wrap around the sphere

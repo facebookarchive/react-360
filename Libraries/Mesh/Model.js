@@ -83,6 +83,11 @@ const Model = React.createClass({
     lit: PropTypes.bool,
 
     /**
+     * set material parameters in three.js
+     */
+    materialParameters: PropTypes.object,
+
+    /**
      * `obj` is a string representing the resource identifier for the Model, this will be
      * an http address
      * The source properties will enable future expansion to support additional formats

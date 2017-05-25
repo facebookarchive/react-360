@@ -58,6 +58,11 @@ const Plane = React.createClass({
     lit: PropTypes.bool,
 
     /**
+     * set material parameters in three.js
+     */
+    materialParameters: PropTypes.object,
+
+    /**
      * `texture` is a string specifying the url of the texture to be used for the Plane face,
      * this will be an http address
      */

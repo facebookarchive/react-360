@@ -26,12 +26,15 @@ type ResourceSpecifier = void | null | string | {uri: string};
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
   _lit: boolean;
+  _shader: boolean;
   _wireframe: boolean;
   _textureURL: null | string;
   _loadingURL: null | string;
   _texture: null | Texture;
   _litMaterial: Material;
   _unlitMaterial: Material;
+  _shaderMaterial: Material;
+  _shaderUniformsMap: any;
   mesh: any;
   _geometry: any;
   _rnctx: ReactNativeContext;
@@ -40,12 +43,19 @@ export default class RCTBaseMesh extends RCTBaseView {
     super();
 
     this._lit = false;
+    this._shader = false;
     this._wireframe = false;
     this._textureURL = null;
     this._loadingURL = null;
     this._texture = null; // Cache for THREE Texture
     this._litMaterial = new THREE.MeshPhongMaterial({color: 0xffffff}); // THREE Material to use when texture or color used, lit === true
     this._unlitMaterial = new THREE.MeshBasicMaterial({color: 0xffffff}); // THREE Material to use when texture or color used, lit === false
+    this._shaderMaterial = new THREE.ShaderMaterial(); // THREE Material to use when fragment or vertex shader specified in material parameters
+    this._shaderUniformsMap = {
+      texture: {
+        value: null,
+      },
+    };
     this._rnctx = rnctx;
 
     this.mesh = null;
@@ -90,6 +100,13 @@ export default class RCTBaseMesh extends RCTBaseView {
 
     Object.defineProperty(
       this.props,
+      'materialParameters',
+      ({
+        set: this._setMaterialParameters.bind(this),
+      }: Object)
+    );
+    Object.defineProperty(
+      this.props,
       'texture',
       ({
         set: this._setTexture.bind(this),
@@ -129,8 +146,10 @@ export default class RCTBaseMesh extends RCTBaseView {
       // Remove texture from textured materials
       this._litMaterial.map = null;
       this._unlitMaterial.map = null;
+      this._shaderUniformsMap.texture.value = null;
       this._litMaterial.needsUpdate = true;
       this._unlitMaterial.needsUpdate = true;
+      this._shaderMaterial.needsUpdate = true;
       return;
     }
     const url = extractURL(value);
@@ -159,8 +178,10 @@ export default class RCTBaseMesh extends RCTBaseView {
           // TODO: Consider providing props on BaseMesh to control these as well
           this._litMaterial.map = this._texture;
           this._unlitMaterial.map = this._texture;
+          this._shaderUniformsMap.texture.value = texture;
           this._litMaterial.needsUpdate = true;
           this._unlitMaterial.needsUpdate = true;
+          this._shaderMaterial.needsUpdate = true;
         },
         err => {
           manager.removeReference(url);
@@ -175,7 +196,9 @@ export default class RCTBaseMesh extends RCTBaseView {
 
   _setLit(flag: boolean) {
     this._lit = flag;
-    const mat = flag ? this._litMaterial : this._unlitMaterial;
+    const mat = this._shader
+      ? this._shaderMaterial
+      : flag ? this._litMaterial : this._unlitMaterial;
     if (this.mesh) {
       this.mesh.material = mat;
     }
@@ -189,10 +212,62 @@ export default class RCTBaseMesh extends RCTBaseView {
 
   _setGeometry(geometry: Geometry) {
     if (!this.mesh) {
-      this.mesh = new THREE.Mesh(geometry, this._lit ? this._litMaterial : this._unlitMaterial);
+      const mat = this._shader
+        ? this._shaderMaterial
+        : this._lit ? this._litMaterial : this._unlitMaterial;
+      this.mesh = new THREE.Mesh(geometry, mat);
       this.view.add(this.mesh);
     } else {
       this.mesh.geometry = geometry;
+    }
+  }
+
+  _setMaterialParameters(parameters: any) {
+    if (!parameters) {
+      parameters = {
+        fog: true,
+
+        blending: THREE.NormalBlending,
+        side: THREE.FrontSide,
+        shading: THREE.SmoothShading,
+        vertexColors: THREE.NoColors,
+
+        transparent: false,
+
+        blendSrc: THREE.SrcAlphaFactor,
+        blendDst: THREE.OneMinusSrcAlphaFactor,
+        blendEquation: THREE.AddEquation,
+        blendSrcAlpha: null,
+        blendDstAlpha: null,
+        blendEquationAlpha: null,
+
+        depthFunc: THREE.LessEqualDepth,
+        depthTest: true,
+        depthWrite: true,
+
+        clippingPlanes: null,
+        clipShadows: false,
+
+        colorWrite: true,
+      };
+    }
+    if (parameters.vertexShader || parameters.fragmentShader) {
+      parameters.uniforms = {
+        ...this._shaderUniformsMap,
+        ...parameters.uniforms,
+      };
+      this._shaderMaterial.setValues(parameters);
+      this._shader = true;
+      if (this.mesh) {
+        this.mesh.material = this._shaderMaterial;
+      }
+    } else {
+      this._litMaterial.setValues(parameters);
+      this._unlitMaterial.setValues(parameters);
+      this._shader = false;
+      if (this.mesh) {
+        this.mesh.material = this._lit ? this._litMaterial : this._unlitMaterial;
+      }
     }
   }
 
@@ -213,6 +288,7 @@ export default class RCTBaseMesh extends RCTBaseView {
       }
     }
     this._litMaterial.dispose();
+    this._shaderMaterial.dispose();
     this._unlitMaterial.dispose();
     super.dispose();
     this._geometry = null;
@@ -226,6 +302,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         lit: 'boolean',
         texture: 'object',
         wireframe: 'boolean',
+        materialParameters: 'object',
       },
     });
   }
