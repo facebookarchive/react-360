@@ -13,6 +13,7 @@
 const MatrixMath = require('MatrixMath');
 const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 const VrMath = require('VrMath');
+import * as THREE from 'three';
 
 /**
  * VrHeadModel is a util module that simplifies obtaining the current orientation of the headset
@@ -64,8 +65,10 @@ class VrHeadModelImpl {
    * If eulerOrder is not specified `YXZ` order is used, i.e. [Yaw, Pitch, Roll].
    */
   rotationOfHeadMatrix(headMatrix, eulerOrder) {
-    console.warn('rotationOfHeadMatrix is deprecated.  Please use rotation, rotationInRadians, ' +
-                 'yawPitchRoll or yawPitchRollInRadians instead');
+    console.warn(
+      'rotationOfHeadMatrix is deprecated.  Please use rotation, rotationInRadians, ' +
+        'yawPitchRoll or yawPitchRollInRadians instead'
+    );
     const matrix = headMatrix || this.headMatrix;
     return VrMath.getRotation(matrix, eulerOrder);
   }
