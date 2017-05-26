@@ -112,7 +112,7 @@ For example, a matrix which scales all axes by `0.01` and then translates by `[3
   }}
 ```
 
-**`rotateX`** : This command accepts a single value which rotates around the X axis by a number of degrees. The default units for numbers or string representations of a number are degrees. To specify radians instead, append **`rad`** to the string, for example, **`-0.5rad`**.
+**`rotateX`** : This command accepts a single value which rotates around the X-axis by a number of degrees. If you imagine rotating the head of an avatar about the X-axis, this results in the avatar appearing to look up or down. This rotation is commonly referred to as *pitch*. The default units for numbers or string representations of a number are degrees. To specify radians instead, append **`rad`** to the string, for example, **`-0.5rad`**.
 
 ```
   style={{
@@ -122,7 +122,7 @@ For example, a matrix which scales all axes by `0.01` and then translates by `[3
   }}
 ```
 
-**`rotateY`** : This command accepts a single value which rotates around the Y axis by a number of degrees. The default units for numbers or string representations of a number are degrees. To specify radians instead, append **`rad`** to the string, for example, **`-0.5rad`**.
+**`rotateY`** : This command accepts a single value which rotates around the Y-axis by a number of degrees. If you imagine rotating the head of an avatar about the Y-axis, this results in the avatar appearing to look left or right. This rotation is commonly referred to as *yaw*. The default units for numbers or string representations of a number are degrees. To specify radians instead, append **`rad`** to the string, for example, **`-0.5rad`**.
 
 ```
   style={{
@@ -132,7 +132,7 @@ For example, a matrix which scales all axes by `0.01` and then translates by `[3
   }}
 ```
 
-**`rotateZ`** : This command accepts a single value which rotates around the Z axis by a number of degrees. The default units for numbers or string representations of a number are degrees. To specify radians instead, append **`rad`** to the string, for example, **`-0.5rad`**.
+**`rotateZ`** : This command accepts a single value which rotates around the Z-axis by a number of degrees. If you imagine rotating the head of an avatar about the Z-axis, this results in the avatar appearing to tilt their head. This rotation is commonly referred to as *roll*. The default units for numbers or string representations of a number are degrees. To specify radians instead, append **`rad`** to the string, for example, **`-0.5rad`**.
 
 ```
   style={{
