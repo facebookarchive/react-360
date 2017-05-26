@@ -24,7 +24,7 @@ class VrHeadModelImpl {
   constructor() {
     this.headMatrix = MatrixMath.createIdentityMatrix();
     this.viewMatrix = MatrixMath.createIdentityMatrix();
-    this.inVR = false;
+    this._inVR = false;
     this.fov = 0;
     this.aspect = 1;
     this._headMatrixListener = RCTDeviceEventEmitter.addListener(
@@ -32,10 +32,10 @@ class VrHeadModelImpl {
       this._onReceivedHeadMatrix.bind(this)
     );
     RCTDeviceEventEmitter.addListener('onEnterVR', () => {
-      this.inVR = true;
+      this._inVR = true;
     });
     RCTDeviceEventEmitter.addListener('onExitVR', () => {
-      this.inVR = false;
+      this._inVR = false;
     });
   }
 
@@ -165,7 +165,15 @@ class VrHeadModelImpl {
    * Return true if the headset is currently used
    */
   getVRStatus() {
-    return this.inVR;
+    console.warn('getVRStatus is deprecated.  Please use inVR instead');
+    return this._inVR;
+  }
+
+  /**
+   * Return true if using a VR headset, false if viewing outside of VR
+   */
+  inVR() {
+    return this._inVR;
   }
 }
 
