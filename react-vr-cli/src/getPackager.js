@@ -17,7 +17,7 @@ function getPackager() {
   }
   try {
     child_process.execSync(
-      /^win/.test(process.platform) ? 'yarn --version' : 'yarn --version 2>/dev/null'
+      /^win/.test(process.platform) ? 'yarn --version 2> NUL' : 'yarn --version 2>/dev/null'
     );
     packager = 'yarn';
   } catch (e) {
