@@ -13,7 +13,6 @@
 const MatrixMath = require('MatrixMath');
 const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 const VrMath = require('VrMath');
-import * as THREE from 'three';
 
 /**
  * VrHeadModel is a util module that simplifies obtaining the current orientation of the headset
@@ -87,7 +86,7 @@ class VrHeadModelImpl {
    * [rotation about X axis, rotation about Y axis, rotation about Z axis]
    */
   rotation() {
-    return this.rotationInRadians().map(THREE.Math.radToDeg);
+    return this.rotationInRadians().map(VrMath.radToDeg);
   }
 
   /**
@@ -112,7 +111,7 @@ class VrHeadModelImpl {
    * [Y axis, X axis, Z axis]
    */
   yawPitchRoll() {
-    return this.yawPitchRollInRadians().map(THREE.Math.radToDeg);
+    return this.yawPitchRollInRadians().map(VrMath.radToDeg);
   }
 
   /**
@@ -148,14 +147,14 @@ class VrHeadModelImpl {
    * Return the horizontal field of view of the camera in radians.
    */
   horizontalFovInRadians() {
-    return THREE.Math.degToRad(this.horizontalFov());
+    return VrMath.degToRad(this.horizontalFov());
   }
 
   /**
    * Return the vertical field of view of the camera in radians.
    */
   verticalFovInRadians() {
-    return THREE.Math.degToRad(this.verticalFov());
+    return VrMath.degToRad(this.verticalFov());
   }
   /**
    * Return Head matrix as array of numbers

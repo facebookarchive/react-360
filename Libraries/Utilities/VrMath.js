@@ -13,6 +13,9 @@
 const clamp = require('clamp');
 const MatrixMath = require('MatrixMath');
 
+const RAD_TO_DEG = 180 / Math.PI;
+const DEG_TO_RAD = Math.PI / 180;
+
 /**
  * Math utilities for React VR
  */
@@ -144,6 +147,14 @@ const VrMath = {
    */
   getMatrixUp: function(m) {
     return MatrixMath.v3Normalize([m[4], m[5], m[6]]);
+  },
+
+  radToDeg: function(rad) {
+    return rad * RAD_TO_DEG;
+  },
+
+  degToRad: function(deg) {
+    return deg * DEG_TO_RAD;
   },
 };
 
