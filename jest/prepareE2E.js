@@ -16,23 +16,26 @@ if (!process.env.SKIPBUILD) {
     const cliLocation = require.resolve('react-native/local-cli/cli.js');
     const configLocation = path.resolve(root, 'rn-cli.config.js');
     return new Promise(function(resolve, reject) {
+      const args = [
+        cliLocation,
+        'bundle',
+        '--entry-file',
+        input,
+        '--platform',
+        'vr',
+        '--bundle-output',
+        output,
+        '--dev',
+        'false',
+        '--config',
+        configLocation,
+      ];
+      if (!process.env.RETAINCACHE) {
+        args.push('--reset-cache');
+      }
       const npm = child_process.spawn(
           (/^win/.test(process.platform) ? 'node.exe' : 'node'),
-          [
-            cliLocation,
-            'bundle',
-            '--entry-file',
-            input,
-            '--platform',
-            'vr',
-            '--bundle-output',
-            output,
-            '--dev',
-            'false',
-            '--config',
-            configLocation,
-            '--reset-cache'
-          ],
+          args,
           {stdio: 'inherit', cwd: root}
       );
       npm.on('close', function(code) {
