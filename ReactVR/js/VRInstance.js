@@ -29,6 +29,8 @@ type VRInstanceOptions = {
   enableHotReload?: boolean,
   font?: any,
   height?: number,
+  hideCompass?: boolean,
+  hideFullscreen?: boolean,
   nativeModules?: Array<Module>,
   onEnterVR?: () => void,
   onExitVR?: () => void,
@@ -105,6 +107,8 @@ export default class VRInstance {
       allowCarmelDeeplink: allowCarmelDeeplink,
       disableTouchPanning: options.disableTouchPanning,
       pixelRatio: options.pixelRatio,
+      hideFullscreen: options.hideFullscreen,
+      hideCompass: options.hideCompass,
     });
 
     let defaultAssetRoot = 'static_assets/';

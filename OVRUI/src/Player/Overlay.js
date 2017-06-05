@@ -139,6 +139,9 @@ type ButtonHandler = (...any) => any;
 
 type OverlayOptions = {
   fullscreenButtonHandler?: ButtonHandler,
+  hideCompass?: boolean,
+  hideFullscreen?: boolean,
+  resetAngles?: ?() => mixed,
   vrButtonHandler?: ButtonHandler,
 };
 
@@ -197,6 +200,7 @@ export default class Overlay {
 
     const compassWrapper = document.createElement('div');
     setStyles(compassWrapper, COMPASS_WRAPPER_STYLES);
+    compassWrapper.style.display = !options.hideCompass ? 'inline-block' : 'none';
     this.compass = createCompassGlyph(30, 30, '#ffffff');
     setStyles(this.compass, COMPASS_STYLES);
     if (typeof options.resetAngles === 'function') {
@@ -351,7 +355,7 @@ export default class Overlay {
   /**
    * Set the visibility of the Fullscreen button
    */
-  setFullscreen(show: boolean) {
+  setFullscreenButtonVisibility(show: boolean) {
     this.fullscreenButton.style.display = fullscreenMethod && show ? 'inline-block' : 'none';
   }
 

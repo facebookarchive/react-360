@@ -28,6 +28,7 @@ type PlayerOptions = {
   disableTouchPanning?: boolean,
   elementOrId?: string | Element,
   height?: number,
+  hideCompass?: boolean,
   hideFullscreen?: boolean,
   onEnterVR?: () => void,
   onExitVR?: () => void,
@@ -305,6 +306,7 @@ export default class Player {
     const overlay = new Overlay({
       vrButtonHandler: this.attemptEnterVR,
       fullscreenButtonHandler: this.attemptEnterFullscreen,
+      hideCompass: options.hideCompass,
       hideFullscreen: options.hideFullscreen,
       resetAngles: isMobile ? null : this.resetAngles,
     });
