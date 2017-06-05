@@ -343,6 +343,9 @@ const Text = React.createClass({
         style: [this.props.style, {color: 'magenta'}],
       };
     }
+    if (newProps.style && newProps.style['renderGroup'] === undefined && newProps.style.transform) {
+      newProps.style.renderGroup = true;
+    }
     if (this.context.isInAParentText) {
       return <RCTVirtualText {...newProps} isOnLayer={!!this.context.isOnLayer} />;
     } else {
