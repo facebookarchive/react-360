@@ -1,6 +1,6 @@
 ---
 id: native-modules
-title: Native Modules
+title: Native Modules and Views
 layout: docs
 category: Guides
 permalink: docs/native-modules.html
@@ -83,3 +83,99 @@ render() {
 ```
 
 See the `CubeSample` for the full code of this example.
+
+### Creating Native Views
+
+By implementing a native view you can control how the properties specified in your React VR code interact with the runtime code, this could be visual representation or even sound.
+
+To create a native view you will need to import the main module `react-vr-web`
+
+```
+import * as ReactVR from 'react-vr-web';
+```
+
+Then create a class that extends the `RCTBaseView`, the constructor should create the `OVRUI.UIView` and register getters and setters on any properties.
+
+The class also implements a static `describe` function which the runtime uses to determine which properties should be sent from the React VR code to the runtime, these are the runtime implementation of the PropTypes.
+
+```
+class RCTTestLight extends ReactVR.RCTBaseView {
+  constructor(guiSys: GuiSys) {
+    super();
+    const light = new THREE.AmbientLight();
+    this.view = new OVRUI.UIView(guiSys);
+    this.view.add(light);
+
+    Object.defineProperty(
+      this.props,
+      'intensity',
+      {
+        set: value => {
+          light.intensity = value;
+        },
+      }
+    );
+
+    this.props.intensity = 1;
+  }
+
+  static describe() {
+    return merge(super.describe(), {
+      // declare the native props sent from react to runtime
+      NativeProps: {
+        intensity: 'number',
+      },
+    });
+  }
+}
+```
+
+Finally, the custom views must be registered to the React VR context and this is handled by provided a list of available `customViews` when creating `ReactVR.VRInstance`
+
+```
+const vr = new ReactVR.VRInstance(bundlePath, appName, document.body, {
+  customViews: [{name: 'TestLight', view: RCTTestLight}],
+  ...options,
+});
+```
+
+
+To make this `TestLight` component available to React VR code it is necessary to register a component which makes use of the `NativeMethodsMixin`. `propTypes` will need to have been set to enable the propTypes to be handled by the React VR core, `viewConfig` is used to support the `Animated` modules and the `render` function should return a component created using the `requireNativeComponent` utility function.
+
+```
+const TestLight = React.createClass({
+  mixins: [NativeMethodsMixin],
+
+  propTypes: {
+    ...View.propTypes,
+    style: StyleSheetPropType(LayoutAndTransformPropTypes),
+    intensity: PropTypes.number,
+  },
+
+  viewConfig: {
+    uiViewClassName: 'AmbientLight',
+    validAttributes: {
+      ...ReactNativeViewAttributes.RCTView,
+      intensity: true,
+    },
+  },
+
+  getDefaultProps: function() {
+    return {};
+  },
+
+  render: function() {
+    return (
+      <RKTestLight
+        {...props}>
+      </RKTestLight>
+    );
+  },
+});
+
+const RKTestLight = requireNativeComponent('TestLight', TestLight, {
+  nativeOnly: {},
+});
+
+module.exports = TestLight;
+```
