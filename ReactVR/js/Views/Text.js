@@ -310,19 +310,19 @@ export default class RCTText extends RCTBaseView {
     let allText = '';
     for (let i = 0; i < this.textChildren.length; i++) {
       const child = this.textChildren[i];
-      if (child.isRawText) {
-        allText += child.props.text;
+      if (child.isRawText && child.props.text && child.props.text.length) {
+        allText +=
+          String.fromCharCode(OVRUI.SDFFONT_MARKER_COLOR) +
+          String.fromCharCode((textColor >> 16) & 0xff) + // red
+          String.fromCharCode((textColor >> 8) & 0xff) + // green
+          String.fromCharCode((textColor >> 0) & 0xff) + // blue
+          String.fromCharCode((textColor >> 24) & 0xff) + // alpha
+          child.props.text;
       } else if (child.isTextNode) {
         allText += child.getText(textColor);
       }
     }
-    this._text =
-      String.fromCharCode(OVRUI.SDFFONT_MARKER_COLOR) +
-      String.fromCharCode((textColor >> 16) & 0xff) + // red
-      String.fromCharCode((textColor >> 8) & 0xff) + // green
-      String.fromCharCode((textColor >> 0) & 0xff) + // blue
-      String.fromCharCode((textColor >> 24) & 0xff) + // alpha
-      allText;
+    this._text = allText;
     this._textDirty = false;
     // make sure the visual representation is resubmitted
     this._visualTextDirty = true;

@@ -72,6 +72,18 @@ describe('RCTText', () => {
     expect(t.view.setTextVAlign.mock.calls[0][0]).toBe('top');
   });
 
+  it('handles empty nested text', () => {
+    const t = new Text();
+    const c = new Text();
+    c.style.color = 0xffaabbcc;
+    c.addChild(0, {props: {text: 'Nested text'}, isRawText: true});
+    expect(c.getText()).toBe('\x00\xaa\xbb\xcc\xffNested text');
+    t.addChild(1, c);
+    // TODO: This should probably happen automatically
+    t._textDirty = true;
+    expect(t.getText(0xff336699)).toBe('\x00\xaa\xbb\xcc\xffNested text');
+  });
+
   it('can extract text with colors', () => {
     const t = new Text();
     const line1 = {props: {text: 'Line one'}, isRawText: true};
@@ -79,7 +91,7 @@ describe('RCTText', () => {
     t.addChild(0, line1);
     t.addChild(1, line2);
     expect(t.textChildren).toEqual([line1, line2]);
-    expect(t.getText(0xff336699)).toBe('\x00\x33\x66\x99\xffLine oneLine two');
+    expect(t.getText(0xff336699)).toBe('\x00\x33\x66\x99\xffLine one\x00\x33\x66\x99\xffLine two');
 
     const c = new Text();
     c.style.color = 0xffaabbcc;
@@ -89,7 +101,7 @@ describe('RCTText', () => {
     // TODO: This should probably happen automatically
     t._textDirty = true;
     expect(t.getText(0xff336699)).toBe(
-      '\x00\x33\x66\x99\xffLine one\x00\xaa\xbb\xcc\xffNested textLine two'
+      '\x00\x33\x66\x99\xffLine one\x00\xaa\xbb\xcc\xffNested text\x00\x33\x66\x99\xffLine two'
     );
   });
 });
