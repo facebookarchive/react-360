@@ -69,8 +69,8 @@ export default class Networking extends Module {
       headers: headers,
     };
 
-    // copy over the body data for POST in the correct form
-    if (method === 'POST' && data) {
+    // copy over the body data for POST/PATCH in the correct form
+    if ((method === 'POST' || method === 'PATCH') && data) {
       if (data.string) {
         options.body = data.string;
       } else if (data.formData) {
