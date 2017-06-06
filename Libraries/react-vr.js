@@ -28,6 +28,9 @@ const ReactVR = {
   get Box() {
     return require('Box');
   },
+  get LiveEnvCamera() {
+    return require('LiveEnvCamera');
+  },
   get Cylinder() {
     return require('Cylinder');
   },

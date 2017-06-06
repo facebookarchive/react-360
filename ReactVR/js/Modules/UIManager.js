@@ -16,6 +16,7 @@ import RCTSphere from '../Views/Sphere';
 import RCTImage from '../Views/Image';
 import RCTView from '../Views/View';
 import RCTPano from '../Views/Pano';
+import RCTLiveEnvCamera from '../Views/LiveEnvCamera';
 import RCTModel from '../Views/Model';
 import RCTScene from '../Views/Scene';
 import RCTSound from '../Views/Sound';
@@ -176,6 +177,9 @@ export default class UIManager extends Module {
     this._layoutAnimation = null;
     this.registerViewType('RCTView', RCTView.describe(), function() {
       return new RCTView(guiSys);
+    });
+    this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), function() {
+      return new RCTLiveEnvCamera(guiSys);
     });
     this.registerViewType('RCTImageView', RCTImage.describe(), function() {
       return new RCTImage(guiSys, rnctx);

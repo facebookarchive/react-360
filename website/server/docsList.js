@@ -21,6 +21,7 @@ path.join(rn, 'Libraries/Text/Text.js'),
 const components = [
 '../Libraries/Lights/AmbientLight.js',
 '../Libraries/Mesh/Box.js',
+'../Libraries/Camera/LiveEnvCamera.js',
 '../Libraries/Mesh/Cylinder.js',
 '../Libraries/VRLayers/CylindricalPanel.js',
 '../Libraries/Lights/DirectionalLight.js',
