@@ -84,7 +84,7 @@ React Native ships with ES2015 support, so you can use it without worrying about
 `import`, `from`, `class`, `extends`, and the `() =>` syntax in the example above are all ES2015 features.
 [This page](https://babeljs.io/docs/learn-es2015/) has a good overview of ES2015 features.
 
-The statements such as `<Text style={{ fontSize: 0.8, ...}}>hello</Text>` above make use of JSX, which is ultimately translated into JavaScipt. For more information, see [React VR Overview](docs/react-vroverview.html).
+The statements such as `<Text style={{ fontSize: 0.8, ...}}>hello</Text>` above make use of JSX, which is translated into JavaScript. For more information, see [React VR Overview](docs/react-vroverview.html).
 
 ## AppRegistry
 
