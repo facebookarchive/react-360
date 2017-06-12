@@ -42,7 +42,8 @@
     "prettier": "^1.0.0",
     "react": "~15.4.1",
     "react-native": "~0.42.0",
-    "three": "^0.80.1"
+    "three": "^0.80.1",
+    "three-gltf2-loader": "^1.0.0"
   },
   "scripts": {
     "flow": "flow",

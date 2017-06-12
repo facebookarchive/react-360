@@ -22,6 +22,7 @@
     "react-native": "~0.42.0"
   },
   "dependencies": {
-    "ovrui": "~1.0.0"
+    "ovrui": "~1.0.0",
+    "three-gltf2-loader": "^1.0.0"
   }
 }

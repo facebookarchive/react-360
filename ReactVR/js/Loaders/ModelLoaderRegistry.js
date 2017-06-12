@@ -12,6 +12,7 @@
 import * as THREE from 'three';
 import type {UIView} from 'ovrui';
 import ObjModelLoader from '../Loaders/ObjModelLoader';
+import GLTF2ModelLoader from '../Loaders/GLTF2ModelLoader';
 
 export interface MeshInstance {
   // returns false if instance can't be updated and instances needs to be recreated
@@ -74,4 +75,5 @@ export function createModelInstance(
   return null;
 }
 // register the default obj loader
+registerModelLoader(new GLTF2ModelLoader());
 registerModelLoader(new ObjModelLoader());
