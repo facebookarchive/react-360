@@ -11,7 +11,7 @@
 'use strict';
 
 const NativeMethodsMixin = require('NativeMethodsMixin');
-const PropTypes = require('react/lib/ReactPropTypes');
+const PropTypes = require('prop-types');
 const React = require('React');
 const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');

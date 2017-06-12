@@ -11,7 +11,7 @@
  */
 'use strict';
 
-const ReactPropTypes = require('react/lib/ReactPropTypes');
+const ReactPropTypes = require('prop-types');
 
 // We add a few overrides to the original React Native implementation
 // Import the original, and add the extra values before re-exporting it

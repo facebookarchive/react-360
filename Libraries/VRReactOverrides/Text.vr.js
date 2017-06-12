@@ -26,7 +26,7 @@ const processColor = require('processColor');
 const createReactNativeComponentClass = require('createReactNativeComponentClass');
 const mergeFast = require('mergeFast');
 
-const {PropTypes} = React;
+const PropTypes = require('prop-types');
 
 const stylePropType = StyleSheetPropType(TextStylePropTypes);
 

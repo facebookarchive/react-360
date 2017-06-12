@@ -9,7 +9,7 @@
  * @providesModule VideoControl
  */
 
-const PropTypes = require('react/lib/ReactPropTypes');
+const PropTypes = require('prop-types');
 const React = require('React');
 const View = require('View');
 const Text = require('Text');

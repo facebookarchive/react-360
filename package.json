@@ -54,6 +54,7 @@
     "test-unit": "jest --config jest/config-unit.json"
   },
   "dependencies": {
-    "create-react-class": "^15.5.3"
+    "create-react-class": "^15.5.3",
+    "prop-types": "^15.5.10"
   }
 }

@@ -12,7 +12,7 @@
 'use strict';
 
 const LayoutPropTypes = require('LayoutPropTypes');
-const PropTypes = require('react/lib/ReactPropTypes');
+const PropTypes = require('prop-types');
 const TransformPropTypes = require('TransformPropTypes');
 
 /**

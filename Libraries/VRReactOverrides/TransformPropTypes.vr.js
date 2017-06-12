@@ -11,7 +11,7 @@
  */
 'use strict';
 
-const ReactPropTypes = require('react/lib/ReactPropTypes');
+const ReactPropTypes = require('prop-types');
 const deprecatedPropType = require('deprecatedPropType');
 
 const ArrayOfNumberPropType = ReactPropTypes.arrayOf(ReactPropTypes.number);
