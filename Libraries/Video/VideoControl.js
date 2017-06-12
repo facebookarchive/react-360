@@ -19,6 +19,8 @@ const UIManager = require('UIManager');
 const ReactNative = require('ReactNative');
 const StyleSheet = require('StyleSheet');
 const {videoTimeFormat} = require('VideoUtils');
+
+const createReactClass = require('create-react-class');
 const createGlyph = require('createGlyph');
 
 const ControlGlyphs = require('../../lib-assets/VideoControlGlyphs');
@@ -120,7 +122,7 @@ class VideoSliderBar extends React.Component {
  *
  * For example usage, see [MediaPlayerState](docs/mediaplayerstate.html)
  */
-const VideoControl = React.createClass({
+const VideoControl = createReactClass({
   propTypes: {
     ...View.propTypes,
 

@@ -21,6 +21,7 @@ const UIManager = require('UIManager');
 const ReactNative = require('ReactNative');
 const LayoutAndTransformTintPropTypes = require('LayoutAndTransformTintPropTypes');
 
+const createReactClass = require('create-react-class');
 const resolveAssetSource = require('resolveAssetSource');
 
 /**
@@ -39,7 +40,7 @@ const resolveAssetSource = require('resolveAssetSource');
  * For an example of using with VideoControls,
  * see [MediaPlayerState](docs/mediaplayerstate.html)
  */
-const VideoPano = React.createClass({
+const VideoPano = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

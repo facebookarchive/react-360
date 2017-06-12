@@ -20,6 +20,7 @@ const ReactNative = require('ReactNative');
 const StyleSheetPropType = require('StyleSheetPropType');
 const View = require('View');
 
+const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
 
@@ -56,7 +57,7 @@ const resolveAssetSource = require('resolveAssetSource');
  *  * Must be a leaf node with no child components
  *  * Defaults to `style: {position: absolute}`
  */
-const Sound = React.createClass({
+const Sound = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

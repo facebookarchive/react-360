@@ -21,6 +21,7 @@ const StyleSheet = require('StyleSheet');
 const StyleSheetPropType = require('StyleSheetPropType');
 const View = require('View');
 
+const createReactClass = require('create-react-class');
 const flattenStyle = require('flattenStyle');
 const merge = require('merge');
 const requireNativeComponent = require('requireNativeComponent');
@@ -48,7 +49,7 @@ const resolveAssetSource = require('resolveAssetSource');
  *   },
  *```
  */
-const Image = React.createClass({
+const Image = createReactClass({
   propTypes: {
     ...View.propTypes,
     style: StyleSheetPropType(ImageStylePropTypes),

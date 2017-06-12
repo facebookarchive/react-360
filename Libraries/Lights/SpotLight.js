@@ -18,6 +18,7 @@ const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
 
+const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 
 /**
@@ -26,7 +27,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * Representation of
  * https://threejs.org/docs/index.html#api/lights/SpotLight
  */
-const SpotLight = React.createClass({
+const SpotLight = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

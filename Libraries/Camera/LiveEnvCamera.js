@@ -18,12 +18,14 @@ const requireNativeComponent = require('requireNativeComponent');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformPropTypes = require('LayoutAndTransformPropTypes');
 
+const createReactClass = require('create-react-class');
+
 /**
  * Displays the environment facing camera. By default the camera is position:'absolute'
  * `<LiveEnvCamera />`
  * The camera image is displayed on geometry that is 1000m away from the viewer
  */
-const LiveEnvCamera = React.createClass({
+const LiveEnvCamera = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

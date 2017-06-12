@@ -15,10 +15,12 @@ const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
 const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
-const requireNativeComponent = require('requireNativeComponent');
-const resolveAssetSource = require('resolveAssetSource');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformTintPropTypes = require('LayoutAndTransformTintPropTypes');
+
+const createReactClass = require('create-react-class');
+const requireNativeComponent = require('requireNativeComponent');
+const resolveAssetSource = require('resolveAssetSource');
 
 /**
  * A Sphere of 1000m with center located at the local transform origin.
@@ -34,7 +36,7 @@ const LayoutAndTransformTintPropTypes = require('LayoutAndTransformTintPropTypes
  * Cubemap images are also supported by specifying the source url as an
  * array of 6 individual images, presented in the order `[+x, -x, +y, -y, +z, -z]`
  */
-const Pano = React.createClass({
+const Pano = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

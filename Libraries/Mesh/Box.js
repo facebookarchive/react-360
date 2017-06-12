@@ -17,6 +17,8 @@ const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
+
+const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
 
@@ -46,7 +48,7 @@ const resolveAssetSource = require('resolveAssetSource');
  *   texture={asset('crate_512.png')}
  * />
  */
-const Box = React.createClass({
+const Box = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

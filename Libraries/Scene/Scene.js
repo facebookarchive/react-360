@@ -12,11 +12,13 @@
 
 const NativeMethodsMixin = require('NativeMethodsMixin');
 const React = require('React');
-const requireNativeComponent = require('requireNativeComponent');
 const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformPropTypes = require('LayoutAndTransformPropTypes');
+
+const createReactClass = require('create-react-class');
+const requireNativeComponent = require('requireNativeComponent');
 
 /**
  * The Scene transform represents the camera location in the world
@@ -25,7 +27,7 @@ const LayoutAndTransformPropTypes = require('LayoutAndTransformPropTypes');
  * the transform of a Scene node, rather the affecting the children is the transform
  * of the camera in the scene.
  */
-const Scene = React.createClass({
+const Scene = createReactClass({
   mixins: [NativeMethodsMixin],
 
   viewConfig: {

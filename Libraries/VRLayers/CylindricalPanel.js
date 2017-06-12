@@ -14,10 +14,12 @@ const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
 const View = require('View');
-const requireNativeComponent = require('requireNativeComponent');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformOpacityPropTypes = require('LayoutAndTransformOpacityPropTypes');
+
+const createReactClass = require('create-react-class');
 const invariant = require('invariant');
+const requireNativeComponent = require('requireNativeComponent');
 
 /**
  * CylindricalPanel is a special component in React VR that allows drawing the child components
@@ -60,7 +62,7 @@ const invariant = require('invariant');
  * Child components can determine if within a Panel by using the `isOnLayer` context
  *
  */
-const CylindricalPanel = React.createClass({
+const CylindricalPanel = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

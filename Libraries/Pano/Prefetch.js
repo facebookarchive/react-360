@@ -14,6 +14,8 @@ const NativeMethodsMixin = require('NativeMethodsMixin');
 const PropTypes = require('react/lib/ReactPropTypes');
 const React = require('React');
 const View = require('View');
+
+const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
 
@@ -21,7 +23,7 @@ const resolveAssetSource = require('resolveAssetSource');
  * Prefetch is a component that declaratively hints the need to download and cache
  * pano images
  */
-const Prefetch = React.createClass({
+const Prefetch = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

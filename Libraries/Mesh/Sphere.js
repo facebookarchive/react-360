@@ -17,6 +17,8 @@ const ReactNativeViewAttributes = require('ReactNativeViewAttributes');
 const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const LayoutAndTransformColorPropTypes = require('LayoutAndTransformColorPropTypes');
+
+const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
 
@@ -47,7 +49,7 @@ const resolveAssetSource = require('resolveAssetSource');
  * />
  */
 
-const Sphere = React.createClass({
+const Sphere = createReactClass({
   mixins: [NativeMethodsMixin],
 
   propTypes: {

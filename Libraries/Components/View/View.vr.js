@@ -21,6 +21,7 @@ const StyleSheetPropType = require('StyleSheetPropType');
 const UIManager = require('UIManager');
 const ViewStylePropTypes = require('ViewStylePropTypes');
 
+const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 
 const stylePropType = StyleSheetPropType(ViewStylePropTypes);
@@ -99,7 +100,7 @@ const statics = {
  * > and performance, although inline styles are also supported.
  *
  */
-const View = React.createClass({
+const View = createReactClass({
   // TODO: We should probably expose the mixins, viewConfig, and statics publicly. For example,
   // one of the props is of type AccessibilityComponentType. That is defined as a const[] above,
   // but it is not rendered by the docs, since `statics` below is not rendered. So its Possible

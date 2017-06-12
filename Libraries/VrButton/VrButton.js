@@ -16,6 +16,8 @@ const View = require('View');
 const StyleSheetPropType = require('StyleSheetPropType');
 const ViewStylePropTypes = require('ViewStylePropTypes');
 const VrSoundEffects = require('VrSoundEffects');
+
+const createReactClass = require('create-react-class');
 const keyMirror = require('fbjs/lib/keyMirror');
 
 const States = keyMirror({
@@ -154,7 +156,7 @@ const LONG_PRESS_THRESHOLD = 500;
  * [Sound Effects](docs/vrsoundeffects.html) API.
  */
 
-const VrButton = React.createClass({
+const VrButton = createReactClass({
   propTypes: {
     ...View.propTypes,
     style: StyleSheetPropType(ViewStylePropTypes),

@@ -21,6 +21,7 @@ const StyleSheetPropType = require('StyleSheetPropType');
 const TextStylePropTypes = require('TextStylePropTypes');
 const Touchable = require('Touchable');
 
+const createReactClass = require('create-react-class');
 const processColor = require('processColor');
 const createReactNativeComponentClass = require('createReactNativeComponentClass');
 const mergeFast = require('mergeFast');
@@ -96,7 +97,7 @@ const viewConfig = {
  * ```
  */
 
-const Text = React.createClass({
+const Text = createReactClass({
   propTypes: {
     /**
      * This can be one of the following values:
