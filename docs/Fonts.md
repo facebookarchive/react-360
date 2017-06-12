@@ -48,26 +48,25 @@ OVRUI.loadFont(
 By loading fonts explicitly you are able to install fallback fonts should the main font set not cover enough of the character set. Contained within the repository are fonts that cover the majority of Chinese, Japanese and Korean glyphs and the OVRUI function `addFontFallback` is used to add a fallback to an already loaded font set.
 
 ```
-var fallbackFonts = {
-  'assets/cjk_0.fnt': 'assets/cjk_0_sdf.png',
-  'assets/cjk_1.fnt': 'assets/cjk_1_sdf.png',
-  'assets/cjk_2.fnt': 'assets/cjk_2_sdf.png',
-  'assets/korean_0.fnt': 'assets/korean_0_sdf.png',
-  'assets/korean_1.fnt': 'assets/korean_1_sdf.png',
-  'assets/efigs.fnt': 'assets/efigs.png',
+const fallbackFonts = {
+  '../static_assets/cjk_0.fnt': '../static_assets/cjk_0_sdf.png',
+  '../static_assets/cjk_1.fnt': '../static_assets/cjk_1_sdf.png',
+  '../static_assets/cjk_2.fnt': '../static_assets/cjk_2_sdf.png',
+  '../static_assets/korean_0.fnt': '../static_assets/korean_0_sdf.png',
+  '../static_assets/korean_1.fnt': '../static_assets/korean_1_sdf.png',
+  '../static_assets/efigs.fnt': '../static_assets/efigs.png',
 };
-// use the embedded defaultFont and and fallbacks
-var font = OVRUI.loadFont();
-var count = 0;
-function addFallback(fallbackFont) {
-  OVRUI.addFontFallback(font, fallbackFont);
-  count--;
-  if (count === 0) {
-    // all fallbacks are loaded start the VRInstance
-    // 'font' contains everything React VR needs to render <Text> elements with
-    // your custom font.
 
-    // Pass it to the boilerplate init code
+function init(bundle, parent, options) {
+  // use the embedded defaultFont and and fallbacks
+  const font = OVRUI.loadFont();
+  Promise.all(
+    Object.keys(fallbackFonts).map(key => OVRUI.loadFont(key, fallbackFonts[key]))
+  ).then(fonts => {
+    for (let i = 0; i < fonts.length; i++) {
+      OVRUI.addFontFallback(font, fonts[i]);
+    }
+
     const vr = new VRInstance(bundle, 'MyProject', parent, {
       // Pass in the custom font as an initialization property
       font: font,
@@ -75,14 +74,6 @@ function addFallback(fallbackFont) {
     });
 
     // ...
-  }
-}
-guiSysOptions.font = OVRUI.loadFont();
-for (var key in fallbackFonts) {
-  // allow each font to asynchronously load in parallel and start VR instance when all complete
-  count++;
-  OVRUI.loadFont(key, fallbackFonts[key]).then((fallbackFont) => {
-    addFallback(fallbackFont);
   });
 }
 ```
