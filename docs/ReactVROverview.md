@@ -21,7 +21,7 @@ UI component that also takes a name as a parameter. These tags are inserted dire
 
 [JSX](https://facebook.github.io/react/docs/introducing-jsx.html) is a syntax extension to JavaScript;
 it is pre-processed in the React Native packager to become JavaScript.
-JSX allows describing UI more elegantly then would be possible with direct code.
+JSX allows describing UI more elegantly than would be possible with direct code.
 
 ```
 <MyButton color="blue" shadowSize={2}>
