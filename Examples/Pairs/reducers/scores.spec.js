@@ -12,27 +12,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-const initialState = () => ({});
+jest.dontMock('./scores');
+const reducer = require('./scores').default;
 
-export default (state = initialState(), action) => {
-  let result;
-  switch (action.type) {
-    case 'CONNECT':
-      result = {...state};
-      result[action.client] = [];
-      return result;
-    case 'SCORE':
-      if (state[action.client].indexOf(action.value) >= 0) {
-        return state; // no state change required
-      }
-      result = {...state};
-      result[action.client].push(action.value);
-      return result;
-    case 'DISCONNECT':
-      result = {...state};
-      delete result[action.client];
-      return result;
-    default:
-      return state;
-  }
-};
+describe('scores reducer', () => {
+  it('should return the initial state', () => {
+    expect(reducer(undefined, {})).toEqual({});
+  });
+});

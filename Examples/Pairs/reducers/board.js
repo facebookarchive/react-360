@@ -12,8 +12,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-const width = 4;
-const height = 4;
+export const width = 4;
+export const height = 4;
 
 const shuffle = array => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -25,7 +25,7 @@ const shuffle = array => {
   return array;
 };
 
-const initialState = () => {
+export const initialState = () => {
   const maxValue = Math.ceil(width * height / 2);
   let values = [...Array(maxValue).keys()]; // [0...maxValue]
   values = values.map(value => -(value + 1)); // [1...-(maxValue + 1)]
@@ -42,80 +42,6 @@ const copyState = state => {
   });
 };
 
-const countValues = (state, value) => {
-  return state.reduce((acc, row) => {
-    return row.reduce((acc, element) => {
-      if (element === value) {
-        return acc + 1;
-      }
-      return acc;
-    }, acc);
-  }, 0);
-};
-
-const score = (scores, client) => ({
-  type: 'SCORE',
-  client: client,
-  score: scores[client] + 1,
-});
-
-const hideSquare = (rowIndex, columnIndex, client) => ({
-  type: 'HIDE',
-  square: {row: rowIndex, column: columnIndex},
-  client: client,
-  sender: client, // local action, not distributed
-});
-
-const gameOver = state => {
-  return !state.some(row => row.some(value => value < 0));
-};
-
-export const setState = state => ({
-  type: 'SET_STATE',
-  state: state,
-});
-
-const zeroScores = scores => {
-  return Object.keys(scores).reduce((acc, key) => {
-    acc[key] = 0;
-    return acc;
-  }, {});
-};
-
-// TODO(jimp): split responders like reducers
-export const responders = (store, action, master) => {
-  const state = store.getState();
-  switch (action.type) {
-    case 'RESTART':
-      // reset game if all pairs shown
-      if (master && gameOver(state.board)) {
-        store.dispatch(
-          setState({
-            board: initialState(),
-            scores: zeroScores(state.scores),
-          })
-        );
-      }
-      return;
-    case 'SHOW':
-      // generate score if master and pair shown
-      if (master) {
-        const value = state.board[action.square.row][action.square.column];
-        if (countValues(state.board, Math.abs(value)) === 1) {
-          // if one half of pair is visible now, both will be after
-          // action is reduced, so generate score action.
-          store.dispatch(score(state.scores, action.client));
-        }
-      }
-
-      // schedule local hide action
-      setTimeout(() => {
-        store.dispatch(hideSquare(action.square.row, action.square.column, action.sender));
-      }, 1000);
-      return;
-  }
-};
-
 export default (state = initialState(), action) => {
   let result;
   let value;
@@ -128,9 +54,7 @@ export default (state = initialState(), action) => {
     case 'HIDE':
       result = copyState(state);
       value = state[action.square.row][action.square.column];
-      if (countValues(state, value) !== 2) {
-        result[action.square.row][action.square.column] = -Math.abs(value);
-      }
+      result[action.square.row][action.square.column] = -Math.abs(value);
       return result;
     default:
       return state;

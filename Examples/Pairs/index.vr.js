@@ -17,49 +17,26 @@ import {AppRegistry, View} from 'react-vr';
 import {NativeModules} from 'react-vr';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
-import Board from './components/Board';
+import {Board, isValid} from './components/Board';
 import Scores from './components/Scores';
+import {isHandshake, isLocal, clientPredictionConsistency} from './replicate';
 import app from './reducers';
-import {responders, setState} from './reducers/board';
 import uuid from 'uuid';
+//import {randomActions} from './random';
 
-const client = uuid();
-
-// master is client with first sorted client id
-const isMasterClient = clients => {
-  if (!clients) {
-    return false;
-  }
-  return client === Object.keys(clients).sort()[0];
-};
-
-const connect = client => ({
-  type: 'CONNECT',
-  client: client,
-});
-
+// set up web socket connection to relay
 const Location = NativeModules.Location;
 const relayUrl = Location.hash ? Location.hash.substring(1) : 'ws://localhost:4000';
 const ws = new window.WebSocket(relayUrl);
 
-// respond to actions received over network
-const respondToAction = store => next => action => {
-  const state = store.getState();
-  responders(store, action, isMasterClient(state.scores));
-  return next(action);
-};
+// generate a unique id for local client
+const localClient = uuid();
 
-// send actions to other clients if not received over network
-const sendAction = store => next => action => {
-  if (!('sender' in action)) {
-    action.sender = client;
-    ws.send(JSON.stringify(action));
-  }
-
-  return next(action);
-};
-
-const store = createStore(app, applyMiddleware(respondToAction, sendAction));
+// handshake actions used to establish master localClient and initial state
+export const connect = client => ({
+  type: 'CONNECT',
+  client: client,
+});
 
 const heartbeat = () => ({
   type: 'HEARTBEAT',
@@ -70,10 +47,65 @@ const disconnect = client => ({
   client: client,
 });
 
+export const syncState = state => ({
+  type: 'SYNC_STATE',
+  state: state,
+});
+
+// add local client to action as sender and send action to peers
+const send = action => {
+  action.sender = localClient;
+  ws.send(JSON.stringify(action));
+};
+
+const timestampActions = store => next => action => {
+  if (!('time' in action)) {
+    action.time = new Date().getTime();
+    action.origin = localClient;
+  }
+  return next(action);
+};
+
+const logActions = store => next => action => {
+  console.log(action);
+  if ('time' in action && action.origin === localClient) {
+    console.log('(' + (new Date().getTime() - action.time) + 'ms latency)');
+  }
+  return next(action);
+};
+
+// filter non-handshake actions from unknown senders
+const filterUnknownSenderActions = store => next => action => {
+  if (isLocal(action) || isHandshake(action) || action.sender in store.getState().scores) {
+    return next(action);
+  }
+};
+
+const store = createStore(
+  app,
+  applyMiddleware(
+    filterUnknownSenderActions,
+    timestampActions,
+    clientPredictionConsistency(syncState, isMaster, isValid, send),
+    //dumbTerminalConsistency(isMaster, isValid, send),
+    logActions
+  )
+);
+
+// true if master client known and either local or given client is master
+function isMaster(client) {
+  client = client || localClient;
+  const clients = store.getState().scores;
+  if (!clients || Object.keys(clients).length === 0) {
+    return false;
+  }
+  return client === Object.keys(clients).sort()[0];
+}
+
 // send heartbeats while connected
 const heartbeatInterval = 3000;
 setInterval(() => {
-  store.dispatch(heartbeat());
+  send(heartbeat());
 }, heartbeatInterval);
 
 // timeout clients if heartbeats not received
@@ -88,14 +120,21 @@ const resetTimeout = client => {
   }, heartbeatInterval * 2);
 };
 
+const isConnect = action => {
+  return action.type === 'CONNECT';
+};
+
+const isDisconnect = action => {
+  return action.type === 'DISCONNECT';
+};
+
 // read actions from network and dispatch locally
 ws.onmessage = evt => {
   const action = JSON.parse(evt.data);
-  console.log(action);
 
   // clear timeout on disconnect for client to minimise multiple disconnect
   // actions for the same client
-  if (action.type === 'DISCONNECT') {
+  if (isDisconnect(action)) {
     clearTimeout(clientTimeouts[action.client]);
   }
 
@@ -103,24 +142,27 @@ ws.onmessage = evt => {
   resetTimeout(action.sender);
 
   // existing master client sends state to other clients after processing connect
-  const master = isMasterClient(store.getState().scores);
+  const master = isMaster();
 
   // dispatch action locally
   store.dispatch(action);
 
   // sync state if existing master and connect or new master due to disconnect
-  // TODO(jimp): only send state to new client on connect...
-  if (
-    (master && action.type === 'CONNECT') ||
-    (!master && isMasterClient(store.getState().scores))
-  ) {
-    ws.send(JSON.stringify(setState(store.getState())));
+  if ((master && isConnect(action)) || (isDisconnect(action) && isMaster())) {
+    send(syncState(store.getState()));
   }
 };
 
-// send initial connect action when websocket is ready
+// dispatch initial connect action when websocket is ready
 ws.onopen = evt => {
-  store.dispatch(connect(client));
+  store.dispatch(connect(localClient));
+
+  // uncomment to randomly generate actions after connection
+  /*
+  setTimeout(() => {
+    randomActions(store, localClient);
+  }, 3000);
+  */
 };
 
 class App extends React.Component {
@@ -128,8 +170,8 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <View>
-          <Board client={client} />
-          <Scores client={client} />
+          <Board client={localClient} />
+          <Scores client={localClient} />
         </View>
       </Provider>
     );

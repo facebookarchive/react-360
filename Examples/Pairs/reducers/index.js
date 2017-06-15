@@ -22,7 +22,7 @@ const reducers = combineReducers({
 });
 
 const app = (state, action) => {
-  if (action.type === 'SET_STATE') {
+  if (action.type === 'SYNC_STATE') {
     return {...action.state};
   }
   return reducers(state, action);
