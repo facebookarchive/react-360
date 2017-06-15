@@ -36,6 +36,9 @@ jest.mock('three', () => {
   return {
     TextureLoader: MockTextureLoader,
     Texture: MockTexture,
+    ShaderMaterial: jest.fn(() => {
+      return {dispose() {}};
+    }),
     MeshBasicMaterial: jest.fn(() => {
       return {dispose() {}};
     }),

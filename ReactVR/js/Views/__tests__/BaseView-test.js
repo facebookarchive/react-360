@@ -27,6 +27,9 @@ jest
     'three',
     () => ({
       Group: jest.fn(),
+      ShaderMaterial: jest.fn(() => {
+        return {dispose() {}};
+      }),
       MeshBasicMaterial: jest.fn(() => {
         return {dispose() {}};
       }),
