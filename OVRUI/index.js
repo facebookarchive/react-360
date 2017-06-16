@@ -11,4 +11,4 @@
  * Entry point for the OVRUI npm package
  */
 
-module.exports = require('./lib/OVRUI');
+module.exports = require('./src/OVRUI');
