@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "relay": "./node_modules/.bin/wsrelay 4000",
-    "start": "node ../../node_modules/react-native/local-cli/cli.js start --reset-cache",
-    "open": "node -e \"require('xopen')('http://localhost:8081/ReactVR/Examples/Pairs/vr')\""
+    "start": "node ../../node_modules/react-native/local-cli/cli.js start --config ./rn-pairs.config.js --reset-cache",
+    "open": "node -e \"require('xopen')('http://localhost:8081/Examples/Pairs/vr')\""
   },
   "dependencies": {
     "react-redux": "^5.0.5",
