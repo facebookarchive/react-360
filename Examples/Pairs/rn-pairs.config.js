@@ -22,11 +22,7 @@ const config = {
   // ReactVR/website -  Avoid the react-native which may be installed here.
   // .git - Avoid all .git directories
   getBlacklistRE() {
-    return blacklist([
-      /.*[/\\]ReactVR[/\\]OVRUI[/\\]package\.json/,
-      /.*[/\\]ReactVR[/\\]website/,
-      /.*[/\\]\.git/,
-    ]);
+    return blacklist([/.*[/\\]OVRUI[/\\]package\.json/, /.*[/\\]website/, /.*[/\\]\.git/]);
   },
 
   // Any modules that are under react-native-github and we want
