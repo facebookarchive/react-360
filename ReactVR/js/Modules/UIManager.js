@@ -40,13 +40,6 @@ import type {GuiSys} from 'ovrui';
 import type {ReactNativeContext} from '../ReactNativeContext';
 import type RCTBaseView from '../Views/BaseView';
 
-type Dimension = {
-  width: number,
-  height: number,
-  scale: number,
-  fontScale: number,
-  densityDpi: number,
-};
 type Attributes = {[attr: string]: any};
 export type CustomView = {
   name: string,
@@ -92,10 +85,6 @@ const STYLES_THAT_DONT_ALTER_LAYOUT = {
 export default class UIManager extends Module {
   _rnctx: ReactNativeContext;
   _guiSys: GuiSys;
-  Dimensions: {
-    windowPhysicalPixels: Dimension,
-    screenPhysicalPixels: Dimension,
-  };
   customDirectEventTypes: {[event: string]: {registrationName: string}};
   customBubblingEventTypes: {
     [event: string]: {
@@ -116,23 +105,6 @@ export default class UIManager extends Module {
     super('UIManager');
     this._rnctx = rnctx;
     this._guiSys = guiSys;
-
-    this.Dimensions = {
-      windowPhysicalPixels: {
-        width: 1024,
-        height: 1024,
-        scale: 1,
-        fontScale: 1,
-        densityDpi: 1,
-      },
-      screenPhysicalPixels: {
-        width: 1024,
-        height: 1024,
-        scale: 1,
-        fontScale: 1,
-        densityDpi: 1,
-      },
-    };
 
     this.customDirectEventTypes = {
       topLayout: {registrationName: 'onLayout'},

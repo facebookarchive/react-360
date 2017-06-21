@@ -12,6 +12,7 @@
 import AndroidConstants from './Modules/AndroidConstants';
 import AsyncLocalStorage from './Modules/AsyncLocalStorage';
 import ControllerInfo from './Modules/ControllerInfo';
+import DeviceInfo from './Modules/DeviceInfo';
 import ExternalAssets from './Modules/ExternalAssets';
 import GlyphTextures from './Modules/GlyphTextures';
 import History from './Modules/History';
@@ -187,6 +188,7 @@ export class ReactNativeContext {
     this.registerModule(new AndroidConstants(this));
     this.registerModule(new AsyncLocalStorage(this));
     this.registerModule(new ControllerInfo(this));
+    this.registerModule(new DeviceInfo());
     this.registerModule(new History(this));
     this.registerModule(new Networking(this));
     this.registerModule(new LinkingManager(this));

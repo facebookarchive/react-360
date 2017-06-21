@@ -21,8 +21,8 @@
     "scripts"
   ],
   "peerDependencies": {
-    "react": "~15.4.1",
-    "react-native": "~0.42.0"
+    "react": "16.0.0-alpha.12",
+    "react-native": "~0.45.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -40,8 +40,8 @@
     "jest": "^17.0.3",
     "jsdom": "^9.10.0",
     "prettier": "^1.0.0",
-    "react": "~15.4.1",
-    "react-native": "~0.42.0",
+    "react": "16.0.0-alpha.12",
+    "react-native": "~0.45.0",
     "three": "^0.85.2",
     "three-gltf2-loader": "^1.0.0"
   },
