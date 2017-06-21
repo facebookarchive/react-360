@@ -101,11 +101,7 @@ export default function UIView(guiSys, params) {
   this.imageMaterial.transparent = true;
   this.imageMaterial.visible = false;
   this.imageMaterial.depthWrite = false;
-  this.material = new THREE.MultiMaterial([
-    this.backgroundMaterial,
-    this.borderMaterial,
-    this.imageMaterial,
-  ]);
+  this.material = [this.backgroundMaterial, this.borderMaterial, this.imageMaterial];
   this.material.side = THREE.DoubleSide;
   this.guiSys = guiSys;
   this.zIndex = 0;
@@ -153,6 +149,11 @@ export default function UIView(guiSys, params) {
   this.textMesh.type = 'SDFText';
   this.textMesh.textClip = [-16384, -16384, 16384, 16384];
   this.textMesh.visible = false;
+  this.textMesh.onBeforeRender = function(renderer, scene, camera, geometry, material, group) {
+    if (geometry && geometry.isSDFText) {
+      geometry.onBeforeRender(this, material);
+    }
+  };
   this.textFontParms = {
     AlphaCenter: 0.47,
     ColorCenter: 0.5,

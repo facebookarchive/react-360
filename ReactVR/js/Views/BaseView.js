@@ -804,7 +804,7 @@ export default class RCTBaseView {
   _getBorderValue(edge: any): number {
     const value = this.YGNode.getBorder(edge);
     const allValue = this.YGNode.getBorder(Yoga.EDGE_ALL);
-    return Number.isNaN(value) ? Number.isNaN(allValue) ? 0 : allValue : value;
+    return Number.isNaN(value) ? (Number.isNaN(allValue) ? 0 : allValue) : value;
   }
   /*
    * The previous functions map react attributes of the
@@ -876,16 +876,16 @@ export default class RCTBaseView {
     }
 
     if (node.material) {
-      if (node.material.type === 'MultiMaterial') {
-        for (const i in node.material.materials) {
-          const mtr = node.material.materials[i];
+      if (Array.isArray(node.material)) {
+        for (let i = 0; i < node.material.length; i++) {
+          const mtr = node.material[i];
           if (mtr.map) {
             mtr.map.dispose();
             mtr.map = null;
           }
           mtr.dispose();
         }
-        node.material.materials = null;
+        node.material = null;
       } else {
         if (node.material.map) {
           node.material.map.dispose();

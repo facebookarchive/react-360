@@ -41,26 +41,6 @@ const gltfStateCache: RefCountCache<any> = new RefCountCache(function(url, entry
 });
 const loadList = {};
 
-// implementation of FileLoader required by gltf
-class FileLoader {
-  options: any;
-
-  constructor() {
-    this.options = {};
-  }
-
-  setResponseType(type) {
-    this.options.responseType = type;
-  }
-
-  load(url, onSuccess) {
-    fetchResource(url, this.options).then(data => onSuccess(data));
-  }
-}
-
-// $FlowFixMe
-THREE.FileLoader = FileLoader;
-
 class GLTF2MeshInstance {
   url: string;
   parent: any;

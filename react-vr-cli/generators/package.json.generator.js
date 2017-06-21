@@ -26,7 +26,7 @@ module.exports = config => ({
     "ovrui": "~1.0.0",
     "react": "~15.4.1",
     "react-native": "~0.42.0",
-    "three": "^0.80.1",
+    "three": "^0.85.2",
     "react-vr": "~1.0.0",
     "react-vr-web": "~1.0.0"
   },

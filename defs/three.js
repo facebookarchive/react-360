@@ -106,10 +106,10 @@ declare module 'three' {
   }
 
   declare class Mesh extends Object3D {
-    material: Material,
+    material: Material | Array<Material>,
     name: string,
 
-    constructor(geom: Geometry, material: Material): Mesh,
+    constructor(geom: Geometry, material: Material | Array<Material>): Mesh,
   }
 
   declare class MeshBasicMaterial extends Material {

@@ -76,6 +76,14 @@ export default class RCTPano extends RCTBaseView {
     });
 
     this._globe = new THREE.Mesh(this._sphereGeometry, this._material);
+    this._globe.onBeforeRender = function(renderer, scene, camera, geometry, material, group) {
+      if (camera.viewID === 1 && material.stereoOffsetRepeats[1]) {
+        material.uniforms.stereoOffsetRepeat.value = material.stereoOffsetRepeats[1];
+      } else {
+        material.uniforms.stereoOffsetRepeat.value = material.stereoOffsetRepeats[0];
+      }
+    };
+
     this._globe.raycast = panoRayCast.bind(this._globe);
     this._globe.rotation.y = -Math.PI / 2;
 

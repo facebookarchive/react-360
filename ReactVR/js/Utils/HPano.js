@@ -117,7 +117,7 @@ export function HPanoBufferGeometry(rad, maxLevels, baseurl) {
 
   this.dirty = true;
   this.type = 'HPanoBufferGeometry';
-  this.material = new THREE.MultiMaterial();
+  this.material = [];
   this.materialsCached = {};
   this.rad = rad;
   this.baseurl = baseurl;
@@ -132,12 +132,12 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
 
   dispose: function() {
     THREE.BufferGeometry.prototype.dispose();
-    for (const i in this.material.materials) {
-      this.material.materials[i].map && this.material.materials[i].map.dispose();
-      this.material.materials[i].map = null;
-      this.material.materials[i].dispose();
+    for (let i = 0; i < this.material.length; i++) {
+      this.material[i].map && this.material[i].map.dispose();
+      this.material[i].map = null;
+      this.material[i].dispose();
     }
-    this.material.materials = [];
+    this.material = [];
     this.materialsCached = {};
   },
 
@@ -170,8 +170,8 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
       offsetIndices: 0,
     };
 
-    for (const i in this.material.materials) {
-      this.material.materials[i].referenced = false;
+    for (let i = 0; i < this.material.length; i++) {
+      this.material[i].referenced = false;
     }
 
     // at each update we will reset the groups
@@ -244,9 +244,9 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
         });
         mtr.loadState = HPANO_MAP_UNLOADED;
         geom.materialsCached[file] = mtr;
-        mtr.index = geom.material.materials.length;
+        mtr.index = geom.material.length;
         mtr.level = level;
-        geom.material.materials.push(mtr);
+        geom.material.push(mtr);
       }
 
       let addQuad = false;

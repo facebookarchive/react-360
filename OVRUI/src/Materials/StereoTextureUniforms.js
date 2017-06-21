@@ -6,21 +6,15 @@
  * should set viewID=1 for the right eye camera. If you set two stereoOffsetRepeats
  * to the material, the right eye camera will use the second stereoOffsetRepeat
  */
+
+import THREE from '../ThreeShim';
+
 export default class StereoTextureUniforms {
   constructor() {
     /** The right eye camera will use stereoOffsetRepeats[1] if it's defined. */
     this.stereoOffsetRepeat = {
-      dynamic: true,
       type: 'f',
-      value: null,
-      onUpdateCallback: function(object, camera) {
-        // if it's right eye camera and has second offsetRepeats, use the second offsetRepeats
-        if (camera.viewID === 1 && object.material.stereoOffsetRepeats[1]) {
-          this.value = object.material.stereoOffsetRepeats[1];
-        } else {
-          this.value = object.material.stereoOffsetRepeats[0];
-        }
-      },
+      value: new THREE.Vector4(0, 0, 1, 1),
     };
   }
 }

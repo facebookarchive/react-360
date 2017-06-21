@@ -599,6 +599,23 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
 
   // set the common and shader specfic font buffers
   this.type = 'SDFText';
+  this.isSDFText = true;
+  this.onBeforeRender = function(object, material) {
+    if (object.parent.textColor) {
+      material.uniforms.textColor.value.set(
+        object.parent.textColor.r,
+        object.parent.textColor.g,
+        object.parent.textColor.b,
+        object.opacity
+      );
+    }
+    const textClip = object.textClip;
+    if (textClip && object.parent.clippingEnabled) {
+      material.uniforms.clipRegion.value.set(textClip[0], textClip[1], textClip[2], textClip[3]);
+    } else {
+      material.uniforms.clipRegion.value.set(-16384, -16384, 16384, 16384);
+    }
+  };
   this.textClip = [-16384, -16384, 16384, 16384];
   this.addAttribute('position', new THREE.BufferAttribute(positionsBuffer, 3));
   this.addAttribute('uv', new THREE.BufferAttribute(texCoordBuffer, 2));
@@ -610,7 +627,7 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
     materials.push(lastFontObject.material);
   }
   this.computeBoundingSphere();
-  this.materials = new THREE.MultiMaterial(materials);
+  this.materials = materials;
 }
 
 BitmapFontGeometry.prototype = Object.create(THREE.BufferGeometry.prototype);
@@ -639,31 +656,11 @@ export function loadFont(fontName, fontTexture, loader) {
     },
     textColor: {
       type: 'v4',
-      dynamic: true,
       value: new THREE.Vector4(),
-      onUpdateCallback: function(object, camera) {
-        if (object.parent.textColor) {
-          this.value.set(
-            object.parent.textColor.r,
-            object.parent.textColor.g,
-            object.parent.textColor.b,
-            object.opacity
-          );
-        }
-      },
     },
     clipRegion: {
       type: 'v4',
-      dynamic: true,
       value: new THREE.Vector4(-16384, -16384, 16384, 16384),
-      onUpdateCallback: function(object, camera) {
-        const textClip = object.textClip;
-        if (textClip && object.parent.clippingEnabled) {
-          this.value.set(textClip[0], textClip[1], textClip[2], textClip[3]);
-        } else {
-          this.value.set(-16384, -16384, 16384, 16384);
-        }
-      },
     },
   };
 
@@ -738,9 +735,9 @@ export function loadFont(fontName, fontTexture, loader) {
     return font;
   }
 
-  const xhrLoader = loader || new THREE.XHRLoader();
+  const fileLoader = loader || new THREE.FileLoader();
   return new Promise((resolve, reject) => {
-    xhrLoader.load(fontName, function(response) {
+    fileLoader.load(fontName, function(response) {
       const data = JSON.parse(response);
       initFontData(data);
       font.data = data;
