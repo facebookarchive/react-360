@@ -34,31 +34,6 @@ beforeEach(() => {
 });
 
 describe('clientPredictionConsistency', () => {
-  it('should send local connect actions to peers', () => {
-    middleware = clientPredictionConsistency(syncState, isMaster, isValid, send);
-    middleware(store)(next)({type: 'CONNECT'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should send local disconnect actions to peers', () => {
-    middleware = clientPredictionConsistency(syncState, isMaster, isValid, send);
-    middleware(store)(next)({type: 'DISCONNECT'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should send local set state actions to peers', () => {
-    middleware = clientPredictionConsistency(syncState, isMaster, isValid, send);
-    middleware(store)(next)({type: 'SYNC_STATE'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should send local heartbeat actions to peers', () => {
-    middleware = clientPredictionConsistency(syncState, isMaster, isValid, send);
-    middleware(store)(next)({type: 'HEARTBEAT'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should not send remote heartbeat actions to peers', () => {
-    middleware = clientPredictionConsistency(syncState, isMaster, isValid, send);
-    middleware(store)(next)({type: 'HEARTBEAT', sender: 'SOME-UUID'});
-    expect(send).not.toHaveBeenCalled();
-  });
   it('should not send or reduce invalid local actions', () => {
     middleware = clientPredictionConsistency(syncState, isMaster, isValid, send);
     middleware(store)(next)({type: 'SOME_ACTION'});
@@ -94,31 +69,6 @@ describe('clientPredictionConsistency', () => {
 });
 
 describe('dumbTerminalConsistency', () => {
-  it('should send local connect actions to peers', () => {
-    middleware = dumbTerminalConsistency(isMaster, isValid, send);
-    middleware(store)(next)({type: 'CONNECT'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should send local disconnect actions to peers', () => {
-    middleware = dumbTerminalConsistency(isMaster, isValid, send);
-    middleware(store)(next)({type: 'DISCONNECT'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should send local set state actions to peers', () => {
-    middleware = dumbTerminalConsistency(isMaster, isValid, send);
-    middleware(store)(next)({type: 'SYNC_STATE'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should send local heartbeat actions to peers', () => {
-    middleware = dumbTerminalConsistency(isMaster, isValid, send);
-    middleware(store)(next)({type: 'HEARTBEAT'});
-    expect(send).toHaveBeenCalled();
-  });
-  it('should not send remote heartbeat actions to peers', () => {
-    middleware = dumbTerminalConsistency(isMaster, isValid, send);
-    middleware(store)(next)({type: 'HEARTBEAT', sender: 'SOME-UUID'});
-    expect(send).not.toHaveBeenCalled();
-  });
   it('should only send local actions if not master', () => {
     middleware = dumbTerminalConsistency(isMaster, isValid, send);
     middleware(store)(next)({type: 'SOME_ACTION'});

@@ -19,7 +19,7 @@ import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import {Board, isValid} from './components/Board';
 import Scores from './components/Scores';
-import {isHandshake, isLocal, clientPredictionConsistency} from './replicate';
+import {isLocal, clientPredictionConsistency} from './replicate';
 import app from './reducers';
 import uuid from 'uuid';
 //import {randomActions} from './random';
@@ -58,6 +58,7 @@ const send = action => {
   ws.send(JSON.stringify(action));
 };
 
+// add timestamps to local actions
 const timestampActions = store => next => action => {
   if (!('time' in action)) {
     action.time = new Date().getTime();
@@ -66,12 +67,20 @@ const timestampActions = store => next => action => {
   return next(action);
 };
 
+// log locally applied actions
 const logActions = store => next => action => {
   console.log(action);
   if ('time' in action && action.origin === localClient) {
     console.log('(' + (new Date().getTime() - action.time) + 'ms latency)');
   }
   return next(action);
+};
+
+// handshake actions always need to be applied to establish master client
+// even when conservative consistency policies are used
+const isHandshake = action => {
+  const types = ['CONNECT', 'SYNC_STATE', 'HEARTBEAT', 'DISCONNECT'];
+  return types.indexOf(action.type) >= 0;
 };
 
 // filter non-handshake actions from unknown senders
@@ -81,13 +90,27 @@ const filterUnknownSenderActions = store => next => action => {
   }
 };
 
+// send local handshake actions, replicate non-handshake actions
+const replicateNonHandshakeActions = replicate => store => next => action => {
+  if (isHandshake(action)) {
+    if (isLocal(action)) {
+      send(action);
+    }
+    return next(action);
+  } else {
+    return replicate(store)(next)(action);
+  }
+};
+
+const replicateActions = clientPredictionConsistency(syncState, isMaster, isValid, send);
+// const replicateActions = dumbTerminalConsistency(isMaster, isValid, send),
+
 const store = createStore(
   app,
   applyMiddleware(
     filterUnknownSenderActions,
     timestampActions,
-    clientPredictionConsistency(syncState, isMaster, isValid, send),
-    //dumbTerminalConsistency(isMaster, isValid, send),
+    replicateNonHandshakeActions(replicateActions),
     logActions
   )
 );

@@ -12,13 +12,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// handshake actions always need to be applied to establish master client
-// even when conservative consistency policies are used
-export const isHandshake = action => {
-  const types = ['CONNECT', 'SYNC_STATE', 'HEARTBEAT', 'DISCONNECT'];
-  return types.indexOf(action.type) >= 0;
-};
-
 // true if action has been generated locally and so does not yet have a sender
 export const isLocal = action => {
   return !('sender' in action);
@@ -30,16 +23,15 @@ export const isLocal = action => {
 // latency of all actions.
 export const dumbTerminalConsistency = (isMaster, isValid, send) => store => next => action => {
   // send local actions and master validated actions to peers
-  const handshake = isHandshake(action);
   const local = isLocal(action);
   const master = isMaster();
   const valid = master && isValid(action, store.getState());
-  if ((handshake && local) || (!master && local) || valid) {
+  if ((!master && local) || valid) {
     send(action);
   }
 
   // only apply handshake actions or those validated by master to local store
-  if (handshake || valid || (!local && isMaster(action.sender))) {
+  if (valid || (!local && isMaster(action.sender))) {
     return next(action);
   }
 };
@@ -50,8 +42,9 @@ export const dumbTerminalConsistency = (isMaster, isValid, send) => store => nex
 // possible at the cost of sometimes seeing the effects of actions roll back.
 // prettier-ignore
 export const clientPredictionConsistency = (syncState, isMaster, isValid, send) => store => next => action => {
+
   // apply valid actions immediately to local store
-  if (isHandshake(action) || isValid(action, store.getState())) {
+  if (isValid(action, store.getState())) {
     // send local actions to peers
     if (isLocal(action)) {
       send(action);
