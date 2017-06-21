@@ -19,6 +19,9 @@ var config = {
   getBlacklistRE() {
     return blacklist([
       /.*[/\\]OVRUI[/\\]package\.json/,
+      /.*[/\\]OVRUI[/\\]node_modules[/\\].*/,
+      /.*[/\\]Examples[/\\].*/,
+      /.*[/\\]website[/\\].*/,
     ]);
   },
 

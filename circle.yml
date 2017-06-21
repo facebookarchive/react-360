@@ -3,6 +3,8 @@ general:
     ignore:
       - gh-pages # list of branches to ignore
 machine:
+  pre:
+    - export DEBIAN_FRONTEND=noninteractive && sudo apt-get remove -y --purge mysql-server mysql-community-server
   node:
     version: 6.2.0
 dependencies:

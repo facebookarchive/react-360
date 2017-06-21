@@ -19,8 +19,10 @@
   ],
   "modulePathIgnorePatterns": [
     "<rootDir>/docs/",
+    "<rootDir>/Examples/",
     "<rootDir>/node_modules/",
     "<rootDir>/scripts/",
+    "<rootDir>/tools/",
     "<rootDir>/website/"
   ],
   "haste": {
