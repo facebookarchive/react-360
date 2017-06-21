@@ -36,7 +36,7 @@
     "watch": "rollup -c --watch"
   },
   "dependencies": {
-    "three": "^0.80.1"
+    "three": "^0.85.2"
   },
   "jest": {
     "testMatch": [
