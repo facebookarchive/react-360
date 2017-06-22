@@ -54,9 +54,13 @@ class GLTF2MeshInstance {
       if (gltfStateCache.has(this.url)) {
         gltfStateCache.addReference(this.url);
       } else {
-        gltfStateCache.addEntry(this.url, gltf);
+        // disabling until gltf clone issue is resolved
+        // https://github.com/mrdoob/three.js/issues/11573
+        //gltfStateCache.addEntry(this.url, gltf);
       }
-      this.scene = gltf.scene.clone();
+      // https://github.com/mrdoob/three.js/issues/11573
+      //this.scene = gltf.scene.clone();
+      this.scene = gltf.scene;
       // need to wait a frame for other attributes to setup
       // FIXME
       requestAnimationFrame(() => {
@@ -76,17 +80,20 @@ class GLTF2MeshInstance {
       return;
     }
 
-    loadList[this.url] = [onLoad];
+    // disabling as there a problems with cloning gltf models
+    // https://github.com/mrdoob/three.js/issues/11573
+    //loadList[this.url] = [onLoad];
 
     // $FlowFixMe
     const loader = new THREE.GLTF2Loader();
     loader.load(
       this.url,
       gltf => {
-        for (const callback of loadList[this.url]) {
+        onLoad(gltf);
+        /*for (const callback of loadList[this.url]) {
           callback(gltf);
         }
-        delete loadList[this.url];
+        delete loadList[this.url];*/
       },
       () => {},
       () => {
