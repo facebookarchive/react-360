@@ -8,6 +8,7 @@
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const oneLine = require('common-tags').oneLine;
 
 const args = process.argv.slice(2);
 
@@ -103,14 +104,11 @@ new Promise((resolve, reject) => {
     ),
   ]);
 }).then(() => {
-  console.log(
-    'Production versions were successfully built.' +
-    'They can be found at ' + path.resolve(projectDir, 'vr', 'build')
-  );
+  console.log(`Production versions were successfully built. They can be found at ${path.resolve(projectDir, 'vr', 'build')}`);
 }).catch((err) => {
   console.log(
-    'An error occurred during the bundling process. Exited with code ' + err +
-    '.\nLook at the packager output above to see what went wrong.'
+`An error occurred during the bundling process. Exited with code ${err}
+Look at the packager output above to see what went wrong.`
   );
   process.exit(1);
 });
