@@ -5,7 +5,7 @@
 
 'use strict';
 
-const child_process = require('child_process');
+const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -16,7 +16,7 @@ function buildScript(root, buildDir, input, output) {
   const cliLocation = process.env.RN_CLI_LOCATION ||
     path.resolve('node_modules', 'react-native', 'local-cli', 'cli.js');
   return new Promise((resolve, reject) => {
-    const npm = child_process.spawn(
+    const npm = spawn(
       (/^win/.test(process.platform) ? 'node.exe' : 'node'),
       [
         cliLocation,
@@ -35,9 +35,7 @@ function buildScript(root, buildDir, input, output) {
       {stdio: 'inherit', cwd: root}
     );
     npm.on('close', (code) => {
-      if (code !== 0) {
-        reject(code);
-      }
+      if (code !== 0) reject(code);
       resolve();
     });
   });
@@ -76,9 +74,7 @@ while (!hasPackage(projectDir)) {
 new Promise((resolve, reject) => {
   try {
     const stat = fs.statSync(buildDir);
-    if (stat.isDirectory()) {
-      return resolve();
-    }
+    if (stat.isDirectory()) return resolve();
   } catch (e) {}
   fs.mkdir(path.join(projectDir, 'vr', 'build'), (err) => {
     if (err) {
