@@ -289,6 +289,8 @@ class ObjMeshInstance {
     }
   }
 
+  frame(timeStamp: number, deltaTime: number) {}
+
   // will dispose of all internally allocated structure
   dispose(): void {
     if (this._mtlURL) {

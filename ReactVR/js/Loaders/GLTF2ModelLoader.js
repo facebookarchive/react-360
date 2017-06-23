@@ -45,10 +45,18 @@ class GLTF2MeshInstance {
   url: string;
   parent: any;
   scene: any;
+  mixer: any;
+  timeStamp: number;
+  activeAnimations: any;
+  allAnimations: any;
 
   constructor(definition: any, parent: UIView) {
     this.url = extractURL(definition.gltf2) || '';
     this.parent = parent;
+    this.mixer = null;
+    this.timeStamp = -1;
+    this.activeAnimations = {};
+    this.allAnimations = {};
 
     const onLoad = gltf => {
       if (gltfStateCache.has(this.url)) {
@@ -61,6 +69,21 @@ class GLTF2MeshInstance {
       // https://github.com/mrdoob/three.js/issues/11573
       //this.scene = gltf.scene.clone();
       this.scene = gltf.scene;
+
+      this.mixer = new THREE.AnimationMixer(this.scene);
+
+      // load the animations into the mixer
+      const animations = gltf.animations;
+      if (animations && animations.length) {
+        for (let i = 0; i < animations.length; i++) {
+          const animation = animations[i];
+          this.allAnimations[animation.name] = this.mixer.clipAction(animation);
+        }
+      }
+
+      // apply the definition animation settings
+      this.updateAnimation(definition);
+
       // need to wait a frame for other attributes to setup
       // FIXME
       requestAnimationFrame(() => {
@@ -103,8 +126,63 @@ class GLTF2MeshInstance {
     );
   }
 
+  updateAnimation(definition: any): void {
+    if (!definition.animations || definition.animations.length === 0) {
+      if (this.mixer) {
+        this.activeAnimations = {};
+        this.mixer.stopAllAction();
+      }
+      return;
+    }
+    // stop any leftover animations
+    const newActiveAnimations = {};
+    for (const key in definition.animations) {
+      const animName = 'animation_' + key;
+      newActiveAnimations[animName] = true;
+      // start animations which have yet to be started
+      if (this.allAnimations[animName]) {
+        const anim = this.allAnimations[animName];
+        const params = definition.animations[key];
+        if (params) {
+          anim.fadeIn(params.fadeTime ? params.fadeTime : 0);
+          anim.setEffectiveTimeScale(params.timeScale ? params.timeScale : 1);
+          anim.setEffectiveWeight(params.weight ? params.weight : 1);
+          if (params.syncWith && this.allAnimations[params.syncWith]) {
+            anim.syncWith(this.allAnimations[params.syncWith]);
+          }
+        }
+
+        if (!this.activeAnimations[animName]) {
+          anim.play();
+        }
+      }
+      delete this.activeAnimations[animName];
+    }
+    // stop any leftover animations
+    for (const key in this.activeAnimations) {
+      if (this.allAnimations[key]) {
+        this.allAnimations[key].stop();
+      }
+    }
+    this.activeAnimations = newActiveAnimations;
+  }
+
   update(definition: any): boolean {
-    return false;
+    // we can update some params without the need to reload the instance
+    // if the url is the same let's assume the model hasn't changed
+    const newUrl = extractURL(definition.gltf2) || '';
+    if (newUrl !== this.url) {
+      return false;
+    }
+    // apply animation changes
+    this.updateAnimation(definition);
+    return true;
+  }
+
+  frame(timeStampMS: number, deltaTimeMS: number): void {
+    if (this.mixer) {
+      this.mixer.update(deltaTimeMS * 0.001);
+    }
   }
 
   // already established apis

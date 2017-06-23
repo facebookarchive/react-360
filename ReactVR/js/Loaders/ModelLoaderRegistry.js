@@ -23,6 +23,8 @@ export interface MeshInstance {
   setTexture(value: string): void,
   setWireframe(value: boolean): void,
 
+  frame(timeStamp: number, deltaTime: number): void,
+
   // todo
   // support for animation
   //getJointCount(): number;

@@ -232,4 +232,9 @@ declare module 'three' {
     intensity: number,
     color: Color,
   }
+
+  declare class AnimationMixer {
+    clipAction(clip: any): any,
+  }
+
 }

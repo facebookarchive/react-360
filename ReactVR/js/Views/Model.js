@@ -56,6 +56,13 @@ export default class RCTModel extends RCTBaseMesh {
     this.instance.setLit(flag);
   }
 
+  frame(timeStamp: number, deltaTime: number) {
+    if (!this.instance) {
+      return;
+    }
+    this.instance.frame(timeStamp, deltaTime);
+  }
+
   dispose() {
     if (this.instance) {
       this.instance.dispose();

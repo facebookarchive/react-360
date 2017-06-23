@@ -414,7 +414,7 @@ export default class RCTBaseView {
   /**
    * Per Frame update for view
    */
-  frame(): void {
+  frame(timeStamp: number, deltaTime: number): void {
     // TODO query why this isn't a setter
     if (this.style.opacity !== undefined) {
       this.view.setOpacity(this.style.opacity);
