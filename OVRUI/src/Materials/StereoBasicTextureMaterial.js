@@ -18,11 +18,9 @@ export default class StereoBasicTextureMaterial extends THREE.ShaderMaterial {
       {
         color: {value: DEFAULT_UNIFORM_COLOR, type: 'f'}, // The color of material
         opacity: {value: 1.0, type: 'f'}, // The opacity of material
+        useUV: {value: 1.0, type: 'f'}, // The opacity of material
         map: {value: null, type: 't'}, // The color map of material
         envMap: {value: null, type: 't'}, // The environment map of material
-        flipEnvMap: {value: 1.0, type: 'f'}, // Three.js use this to differentiate CubeTexture and WebGLRenderTargetCube
-        reflectivity: {value: 1.0, type: 'f'}, // How much the environment map affect the surface
-        refractionRatio: {value: 0.0, type: 'f'}, // The ratio of refraction for environment map
       },
     ]);
 
@@ -70,10 +68,13 @@ export default class StereoBasicTextureMaterial extends THREE.ShaderMaterial {
 
   set envMap(value) {
     this.uniforms.envMap.value = value;
-    this.uniforms.flipEnvMap.value = !(value && value.isCubeTexture) ? 1 : -1;
   }
 
   get envMap() {
     return this.uniforms.envMap.value;
+  }
+
+  set useUV(value) {
+    this.uniforms.useUV.value = value;
   }
 }

@@ -128,9 +128,11 @@ export default class RCTPano extends RCTBaseView {
       if (value && value.layout === 'CUBEMAP_32') {
         this._globe.geometry = this._cubeGeometry;
         this._globe.scale.z = -1;
+        this._material.useUV = 1;
       } else {
         this._globe.geometry = this._sphereGeometry;
         this._globe.scale.z = 1;
+        this._material.useUV = 0;
       }
       this._globe.onUpdate = null;
       // call onLoadStart in React
