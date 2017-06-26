@@ -17,7 +17,7 @@ import {Text, View, VrButton} from 'react-vr';
 import {connect} from 'react-redux';
 import styles from './styles';
 import {initialState} from '../reducers/board';
-import {syncState} from '../index.vr';
+import {showSquare, hideSquare, scoreSquare, syncState} from '../actions';
 
 const renderSquare = (value, rowIndex, columnIndex, state, onSquareClick) =>
   <VrButton
@@ -46,24 +46,6 @@ const mapStateToProps = state => ({
   state: state,
 });
 
-export const showSquare = (rowIndex, columnIndex, client) => ({
-  type: 'SHOW',
-  square: {row: rowIndex, column: columnIndex},
-  client: client,
-});
-
-export const scoreSquare = (client, value) => ({
-  type: 'SCORE',
-  client: client,
-  value: value,
-});
-
-export const hideSquare = showAction => ({
-  type: 'HIDE',
-  square: showAction.square,
-  client: showAction.client,
-});
-
 export const countValues = (state, test) => {
   return state.reduce((acc, row) => {
     return row.reduce((acc, value) => {
@@ -88,39 +70,8 @@ const zeroScores = scores => {
   }, {});
 };
 
-const scorer = (value, scores) => {
-  let result = null;
-  Object.keys(scores).some(key => {
-    if (scores[key].indexOf(value) >= 0) {
-      result = key;
-      return true;
-    }
-    return false;
-  });
-  return result;
-};
-
 const gameOver = board => {
   return !board.some(row => row.some(value => value < 0));
-};
-
-// true if action can be reduced given state
-// TODO(jimp): pass store instead of state to allow dispatch during validation?
-export const isValid = (action, state) => {
-  switch (action.type) {
-    case 'SCORE':
-      // score action can be reduced if state and action agree on scorer
-      const currentScorer = scorer(action.value, state.scores);
-      return currentScorer === null || currentScorer === action.client;
-    case 'SHOW':
-      // show action is idempotent, so can always be reduced
-      return true;
-    case 'HIDE':
-      // hide action can be reduced if value not scored
-      const value = state.board[action.square.row][action.square.column];
-      return scorer(value, state.scores) === null;
-  }
-  return null;
 };
 
 export const dispatchShowActions = (row, column, client, state, dispatch, delay) => {
@@ -153,4 +104,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 });
 
-export const Board = connect(mapStateToProps, mapDispatchToProps)(renderBoard);
+const Board = connect(mapStateToProps, mapDispatchToProps)(renderBoard);
+
+export default Board;
