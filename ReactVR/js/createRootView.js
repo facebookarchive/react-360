@@ -41,6 +41,9 @@ let BRIDGE_CODE = `
 var Status = undefined;
 
 onmessage = function(e) {
+  if (typeof e.data !== 'string') {
+    return;
+  }
   var msg = JSON.parse(e.data);
   if (!msg || !msg.cmd) {
     return;
