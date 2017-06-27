@@ -46,7 +46,7 @@ const StereoShaderLib = {
         } else {
           vec3 nrm = normalize(vPosition);
           sampleUV.y = asin(nrm.y) * RECIPROCAL_PI + 0.5;
-          sampleUV.x = atan( nrm.z, nrm.x ) * RECIPROCAL_PI2 + 0.5;
+          sampleUV.x = -atan( nrm.z, nrm.x ) * RECIPROCAL_PI2 + 0.5;
           sampleUV = sampleUV * stereoOffsetRepeat.zw + stereoOffsetRepeat.xy;
         }
         vec4 texColor = texture2D( map, sampleUV );
