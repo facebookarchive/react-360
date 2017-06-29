@@ -10,19 +10,26 @@
 import THREE from '../ThreeShim';
 
 // Unit vector
+const X_UNIT = new THREE.Vector3(1, 0, 0);
 const Y_UNIT = new THREE.Vector3(0, 1, 0);
+const Z_UNIT = new THREE.Vector3(0, 0, 1);
 
 // Preallocated Quaternion to use each frame.
 const rotation = new THREE.Quaternion();
 
-// Emperically determined multiplier
-const PAN_SPEED = 0.5;
+// Emperically determined multipliers
+const YAW_SPEED = 0.5;
+const PITCH_SPEED = 0.25;
 
 // Minimum fov when zooming in
 const MIN_FOV = 10;
 
 /**
  * MobilePanControls allows manipulation of the camera with touch on mobile.
+ *
+ * Two types of touch gestures are recognized:
+ * 1. Swipe - dragging one finger left/right or up/down to rotate the camera
+ * 2. Pinch - dragging two fingers together/apart to zoom in/out
  */
 export default class MobilePanControls {
   /**
@@ -37,12 +44,15 @@ export default class MobilePanControls {
     this._target = target || window;
 
     this.enabled = true;
-
-    this._panStart = new THREE.Vector2();
-    this._panEnd = new THREE.Vector2();
-    this._panDelta = new THREE.Vector2();
-    this._theta = 0;
     this._tracking = false;
+
+    this._swipeStart = new THREE.Vector2();
+    this._swipeEnd = new THREE.Vector2();
+    this._swipeDelta = new THREE.Vector2();
+
+    // yaw is left/right rotation, pitch is up/down. Angles in radians.
+    this._yaw = 0;
+    this._pitch = 0;
 
     this._pinchLengthStart = 0;
     this._pinchLengthEnd = 0;
@@ -86,7 +96,7 @@ export default class MobilePanControls {
       return;
     }
     const touch = e.touches[0];
-    this._panStart.set(touch.pageX, touch.pageY);
+    this._swipeStart.set(touch.pageX, touch.pageY);
   }
 
   _upHandler() {
@@ -108,15 +118,22 @@ export default class MobilePanControls {
     }
 
     const touch = e.touches[0];
-    this._panEnd.set(touch.pageX, touch.pageY);
-    this._panDelta.subVectors(this._panEnd, this._panStart);
-    this._panStart.copy(this._panEnd);
-
-    // Invert rotation so we pan in correct direction
-    this._panDelta.x *= -1;
+    this._swipeEnd.set(touch.pageX, touch.pageY);
+    this._swipeDelta.subVectors(this._swipeEnd, this._swipeStart);
+    this._swipeStart.copy(this._swipeEnd);
 
     const element = document.body;
-    this._theta += 2 * Math.PI * this._panDelta.x / element.clientWidth * PAN_SPEED;
+
+    // Don't move diagonally, only up/down or left/right, whichever delta is greater.
+    if (Math.abs(this._swipeDelta.y) > Math.abs(this._swipeDelta.x)) {
+      const rotation = 2 * Math.PI * this._swipeDelta.y / element.clientHeight * PITCH_SPEED;
+      // Limit pitch rotation to 90 degress to mimic looking up and down.
+      if (Math.abs(this._pitch + rotation) <= THREE.Math.degToRad(90)) {
+        this._pitch += rotation;
+      }
+    } else {
+      this._yaw += 2 * Math.PI * this._swipeDelta.x / element.clientWidth * YAW_SPEED;
+    }
   }
 
   update() {
@@ -126,7 +143,9 @@ export default class MobilePanControls {
 
     // Update the camera rotation quaternion
     const quaternion = this._camera.quaternion;
-    rotation.setFromAxisAngle(Y_UNIT, -this._theta);
+    rotation.setFromAxisAngle(X_UNIT, this._pitch);
+    quaternion.multiply(rotation);
+    rotation.setFromAxisAngle(Y_UNIT, this._yaw);
     quaternion.premultiply(rotation);
 
     // Update camera FOV
