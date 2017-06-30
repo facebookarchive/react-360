@@ -128,7 +128,16 @@ export default class DeviceOrientationControls {
   }
 
   resetRotation(x: number, y: number, z: number) {
-    // No-op
+    const quaternion = this.camera.quaternion;
+    euler.set(x, y, -z, 'YXZ');
+    quaternion.setFromEuler(euler);
+
+    this.deviceOrientation = {};
+    this._initialAlpha = null;
+
+    if (this.mobilePanControls.enabled) {
+      this.mobilePanControls.resetRotation(0, 0, 0);
+    }
   }
 
   update() {

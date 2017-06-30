@@ -84,6 +84,15 @@ export default class MobilePanControls {
     this.enabled = false;
   }
 
+  resetRotation(x: number, y: number, z: number) {
+    this._yaw = y;
+    this._pitch = x;
+
+    // Reset zoom.
+    this._camera.fov = this._originalFov;
+    this._camera.updateProjectionMatrix();
+  }
+
   _downHandler(e) {
     this._tracking = true;
 

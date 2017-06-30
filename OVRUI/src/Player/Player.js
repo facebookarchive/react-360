@@ -308,7 +308,7 @@ export default class Player {
       fullscreenButtonHandler: this.attemptEnterFullscreen,
       hideCompass: options.hideCompass,
       hideFullscreen: options.hideFullscreen,
-      resetAngles: isMobile ? null : this.resetAngles,
+      resetAngles: this.resetAngles,
     });
     this.overlay = overlay;
     if (isVRBrowser() || this.allowCarmelDeeplink) {
