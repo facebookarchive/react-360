@@ -55,6 +55,16 @@ React VR is open source software, and we welcome contribution from the wider com
 
 For more information about contributing to React VR, see our [Contributor Guidelines](https://github.com/facebook/react-vr/blob/master/CONTRIBUTING.md).
 
+## Building from Source
+
+Not recommended for most developers.
+
+```
+git clone git@github.com:facebook/react-vr.git
+cd react-vr
+node scripts/build-packages.js
+```
+
 ## License
 
 React VR is [BSD licensed](./LICENSE). We also provide an additional [patent grant](./PATENTS).
