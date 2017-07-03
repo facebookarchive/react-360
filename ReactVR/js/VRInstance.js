@@ -21,16 +21,20 @@ import type {Camera} from 'three';
 
 type VRInstanceOptions = {
   allowCarmelDeeplink?: boolean,
-  disableTouchPanning?: boolean,
+  antialias?: boolean,
   assetRoot?: string,
+  calculateVerticalFOV?: (number, number) => number,
   camera?: Camera,
+  canvasAlpha?: boolean,
   cursorVisibility?: 'visible' | 'hidden' | 'auto',
   customViews?: Array<CustomView>,
+  disableTouchPanning?: boolean,
   enableHotReload?: boolean,
   font?: any,
   height?: number,
   hideCompass?: boolean,
   hideFullscreen?: boolean,
+  initialProps?: {[prop: string]: any},
   nativeModules?: Array<Module>,
   onEnterVR?: () => void,
   onExitVR?: () => void,
@@ -99,7 +103,10 @@ export default class VRInstance {
       elementOrId: parent,
 
       // Optional Player configuration
+      antialias: options.antialias,
+      calculateVerticalFOV: options.calculateVerticalFOV,
       camera: options.camera,
+      canvasAlpha: options.canvasAlpha,
       width: options.width,
       height: options.height,
       onEnterVR: () => this._onEnterVR(),
@@ -135,6 +142,7 @@ export default class VRInstance {
       bundle: bundleFromRoot(bundle),
       customViews: options.customViews,
       enableHotReload: options.enableHotReload,
+      initialProps: options.initialProps,
       isLowLatency: !this.player.isMobile,
       nativeModules: options.nativeModules,
     });
