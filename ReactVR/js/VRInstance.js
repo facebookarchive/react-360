@@ -103,10 +103,10 @@ export default class VRInstance {
       elementOrId: parent,
 
       // Optional Player configuration
-      antialias: options.antialias,
+      antialias: options.hasOwnProperty('antialias') ? options.antialias : false,
       calculateVerticalFOV: options.calculateVerticalFOV,
       camera: options.camera,
-      canvasAlpha: options.canvasAlpha,
+      canvasAlpha: options.hasOwnProperty('canvasAlpha') ? options.antialias : true,
       width: options.width,
       height: options.height,
       onEnterVR: () => this._onEnterVR(),
