@@ -50,10 +50,12 @@ export default class RCTPrefetch extends RCTBaseView {
     if (Array.isArray(uri)) {
       // Cubemap
       const loader = new THREE.CubeTextureLoader();
+      loader.setCrossOrigin('Access-Control-Allow-Origin');
       loader.load(uri, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
     } else {
       // Panorama
       const loader = new THREE.TextureLoader();
+      loader.setCrossOrigin('Access-Control-Allow-Origin');
       loader.load(uri, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
     }
   }
