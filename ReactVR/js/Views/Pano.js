@@ -148,20 +148,18 @@ export default class RCTPano extends RCTBaseView {
         const onProgress = undefined;
         if (url == null) {
           onError();
+        } else if (Prefetch.isCached(url)) {
+          // First Check if the texture hasn't already been prefetched
+          const cachedTexture = Prefetch.getFromCache(url);
+          onLoad(cachedTexture);
         } else if (Array.isArray(url)) {
           const loader = new THREE.CubeTextureLoader();
           loader.setCrossOrigin('Access-Control-Allow-Origin');
           loader.load(url, onLoad, onProgress, onError);
         } else {
-          // Check in the prefetch cache first...
-          const cachedTexture = Prefetch.getFromCache(url);
-          if (cachedTexture != null) {
-            onLoad(cachedTexture);
-          } else {
-            const loader = new THREE.TextureLoader();
-            loader.setCrossOrigin('Access-Control-Allow-Origin');
-            loader.load(url, onLoad, onProgress, onError);
-          }
+          const loader = new THREE.TextureLoader();
+          loader.setCrossOrigin('Access-Control-Allow-Origin');
+          loader.load(url, onLoad, onProgress, onError);
         }
       };
       const onLoadOrChange = texture => {

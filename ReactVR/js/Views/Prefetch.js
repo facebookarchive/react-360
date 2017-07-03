@@ -49,17 +49,12 @@ export default class RCTPrefetch extends RCTBaseView {
 
     if (Array.isArray(uri)) {
       // Cubemap
-      // TODO
+      const loader = new THREE.CubeTextureLoader();
+      loader.load(uri, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
     } else {
       // Panorama
-      const onTextureLoad = texture => {
-        RCTPrefetch.addToCache(uri, texture);
-      };
-
-      const onError = () => {};
-
       const loader = new THREE.TextureLoader();
-      loader.load(uri, onTextureLoad, undefined, () => onError()); // onProgress
+      loader.load(uri, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
     }
   }
 
@@ -69,10 +64,17 @@ export default class RCTPrefetch extends RCTBaseView {
    */
   static addToCache(uri, texture) {
     if (!RCTPrefetch.cache) {
-      RCTPrefetch.cache = [];
+      RCTPrefetch.cache = {};
     }
 
     RCTPrefetch.cache[uri] = texture;
+  }
+
+  /**
+   * isCached
+   */
+  static isCached(uri) {
+    return RCTPrefetch.cache && RCTPrefetch.cache.hasOwnProperty(uri);
   }
 
   /**
@@ -87,7 +89,7 @@ export default class RCTPrefetch extends RCTBaseView {
    */
   static removeFromCache(uri) {
     if (RCTPrefetch.cache) {
-      RCTPrefetch.cache[uri] = null;
+      delete RCTPrefetch.cache[uri];
     }
   }
 
