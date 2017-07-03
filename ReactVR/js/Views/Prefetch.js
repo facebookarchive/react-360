@@ -47,14 +47,20 @@ export default class RCTPrefetch extends RCTBaseView {
       return;
     }
 
-    const onTextureLoad = texture => {
-      RCTPrefetch.addToCache(uri, texture);
-    };
+    if (Array.isArray(uri)) {
+      // Cubemap
+      // TODO
+    } else {
+      // Panorama
+      const onTextureLoad = texture => {
+        RCTPrefetch.addToCache(uri, texture);
+      };
 
-    const onError = () => {};
+      const onError = () => {};
 
-    const loader = new THREE.TextureLoader();
-    loader.load(uri, onTextureLoad, undefined, () => onError()); // onProgress
+      const loader = new THREE.TextureLoader();
+      loader.load(uri, onTextureLoad, undefined, () => onError()); // onProgress
+    }
   }
 
   /**
