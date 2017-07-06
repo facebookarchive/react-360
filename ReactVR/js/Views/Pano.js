@@ -198,7 +198,7 @@ export default class RCTPano extends RCTBaseView {
         this._material.needsUpdate = true;
 
         // call onLoad in React
-        if (this._material.map) {
+        if (texture !== undefined) {
           this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
             this.getTag(),
             'topLoad',
