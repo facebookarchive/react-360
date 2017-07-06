@@ -895,7 +895,11 @@ export default class RCTBaseView {
       }
     }
     for (const i in node.children) {
-      RCTBaseView.disposeThreeJSObject(node.children[i]);
+      // Do not dispose of child UIViews, they need to handle their own disposal...
+      const child = node.children[i];
+      if (child.type !== 'UIView') {
+        RCTBaseView.disposeThreeJSObject(node.children[i]);
+      }
     }
     node.parent = null;
     node.children = [];
