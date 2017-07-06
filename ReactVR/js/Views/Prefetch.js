@@ -30,7 +30,7 @@ export default class RCTPrefetch extends RCTBaseView {
     Object.defineProperty(this.props, 'source', {
       set: value => {
         if (Array.isArray(value)) {
-          // TODO: Handle cubemaps
+          this.prefetch(value);
         } else {
           this.prefetch(value.uri);
         }
