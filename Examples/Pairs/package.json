@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "relay": "./node_modules/.bin/wsrelay 4000",
-    "start": "node ../../node_modules/react-native/local-cli/cli.js start --config ./rn-pairs.config.js --reset-cache",
+    "start": "node runpackager.js",
     "open": "node -e \"require('xopen')('http://localhost:8081/Examples/Pairs/vr')\""
   },
   "dependencies": {
