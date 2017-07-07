@@ -48,10 +48,21 @@ export default class RCTPrefetch extends RCTBaseView {
     }
 
     if (Array.isArray(uri)) {
-      // Cubemap
+      // Cubemap, check proper format
+      if (uri.length !== 6 || !uri[0].uri) {
+        console.warn(
+          'Prefetch expected cubemap source in format [{uri: http..}, {uri: http..}, ... ]'
+        );
+        return;
+      }
+      // Transform the input array into an array of url strings for threejs to load.
+      const urls = uri.map(function(x) {
+        return x.uri;
+      });
+
       const loader = new THREE.CubeTextureLoader();
       loader.setCrossOrigin('Access-Control-Allow-Origin');
-      loader.load(uri, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
+      loader.load(urls, texture => RCTPrefetch.addToCache(urls, texture), () => {}, () => {});
     } else {
       // Panorama
       const loader = new THREE.TextureLoader();
