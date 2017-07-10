@@ -37,6 +37,9 @@ const ReactVR = {
   get CylindricalPanel() {
     return require('CylindricalPanel');
   },
+  get QuadPanel() {
+    return require('QuadPanel');
+  },
   get Plane() {
     return require('Plane');
   },

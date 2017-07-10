@@ -29,6 +29,7 @@ import RCTDirectionalLight from '../Views/DirectionalLight';
 import RCTPointLight from '../Views/PointLight';
 import RCTSpotLight from '../Views/SpotLight';
 import RCTCylindricalPanel from '../Views/CylindricalPanel';
+import RCTQuadPanel from '../Views/QuadPanel';
 import RCTPrefetch from '../Views/Prefetch';
 
 import Module from './Module';
@@ -195,6 +196,9 @@ export default class UIManager extends Module {
     });
     this.registerViewType('CylindricalPanel', RCTCylindricalPanel.describe(), function() {
       return new RCTCylindricalPanel(guiSys);
+    });
+    this.registerViewType('QuadPanel', RCTQuadPanel.describe(), function() {
+      return new RCTQuadPanel(guiSys);
     });
     this.registerViewType('Box', RCTBox.describe(), function() {
       return new RCTBox(guiSys, rnctx);
