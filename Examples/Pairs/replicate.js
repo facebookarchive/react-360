@@ -40,6 +40,12 @@ export const dumbTerminalConsistency = (isMaster, isValid, send) => store => nex
 // store. the master client generates actions to fix inconsistencies when
 // conflicting actions are detected. the effects of actions are seen as soon as
 // possible at the cost of sometimes seeing the effects of actions roll back.
+// A limitation of clientPredictionConsistency is that only conflicts detected
+// by the master result in a resync. A consequence of this is that if an ordering
+// of actions result in isValid returning false, every ordering of those actions
+// must cause isValid to return false, otherwise the master may apply actions
+// in a valid order, another client may apply then in an invalid order and the
+// clients will not end up eventually consistent.
 // prettier-ignore
 export const clientPredictionConsistency = (syncState, isMaster, isValid, send) => store => next => action => {
 

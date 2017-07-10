@@ -12,8 +12,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {countValues, dispatchShowActions} from './components/Board';
+import {dispatchShowActions} from './components/Board';
 import {width, height} from './reducers/board';
+import {countValues} from './reducers/validate';
 
 // return a random integer between 0 and max
 const randomInt = max => {

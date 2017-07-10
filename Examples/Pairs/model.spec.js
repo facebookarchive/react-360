@@ -42,6 +42,21 @@ const fakeSender = (action, sender) => {
   return action;
 };
 
+const setPairToValue = (state, value, pair) => {
+  state.board[pair][0] = value;
+  state.board[pair][1] = value;
+  return state;
+};
+
+const scorePair = (state, client, value) => {
+  if (state.scores[client]) {
+    state.scores[client].push(value);
+  } else {
+    state.scores[client] = [value];
+  }
+  return state;
+};
+
 const masterId = '0000-UUID';
 const aClientId = 'AAAA-UUID';
 const bClientId = 'BBBB-UUID';
@@ -109,48 +124,53 @@ describe('optimistic hide consistency', () => {
     expect(fakeSend).toHaveBeenCalledTimes(3); // connect actions only.
   });
   it('master should not reduce hide for scored pairs and should send sync', () => {
-    const value = store.getState().board[0][0];
-    const showAction = fakeSender(showSquare(0, 0, aClientId), aClientId);
-    store.dispatch(showAction);
-    expect(store.getState().board[0][0]).toEqual(Math.abs(value));
-    const scoreAction = fakeSender(scoreSquare(masterId, Math.abs(value)), aClientId);
-    store.dispatch(scoreAction);
-    expect(store.getState().scores[masterId]).toEqual([Math.abs(value)]);
+    store.dispatch(syncState(scorePair(setPairToValue(store.getState(), 42, 0), masterId, 42)));
+    const hideAction = hideSquare(showSquare(0, 0, masterId));
     const syncAction = syncState(store.getState());
-    const hideAction = fakeSender(hideSquare(showAction), aClientId);
     store.dispatch(hideAction);
-    expect(store.getState().board[0][0]).toEqual(Math.abs(value));
+    expect(store.getState().board[0][0]).toEqual(Math.abs(42));
     expect(fakeSend).toHaveBeenCalledWith(syncAction);
   });
 });
 
 describe('optimistic score consistency', () => {
   it('clients should send and reduce local score actions', () => {
+    store.dispatch(syncState(setPairToValue(store.getState(), 42, 0)));
     const scoreAction = scoreSquare(masterId, 42);
     store.dispatch(scoreAction);
     expect(fakeSend).toHaveBeenCalledWith(scoreAction);
     expect(store.getState().scores[masterId]).toEqual([42]);
   });
   it('clients should reduce score actions that do not conflict', () => {
+    store.dispatch(syncState(setPairToValue(setPairToValue(store.getState(), 42, 0), 1337, 1)));
     store.dispatch(fakeSender(scoreSquare(aClientId, 42), aClientId));
     expect(store.getState().scores[aClientId]).toEqual([42]);
     store.dispatch(fakeSender(scoreSquare(bClientId, 1337), bClientId));
     expect(store.getState().scores[bClientId]).toEqual([1337]);
-    expect(fakeSend).toHaveBeenCalledTimes(3); // connect actions only.
+    expect(fakeSend).toHaveBeenCalledTimes(4); // connect and sync actions only.
   });
   it('client score reduction should be idempotent', () => {
+    store.dispatch(syncState(setPairToValue(store.getState(), 42, 0)));
     store.dispatch(fakeSender(scoreSquare(aClientId, 42), aClientId));
     expect(store.getState().scores[aClientId]).toEqual([42]);
     store.dispatch(fakeSender(scoreSquare(aClientId, 42), bClientId));
     expect(store.getState().scores[aClientId]).toEqual([42]);
-    expect(fakeSend).toHaveBeenCalledTimes(3); // connect actions only.
+    expect(fakeSend).toHaveBeenCalledTimes(4); // connect and sync actions only.
   });
   it('master should not reduce conflicting score and should send sync', () => {
+    store.dispatch(syncState(setPairToValue(store.getState(), 42, 0)));
     store.dispatch(scoreSquare(aClientId, 42));
     expect(store.getState().scores[aClientId]).toEqual([42]);
     const syncAction = syncState(store.getState());
     store.dispatch(scoreSquare(bClientId, 42));
     expect(fakeSend).toHaveBeenCalledWith(syncAction);
     expect(store.getState().scores[bClientId]).toEqual([]);
+  });
+  it('master should not score hidden square and should send sync', () => {
+    const value = store.getState().board[0][0];
+    const syncAction = syncState(store.getState());
+    store.dispatch(scoreSquare(aClientId, Math.abs(value)));
+    expect(fakeSend).toHaveBeenCalledWith(syncAction);
+    expect(store.getState().scores[aClientId]).toEqual([]);
   });
 });

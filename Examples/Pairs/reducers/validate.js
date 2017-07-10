@@ -24,14 +24,34 @@ const scorer = (value, scores) => {
   return result;
 };
 
+export const countValues = (state, test) => {
+  return state.reduce((acc, row) => {
+    return row.reduce((acc, value) => {
+      if (test(value)) {
+        return acc + 1;
+      }
+      return acc;
+    }, acc);
+  }, 0);
+};
+
+export const countEquals = (state, value) => {
+  return countValues(state, x => {
+    return x === value;
+  });
+};
+
 // true if action can be reduced given state
 // TODO(jimp): pass store instead of state to allow dispatch during validation?
 export const isValid = (action, state) => {
   switch (action.type) {
     case 'SCORE':
-      // score action can be reduced if state and action agree on scorer
+      // score can be reduced if state and action agree on scorer and pair shown
       const currentScorer = scorer(action.value, state.scores);
-      return currentScorer === null || currentScorer === action.client;
+      return (
+        (currentScorer === null || currentScorer === action.client) &&
+        countEquals(state.board, action.value) === 2
+      );
     case 'SHOW':
       // show action is idempotent, so can always be reduced
       return true;
@@ -40,7 +60,7 @@ export const isValid = (action, state) => {
       const value = state.board[action.square.row][action.square.column];
       return scorer(value, state.scores) === null;
   }
-  return null;
+  return false;
 };
 
 export default isValid;

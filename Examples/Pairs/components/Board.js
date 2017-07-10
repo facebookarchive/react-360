@@ -17,9 +17,10 @@ import {Text, View, VrButton} from 'react-vr';
 import {connect} from 'react-redux';
 import styles from './styles';
 import {initialState} from '../reducers/board';
+import {countEquals} from '../reducers/validate';
 import {showSquare, hideSquare, scoreSquare, syncState} from '../actions';
 
-const renderSquare = (value, rowIndex, columnIndex, state, onSquareClick) =>
+const renderSquare = (value, rowIndex, columnIndex, state, onSquareClick) => (
   <VrButton
     onClick={() => onSquareClick(rowIndex, columnIndex, value, state)}
     key={rowIndex + ':' + columnIndex}>
@@ -28,40 +29,26 @@ const renderSquare = (value, rowIndex, columnIndex, state, onSquareClick) =>
         {value > 0 ? value : ''}
       </Text>
     </View>
-  </VrButton>;
+  </VrButton>
+);
 
-const renderRow = (row, rowIndex, state, onSquareClick) =>
+const renderRow = (row, rowIndex, state, onSquareClick) => (
   <View style={styles.row} key={row}>
     {row.map((column, columnIndex) =>
       renderSquare(state.board[rowIndex][columnIndex], rowIndex, columnIndex, state, onSquareClick)
     )}
-  </View>;
+  </View>
+);
 
-const renderBoard = ({state, onSquareClick}) =>
+const renderBoard = ({state, onSquareClick}) => (
   <View style={styles.board}>
     {state.board.map((row, rowIndex) => renderRow(row, rowIndex, state, onSquareClick))}
-  </View>;
+  </View>
+);
 
 const mapStateToProps = state => ({
   state: state,
 });
-
-export const countValues = (state, test) => {
-  return state.reduce((acc, row) => {
-    return row.reduce((acc, value) => {
-      if (test(value)) {
-        return acc + 1;
-      }
-      return acc;
-    }, acc);
-  }, 0);
-};
-
-export const countEquals = (state, value) => {
-  return countValues(state, x => {
-    return x === value;
-  });
-};
 
 const zeroScores = scores => {
   return Object.keys(scores).reduce((acc, key) => {
