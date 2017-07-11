@@ -274,6 +274,13 @@ function componentsToMarkdown(type, json, filepath, idx, styles) {
     json.description = fs.readFileSync(docFilePathDescription).toString();
   }
 
+  // allow the docblock to be specified manually. needed for APIs that are a
+  // collection of methods with no enclosing class.
+  const docFilePathDocBlock = '../docs/' + componentName + '.docblock.md';
+  if (fs.existsSync(docFilePathDocBlock)) {
+    json.docblock = fs.readFileSync(docFilePathDocBlock).toString();
+  }
+
   json.type = type;
   json.filepath = filepath.replace(/^\.\.\//, '');
   json.componentName = componentName;

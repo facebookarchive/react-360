@@ -47,11 +47,11 @@ const apis = [
   '../Libraries/VRModules/ControllerInfo.js',
   path.join(rn, 'Libraries/Animated/src/Easing.js'),
   '../Libraries/VRModules/ExternalAssets.js',
-  '../Libraries/VRModules/GlyphTextures.js',
+  // '../Libraries/VRModules/GlyphTextures.js', // No jsdocs
   '../Libraries/VRModules/History.js',
   path.join(rn, 'Libraries/Linking/Linking.js'),
   '../Libraries/VRModules/Location.js',
-  '../Libraries/VRModules/ReactVRConstants.js',
+  //'../Libraries/VRModules/ReactVRConstants.js', // No jsdocs
   path.join(rn, 'Libraries/StyleSheet/StyleSheet.js'),
   '../Libraries/Video/MediaPlayerState.js',
   path.join(rn, 'Libraries/Renderer/src/renderers/native/NativeMethodsMixin.js'),
