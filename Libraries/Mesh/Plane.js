@@ -108,6 +108,9 @@ const Plane = createReactClass({
       texture = resolveAssetSource(texture);
     }
     rest.style = rest.style || {};
+    if (!rest.style.position) {
+      rest.style.position = 'absolute';
+    }
     return <RKPlane {...rest} texture={texture} />;
   },
 });

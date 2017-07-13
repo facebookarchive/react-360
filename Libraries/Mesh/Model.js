@@ -154,6 +154,9 @@ const Model = createReactClass({
       texture = resolveAssetSource(texture);
     }
     rest.style = rest.style || {};
+    if (!rest.style.position) {
+      rest.style.position = 'absolute';
+    }
     // default meshes to being a render group
     if (!rest.style.renderGroup) {
       rest.style.renderGroup = true;

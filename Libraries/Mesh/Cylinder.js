@@ -135,6 +135,9 @@ const Cylinder = createReactClass({
       texture = resolveAssetSource(texture);
     }
     rest.style = rest.style || {};
+    if (!rest.style.position) {
+      rest.style.position = 'absolute';
+    }
     return <RKCylinder {...rest} texture={texture} />;
   },
 });

@@ -120,6 +120,9 @@ const Sphere = createReactClass({
       texture = resolveAssetSource(texture);
     }
     rest.style = rest.style || {};
+    if (!rest.style.position) {
+      rest.style.position = 'absolute';
+    }
     return <RKSphere {...rest} texture={texture} />;
   },
 });
