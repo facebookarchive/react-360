@@ -87,7 +87,7 @@ export default class RCTCylindricalPanel extends RCTBaseView {
           this.props._layerRadius,
           this.props._layerRadius,
           halfHeight * 2,
-          20,
+          60,
           6,
           true,
           -delta * 0.5,
