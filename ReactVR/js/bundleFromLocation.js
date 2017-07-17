@@ -15,10 +15,11 @@
  */
 export default function bundleFromLocation(root: string): string {
   let path = location.pathname;
-  let isAbsoluteURL = /http:\/\/|https:\/\//.test(root);
-  if(isAbsoluteURL) {
-    return root;
-  } else {
+  try {
+    let absoluteURL = new URL(root);
+    return absoluteURL.toString();
+  } catch (error) {
+    //location is not an absolute URL, generate one from the root
     if (!path.endsWith('/')) {
       // Trim filename
       path = path.substr(0, path.lastIndexOf('/'));
