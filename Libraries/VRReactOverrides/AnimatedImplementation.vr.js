@@ -1418,6 +1418,17 @@ class AnimatedTransform extends AnimatedWithChildren {
         var value = transform[key];
         if (value instanceof Animated) {
           result[key] = value.__getValue();
+        } else if (Array.isArray(value)) {
+          // For VR we have transform properties like translate, scale, etc. which are vectors
+          // So we're going to look 1-level deep
+          result[key] = [];
+          for (let i = 0; i < value.length; ++i) {
+            if (value[i] instanceof Animated) {
+              result[key][i] = value[i].__getValue();
+            } else {
+              result[key][i] = value[i];
+            }
+          }
         } else {
           result[key] = value;
         }
@@ -1433,6 +1444,17 @@ class AnimatedTransform extends AnimatedWithChildren {
         var value = transform[key];
         if (value instanceof Animated) {
           result[key] = value.__getAnimatedValue();
+        } else if (Array.isArray(value)) {
+          // For VR we have transform properties like translate, scale, etc. which are vectors
+          // So we're going to look 1-level deep
+          result[key] = [];
+          for (let i = 0; i < value.length; ++i) {
+            if (value[i] instanceof Animated) {
+              result[key][i] = value[i].__getAnimatedValue();
+            } else {
+              result[key][i] = value[i];
+            }
+          }
         } else {
           // All transform components needed to recompose matrix
           result[key] = value;
