@@ -231,7 +231,7 @@ function _flush(rootNode: AnimatedValue): void {
 }
 
 type TimingAnimationConfig = AnimationConfig & {
-  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY,
+  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY | AnimatedValueVec3,
   easing?: (value: number) => number,
   duration?: number,
   delay?: number,
@@ -450,7 +450,7 @@ class DecayAnimation extends Animation {
 }
 
 type SpringAnimationConfig = AnimationConfig & {
-  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY,
+  toValue: number | AnimatedValue | {x: number, y: number} | AnimatedValueXY | AnimatedValueVec3,
   overshootClamping?: bool,
   restDisplacementThreshold?: number,
   restSpeedThreshold?: number,
@@ -1093,6 +1093,162 @@ class AnimatedValueXY extends AnimatedWithChildren {
       {translateX: this.x},
       {translateY: this.y}
     ];
+  }
+}
+
+type ValueVec3ListenerCallback = (value: {x: number, y: number, z: number}) => void;
+
+/**
+ * 3D Value for driving 3D animations.  Almost identical API to `Animated.ValueXY`.
+ *
+ * #### Example
+ *
+ *```javascript
+ *  class Monster extends React.Component {
+ *    constructor(props) {
+ *      super(props);
+ *      this.state = {
+ *        position: new Animated.ValueVec3(), // inits to zero
+ *      };
+ *    }
+ *    componentWillReceiveProps(nextProps) {
+ *      if (nextProps.position) {
+ *        Animated.timing(this.state.position, {
+ *        duration: 1000,
+ *        easing: Easing.inOut(Easing.quad),
+ *        toValue: {x: position[0], y: position[1], z: position[2]});
+ *      }
+ *    }
+ *    render() {
+ *      return (
+ *        <Animated.View
+ *          style={{
+ *            transform: [
+ *              this.state.position.getTranslateTransform(),
+ *              {scale: [0.5, 0.5, 0.5]},
+ *            ]
+ *          }}
+ *          {this.props.children}
+ *        </Animated.View>
+ *      );
+ *    }
+ *  }
+ *```
+ */
+class AnimatedValueVec3 extends AnimatedWithChildren {
+  x: AnimatedValue;
+  y: AnimatedValue;
+  z: AnimatedValue;
+
+  _listeners: {[key: string]: {x: string, y: string, z: string}};
+
+  constructor(
+    valueIn?: ?{x: number | AnimatedValue, y: number | AnimatedValue, z: number | AnimatedValue}
+  ) {
+    super();
+    const value: any = valueIn || {x: 0, y: 0, z: 0}; // @flowfixme: shouldn't need `: any`
+    if (typeof value.x === 'number' && typeof value.y === 'number' && typeof value.z === 'number') {
+      this.x = new AnimatedValue(value.x);
+      this.y = new AnimatedValue(value.y);
+      this.z = new AnimatedValue(value.z);
+    } else {
+      invariant(
+        value.x instanceof AnimatedValue &&
+          value.y instanceof AnimatedValue &&
+          value.z instanceof AnimatedValue,
+        'AnimatedValueVec3 must be initalized with an object of numbers or AnimatedValues.'
+      );
+      this.x = value.x;
+      this.y = value.y;
+      this.z = value.z;
+    }
+    this._listeners = {};
+  }
+
+  setValue(value: {x: number, y: number, z: number}) {
+    this.x.setValue(value.x);
+    this.y.setValue(value.y);
+    this.z.setValue(value.z);
+  }
+
+  setOffset(offset: {x: number, y: number, z: number}) {
+    this.x.setOffset(offset.x);
+    this.y.setOffset(offset.y);
+    this.z.setOffset(offset.z);
+  }
+
+  flattenOffset(): void {
+    this.x.flattenOffset();
+    this.y.flattenOffset();
+    this.z.flattenOffset();
+  }
+
+  extractOffset(): void {
+    this.x.extractOffset();
+    this.y.extractOffset();
+    this.z.extractOffset();
+  }
+
+  __getValue(): {x: number, y: number, z: number} {
+    return {
+      x: this.x.__getValue(),
+      y: this.y.__getValue(),
+      z: this.z.__getValue(),
+    };
+  }
+
+  resetAnimation(callback?: (value: {x: number, y: number, z: number}) => void): void {
+    this.x.resetAnimation();
+    this.y.resetAnimation();
+    this.z.resetAnimation();
+    callback && callback(this.__getValue());
+  }
+
+  stopAnimation(callback?: (value: {x: number, y: number, z: number}) => void): void {
+    this.x.stopAnimation();
+    this.y.stopAnimation();
+    this.z.stopAnimation();
+    callback && callback(this.__getValue());
+  }
+
+  addListener(callback: ValueVec3ListenerCallback): string {
+    const id = String(_uniqueId++);
+    const sharedCallback = ({value: number}) => {
+      callback(this.__getValue());
+    };
+    this._listeners[id] = {
+      x: this.x.addListener(sharedCallback),
+      y: this.y.addListener(sharedCallback),
+      z: this.z.addListener(sharedCallback),
+    };
+    return id;
+  }
+
+  removeListener(id: string): void {
+    this.x.removeListener(this._listeners[id].x);
+    this.y.removeListener(this._listeners[id].y);
+    this.z.removeListener(this._listeners[id].z);
+    delete this._listeners[id];
+  }
+
+  removeAllListeners(): void {
+    this.x.removeAllListeners();
+    this.y.removeAllListeners();
+    this.z.removeAllListeners();
+    this._listeners = {};
+  }
+
+  /**
+   * Converts `{x, y, z}` into a useable translation transform, e.g.
+   *
+   *```javascript
+   *  style={{
+   *    transform: [this.state.anim.getTranslateTransform()]
+   *  }}
+   *```
+   */
+  getTranslateTransform(): Array<{[key: string]: AnimatedValue}> {
+    return {translate: [this.x, this.y, this.z]};
   }
 }
 
@@ -2011,7 +2167,7 @@ const _combineCallbacks = function(callback: ?EndCallback, config : AnimationCon
 };
 
 var maybeVectorAnim = function(
-  value: AnimatedValue | AnimatedValueXY,
+  value: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
   config: Object,
   anim: (value: AnimatedValue, config: Object) => CompositeAnimation
 ): ?CompositeAnimation {
@@ -2030,16 +2186,34 @@ var maybeVectorAnim = function(
     // We use `stopTogether: false` here because otherwise tracking will break
     // because the second animation will get stopped before it can update.
     return parallel([aX, aY], {stopTogether: false});
+  } else if (value instanceof AnimatedValueVec3) {
+    const configX = {...config};
+    const configY = {...config};
+    const configZ = {...config};
+    for (const key in config) {
+      const {x, y, z} = config[key];
+      if (x !== undefined && y !== undefined && z !== undefined) {
+        configX[key] = x;
+        configY[key] = y;
+        configZ[key] = z;
+      }
+    }
+    const aX = anim((value: AnimatedValueVec3).x, configX);
+    const aY = anim((value: AnimatedValueVec3).y, configY);
+    const aZ = anim((value: AnimatedValueVec3).z, configZ);
+    // We use `stopTogether: false` here because otherwise tracking will break
+    // because the second animation will get stopped before it can update.
+    return parallel([aX, aY, aZ], {stopTogether: false});
   }
   return null;
 };
 
 var spring = function(
-  value: AnimatedValue | AnimatedValueXY,
+  value: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
   config: SpringAnimationConfig,
 ): CompositeAnimation {
   var start = function(
-    animatedValue: AnimatedValue | AnimatedValueXY,
+    animatedValue: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
     configuration: SpringAnimationConfig,
     callback?: ?EndCallback): void {
       callback = _combineCallbacks(callback, configuration);
@@ -2083,11 +2257,11 @@ var spring = function(
 };
 
 var timing = function(
-  value: AnimatedValue | AnimatedValueXY,
+  value: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
   config: TimingAnimationConfig,
 ): CompositeAnimation {
   var start = function(
-    animatedValue: AnimatedValue | AnimatedValueXY,
+    animatedValue: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
     configuration: TimingAnimationConfig,
     callback?: ?EndCallback): void {
       callback = _combineCallbacks(callback, configuration);
@@ -2132,11 +2306,11 @@ var timing = function(
 };
 
 var decay = function(
-  value: AnimatedValue | AnimatedValueXY,
+  value: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
   config: DecayAnimationConfig,
 ): CompositeAnimation {
   var start = function(
-    animatedValue: AnimatedValue | AnimatedValueXY,
+    animatedValue: AnimatedValue | AnimatedValueXY | AnimatedValueVec3,
     configuration: DecayAnimationConfig,
     callback?: ?EndCallback): void {
       callback = _combineCallbacks(callback, configuration);
@@ -2734,6 +2908,12 @@ module.exports = {
    * See also [`AnimatedValueXY`](docs/animated.html#animatedvaluexy).
    */
   ValueXY: AnimatedValueXY,
+  /**
+   * 3D value class for driving animations in 3D space.
+   *
+   * TODO: Add documentation
+   */
+  ValueVec3: AnimatedValueVec3,
   /**
    * exported to use the Interpolation type in flow
    *
