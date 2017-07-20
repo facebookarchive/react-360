@@ -96,7 +96,7 @@ class VrHeadModelImpl {
    * [rotation about X axis, rotation about Y axis, rotation about Z axis]
    */
   rotationInRadians() {
-    return VrMath.getRotation(this.headMatrix, 'XYZ');
+    return VrMath.getRotation(this.headMatrix);
   }
 
   /**
@@ -126,7 +126,8 @@ class VrHeadModelImpl {
    * [Y axis, X axis, Z axis]
    */
   yawPitchRollInRadians() {
-    return VrMath.getRotation(this.headMatrix);
+    const rotation = this.rotationInRadians();
+    return [rotation[1], rotation[0], rotation[2]];
   }
 
   /**
