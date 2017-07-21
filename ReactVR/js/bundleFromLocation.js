@@ -13,13 +13,19 @@
  * Turns a relative path into a full path based upon the current location.
  * Full paths are required for Web Workers loading external scripts.
  */
-export default function bundleFromRoot(root: string): string {
+export default function bundleFromLocation(root: string): string {
   let path = location.pathname;
-  if (!path.endsWith('/')) {
-    // Trim filename
-    path = path.substr(0, path.lastIndexOf('/'));
-  } else {
-    path = path.substr(0, path.length - 1);
+  try {
+    let absoluteURL = new URL(root);
+    return absoluteURL.toString();
+  } catch (error) {
+    //location is not an absolute URL, generate one from the root
+    if (!path.endsWith('/')) {
+      // Trim filename
+      path = path.substr(0, path.lastIndexOf('/'));
+    } else {
+      path = path.substr(0, path.length - 1);
+    }
+    return location.protocol + '//' + location.host + path + '/' + root;
   }
-  return location.protocol + '//' + location.host + path + '/' + root;
 }

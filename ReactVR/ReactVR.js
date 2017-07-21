@@ -11,7 +11,7 @@
  * @providesModule ReactVRApp
  */
 
-import bundleFromRoot from './js/bundleFromRoot';
+import bundleFromLocation from './js/bundleFromLocation';
 import createRootView from './js/createRootView';
 import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
@@ -20,7 +20,7 @@ import {BasicVideoPlayer, addCustomizedVideoPlayer, getSupportedFormats} from '.
 
 import {ReactNativeContext} from './js/ReactNativeContext';
 
-export {bundleFromRoot};
+export {bundleFromLocation};
 export {createRootView};
 export {Module};
 export {RCTBaseView};
