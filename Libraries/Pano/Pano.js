@@ -49,6 +49,13 @@ const Pano = createReactClass({
      * or
      * `[{uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'},
      *   {uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'}]` for a cubemap
+     * or
+     * `[{uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'},
+     *   {uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'},
+     *   {uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'},
+     *   {uri: 'http..'}, {uri: 'http..'}, {uri: 'http..'}]` for a stereo
+     * cubemap where the first 6 images are the left eye cubemap and the
+     * following 6 are the right eye cubemap.
      *
      * stereo(optional): the stereo format of a panorama: '2D' | 'TOP_BOTTOM_3D' |
      * 'BOTTOM_TOP_3D' | 'LEFT_RIGHT_3D' | 'RIGHT_LEFT_3D'

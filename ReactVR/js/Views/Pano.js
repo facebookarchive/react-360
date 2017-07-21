@@ -82,6 +82,14 @@ export default class RCTPano extends RCTBaseView {
       } else {
         material.uniforms.stereoOffsetRepeat.value = material.stereoOffsetRepeats[0];
       }
+      if (material._rightEnvMap) {
+        if (camera.viewID === 1) {
+          material.envMap = material._rightEnvMap;
+        } else {
+          material.envMap = material._leftEnvMap;
+        }
+        material.needsUpdate = true;
+      }
     };
 
     this._globe.raycast = panoRayCast.bind(this._globe);
@@ -141,12 +149,12 @@ export default class RCTPano extends RCTBaseView {
         'topLoadStart',
         [],
       ]);
-      const loadRemoteTexture = (url, onLoad) => {
+      const loadRemoteTexture = (url, onLoad, viewID) => {
         // When a url is null or undefined, send undefined to onLoad callback
-        const onError = () => onLoad(undefined);
+        const onError = () => onLoad(undefined, viewID);
         const onLoadDisposable = texture => {
           texture._needsDispose = true;
-          onLoad(texture);
+          onLoad(texture, viewID);
         };
         // No progress indication for now.
         const onProgress = undefined;
@@ -155,7 +163,7 @@ export default class RCTPano extends RCTBaseView {
         } else if (Prefetch.isCached(url)) {
           // First Check if the texture hasn't already been prefetched
           const cachedTexture = Prefetch.getFromCache(url);
-          onLoad(cachedTexture);
+          onLoad(cachedTexture, viewID);
         } else if (Array.isArray(url)) {
           const loader = new THREE.CubeTextureLoader();
           loader.setCrossOrigin('Access-Control-Allow-Origin');
@@ -166,18 +174,24 @@ export default class RCTPano extends RCTBaseView {
           loader.load(url, onLoadDisposable, onProgress, onError);
         }
       };
-      const onLoadOrChange = texture => {
+      const onLoadOrChange = (texture, viewID) => {
         // ignore a old request result
         if (value !== this._currentSource) {
           return;
         }
         this._globe.scale.x = -1;
         // Only dispose certain textures, not those that have been
-        // prefetched or from video
+        // prefetched or from video. A texture manager would be useful
+        // to help track the lifetime of textures.
         if (this._material.map && this._material.map._needsDispose) {
           this._material.map.dispose();
         }
-        if (this._material.envMap && this._material.envMap._needsDispose) {
+        if (
+          this._material.envMap &&
+          this._material.envMap._needsDispose &&
+          this._material.envMap !== this._material._leftEnvMap &&
+          this._material.envMap !== this._material._rightEnvMap
+        ) {
           this._material.envMap.dispose();
         }
         if (texture === undefined) {
@@ -199,6 +213,11 @@ export default class RCTPano extends RCTBaseView {
           }
           this._material.map = flatTexture;
           this._material.envMap = cubeTexture;
+          if (viewID === 1) {
+            this._nextRightEnvMap = cubeTexture;
+          } else {
+            this._nextLeftEnvMap = cubeTexture;
+          }
         }
         const stereoFormat = value && value.stereo ? value.stereo : '2D';
         this._material.stereoOffsetRepeats = StereoOffsetRepeats[stereoFormat];
@@ -209,27 +228,42 @@ export default class RCTPano extends RCTBaseView {
         }
         this._material.needsUpdate = true;
 
-        // call onLoad in React
-        if (texture !== undefined) {
+        this._numTexturesToLoad--;
+        if (this._numTexturesToLoad === 0) {
+          if (this._material._leftEnvMap && this._material._leftEnvMap._needsDispose) {
+            this._material._leftEnvMap.dispose();
+          }
+          if (this._material._rightEnvMap && this._material._rightEnvMap._needsDispose) {
+            this._material._rightEnvMap.dispose();
+          }
+          this._material._leftEnvMap = this._nextLeftEnvMap;
+          this._material._rightEnvMap = this._nextRightEnvMap;
+          // call onLoad in React
+          if (texture !== undefined) {
+            this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+              this.getTag(),
+              'topLoad',
+              [],
+            ]);
+          }
+          // call onLoadEvent in React
           this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
             this.getTag(),
-            'topLoad',
+            'topLoadEnd',
             [],
           ]);
         }
-        // call onLoadEvent in React
-        this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-          this.getTag(),
-          'topLoadEnd',
-          [],
-        ]);
       };
 
       this._currentSource = value;
+      this._numTexturesToLoad = 1;
+      this._nextLeftEnvMap = undefined;
+      this._nextRightEnvMap = undefined;
       if (Array.isArray(value)) {
-        if (value.length !== 6 || !value[0].uri) {
+        if ((value.length !== 6 && value.length !== 12) || !value[0].uri) {
           console.warn(
-            'Pano expected cubemap source in format [{uri: http..}, {uri: http..}, ... ]'
+            'Pano expected cubemap source in format [{uri: http..}, {uri: http..}, ... ]' +
+              'with length of 6 (or 12 for stereo)'
           );
           return;
         }
@@ -237,14 +271,20 @@ export default class RCTPano extends RCTBaseView {
           return x.uri;
         });
         this._localResource.unregister();
-        loadRemoteTexture(urls, onLoadOrChange);
+        if (urls.length === 12) {
+          this._numTexturesToLoad = 2;
+          loadRemoteTexture(urls.slice(0, 6), onLoadOrChange, 0);
+          loadRemoteTexture(urls.slice(6, 12), onLoadOrChange, 1);
+        } else {
+          loadRemoteTexture(urls, onLoadOrChange, 0);
+        }
       } else {
         const url = value ? value.uri : null;
         if (this._localResource.isValidUrl(url)) {
-          this._localResource.load(url, onLoadOrChange);
+          this._localResource.load(url, texture => onLoadOrChange(texture, 0));
         } else {
           this._localResource.unregister();
-          loadRemoteTexture(url, onLoadOrChange);
+          loadRemoteTexture(url, onLoadOrChange, 0);
         }
       }
     }
