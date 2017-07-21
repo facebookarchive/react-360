@@ -11,7 +11,7 @@
 
 import {Scene} from 'three';
 import {Player, GuiSys} from 'ovrui';
-import bundleFromRoot from './bundleFromRoot';
+import bundleFromLocation from './bundleFromLocation';
 import createRootView from './createRootView';
 
 import type {RootView} from './createRootView';
@@ -139,7 +139,7 @@ export default class VRInstance {
     this.rootView = createRootView(this.guiSys, root, {
       // Name of the mounted root module, from AppRegistry
       assetRoot: assetRoot,
-      bundle: bundleFromRoot(bundle),
+      bundle: bundleFromLocation(bundle),
       customViews: options.customViews,
       enableHotReload: options.enableHotReload,
       initialProps: options.initialProps,
