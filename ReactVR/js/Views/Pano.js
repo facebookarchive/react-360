@@ -144,6 +144,10 @@ export default class RCTPano extends RCTBaseView {
       const loadRemoteTexture = (url, onLoad) => {
         // When a url is null or undefined, send undefined to onLoad callback
         const onError = () => onLoad(undefined);
+        const onLoadDisposable = texture => {
+          texture._needsDispose = true;
+          onLoad(texture);
+        };
         // No progress indication for now.
         const onProgress = undefined;
         if (url == null) {
@@ -155,11 +159,11 @@ export default class RCTPano extends RCTBaseView {
         } else if (Array.isArray(url)) {
           const loader = new THREE.CubeTextureLoader();
           loader.setCrossOrigin('Access-Control-Allow-Origin');
-          loader.load(url, onLoad, onProgress, onError);
+          loader.load(url, onLoadDisposable, onProgress, onError);
         } else {
           const loader = new THREE.TextureLoader();
           loader.setCrossOrigin('Access-Control-Allow-Origin');
-          loader.load(url, onLoad, onProgress, onError);
+          loader.load(url, onLoadDisposable, onProgress, onError);
         }
       };
       const onLoadOrChange = texture => {
@@ -168,6 +172,14 @@ export default class RCTPano extends RCTBaseView {
           return;
         }
         this._globe.scale.x = -1;
+        // Only dispose certain textures, not those that have been
+        // prefetched or from video
+        if (this._material.map && this._material.map._needsDispose) {
+          this._material.map.dispose();
+        }
+        if (this._material.envMap && this._material.envMap._needsDispose) {
+          this._material.envMap.dispose();
+        }
         if (texture === undefined) {
           this._material.map = undefined;
           this._material.envMap = undefined;
