@@ -15,10 +15,13 @@ if (!process.env.SKIPBUILD) {
   function buildScript(root, input, output) {
     const cliLocation = require.resolve('react-native/local-cli/cli.js');
     const configLocation = path.resolve(root, 'rn-cli.config.js');
+    const maxWorkers = '1'; // limit memory usage, might want to control this differently on CI vs locally
     return new Promise(function(resolve, reject) {
       const args = [
         cliLocation,
         'bundle',
+        '--max-workers',
+        maxWorkers,
         '--entry-file',
         input,
         '--platform',
