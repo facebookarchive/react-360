@@ -351,7 +351,7 @@ const View = createReactClass({
     hitSlop: PropTypes.oneOfType([PropTypes.number, EdgeInsetsPropType]),
 
     /**
-     * Used when `cursorVisbility='auto'` to define how close the cursor must be to the view
+     * Used when `cursorVisibility='auto'` to define how close the cursor must be to the view
      * before it is visible. Default is `{top: 0, bottom: 0, left: 0, right: 0}` meaning
      * the cursor is visible only when intersecting with the view.
      *
@@ -366,7 +366,7 @@ const View = createReactClass({
      *
      * `{nativeEvent: { layout: {x, y, width, height}}}`
      *
-     * This event is fired immediately once the layout has been calculated, but
+     * This event fires immediately once the layout has been calculated, but
      * the new layout may not yet be reflected on the screen at the time the
      * event is received, especially if a layout animation is in progress.
      */
@@ -399,7 +399,7 @@ const View = createReactClass({
     onChange: PropTypes.func,
 
     /**
-     * Invoked when the gazing or interacting on a view, the head pose is passed to the event
+     * Invoked when gazing or interacting on a view, the head pose is passed to the event
      *
      * ```
      * {nativeEvent: {
@@ -425,8 +425,8 @@ const View = createReactClass({
      *
      *   - `'auto'`: The View can be the target of touch events.
      *   - `'none'`: The View is never the target of touch events.
-     *   - `'box-none'`: The View is never the target of touch events but it's
-     *     subviews can be. It behaves like if the view had the following classes
+     *   - `'box-none'`: The View is never the target of touch events but its
+     *     subviews can be. It behaves as if the view had the following classes
      *     in CSS:
      * ```
      * .box-none {
@@ -436,8 +436,8 @@ const View = createReactClass({
      *      pointer-events: all;
      * }
      * ```
-     *   - `'box-only'`: The view can be the target of touch events but it's
-     *     subviews cannot be. It behaves like if the view had the following classes
+     *   - `'box-only'`: The view can be the target of touch events but its
+     *     subviews cannot be. It behaves as if the view had the following classes
      *     in CSS:
      * ```
      * .box-only {

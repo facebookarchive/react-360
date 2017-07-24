@@ -101,7 +101,7 @@ const LONG_PRESS_THRESHOLD = 500;
 
 /**
  * This Component is a helper for managing the interaction state machine for a gaze button.
- * By default, a VrButton has no appearance and will only act as a wrapper to
+ * By default, a VrButton has no appearance and only acts as a wrapper to
  * capture events, but it can be styled in the same ways as a View.
  *
  *```
@@ -116,7 +116,7 @@ const LONG_PRESS_THRESHOLD = 500;
  * </VrButton>
  *```
  *
- * The State Machine for button state.
+ * The State Machine for button state:
  * ```
  * +-------------+
  * |  FOCUS_OUT  | <---------------------------------------------------------+
@@ -133,18 +133,18 @@ const LONG_PRESS_THRESHOLD = 500;
  *   +-----------------------------------------------------------------------+
  *
  * Standard component dispatching click events
- * These input event will be considered as primary key and handled by VrButton
+ * These input events are considered primary keys and handled by VrButton:
  *  - Button A on XBOX Gamepad
  *  - Space button on keyboard
  *  - Left click on Mouse
  *  - Touch on screen
  * ```
  *
- * VrButton supports triggering sound effects when the user interacts with it.
+ * VrButton can trigger sound effects when the user interacts with it.
  * These sounds are asset() statements, or resource declaration in the form
  * `{uri: 'PATH'}`. Since different browsers support different audio formats,
  * you can also supply a map of formats to their corresponding resource objects,
- * and React VR will pick the supported sound for the browser:
+ * and React VR can select the sound supported by the browser:
  * ```
  * <VrButton
  *   onClickSound={{
@@ -173,7 +173,7 @@ const VrButton = createReactClass({
     ignoreLongClick: PropTypes.bool,
 
     /**
-     * Invoked on short click event or if no long click handler
+     * Invoked on short click event or if there is no long click handler
      */
     onClick: PropTypes.func,
 
@@ -183,7 +183,7 @@ const VrButton = createReactClass({
     onLongClick: PropTypes.func,
 
     /**
-     * Custom delay time for long click
+     * Custom duration to define long click (milliseconds)
      */
     longClickDelayMS: PropTypes.number,
 
@@ -213,7 +213,7 @@ const VrButton = createReactClass({
     onClickSound: PropTypes.object,
 
     /**
-     * Sound resource to play when the button is long-pressed
+     * Sound resource to play when the button is long-clicked
      */
     onLongClickSound: PropTypes.object,
 

@@ -15,10 +15,9 @@ const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 const VrMath = require('VrMath');
 
 /**
- * VrHeadModel is a util module that simplifies obtaining the current orientation of the headset
+ * VrHeadModel is a utility module that simplifies obtaining the current orientation of the headset.
  *
- * As React VR code runs asynchronously from the main render thread the data obtained will be laggy
- * so the data should not be expected to be fully in sync with display
+ * Orientation data contains some latency and is not fully in sync with the display due to how React VR code runs asynchronously from the main render thread.
  */
 class VrHeadModelImpl {
   constructor() {
@@ -47,9 +46,9 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return position of the head as [X,Y,Z].
+   * Returns the position of the head as [X,Y,Z].
    *
-   * If headMatrix is not specified the current orientation of the headset is used.
+   * If headMatrix is not specified, we use the current orientation of the headset.
    */
   positionOfHeadMatrix(headMatrix) {
     console.warn('positionOfHeadMatrix is deprecated.  Please use position instead');
@@ -58,10 +57,10 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return rotation as Euler angles in radians.
+   * Returns the rotation as Euler angles in radians.
    *
-   * If headMatrix is not specified the current orientation of the headset is used.
-   * If eulerOrder is not specified `YXZ` order is used, i.e. [Yaw, Pitch, Roll].
+   * If headMatrix is not specified, we use the current orientation of the headset.
+   * If eulerOrder is not specified, we use `YXZ` order, that is Yaw, Pitch, and Roll.
    */
   rotationOfHeadMatrix(headMatrix, eulerOrder) {
     console.warn(
@@ -73,14 +72,14 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return position of the head as [X,Y,Z].
+   * Return the position of the head as [X,Y,Z].
    */
   position() {
     return VrMath.getTranslation(this.headMatrix);
   }
 
   /**
-   * Return rotation as Euler angles in degrees.
+   * Returns the rotation as Euler angles in degrees.
    *
    * Returns an array in the form:
    * [rotation about X axis, rotation about Y axis, rotation about Z axis]
@@ -90,7 +89,7 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return rotation as Euler angles in degrees.
+   * Returns the rotation as Euler angles in degrees.
    *
    * Returns an array in the form:
    * [rotation about X axis, rotation about Y axis, rotation about Z axis]
@@ -102,7 +101,7 @@ class VrHeadModelImpl {
   /**
    * Return the rotation in yaw, pitch, roll order in degrees.
    *
-   * For those new to 3D graphics and who are not former pilots
+   * For those new to 3D graphics and who are not former pilots:
    *   Yaw = looking up and down
    *   Pitch = looking to the left and right
    *   Roll = tilting your head from side to side
@@ -115,9 +114,9 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return the rotation in yaw, pitch, roll order in radians.
+   * Returns the rotation in yaw, pitch, roll order in radians.
    *
-   * For those new to 3D graphics and are not former pilots
+   * For those new to 3D graphics and who are not former pilots:
    *   Yaw = looking up and down
    *   Pitch = looking to the left and right
    *   Roll = tilting your head from side to side
@@ -131,41 +130,41 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return the horizontal field of view of the camera in degrees.
+   * Returns the horizontal field of view of the camera in degrees.
    */
   horizontalFov() {
     return this.fov;
   }
 
   /**
-   * Return the vertical field of view of the camera in degrees.
+   * Returns the vertical field of view of the camera in degrees.
    */
   verticalFov() {
     return this.fov / this.aspect;
   }
 
   /**
-   * Return the horizontal field of view of the camera in radians.
+   * Returns the horizontal field of view of the camera in radians.
    */
   horizontalFovInRadians() {
     return VrMath.degToRad(this.horizontalFov());
   }
 
   /**
-   * Return the vertical field of view of the camera in radians.
+   * Returns the vertical field of view of the camera in radians.
    */
   verticalFovInRadians() {
     return VrMath.degToRad(this.verticalFov());
   }
   /**
-   * Return Head matrix as array of numbers
+   * Returns the Head matrix as an array of numbers.
    */
   getHeadMatrix() {
     return [...this.headMatrix];
   }
 
   /**
-   * Return true if the headset is currently used
+   * Returns true if the headset is in use.
    */
   getVRStatus() {
     console.warn('getVRStatus is deprecated.  Please use inVR instead');
@@ -173,7 +172,7 @@ class VrHeadModelImpl {
   }
 
   /**
-   * Return true if using a VR headset, false if viewing outside of VR
+   * Returns true if the headset is in use, false if viewed outside of VR
    */
   inVR() {
     return this._inVR;

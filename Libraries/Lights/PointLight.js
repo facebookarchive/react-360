@@ -40,12 +40,12 @@ const PointLight = createReactClass({
      */
     intensity: PropTypes.number,
     /**
-     * If non-zero, light will attenuate linearly from maximum intensity at
+     * If non-zero, light attenuates linearly from maximum intensity at
      * light position down to zero at distance.
      */
     distance: PropTypes.number,
     /**
-     * The amount the light dims along the distance of the light
+     * The amount the light dims along the distance of the light.
      * In "physically correct" mode, decay = 2 leads to physically realistic light falloff.
      */
     decay: PropTypes.number,

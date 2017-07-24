@@ -49,9 +49,9 @@ const resolveAssetSource = require('resolveAssetSource');
  *
  * Like all 3D primitives, Cylinder also supports the `lit`, `texture`, and `wireframe` props.
  * If `lit` is true, the Cylinder's materials are affected by scene lighting.
- * If `wireframe` is true, the Cylinder will render in a wireframe style.
- * If `texture` is specified, React VR will look up the corresponding image
- * and use it to texture the Cylinder. This can be a string, an asset() call, or a require().
+ * If `wireframe` is true, the Cylinder renders in a wireframe style.
+ * If `texture` is specified, React VR looks up the corresponding image
+ * and uses it to texture the Cylinder. This can be a string, an asset() call, or a require().
  *
  * <Cylinder
  *   lit={true}
@@ -67,18 +67,18 @@ const Cylinder = createReactClass({
     style: StyleSheetPropType(LayoutAndTransformColorPropTypes),
 
     /**
-     * The lit property specifies if the Model will be affected by lights placed in the scene.
+     * The lit property specifies if the Model is affected by lights placed in the scene.
      */
     lit: PropTypes.bool,
 
     /**
-     * `texture` is a string specifying the url of the texture to be used for the Model, this will be
+     * `texture` is a string specifying the url of the texture to be used for the Model, this must be
      * an http address
      */
     texture: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
 
     /**
-     * Specifying true for this property will cause the object to be displayed as a wireframe
+     * Specifying true for this property causes the object to be displayed as a wireframe
      */
     wireframe: PropTypes.bool,
 
@@ -98,13 +98,13 @@ const Cylinder = createReactClass({
     dimHeight: PropTypes.number,
 
     /**
-     * Number of segments around the cylinder
-     * higher numbers corresponds to a smoother cylinder
+     * Number of segments around the cylinder,
+     * higher numbers correspond to a smoother cylinder
      */
     segments: PropTypes.number,
 
     /**
-     * set material parameters in three.js
+     * Set material parameters in three.js
      */
     materialParameters: PropTypes.object,
   },

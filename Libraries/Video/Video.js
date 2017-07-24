@@ -37,7 +37,7 @@ const resolveAssetSource = require('resolveAssetSource');
  * <Video style={{width: 3.0, height:2.0}} source={{uri: 'assets/my-video.webm'}} />
  * ```
  *
- * For an example of using with VideoControles,
+ * For an example of using with [VideoControl](docs/videocontrol.html),
  * see [MediaPlayerState](docs/mediaplayerstate.html)
  */
 const Video = createReactClass({
@@ -50,13 +50,13 @@ const Video = createReactClass({
     /**
      * source of video in the form of `{uri: 'http', format: FORMAT}`
      *
-     * format(optional): the video format, e.g mp4, webm, etc.
+     * `format` (optional): the video format, for example: mp4, webm, and so on.
      *
-     * metaData(optional): the video meta data, used for customized video player
+     * `metaData` (optional): the video meta data, used for customized video player
      *
-     * Source can be an array of sources with different formats, and VideoPano will
-     * choose one of the formats that current browser supports. If format is not specified,
-     * it can be chose whatever format is supported.
+     * Source can be an array of sources with different formats, and VideoPano selects
+     * a format that current browser supports. If format is not specified,
+     * it can select whatever format is supported.
      */
     source: PropTypes.oneOfType([
       PropTypes.shape({

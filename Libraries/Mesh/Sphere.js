@@ -39,9 +39,9 @@ const resolveAssetSource = require('resolveAssetSource');
  *
  * Like all 3D primitives, Sphere also supports the `lit`, `texture`, and `wireframe` props.
  * If `lit` is true, the Sphere's materials are affected by scene lighting.
- * If `wireframe` is true, the Sphere will render in a wireframe style.
- * If `texture` is specified, React VR will look up the corresponding image
- * and use it to texture the Sphere. This can be a string, an asset() call, or a require().
+ * If `wireframe` is true, the Sphere renders in a wireframe style.
+ * If `texture` is specified, React VR looks up the corresponding image
+ * and uses it to texture the Sphere. This can be a string, an asset() call, or a require().
  *
  * <Sphere
  *   lit={true}
@@ -57,24 +57,24 @@ const Sphere = createReactClass({
     style: StyleSheetPropType(LayoutAndTransformColorPropTypes),
 
     /**
-     * The lit property specifies if the Model will be affected by lights placed in the scene.
+     * The lit property specifies if the Model is affected by lights placed in the scene.
      */
     lit: PropTypes.bool,
 
     /**
-     * set material parameters in three.js
+     * Set material parameters in three.js
      */
     materialParameters: PropTypes.object,
 
     /**
      * `texture` is a string specifying the url of the texture to be used for the sphere,
-     * this will be an http address
-     * the image is wrap around the sphere
+     * this must be an http address.
+     * The image is wrapped around the sphere
      */
     texture: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
 
     /**
-     * Specifying true for this property will cause the object to be displayed as a wireframe
+     * Specifying true for this property causes the object to be displayed as a wireframe
      */
     wireframe: PropTypes.bool,
 
@@ -84,14 +84,14 @@ const Sphere = createReactClass({
     radius: PropTypes.number,
 
     /**
-     * The number of segments around the sphere, large corresponds to a smoother sphere but
-     * will be slower to render
+     * The number of segments around the sphere. Large corresponds to a smoother sphere but
+     * is slower to render
      */
     widthSegments: PropTypes.number,
 
     /**
-     * The number of segments between the poles of the sphere, large corresponds to a smoother
-     * sphere but will be slower to render
+     * The number of segments between the poles of the sphere. Large corresponds to a smoother
+     * sphere but is slower to render
      */
     heightSegments: PropTypes.number,
   },

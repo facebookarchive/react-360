@@ -40,8 +40,8 @@ const resolveAssetSource = require('resolveAssetSource');
  * Like all 3D primitives, Box also supports the `lit`, `texture`, and `wireframe` props.
  * If `lit` is true, the Box's materials are affected by scene lighting.
  * If `wireframe` is true, the Box will render in a wireframe style.
- * If `texture` is specified, React VR will look up the corresponding image
- * and use it to texture the Box. This can be a string, an asset() call, or a require().
+ * If `texture` is specified, React VR looks up the corresponding image
+ * and uses it to texture the Box. This can be a string, an asset() call, or a require().
  *
  * <Box
  *   lit={true}

@@ -21,11 +21,11 @@ const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 
 /**
- * The Scene transform represents the camera location in the world
+ * The Scene transform represents the camera location in the world.
  *
- * There should only be a single Scene node within a React VR view tree and
- * the transform of a Scene node, rather the affecting the children is the transform
- * of the camera in the scene.
+ * There should only be a single Scene node within a React VR view tree.
+ * The transform of a Scene node, rather than affecting any children, is
+ * instead the transform of the camera in the scene.
  */
 const Scene = createReactClass({
   mixins: [NativeMethodsMixin],

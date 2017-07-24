@@ -22,11 +22,13 @@ const invariant = require('invariant');
 const requireNativeComponent = require('requireNativeComponent');
 
 /**
- * CylindricalPanel is a special component in React VR that allows drawing the child components
- * to the inner surface of a cylinder. This is accomplished by drawing the child components to an offscreen
- * buffer of the specified width and height.
+ * The primary purpose of CylindricalPanel is to provide a simple means
+ * of carrying settings and layouts from 2D into VR. CylindricalPanel
+ * draws child components to the inner surface of a cylinder by first
+ * drawing the child components to an offscreen buffer of the specified
+ * width and height.
  *
- * By default the cylinder placed at the center position of the scene so that the viewer is
+ * By default, the cylinder placed at the center position of the scene so that the viewer is
  * encapsulated by it.
  *
  * ```
@@ -41,25 +43,22 @@ const requireNativeComponent = require('requireNativeComponent');
  * </CylindricalPanel>
  * ```
  *
- * The width and height of the cylinder must be specified and the width also correspond to how much
- * of the arc that the cylinder covers. Density is defaulted to 4680px which has been empirically
- * defined to meet a 1px unit on panel space to 1px on the eye, ie the defaults allow transferal of
- * px units in 2d to work in VR.
+ * The width and height of the cylinder must be specified, and the width must also correspond to
+ * the arc that the cylinder covers. The default Density is 4680px, which has been empirically
+ * defined to match a 1px unit on panel space to 1px on the eye. That is, the defaults allow transferring
+ * pixel units from 2D to also work in VR.
  *
- * The degrees in the arc can be computed by (width/density * 360)
- * ie with defaults a cylinder the covers half of the view direction (180 degrees) would have a width
+ * The degrees in the arc can be computed by (width/density * 360).
+ * For example, with the default values, a cylinder covering half of the view direction (180 degrees) would have a width
  * of 2340px. We recommend leaving the density to the default for the current range of VR displays.
- * Presently the width is limited to be not bigger than 4096px so should a full 360 degree cylinder
- * be required the density will have to be reduced to a value of 4096.
+ * Presently, the maximum width is limited to 4096px, so if you require a full 360 degree cylinder,
+ * the density must be reduced to a value of 4096.
  *
  * The height is used to compute the height of the cylinder such that the world width and height of
- * a 1px element on the panel remain square eg a 100px by 100px <image> with a 100px by 100px source
+ * a 1px element on the panel remain square. For example, a 100px by 100px <image> with a 100px by 100px source
  * bitmap would also look square when drawn to the cylinder.
  *
- * The purpose of the cylindrical layer is to provide a simple means to carry 2d settings and layouts
- * to within VR
- *
- * Child components can determine if within a Panel by using the `isOnLayer` context
+ * Child components can determine if they are within a Panel by using the `isOnLayer` context
  *
  */
 const CylindricalPanel = createReactClass({

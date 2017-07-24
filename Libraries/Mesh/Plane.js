@@ -37,9 +37,9 @@ const resolveAssetSource = require('resolveAssetSource');
  *
  * Like all 3D primitives, Plane also supports the `lit`, `texture`, and `wireframe` props.
  * If `lit` is true, the Plane's materials are affected by scene lighting.
- * If `wireframe` is true, the Plane will render in a wireframe style.
- * If `texture` is specified, React VR will look up the corresponding image
- * and use it to texture the Plane. This can be a string, an asset() call, or a require().
+ * If `wireframe` is true, the Plane renders in a wireframe style.
+ * If `texture` is specified, React VR looks up the corresponding image
+ * and uses it to texture the Plane. This can be a string, an asset() call, or a require().
  *
  * <Plane
  *   lit={true}
@@ -55,33 +55,33 @@ const Plane = createReactClass({
     style: StyleSheetPropType(LayoutAndTransformColorPropTypes),
 
     /**
-     * The lit property specifies if the Model will be affected by lights placed in the scene.
+     * The lit property specifies if the Model is affected by lights placed in the scene.
      */
     lit: PropTypes.bool,
 
     /**
-     * set material parameters in three.js
+     * Set material parameters in three.js
      */
     materialParameters: PropTypes.object,
 
     /**
      * `texture` is a string specifying the url of the texture to be used for the Plane face,
-     * this will be an http address
+     * this must be an http address
      */
     texture: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
 
     /**
-     * Specifying true for this property will cause the object to be displayed as a wireframe
+     * Specifying true for this property causes the object to be displayed as a wireframe
      */
     wireframe: PropTypes.bool,
 
     /**
-     * width of the box in meters
+     * Width of the box in meters
      */
     dimWidth: PropTypes.number,
 
     /**
-     * height of the box in meters
+     * Height of the box in meters
      */
     dimHeight: PropTypes.number,
   },

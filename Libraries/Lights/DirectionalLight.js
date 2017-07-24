@@ -22,7 +22,7 @@ const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 
 /**
- * A light which is an infinite distance away and orientated along a particular direction
+ * A light which is an infinite distance away and orientated along a particular direction.
  *
  * [Wikipedia](https://en.wikipedia.org/wiki/Shading#Directional_lighting) defines directional
  * lighting as a light source which illuminates all objects equally from a given direction,

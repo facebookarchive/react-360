@@ -22,9 +22,9 @@ const createReactClass = require('create-react-class');
 const requireNativeComponent = require('requireNativeComponent');
 
 /**
- * A light that effects all objects in the scene equally and from all directions.
+ * A light that affects all objects in the scene equally and from all directions.
  *
- * The [Wikipedia](https://en.wikipedia.org/wiki/Shading#Ambient_lighting) definition is as follows
+ * The [Wikipedia](https://en.wikipedia.org/wiki/Shading#Ambient_lighting) definition is as follows:
  * An ambient light source represents an omni-directional, fixed-intensity and
  * fixed-color light source that affects all objects in the scene equally. Upon rendering,
  * all objects in the scene are brightened with the specified intensity and color.

@@ -25,9 +25,9 @@ const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
 
 /**
- * Sound represents an audio source that is located within the scene. It supports
- * 3D audio so the left/right stereo balance of the sound will change as the listener
- * moves around the scene or turns their head (in VR mode).
+ * Sound represents an audio source located within the scene. It supports
+ * 3D positional audio, changing the stereo balance of the sound as the
+ * listener moves around the scene or turns their head in VR.
  *
  * Example usage:
  * ```
@@ -37,10 +37,10 @@ const resolveAssetSource = require('resolveAssetSource');
  * ```
  *
  * The `source` attribute represents the external resource to load.
- * It should be an asset() statement, or a resource declaration in the form
+ * It should be an `asset()`` statement, or a resource declaration in the form
  * `{uri: 'PATH'}`. Since different browsers support different audio formats,
  * you can also supply a map of formats to their corresponding resource objects,
- * and React VR will pick the supported sound for the browser:
+ * and React VR can select the sound file supported by the browser:
  * ```
  * <Sound
  *   source={{
@@ -65,7 +65,7 @@ const Sound = createReactClass({
     style: StyleSheetPropType(LayoutAndTransformPropTypes),
 
     /**
-     * source audio in the form of `{uri: 'http'}`
+     * Source audio in the form of `{uri: 'http'}`
      */
     source: PropTypes.object,
 
@@ -114,7 +114,7 @@ const Sound = createReactClass({
     /**
      * Controls the playback status.  If not set, the value of `autoPlay` determines
      * whether the audio plays when the component is loaded.
-     * This is going to be renamed to `playControl`, please migrate to use `playControl`
+     * This prop is scheduled to be deprecated. Use `playControl` instead.
      */
     playStatus: PropTypes.oneOf(['play', 'pause', 'stop']),
 
@@ -134,11 +134,13 @@ const Sound = createReactClass({
     playerState: PropTypes.object,
 
     /**
-     * Value of the audio volume. Minimum is zero, which mutes the sound, and the suggested
-     * maximum is 1.0, which is also the default value. Values greater than 1 are allowed
-     * allowed this may cause clipping / distortion depending on the audio hardware.
+     * Value of the audio volume. The minimum value 0 mutes the sound.
+     * The suggested maximum is 1.0, which is also the default value.
+     * Values greater than 1.0 are allowed, but may cause clipping or
+     * distortion depending on the audio hardware.
      *
-     * example: Lower the volume by 50%
+     * For example: Lower the volume by 50%
+     *
      * `volume={0.5}`
      */
     volume: PropTypes.number,
