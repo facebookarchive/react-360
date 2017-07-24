@@ -20,7 +20,7 @@ dependencies:
 test:
   override:
     - npm run flow -- check
-    - npm run test
+    - REACT_NATIVE_MAX_WORKERS=1 npm run test
     # test website generation
     - cd website && node ./server/generate.js
 
