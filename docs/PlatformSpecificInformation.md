@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-This will result in a container having `flex: 1` on all platforms, a red background color on iOS, a blue background color on Android and an orange background color on vr
+This will result in a container having `flex: 1` on all platforms, a red background color on iOS, a blue background color on Android and an orange background color for VR.
 
 ## Platform-specific extensions
 

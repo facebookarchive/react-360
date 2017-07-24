@@ -10,12 +10,12 @@ previous: TBD
 
 If React VR doesn't support a feature that you need, you can build it yourself.
 
-Sometimes an app needs access to a platform API that React VR doesn't have a corresponding module for yet. Maybe you want to reuse some existing JavaScript code without having to re-implement it in the React context. Or, you want to write some high performance, multi-threaded code for image processing, a database, or other advanced extensions.
+Perhaps an app needs access to a platform API that React VR doesn't have a corresponding module for yet. Maybe you want to reuse some existing JavaScript code without having to re-implement it in the React context. Or, you want to write some high performance, multi-threaded code for image processing, a database, or other advanced extensions.
 
-This is a more advanced feature and we don't expect it to be part of the usual development process, however it is essential that it exists.
+This is a more advanced feature and while we don't expect it to be part of the usual development process, it is essential you know that it exists.
 
 ## Cube Example
-One example of using Native Modules is to support interaction between a React VR UI element and a custom Three.js object that you've added to your scene, for example a geometric cube similar to the one in the [Three.js README](https://github.com/mrdoob/three.js).
+One example of using Native Modules is to support interaction between a React VR UI element and a custom Three.js object that you've added to your scene. For example, a geometric cube similar to the one in the [Three.js README](https://github.com/mrdoob/three.js).
 
 ### Setting up the Scene
 The React VR framework can handle the camera and renderer setup for you, so you only need to focus on adding objects to your scene and animating them. First, we create the scene in the `init` function of `vr/client.js` (one of the files provided as part of the Starter Project) and provide it as an option to the `VRInstance` constructor.  We also create `CubeModule`, a Native Module described later in this section.
@@ -86,17 +86,17 @@ See the `CubeSample` for the full code of this example.
 
 ### Creating Native Views
 
-By implementing a native view you can control how the properties specified in your React VR code interact with the runtime code, this could be visual representation or even sound.
+By implementing a native view, you can control how the properties specified in your React VR code interact with the runtime code. This can include visual representations and even sound.
 
-To create a native view you will need to import the main module `react-vr-web`
+To create a native view, you need to import the main module `react-vr-web`
 
 ```
 import * as ReactVR from 'react-vr-web';
 ```
 
-Then create a class that extends the `RCTBaseView`, the constructor should create the `OVRUI.UIView` and register getters and setters on any properties.
+Then, create a class that extends the `RCTBaseView`. The constructor should create the `OVRUI.UIView` and register getters and setters on any properties.
 
-The class also implements a static `describe` function which the runtime uses to determine which properties should be sent from the React VR code to the runtime, these are the runtime implementation of the PropTypes.
+The class also implements a static `describe` function the runtime uses to determine which properties to send from the React VR code to the runtime. These are the runtime implementation of the PropTypes.
 
 ```
 class RCTTestLight extends ReactVR.RCTBaseView {
@@ -130,7 +130,7 @@ class RCTTestLight extends ReactVR.RCTBaseView {
 }
 ```
 
-Finally, the custom views must be registered to the React VR context and this is handled by provided a list of available `customViews` when creating `ReactVR.VRInstance`
+Finally, the custom views must be registered to the React VR context. This is handled by providing a list of available `customViews` when creating `ReactVR.VRInstance`
 
 ```
 const vr = new ReactVR.VRInstance(bundlePath, appName, document.body, {
@@ -140,7 +140,7 @@ const vr = new ReactVR.VRInstance(bundlePath, appName, document.body, {
 ```
 
 
-To make this `TestLight` component available to React VR code it is necessary to register a component which makes use of the `NativeMethodsMixin`. `propTypes` will need to have been set to enable the propTypes to be handled by the React VR core, `viewConfig` is used to support the `Animated` modules and the `render` function should return a component created using the `requireNativeComponent` utility function.
+To make this `TestLight` component available to React VR code, it is necessary to register a component that makes use of `NativeMethodsMixin`. Set the `propTypes` to enable the propTypes to be handled by the React VR core. `viewConfig` is used to support the `Animated` modules. The `render` function should return a component created using the `requireNativeComponent` utility function.
 
 ```
 const TestLight = React.createClass({

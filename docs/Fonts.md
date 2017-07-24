@@ -45,7 +45,7 @@ OVRUI.loadFont(
 });
 ```
 
-By loading fonts explicitly you are able to install fallback fonts should the main font set not cover enough of the character set. Contained within the repository are fonts that cover the majority of Chinese, Japanese and Korean glyphs and the OVRUI function `addFontFallback` is used to add a fallback to an already loaded font set.
+You can install fallback fonts should the main font set not cover enough of the character set by loading fonts explicitly. Contained within the repository are fonts that cover the majority of Chinese, Japanese and Korean glyphs. Use the OVRUI function `addFontFallback` to add a fallback to an already loaded font set.
 
 ```
 const fallbackFonts = {
@@ -80,7 +80,7 @@ function init(bundle, parent, options) {
 
 It is also possible to generate your own font set textures using the fontue tool in the [Oculus Mobile SDK](https://developer.oculus.com/downloads/). The tool has a dependency on [FreeType](https://www.freetype.org), and can be found in the Oculus Mobile SDK `Tools/fontue` directory, along with a `readme.txt` describing its operation.
 
-The base command line for the efigs font is:
+The base command line for the EFIGS font is:
 
 ```
 OculusSans-Medium.otf efigs\efigs -co -0.01 -ts 1.0 -hpad 128 -vpad 128 -sdf 256 1024 1024 -cf data\strings\values\strings.xml -cf data\strings\values-de\strings.xml -cf data\strings\values-en-rGB\strings.xml -cf data\strings\values-es\strings.xml -cf data\strings\values-es-rES\strings.xml -cf data\strings\values-fr\strings.xml -cf data\strings\values-it\strings.xml -cf data\EFIGS_extended.txt

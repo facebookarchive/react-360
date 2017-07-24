@@ -19,8 +19,8 @@ In most cases, children are arranged vertically in a `'column'` or horizontally 
 Here are some of the more common attributes:
 
 * `flexDirection` - Can be `column` or `row`.
-* `justifyContent` - Can be `flex-start`, `space-around`, `center`, `space-between` or `flex-end`.
-* `alignItems` - Can be `stretch`, `flex-start`, `center` or `flex-end`.
+* `justifyContent` - Can be `flex-start`, `space-around`, `center`, `space-between`, or `flex-end`.
+* `alignItems` - Can be `stretch`, `flex-start`, `center`, or `flex-end`.
 * `margin` - specifies space around the item.
 
 The behavior of these and other layout attributes is demonstrated by the *LayoutSample* included
