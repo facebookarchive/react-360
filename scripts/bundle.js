@@ -61,17 +61,23 @@ function hasPackage(dir) {
   return false;
 }
 
-let projectDir = process.cwd();
-const buildDir = path.join(projectDir, 'vr', 'build');
-
-while (!hasPackage(projectDir)) {
-  const next = path.join(projectDir, '..');
-  if (projectDir === next) {
-    console.log('Could not find a React VR project directory');
-    process.exit(1);
+function findProjectDir(dir) {
+  while (!hasPackage(dir)) {
+    const next = path.join(dir, '..');
+    if (dir === next) {
+      console.log('Could not find a React VR project directory');
+      process.exit(1);
+    }
+    dir = path.join(dir, '..');
   }
-  projectDir = path.join(projectDir, '..');
+  return dir;
 }
+
+// Allow overriding the project location with an env variable
+const projectDir = process.env.PROJECT_LOCATION ||
+  findProjectDir(process.cwd());
+
+const buildDir = path.join(projectDir, 'vr', 'build');
 
 new Promise((resolve, reject) => {
   try {
