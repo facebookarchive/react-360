@@ -12,7 +12,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-const scorer = (value, scores) => {
+export const scorer = (value, scores) => {
   let result = null;
   Object.keys(scores).some(key => {
     if (scores[key].indexOf(value) >= 0) {
@@ -46,19 +46,15 @@ export const countEquals = (state, value) => {
 export const isValid = (action, state) => {
   switch (action.type) {
     case 'SCORE':
-      // score can be reduced if state and action agree on scorer and pair shown
+      // score can be reduced if state and action agree on scorer
       const currentScorer = scorer(action.value, state.scores);
-      return (
-        (currentScorer === null || currentScorer === action.client) &&
-        countEquals(state.board, action.value) === 2
-      );
+      return currentScorer === null || currentScorer === action.client;
     case 'SHOW':
       // show action is idempotent, so can always be reduced
       return true;
     case 'HIDE':
-      // hide action can be reduced if value not scored
-      const value = state.board[action.square.row][action.square.column];
-      return scorer(value, state.scores) === null;
+      // hide action is idempotent, so can always be reduced
+      return true;
   }
   return false;
 };

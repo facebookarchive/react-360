@@ -123,14 +123,6 @@ describe('optimistic hide consistency', () => {
     expect(store.getState().board[0][0]).toEqual(value);
     expect(fakeSend).toHaveBeenCalledTimes(3); // connect actions only.
   });
-  it('master should not reduce hide for scored pairs and should send sync', () => {
-    store.dispatch(syncState(scorePair(setPairToValue(store.getState(), 42, 0), masterId, 42)));
-    const hideAction = hideSquare(showSquare(0, 0, masterId));
-    const syncAction = syncState(store.getState());
-    store.dispatch(hideAction);
-    expect(store.getState().board[0][0]).toEqual(Math.abs(42));
-    expect(fakeSend).toHaveBeenCalledWith(syncAction);
-  });
 });
 
 describe('optimistic score consistency', () => {
@@ -165,12 +157,5 @@ describe('optimistic score consistency', () => {
     store.dispatch(scoreSquare(bClientId, 42));
     expect(fakeSend).toHaveBeenCalledWith(syncAction);
     expect(store.getState().scores[bClientId]).toEqual([]);
-  });
-  it('master should not score hidden square and should send sync', () => {
-    const value = store.getState().board[0][0];
-    const syncAction = syncState(store.getState());
-    store.dispatch(scoreSquare(aClientId, Math.abs(value)));
-    expect(fakeSend).toHaveBeenCalledWith(syncAction);
-    expect(store.getState().scores[aClientId]).toEqual([]);
   });
 });

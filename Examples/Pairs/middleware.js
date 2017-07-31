@@ -32,6 +32,15 @@ export const logActions = localClient => store => next => action => {
   return next(action);
 };
 
+// log state
+export const logState = store => next => action => {
+  const result = next(action);
+  const state = store.getState();
+  console.log(state.board);
+  console.log(state.scores);
+  return result;
+};
+
 // filter non-handshake actions from unknown senders
 export const filterUnknownSenderActions = store => next => action => {
   if (isLocal(action) || isHandshake(action) || action.sender in store.getState().scores) {

@@ -36,9 +36,17 @@ export const initialState = () => {
   });
 };
 
-const copyState = state => {
-  return state.slice().map(value => {
-    return value.slice();
+export const copyState = state => {
+  return state.slice().map(row => {
+    return row.slice();
+  });
+};
+
+const replaceValue = (state, existing, replacement) => {
+  return state.slice().map(row => {
+    return row.map(value => {
+      return value === existing ? replacement : value;
+    });
   });
 };
 
@@ -52,9 +60,13 @@ export default (state = initialState(), action) => {
       result[action.square.row][action.square.column] = Math.abs(value);
       return result;
     case 'HIDE':
-      result = copyState(state);
       value = state[action.square.row][action.square.column];
+      result = copyState(state);
       result[action.square.row][action.square.column] = -Math.abs(value);
+      return result;
+    case 'SCORE':
+      value = action.value;
+      result = replaceValue(state, -Math.abs(value), Math.abs(value));
       return result;
     default:
       return state;

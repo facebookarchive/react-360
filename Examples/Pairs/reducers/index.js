@@ -15,6 +15,7 @@
 import {combineReducers} from 'redux';
 import board from './board';
 import scores from './scores';
+import {scorer} from './validate';
 
 const reducers = combineReducers({
   board,
@@ -22,6 +23,16 @@ const reducers = combineReducers({
 });
 
 const app = (state, action) => {
+  switch (action.type) {
+    case 'SYNC_STATE':
+      return {...action.state};
+    case 'HIDE':
+      const value = state.board[action.square.row][action.square.column];
+      if (scorer(value, state.scores)) {
+        return state; // Don't hide scored squares.
+      }
+  }
+
   if (action.type === 'SYNC_STATE') {
     return {...action.state};
   }

@@ -30,7 +30,7 @@ import {
   filterUnknownSenderActions,
   replicateNonHandshakeActions,
 } from './middleware';
-//import {randomActions} from './random';
+import {randomActions} from './random';
 
 // set up web socket connection to relay
 const Location = NativeModules.Location;
@@ -124,12 +124,11 @@ ws.onmessage = evt => {
 ws.onopen = evt => {
   store.dispatch(connect(localClient));
 
-  // uncomment to randomly generate actions after connection
-  /*
-  setTimeout(() => {
-    randomActions(store, localClient);
-  }, 3000);
-  */
+  if (Location.search.substring(1) === 'random') {
+    setTimeout(() => {
+      randomActions(store, localClient);
+    }, 3000);
+  }
 };
 
 class App extends React.Component {
