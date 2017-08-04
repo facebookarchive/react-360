@@ -201,15 +201,16 @@ export default class RCTPano extends RCTBaseView {
           this._material.map = texture.texture;
           this._material.envMap = undefined;
         } else {
+          if (!value.enableMipmaps) {
+            texture.generateMipmaps = false;
+            texture.minFilter = THREE.LinearFilter;
+          }
+          texture.wrapS = THREE.ClampToEdgeWrapping;
+          texture.wrapT = THREE.ClampToEdgeWrapping;
           const cubeTexture = texture.isCubeTexture ? texture : null;
           const flatTexture = texture.isCubeTexture ? null : texture;
           if (texture.isCubeTexture) {
             this._globe.scale.x = 1;
-            texture.generateMipmaps = true;
-          } else {
-            texture.wrapS = THREE.ClampToEdgeWrapping;
-            texture.wrapT = THREE.ClampToEdgeWrapping;
-            texture.minFilter = THREE.LinearFilter;
           }
           this._material.map = flatTexture;
           this._material.envMap = cubeTexture;

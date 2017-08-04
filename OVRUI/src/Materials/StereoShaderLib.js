@@ -10,11 +10,15 @@ const StereoShaderLib = {
   stereo_basic_vert: `
       uniform vec4 stereoOffsetRepeat;
       varying highp vec3 vPosition;
+      #ifndef USE_ENVMAP
       varying highp vec2 vUv;
+      #endif
       void main()
       {
           vPosition = position;
+          #ifndef USE_ENVMAP
           vUv = uv * stereoOffsetRepeat.zw + stereoOffsetRepeat.xy;
+          #endif
           gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
       }
   `,
@@ -30,9 +34,9 @@ const StereoShaderLib = {
       uniform samplerCube envMap;
       #else
       uniform sampler2D map;
+      varying highp vec2 vUv;
       #endif
       varying highp vec3 vPosition;
-      varying highp vec2 vUv;
       void main()
       {
         vec4 diffuseColor = vec4( 1.0, 1.0, 1.0, opacity );
