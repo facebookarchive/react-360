@@ -44,6 +44,6 @@ We can use the React VR command line interface tool to generate a new project ca
 #### Hello!
 Click and drag around the world in your browser or open it up on your mobile device to see more.
 
-If you're using a web browser that supports WebVR such as [the Carmel Developer Preview browser from Oculus](https://www.oculus.com/experiences/gear-vr/1290985657630933/), you should be able to put on your headset and explore the world in full VR. For more information on VR capable browsers, see the [VR Browsers](docs/vrbrowsers.html) topic.
+If you're using a web browser that supports WebVR such as [Oculus Browser](https://www.oculus.com/experiences/gear-vr/1257988667656584/), you should be able to put on your headset and explore the world in full VR. For more information on VR capable browsers, see the [VR Browsers](docs/vrbrowsers.html) topic.
 
 Our next topic explores the code that brings this scene to life.
