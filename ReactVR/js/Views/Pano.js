@@ -96,6 +96,9 @@ export default class RCTPano extends RCTBaseView {
     this._globe.rotation.y = -Math.PI / 2;
 
     this.view = new OVRUI.UIView(guiSys);
+    // set zOffset to be the radius of the sphere. This helps prevent the pano's
+    // transparency from affecting other views as a result of rendering order.
+    this.view.zOffset = 1000;
     this.view.add(this._globe);
     this._localResource = new RCTBindedResource(rnctx.RCTResourceManager);
     this.globeOnUpdate = this.globeOnUpdate.bind(this);
