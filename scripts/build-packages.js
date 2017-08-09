@@ -13,6 +13,8 @@ const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+const installDeps = require('./install-deps');
+
 function prepare() {
   return new Promise((resolve, reject) => {
     // Build OVRUI
@@ -84,10 +86,13 @@ const PACKAGES = {
 };
 
 const rev = child_process.execSync('git rev-parse HEAD').toString().trim().substr(0, 8);
-console.log(`\x1b[34;1mBuilding packages at git rev ${rev}...\x1b[0m`);
 const DEST = path.resolve(__dirname, '..', 'package_builds');
-ensureDirectory(DEST);
-prepare()
+installDeps()
+  .then(() => {
+    console.log(`\x1b[34;1mBuilding packages at git rev ${rev}...\x1b[0m`);
+    ensureDirectory(DEST);
+    return prepare();
+  })
   .then(() => {
     return Promise.all(
       Object.keys(PACKAGES).map(p =>
