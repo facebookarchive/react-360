@@ -3,7 +3,7 @@ general:
     ignore:
       - gh-pages # list of branches to ignore
   artifacts:
-    - "packages"
+    - "package_builds"
 machine:
   pre:
     - export DEBIAN_FRONTEND=noninteractive && sudo apt-get remove -y --purge mysql-server mysql-community-server
