@@ -27,7 +27,7 @@ export interface Controls {
 
   constructor(camera: Camera): Controls,
   resetRotation(number, number, number): void,
-  update(): void,
+  update(...args: Array<any>): void,
 }
 
 export default class AppControls {

@@ -28,6 +28,7 @@ declare module 'three' {
 
   declare class BufferAttribute {
     constructor(): BufferAttribute,
+    constructor($TypedArray, number): BufferAttribute,
   }
 
   declare class BufferGeometry extends Geometry {
@@ -65,7 +66,8 @@ declare module 'three' {
   }
 
   declare class Color {
-    constructor(): Color,
+    constructor(): this,
+    constructor(number, number, number): this,
     setHex(number): void,
     set(number): void,
   }
@@ -74,6 +76,7 @@ declare module 'three' {
     x: number,
     y: number,
     z: number,
+    constructor(number, number, number, ?string): this,
     copy(e: Euler): this,
     set(number, number, number, string): this,
   }
@@ -113,15 +116,15 @@ declare module 'three' {
   }
 
   declare class MeshBasicMaterial extends Material {
-    constructor(): MeshBasicMaterial,
+    constructor(?{color: number | string}): MeshBasicMaterial,
   }
 
   declare class MeshLambertMaterial extends Material {
-    constructor(): MeshLambertMaterial,
+    constructor(?{color: number | string}): MeshLambertMaterial,
   }
 
   declare class MeshPhongMaterial extends Material {
-    constructor(): MeshPhongMaterial,
+    constructor(?{color: number | string}): MeshPhongMaterial,
   }
 
   declare class MultiMaterial extends Material {
@@ -178,12 +181,19 @@ declare module 'three' {
     magFilter: number,
     needsUpdate: boolean,
 
+    constructor(HTMLCanvasElement | HTMLVideoElement | Image): this,
+
     dispose(): void,
   }
 
   declare class TextureLoader {
     constructor(loader: any): TextureLoader,
-    load(path: string): any,
+    load(
+      path: string,
+      onLoad?: (Texture) => mixed,
+      onProgress?: (number) => mixed,
+      onError?: (any) => mixed
+    ): any,
     setCrossOrigin(origin: 'anonymous' | 'use-credentials'): void,
   }
 
@@ -221,11 +231,11 @@ declare module 'three' {
     getClearAlpha(): number,
     getClearColor(): Color,
     getSize(): {width: number, height: number},
-    render(Scene, Camera): this,
-    setClearColor(number | string | Color): this,
+    render(Scene, Camera, ?any, ?boolean): this,
+    setClearColor(number | string | Color, ?number): this,
     setPixelRatio(number): this,
     setRenderTarget(e: ?Element): this,
-    setSize(number, number): this,
+    setSize(number, number, ?boolean): this,
   }
 
   declare class AmbientLight {
@@ -234,6 +244,7 @@ declare module 'three' {
   }
 
   declare class AnimationMixer {
+    constructor(Scene): this,
     clipAction(clip: any): any,
   }
 

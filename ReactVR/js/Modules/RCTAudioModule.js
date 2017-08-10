@@ -50,7 +50,7 @@ export default class RCTAudioModule extends Module {
   _audioDefs: {[handle: string]: AudioDef};
   _components: {[handle: string]: VRAudioComponent};
   _mediaEventCallbacks: {
-    [handle: string]: {[eventType: string]: Array<(handle: string) => void>},
+    [handle: string]: {[eventType: string]: Array<(handle: string, event: MediaEvent) => void>},
   };
   _rnctx: ReactNativeContext;
 

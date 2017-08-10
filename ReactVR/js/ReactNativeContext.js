@@ -186,7 +186,7 @@ export class ReactNativeContext {
 
     // register the core modules
     this.registerModule(this.UIManager);
-    this.registerModule(new AndroidConstants(this));
+    this.registerModule(new AndroidConstants());
     this.registerModule(new AsyncLocalStorage(this));
     this.registerModule(new ControllerInfo(this));
     this.registerModule(new DeviceInfo());

@@ -20,4 +20,4 @@ module.name_mapper='^ovrui$' -> '<PROJECT_ROOT>/OVRUI/src/OVRUI.js'
 unsafe.enable_getters_and_setters=true
 
 [version]
-0.46.0
+0.52.0

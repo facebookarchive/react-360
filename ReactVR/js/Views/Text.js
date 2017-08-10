@@ -333,7 +333,7 @@ export default class RCTText extends RCTBaseView {
    * Customised present layout so that the border settings can be updated
    */
   presentLayout() {
-    super.presentLayout(this);
+    super.presentLayout();
     const val = this.YGNode.getBorder(Yoga.Left);
     this.view.setBorderWidth(Number.isNaN(val) ? 0 : val);
     if (

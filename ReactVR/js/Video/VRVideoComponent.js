@@ -19,7 +19,7 @@ import * as THREE from 'three';
 import type {Texture} from 'three';
 
 interface VideoPlayer {
-  initializeVideo(src: string): void,
+  initializeVideo(src: string, metaData: any): void,
   dispose(): void,
   hasEnoughData(): boolean,
 }

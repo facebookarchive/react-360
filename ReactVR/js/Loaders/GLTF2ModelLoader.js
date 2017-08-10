@@ -14,7 +14,6 @@ import extractURL from '../Utils/extractURL';
 import type {UIView} from 'ovrui';
 import type {Material} from 'three';
 
-// $FlowFixMe
 import GLTF2Loader from 'three-gltf2-loader';
 import fetchResource from '../Utils/fetchResource';
 import RefCountCache from '../Utils/RefCountCache';
