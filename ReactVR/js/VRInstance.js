@@ -14,6 +14,7 @@ import {Player, GuiSys} from 'ovrui';
 import bundleFromLocation from './bundleFromLocation';
 import createRootView from './createRootView';
 
+import type Bridge from './Bridge/Bridge';
 import type {RootView} from './createRootView';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
@@ -23,6 +24,7 @@ type VRInstanceOptions = {
   allowCarmelDeeplink?: boolean,
   antialias?: boolean,
   assetRoot?: string,
+  bridge?: Bridge,
   calculateVerticalFOV?: (number, number) => number,
   camera?: Camera,
   canvasAlpha?: boolean,
@@ -139,6 +141,7 @@ export default class VRInstance {
     this.rootView = createRootView(this.guiSys, root, {
       // Name of the mounted root module, from AppRegistry
       assetRoot: assetRoot,
+      bridge: options.bridge,
       bundle: bundleFromLocation(bundle),
       customViews: options.customViews,
       enableHotReload: options.enableHotReload,

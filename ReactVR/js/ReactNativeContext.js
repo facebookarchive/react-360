@@ -34,6 +34,7 @@ import RCTSourceCode from './Modules/RCTSourceCode';
 import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 
+import type Bridge from './Bridge/Bridge';
 import type Module from './Modules/Module';
 import type {GuiSys, UIView, UIViewEvent} from 'ovrui';
 import type {Camera, Object3D} from 'three';
@@ -129,6 +130,7 @@ function describe(ctx: ReactNativeContext) {
  **/
 export class ReactNativeContext {
   AudioModule: RCTAudioModule;
+  bridge: Bridge;
   currentRootTag: number;
   guiSys: GuiSys;
   enableHotReload: boolean;
@@ -146,7 +148,6 @@ export class ReactNativeContext {
   Timing: Timing;
   UIManager: UIManager;
   VideoModule: RCTVideoModule;
-  worker: Worker;
 
   _cameraParentFromTag: Array<Object3D | null>;
   _moduleForTag: Array<string>;
@@ -158,10 +159,10 @@ export class ReactNativeContext {
    * @param guiSys - instance of OVRUI.guiSys
    * @param bridgeURL - url of location of bridge
    */
-  constructor(guiSys: GuiSys, bridgeURL: string, options: ContextOptions = {}) {
+  constructor(guiSys: GuiSys, bridge: Bridge, options: ContextOptions = {}) {
     this.modules = [];
     this.currentRootTag = 1;
-    this.worker = new Worker(bridgeURL);
+    this.bridge = bridge;
     this.guiSys = guiSys;
     this.messages = [];
     this.isLowLatency = !!options.isLowLatency; // Whether this context should target 90fps
@@ -210,18 +211,14 @@ export class ReactNativeContext {
     // register the worker onmessage function
     // messages are not execute at point of recieving
     // but queue for later dispatch in the `frame` function
-    this.worker.onmessage = e => {
-      const msg = e.data;
-      if (!msg || !(msg instanceof Object) || !msg.cmd) {
-        return;
-      }
+    this.bridge.setMessageHandler(msg => {
       if (msg.cmd === 'exec') {
         const results = msg.results;
         if (results && results.length) {
           this.messages.push(results);
         }
       }
-    };
+    });
   }
 
   /**
@@ -229,7 +226,7 @@ export class ReactNativeContext {
    * @param bundle - url of the bundle
    */
   init(bundle: string) {
-    this.worker.postMessage(
+    this.bridge.postMessage(
       JSON.stringify(
         {
           cmd: 'moduleConfig',
@@ -239,7 +236,7 @@ export class ReactNativeContext {
       )
     );
 
-    this.worker.postMessage(JSON.stringify({cmd: 'bundle', bundleName: bundle}));
+    this.bridge.postMessage(JSON.stringify({cmd: 'bundle', bundleName: bundle}));
     if (this.enableHotReload) {
       const bundleURL = new URL(bundle);
       console.warn('HotReload on ' + bundle);
@@ -272,7 +269,7 @@ export class ReactNativeContext {
   createRootView(module: string, props: {[prop: string]: any}) {
     const tag = this.currentRootTag;
     this.currentRootTag += ROOT_VIEW_INCREMENT;
-    this.worker.postMessage(
+    this.bridge.postMessage(
       JSON.stringify({
         cmd: 'exec',
         module: 'AppRegistry',
@@ -292,7 +289,7 @@ export class ReactNativeContext {
    * @param props - props that is posted to the registered module
    */
   updateRootView(tag: number, props: {[prop: string]: any}) {
-    this.worker.postMessage(
+    this.bridge.postMessage(
       JSON.stringify({
         cmd: 'exec',
         module: 'AppRegistry',
@@ -316,7 +313,7 @@ export class ReactNativeContext {
       }
       delete this._cameraParentFromTag[tag];
     }
-    this.worker.postMessage(
+    this.bridge.postMessage(
       JSON.stringify({
         cmd: 'exec',
         module: 'AppRegistry',
@@ -414,7 +411,7 @@ export class ReactNativeContext {
         }
       }
     }
-    this.worker.postMessage(JSON.stringify({cmd: 'flush'}));
+    this.bridge.postMessage(JSON.stringify({cmd: 'flush'}));
     for (const results of this.messages) {
       if (results && results.length >= 3) {
         const moduleIndex = results[0];
@@ -515,7 +512,7 @@ export class ReactNativeContext {
     * @param args - array of args passed to react bundle over webworker
    **/
   callFunction(moduleName: string, functionName: string, args: Array<any>) {
-    this.worker.postMessage(
+    this.bridge.postMessage(
       JSON.stringify({
         cmd: 'exec',
         module: moduleName,
@@ -531,7 +528,7 @@ export class ReactNativeContext {
     * @param args - array of args passed to react bundle over webworker
    **/
   invokeCallback(id: number, args: Array<any>) {
-    this.worker.postMessage(
+    this.bridge.postMessage(
       JSON.stringify({
         cmd: 'invoke',
         id: id,

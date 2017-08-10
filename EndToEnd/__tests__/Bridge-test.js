@@ -39,7 +39,7 @@ describe('React Bridge', () => {
   it('exposes Native Modules', () => {
     const runner = new Runner(html, {});
     return runner.loaded.then((window) => {
-      const workerWindow = window.vr.rootView.context.worker.sandbox.window;
+      const workerWindow = window.vr.rootView.context.bridge.getWorker().sandbox.window;
       expect(workerWindow.NativeModules).toBeTruthy();
       const vrConstants = workerWindow.NativeModules.ReactVRConstants;
       expect(vrConstants.Runtime).toBe('WebVR');
