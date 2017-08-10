@@ -2,6 +2,8 @@ general:
   branches:
     ignore:
       - gh-pages # list of branches to ignore
+  artifacts:
+    - "package_builds"
 machine:
   pre:
     - export DEBIAN_FRONTEND=noninteractive && sudo apt-get remove -y --purge mysql-server mysql-community-server
@@ -9,7 +11,7 @@ machine:
     version: 6.2.0
 dependencies:
   override:
-    - npm install
+    - node scripts/install-deps.js
     - pushd website && npm install && popd
     - pushd react-vr-cli && npm install && popd
   cache_directories:
@@ -21,6 +23,8 @@ test:
   override:
     - npm run flow -- check
     - REACT_NATIVE_MAX_WORKERS=1 npm run test
+    # build packages
+    - node scripts/build-packages.js
     # test website generation
     - cd website && node ./server/generate.js
 
