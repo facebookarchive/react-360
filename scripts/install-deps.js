@@ -30,11 +30,11 @@ function installDeps() {
   }
   console.log(`\x1b[34;1m${packager}\x1b[0m detected`);
   const args = packager === 'yarn' ? ['--pure-lockfile'] : ['install'];
-  console.log('Installing all dependencies in parallel:');
-  const procs = [];
-  for (let pkg in paths) {
-    procs.push(
-      new Promise((resolve, reject) => {
+  let promise = Promise.resolve();
+  Object.keys(paths).forEach(pkg => {
+    promise = promise.then(() => {
+      console.log('Installing dependencies for ' + pkg);
+      return new Promise((resolve, reject) => {
         const proc = child_process.spawn(packager, args, {
           stdio: 'inherit',
           cwd: paths[pkg],
@@ -46,10 +46,10 @@ function installDeps() {
           }
           resolve();
         });
-      })
-    );
-  }
-  return Promise.all(procs).then(
+      });
+    });
+  });
+  return promise.then(
     () => {
       console.log('Completed successfully!');
     },
