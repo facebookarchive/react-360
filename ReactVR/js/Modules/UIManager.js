@@ -711,7 +711,8 @@ export default class UIManager extends Module {
         view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
-    this._rnctx.invokeCallback(callback, [x, y, w, h]);
+    // [x, y, w, h, left, top]
+    this._rnctx.invokeCallback(callback, [0, 0, w, h, x, y]);
   }
 
   /**
