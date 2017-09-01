@@ -48,6 +48,7 @@ const apis = [
   path.join(rn, 'Libraries/Animated/src/Easing.js'),
   '../Libraries/VRModules/ExternalAssets.js',
   // '../Libraries/VRModules/GlyphTextures.js', // No jsdocs
+  path.join(rn, 'Libraries/Geolocation/Geolocation.js'),
   '../Libraries/VRModules/History.js',
   path.join(rn, 'Libraries/Linking/Linking.js'),
   '../Libraries/VRModules/Location.js',
