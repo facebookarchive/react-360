@@ -124,7 +124,7 @@ index.vr.bundle
 
 The resultant index.vr.bundle file contains JavaScript code that can be directly fetched and executed by an HTML **`script`** tag.
 
-Due to the scope of the project, we only discuss our usage. For more general information on the Packager, see [React Native Packager](https://github.com/facebook/react-native/blob/master/packager/README.md).
+Due to the scope of the project, we only discuss our usage. For more general information on the Packager, see [React Native Packager](https://github.com/facebook/metro-bundler).
 
 #### Networking
 
