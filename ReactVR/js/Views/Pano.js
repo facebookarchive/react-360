@@ -68,6 +68,8 @@ export default class RCTPano extends RCTBaseView {
   constructor(guiSys, rnctx) {
     super();
 
+    this._tintOpacity = 1.0;
+    this._styleOpacity = 1.0;
     this._sphereGeometry = new THREE.SphereGeometry(1000, 50, 50);
     this._cubeGeometry = new CubePanoBufferGeometry(2000, 3, 2, 1.01);
     this._material = new OVRUI.StereoBasicTextureMaterial({
@@ -107,12 +109,21 @@ export default class RCTPano extends RCTBaseView {
       set: value => this.setSource(value),
     });
     // register a setter for the backgroundColor so the globe can be tinted
+    Object.defineProperty(this.style, 'opacity', {
+      set: value => {
+        this._styleOpacity = value;
+        this._material.opacity = this._styleOpacity * this._tintOpacity;
+        this._material.transparent = this._material.opacity < 1;
+      },
+    });
+    // register a setter for the backgroundColor so the globe can be tinted
     Object.defineProperty(this.style, 'tintColor', {
       set: value => {
         const opacity = parseInt(value.toString(16).slice(0, 2), 16) / 255;
         this._material.color.set(value);
-        this._material.opacity = opacity;
-        this._material.transparent = opacity < 1;
+        this._tintOpacity = opacity;
+        this._material.opacity = this._styleOpacity * this._tintOpacity;
+        this._material.transparent = this._material.opacity < 1;
       },
     });
   }

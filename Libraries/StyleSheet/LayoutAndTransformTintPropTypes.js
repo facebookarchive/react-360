@@ -14,6 +14,7 @@
 const ColorPropType = require('ColorPropType');
 const LayoutPropTypes = require('LayoutPropTypes');
 const TransformPropTypes = require('TransformPropTypes');
+const PropTypes = require('prop-types');
 
 /**
  * Warning: Some of these properties may not be supported in all releases.
@@ -25,6 +26,7 @@ const LayoutAndTransformTintPropTypes = {
    * Changes the color of all the non-transparent pixels to the tintColor.
    */
   tintColor: ColorPropType,
+  opacity: PropTypes.number,
 };
 
 module.exports = LayoutAndTransformTintPropTypes;
