@@ -133,6 +133,7 @@ declare module 'three' {
 
   declare class ShaderMaterial extends Material {
     constructor(): ShaderMaterial,
+    uniforms: any,
   }
 
   declare class Object3D {

@@ -18,7 +18,7 @@ import * as THREE from 'three';
 import * as Yoga from '../Utils/Yoga.bundle';
 
 import type {GuiSys} from 'ovrui';
-import type {Geometry, Texture, Material} from 'three';
+import type {Geometry, Texture, Material, ShaderMaterial} from 'three';
 import type {ReactNativeContext} from '../ReactNativeContext';
 
 type ResourceSpecifier = void | null | string | {uri: string};
@@ -33,7 +33,7 @@ export default class RCTBaseMesh extends RCTBaseView {
   _texture: null | Texture;
   _litMaterial: Material;
   _unlitMaterial: Material;
-  _shaderMaterial: Material;
+  _shaderMaterial: ShaderMaterial;
   _shaderUniformsMap: any;
   mesh: any;
   _geometry: any;
@@ -252,10 +252,23 @@ export default class RCTBaseMesh extends RCTBaseView {
       };
     }
     if (parameters.vertexShader || parameters.fragmentShader) {
-      parameters.uniforms = {
-        ...this._shaderUniformsMap,
-        ...parameters.uniforms,
-      };
+      // extract the uniforms
+      const uniforms = parameters.uniforms || {};
+      delete parameters.uniforms;
+
+      // set value of uniform is cached so we need to make changes to that
+      const targetUniforms = this._shaderMaterial.uniforms;
+      for (const uniform in targetUniforms) {
+        delete targetUniforms[uniform];
+      }
+      for (const uniform in this._shaderUniformsMap) {
+        targetUniforms[uniform] = this._shaderUniformsMap[uniform];
+      }
+      for (const uniform in uniforms) {
+        targetUniforms[uniform] = uniforms[uniform];
+      }
+
+      // assign the reset via the usual path
       this._shaderMaterial.setValues(parameters);
       this._shader = true;
       if (this.mesh) {
