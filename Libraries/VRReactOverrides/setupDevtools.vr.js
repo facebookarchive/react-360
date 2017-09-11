@@ -11,152 +11,58 @@
  */
 'use strict';
 
-const NativeModules = require('NativeModules');
-const UIManager = NativeModules.UIManager;
+type DevToolsPluginConnection = {
+  isAppActive: () => boolean,
+  host: string,
+  port: number,
+};
 
-// Make sure we only print out the connection message once
-let logged = false;
+type DevToolsPlugin = {
+  connectToDevTools: (connection: DevToolsPluginConnection) => void,
+};
 
-function setupDevtools() {
-  // Only attemp the connection if `?devtools` has been appended to the url,
-  // so that we don't flood every app with websocket connection failure messages
-  if (!self.__DEVTOOLS__) {
-    return;
-  }
-  const port = window.__REACT_DEVTOOLS_PORT__ || 8097;
-  if (!logged) {
-    console.log('Attempting to connect to React Inspector on :' + port);
-    logged = true;
-  }
-  const messageListeners = [];
-  const closeListeners = [];
-  const hostname = 'localhost';
-  const ws = new window.WebSocket('ws://' + hostname + ':' + port + '/devtools');
-  // this is accessed by the eval'd backend code
-  /* eslint-disable no-unused-vars */
-  const FOR_BACKEND = {
-    /* eslint-enable no-unused-vars */
-    resolveRNStyle: require('flattenStyle'),
-    wall: {
-      listen(fn) {
-        messageListeners.push(fn);
-      },
-      onClose(fn) {
-        closeListeners.push(fn);
-      },
-      send(data) {
-        ws.send(JSON.stringify(data));
-      },
-    },
+let register = function () {
+  // noop
+};
+
+if (__DEV__) {
+  const AppState = require('AppState');
+  const WebSocket = require('WebSocket');
+  const {PlatformConstants} = require('NativeModules');
+  /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an
+   * error found when Flow v0.54 was deployed. To see the error delete this
+   * comment and run Flow. */
+  const reactDevTools = require('react-devtools-core');
+
+  register = function (plugin: DevToolsPlugin) {
+    // Initialize dev tools only if the native module for WebSocket is available
+    if (self.__DEVTOOLS__ && WebSocket.isAvailable) {
+      // Don't steal the DevTools from currently active app.
+      // Note: if you add any AppState subscriptions to this file,
+      // you will also need to guard against `AppState.isAvailable`,
+      // or the code will throw for bundles that don't have it.
+      const isAppActive = () => true;
+
+      // Special case: Genymotion is running on a different host.
+      const host = PlatformConstants && PlatformConstants.ServerHost ?
+        PlatformConstants.ServerHost.split(':')[0] :
+        'localhost';
+
+      plugin.connectToDevTools({
+        isAppActive,
+        host,
+        // Read the optional global variable for backward compatibility.
+        // It was added in https://github.com/facebook/react-native/commit/bf2b435322e89d0aeee8792b1c6e04656c2719a0.
+        port: window.__REACT_DEVTOOLS_PORT__,
+        resolveRNStyle: require('flattenStyle'),
+      });
+    }
   };
-  ws.onclose = handleClose;
-  ws.onerror = handleClose;
-  ws.onopen = function() {
-    tryToConnect();
-  };
 
-  let hasClosed = false;
-  function handleClose() {
-    if (!hasClosed) {
-      hasClosed = true;
-      setTimeout(setupDevtools, 2000);
-      closeListeners.forEach(fn => fn());
-    }
-  }
-
-  function tryToConnect() {
-    ws.send('attach:agent');
-    const _interval = setInterval(() => ws.send('attach:agent'), 500);
-    ws.onmessage = evt => {
-      if (evt.data.indexOf('eval:') === 0) {
-        clearInterval(_interval);
-        initialize(evt.data.slice('eval:'.length));
-      }
-    };
-  }
-
-  function initialize(text) {
-    try {
-      // FOR_BACKEND is used by the eval'd code
-      eval(text); // eslint-disable-line no-eval
-    } catch (e) {
-      console.error('Failed to eval: ' + e.message);
-      return;
-    }
-    const ReactNativeComponentTree = require('ReactNativeComponentTree');
-    window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject({
-      ComponentTree: {
-        getClosestInstanceFromNode: function(node) {
-          return ReactNativeComponentTree.getClosestInstanceFromNode(node);
-        },
-        getNodeFromInstance: function(inst) {
-          // inst is an internal instance (but could be a composite)
-          while (inst._renderedComponent) {
-            inst = inst._renderedComponent;
-          }
-          if (inst) {
-            return ReactNativeComponentTree.getNodeFromInstance(inst);
-          } else {
-            return null;
-          }
-        },
-      },
-      Mount: require('ReactNativeMount'),
-      Reconciler: require('ReactReconciler'),
-    });
-    window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on('react-devtools', attachToDevtools);
-    if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__.reactDevtoolsAgent) {
-      attachToDevtools(window.__REACT_DEVTOOLS_GLOBAL_HOOK__.reactDevtoolsAgent);
-    }
-    ws.onmessage = handleMessage;
-  }
-
-  let currentHighlight = null;
-
-  function attachToDevtools(agent) {
-    agent.sub('highlight', ({node, name, props}) => {
-      currentHighlight = node;
-      UIManager.setBoundingBoxVisible(node, true);
-    });
-    agent.sub('hideHighlight', () => {
-      if (currentHighlight) {
-        UIManager.setBoundingBoxVisible(currentHighlight, false);
-        currentHighlight = null;
-      }
-    });
-  }
-
-  function handleMessage(evt) {
-    // It's hard to handle JSON in a safe manner without inspecting it at
-    // runtime, hence the any
-    let data: any;
-    try {
-      data = JSON.parse(evt.data);
-    } catch (e) {
-      return console.error('failed to parse json: ' + evt.data);
-    }
-    // the devtools closed
-    if (data.$close || data.$error) {
-      closeListeners.forEach(fn => fn());
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.emit('shutdown');
-      tryToConnect();
-      return;
-    }
-    if (data.$open) {
-      return; // ignore
-    }
-    messageListeners.forEach(fn => {
-      try {
-        fn(data);
-      } catch (e) {
-        // jsc doesn't play so well with tracebacks that go into eval'd code,
-        // so the stack trace here will stop at the `eval()` call. Getting the
-        // message that caused the error is the best we can do for now.
-        console.log(data);
-        throw e;
-      }
-    });
-  }
+  register(reactDevTools);
+  global.registerDevtoolsPlugin = register;
 }
 
-module.exports = setupDevtools;
+module.exports = {
+  register,
+};

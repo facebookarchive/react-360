@@ -99,17 +99,17 @@ const Image = createReactClass({
     /**
      * inset in texture space in 9 tile set up
      */
-    inset: React.PropTypes.arrayOf(PropTypes.number),
+    inset: PropTypes.arrayOf(PropTypes.number),
 
     /**
      * Inset size in world units in 9 tile set up
      */
-    insetSize: React.PropTypes.arrayOf(PropTypes.number),
+    insetSize: PropTypes.arrayOf(PropTypes.number),
 
     /**
      * Specifies the extents of the UV to display
      */
-    crop: React.PropTypes.arrayOf(PropTypes.number),
+    crop: PropTypes.arrayOf(PropTypes.number),
   },
 
   statics: {
@@ -134,7 +134,7 @@ const Image = createReactClass({
   },
 
   contextTypes: {
-    isInAParentText: React.PropTypes.bool,
+    isInAParentText: PropTypes.bool,
   },
 
   render: function() {

@@ -110,7 +110,7 @@ export default class Timing extends Module {
     // timer information is distributed in a single message with mulitiple params
     // which minimizes the bridge traffic when many timers are used
     if (timers.length) {
-      this._rnctx.callFunction('JSTimersExecution', 'callTimers', [timers]);
+      this._rnctx.callFunction('JSTimers', 'callTimers', [timers]);
     }
 
     for (const timer of toRemove) {
@@ -131,7 +131,7 @@ export default class Timing extends Module {
     const now = window.performance ? performance.now() : Date.now();
     const frameElapsed = now - frameStart;
     if (this._targetFrameDuration - frameElapsed >= IDLE_CALLBACK_THRESHOLD) {
-      this._rnctx.callFunction('JSTimersExecution', 'callIdleCallbacks', [
+      this._rnctx.callFunction('JSTimers', 'callIdleCallbacks', [
         Date.now() - frameElapsed,
       ]);
     }

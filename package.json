@@ -21,8 +21,8 @@
     "scripts"
   ],
   "peerDependencies": {
-    "react": "16.0.0-alpha.12",
-    "react-native": "~0.45.0"
+    "react": "16.0.0-rc.2",
+    "react-native": "~0.48.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -40,9 +40,9 @@
     "jest": "^17.0.3",
     "jsdom": "^9.10.0",
     "prettier": "^1.0.0",
-    "react": "16.0.0-alpha.12",
-    "react-native": "~0.45.0",
-    "three": "^0.85.2",
+    "react": "16.0.0-rc.2",
+    "react-native": "~0.48.0",
+    "three": "^0.87.0",
     "three-gltf2-loader": "^1.0.0"
   },
   "scripts": {
@@ -54,7 +54,7 @@
     "test-unit": "jest --config jest/config-unit.json"
   },
   "dependencies": {
-    "create-react-class": "^15.5.3",
+    "create-react-class": "^15.6.0",
     "prop-types": "^15.5.10"
   }
 }

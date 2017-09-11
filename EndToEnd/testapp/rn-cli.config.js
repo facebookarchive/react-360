@@ -1,7 +1,7 @@
 'use strict';
 
 var path = require('path');
-var blacklist = require('react-native/packager/blacklist');
+var blacklist = require('metro-bundler/src/blacklist');
 console.log(path.resolve('react-native'));
 
 /**

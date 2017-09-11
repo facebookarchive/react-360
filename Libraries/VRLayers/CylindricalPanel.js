@@ -67,11 +67,11 @@ const CylindricalPanel = createReactClass({
   propTypes: {
     ...View.propTypes,
 
-    layer: React.PropTypes.shape({
-      width: React.PropTypes.number.isRequired,
-      height: React.PropTypes.number.isRequired,
-      radius: React.PropTypes.number,
-      density: React.PropTypes.number,
+    layer: PropTypes.shape({
+      width: PropTypes.number.isRequired,
+      height: PropTypes.number.isRequired,
+      radius: PropTypes.number,
+      density: PropTypes.number,
     }).isRequired,
 
     style: StyleSheetPropType(LayoutAndTransformOpacityPropTypes),

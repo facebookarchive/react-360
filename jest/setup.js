@@ -38,6 +38,15 @@ const mockNativeModules = {
     pause: jest.fn(),
     stop: jest.fn(),
   },
+  BlobModule: {
+    BLOB_URI_SCHEME: 'content',
+    BLOB_URI_HOST: null,
+    enableBlobSupport: jest.fn(),
+    disableBlobSupport: jest.fn(),
+    createFromParts: jest.fn(),
+    sendBlob: jest.fn(),
+    release: jest.fn(),
+  },
   ExternalAssets: {
     assetRoot: './',
   },

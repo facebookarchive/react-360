@@ -58,11 +58,11 @@ const QuadPanel = createReactClass({
   propTypes: {
     ...View.propTypes,
 
-    layer: React.PropTypes.shape({
-      width: React.PropTypes.number.isRequired,
-      height: React.PropTypes.number.isRequired,
-      distance: React.PropTypes.number,
-      density: React.PropTypes.number,
+    layer: PropTypes.shape({
+      width: PropTypes.number.isRequired,
+      height: PropTypes.number.isRequired,
+      distance: PropTypes.number,
+      density: PropTypes.number,
     }).isRequired,
 
     style: StyleSheetPropType(LayoutAndTransformOpacityPropTypes),
