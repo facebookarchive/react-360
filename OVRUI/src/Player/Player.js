@@ -305,8 +305,6 @@ export default class Player {
     this.controls = new AppControls(this._camera, this.glRenderer.domElement, this.controlOptions);
     this.onEnterVR = options.onEnterVR;
     this.onExitVR = options.onExitVR;
-    window.addEventListener('vrdisplaypointerrestricted', this.handlePointerRestricted);
-    window.addEventListener('vrdisplaypointerunrestricted', this.handlePointerUnrestricted);
 
     // Create an Overlay, which places some interactive controls on top of
     // the rendering canvas
@@ -369,6 +367,9 @@ export default class Player {
     // Listen for headsets that connect / disconnect after the page has loaded
     window.addEventListener('vrdisplayconnect', this.onDisplayConnect);
     window.addEventListener('vrdisplaydisconnect', this.onDisplayDisconnect);
+    // Listen for pointer becoming restricted / unrestricted
+    window.addEventListener('vrdisplaypointerrestricted', this.handlePointerRestricted);
+    window.addEventListener('vrdisplaypointerunrestricted', this.handlePointerUnrestricted);
 
     // Detect any VR displays, so that we can pick the proper rAF and render
     this.initializeDisplay();
@@ -378,8 +379,8 @@ export default class Player {
    * Handles taking ponterlock in response to pointer input being restricted
    */
   handlePointerRestricted() {
-    var pointerLockElement = this.glRenderer.domElement;
-    if (pointerLockElement && pointerLockElement.requestPointerLock) {
+    const pointerLockElement = this.glRenderer.domElement;
+    if (pointerLockElement && typeof(pointerLockElement.requestPointerLock) === 'function') {
       pointerLockElement.requestPointerLock();
     }
   }
@@ -388,10 +389,11 @@ export default class Player {
    * Handles releasing ponterlock in response to pointer input being unrestricted
    */
   handlePointerUnrestricted() {
-    var currentPointerLockElement = document.pointerLockElement;
-    var expectedPointerLockElement = this.glRenderer.domElement;
+    // $FlowFixMe
+    const currentPointerLockElement = document.pointerLockElement;
+    const expectedPointerLockElement = this.glRenderer.domElement;
     if (currentPointerLockElement && currentPointerLockElement === expectedPointerLockElement
-      && document.exitPointerLock) {
+      && typeof(document.exitPointerLock) === 'function') {
       document.exitPointerLock();
     }
   }
