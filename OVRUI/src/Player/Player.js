@@ -179,9 +179,12 @@ export default class Player {
     // Autobind event handlers
     (this: any).attemptEnterVR = this.attemptEnterVR.bind(this);
     (this: any).attemptEnterFullscreen = this.attemptEnterFullscreen.bind(this);
-    (this: any).enterVR = this.enterVR.bind(this);
-    (this: any).exitVR = this.exitVR.bind(this);
+    (this: any).onDisplayActivate = this.onDisplayActivate.bind(this);
+    (this: any).onDisplayDeactivate = this.onDisplayDeactivate.bind(this);
+    (this: any).onDisplayConnect = this.onDisplayConnect.bind(this);
+    (this: any).onDisplayDisconnect = this.onDisplayDisconnect.bind(this);
     (this: any).handleFullscreenChange = this.handleFullscreenChange.bind(this);
+    (this: any).exitVR = this.exitVR.bind(this);
     (this: any).resetAngles = this.resetAngles.bind(this);
 
     this.isMobile = isMobile;
@@ -311,9 +314,6 @@ export default class Player {
       resetAngles: this.resetAngles,
     });
     this.overlay = overlay;
-    if (isVRBrowser() || this.allowCarmelDeeplink) {
-      this.overlay.enableVRButton();
-    }
 
     // Create a wrapper containing the canvas and the overlay
     const wrapper = document.createElement('div');
@@ -360,31 +360,14 @@ export default class Player {
     // If the VR device is capable of telling the browser that it has been
     // activated (put on someone's head), we use this as a secondary
     // enter/exit scheme in addition to the button on the Overlay
-    window.addEventListener('vrdisplayactivate', this.enterVR);
-    window.addEventListener('vrdisplaydeactivate', this.exitVR);
+    window.addEventListener('vrdisplayactivate', this.onDisplayActivate);
+    window.addEventListener('vrdisplaydeactivate', this.onDisplayDeactivate);
+    // Listen for headsets that connect / disconnect after the page has loaded
+    window.addEventListener('vrdisplayconnect', this.onDisplayConnect);
+    window.addEventListener('vrdisplaydisconnect', this.onDisplayDisconnect);
+
     // Detect any VR displays, so that we can pick the proper rAF and render
-    if ('getVRDisplays' in navigator) {
-      (navigator: any)
-        .getVRDisplays()
-        .then(displays => {
-          if (displays.length) {
-            const display = displays[0];
-            this.vrDisplay = display;
-            this.controls.setVRDisplay(display);
-            const effect = new VREffect(this.glRenderer, display);
-            this.effect = effect;
-            const size = renderer.getSize();
-            effect.setSize(size.width, size.height);
-            this.onEnterVR && this.onEnterVR();
-            // Attempt to immediately present on devices that don't have input
-            return effect.requestPresent();
-          }
-        })
-        .catch(err => {
-          this.onExitVR && this.onExitVR();
-          // Silence the permissions error, it's typically expected
-        });
-    }
+    this.initializeDisplay();
   }
 
   /**
@@ -517,7 +500,7 @@ export default class Player {
   /**
    * Request to present to the display, via the VR effect
    */
-  enterVR() {
+  enterVR(): Promise<void> {
     if (!this.vrDisplay || !this.effect) {
       return Promise.reject('Cannot enter VR, no display detected');
     }
@@ -525,12 +508,10 @@ export default class Player {
       .requestPresent()
       .then(
         () => {
-          this.onEnterVR && this.onEnterVR();
-          this.overlay.setVRButtonText('Exit VR');
-          this.overlay.setVRButtonHandler(this.exitVR);
-        },
-        err => {
-          console.error(err);
+          if (this.onEnterVR) {
+            this.onEnterVR();
+          }
+          this.setVRButtonState(true, 'Exit VR', this.exitVR);
         }
       );
   }
@@ -540,13 +521,18 @@ export default class Player {
    */
   exitVR(): Promise<void> {
     if (!this.vrDisplay || !this.vrDisplay.isPresenting || !this.effect) {
+      debugger;
+      if (this.vrDisplay && !this.vrDisplay.isPresenting) {
+        this.setVRButtonState(true, 'View in VR', this.attemptEnterVR);
+      }
       return Promise.reject('Cannot exit, not currently presenting');
     }
     return this.effect.exitPresent().then(
       () => {
-        this.onExitVR && this.onExitVR();
-        this.overlay.setVRButtonText('View in VR');
-        this.overlay.setVRButtonHandler(this.attemptEnterVR);
+        if (this.onExitVR) {
+          this.onExitVR();
+        }
+        this.setVRButtonState(true, 'View in VR', this.attemptEnterVR);
       },
       err => {
         console.error(err);
@@ -705,6 +691,94 @@ export default class Player {
   resetAngles() {
     const {x, y, z} = this._initialAngles;
     this.controls.resetRotation(x, y, z);
+  }
+
+  // Control the appearance and actions of the overlay's vr button
+  setVRButtonState(visible: boolean, text: string, handler: ?() => mixed) {
+    if (visible) {
+      this.overlay.enableVRButton();
+    } else {
+      this.overlay.disableVRButton();
+    }
+    this.overlay.setVRButtonText(text);
+    this.overlay.setVRButtonHandler(handler);
+  }
+
+  // VR Display state management
+  setCurrentDisplay(display: ?VRDisplay) {
+    this.vrDisplay = display;
+    this.controls.setVRDisplay(display);
+    if (display) {
+      const effect = new VREffect(this.glRenderer, display);
+      this.effect = effect;
+      const size = this.glRenderer.getSize();
+      effect.setSize(size.width, size.height);
+      this.setVRButtonState(true, 'View in VR', this.attemptEnterVR);
+    } else {
+      this.effect = null;
+      this.setVRButtonState(false, 'VR Unavailable', null);
+    }
+  }
+
+  initializeDisplay() {
+    if (!isVRBrowser() && !this.allowCarmelDeeplink) {
+      return;
+    }
+    this.setVRButtonState(true, 'View in VR', this.attemptEnterVR);
+    if (typeof navigator.getVRDisplays === 'function') {
+      navigator
+        .getVRDisplays()
+        .then(displays => {
+          if (displays.length) {
+            this.setCurrentDisplay(displays[0]);
+            return this.enterVR();
+          }
+        })
+        .catch(err => {
+          // Silence the permissions error, it's typically expected
+        });
+    }
+  }
+
+  onDisplayConnect({display}: VRDisplayEvent) {
+    if (this.vrDisplay) {
+      return;
+    }
+    this.setCurrentDisplay(display);
+  }
+
+  onDisplayDisconnect({display}: VRDisplayEvent) {
+    // if display is not current display, return
+    // if presenting, exit presenting, cleanup
+    // query remaining displays
+    // if displays are not empty, set current display to first one
+    // else, clear current display, set state to disconnected
+    if (display !== this.vrDisplay) {
+      return;
+    }
+    if (typeof navigator.getVRDisplays === 'function') {
+      navigator
+        .getVRDisplays()
+        .then(displays => {
+          if (displays.length === 0) {
+            this.setCurrentDisplay(displays[0]);
+          } else {
+            this.setCurrentDisplay(null);
+          }
+        });
+    }
+  }
+
+  onDisplayActivate({display}: VRDisplayEvent) {
+    if (display === this.vrDisplay) {
+      this.enterVR();
+    }
+  }
+
+  onDisplayDeactivate({display}: VRDisplayEvent) {
+    if (display === this.vrDisplay) {
+      this.exitVR();
+    }
   }
 
   // Get/Set camera needed so the default camera can be retrieved or adjusted.

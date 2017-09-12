@@ -260,7 +260,7 @@ export default class Overlay {
   /**
    * Set a new callback for the VR button
    */
-  setVRButtonHandler(cb: ButtonHandler) {
+  setVRButtonHandler(cb: ?ButtonHandler) {
     this.vrButtonHandler = cb;
   }
 
