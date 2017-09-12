@@ -186,6 +186,8 @@ export default class Player {
     (this: any).handleFullscreenChange = this.handleFullscreenChange.bind(this);
     (this: any).exitVR = this.exitVR.bind(this);
     (this: any).resetAngles = this.resetAngles.bind(this);
+    (this: any).handlePointerRestricted = this.handlePointerRestricted.bind(this);
+    (this: any).handlePointerUnrestricted = this.handlePointerUnrestricted.bind(this);
 
     this.isMobile = isMobile;
     this.allowCarmelDeeplink = !!options.allowCarmelDeeplink && isSamsung;
@@ -365,9 +367,35 @@ export default class Player {
     // Listen for headsets that connect / disconnect after the page has loaded
     window.addEventListener('vrdisplayconnect', this.onDisplayConnect);
     window.addEventListener('vrdisplaydisconnect', this.onDisplayDisconnect);
+    // Listen for pointer becoming restricted / unrestricted
+    window.addEventListener('vrdisplaypointerrestricted', this.handlePointerRestricted);
+    window.addEventListener('vrdisplaypointerunrestricted', this.handlePointerUnrestricted);
 
     // Detect any VR displays, so that we can pick the proper rAF and render
     this.initializeDisplay();
+  }
+
+  /**
+   * Handles taking ponterlock in response to pointer input being restricted
+   */
+  handlePointerRestricted() {
+    const pointerLockElement = this.glRenderer.domElement;
+    if (pointerLockElement && typeof(pointerLockElement.requestPointerLock) === 'function') {
+      pointerLockElement.requestPointerLock();
+    }
+  }
+
+  /**
+   * Handles releasing ponterlock in response to pointer input being unrestricted
+   */
+  handlePointerUnrestricted() {
+    // $FlowFixMe
+    const currentPointerLockElement = document.pointerLockElement;
+    const expectedPointerLockElement = this.glRenderer.domElement;
+    if (currentPointerLockElement && currentPointerLockElement === expectedPointerLockElement
+      && typeof(document.exitPointerLock) === 'function') {
+      document.exitPointerLock();
+    }
   }
 
   /**
