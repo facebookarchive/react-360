@@ -274,6 +274,8 @@ var ComponentDoc = React.createClass({
             link =
               <a href={'docs/' + slugify(name) + '.html#props'}>{name}...</a>;
           } else if (name === 'ShadowPropTypesIOS') {
+            // remove shadow props from react vr as not supported
+            return null;
             name = 'Shadow Props';
             link =
               <a href={'docs/' + slugify(name) + '.html#props'}>{name}...</a>;

@@ -38,7 +38,7 @@ render() {
   // This causes call child view to have the same width.
   return (
     <View>
-      <Pano source={{uri: 'office_lobby.jpg'}} />
+      <Pano source={asset('chess-world.jpg')}/>
       <View style={{
         flex: 1,
         flexDirection: 'column',
