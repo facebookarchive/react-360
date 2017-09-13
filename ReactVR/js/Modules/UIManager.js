@@ -459,10 +459,10 @@ export default class UIManager extends Module {
    * root view tags IDs are always (multiples of ten + one)
    * @param tag - react tag to use
    */
-  createRootView(tag: number) {
+  createRootView(tag: number, container?: SceneGraphNode) {
     // create a View with defaults
     this._rootViews[String(tag)] = this.createView(tag, 'RCTView', tag, {});
-    this._guiSys.add(this._rootViews[String(tag)].view);
+    this._guiSys.add(this._rootViews[String(tag)].view, container);
   }
 
   /**

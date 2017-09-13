@@ -223,4 +223,25 @@ export default class VRInstance {
       this.rootView.context.registerTextureSource(name, source, options);
     }
   }
+
+  /**
+   * Mount a new root component on an existing scenegraph node, returning its
+   * unique identifier
+   */
+  mountComponent(name: string, initialProps: {[prop: string]: any}, container: SceneGraphNode) {
+    if (this.rootView) {
+      const tag = this.rootView.context.createRootView(name, initialProps, container);
+      return tag;
+    }
+    return null;
+  }
+
+  /**
+   * Unmount a root component, given its unique identifier
+   */
+  unmountComponent(tag: number) {
+    if (this.rootView) {
+      this.rootView.context.destroyRootView(tag);
+    }
+  }
 }

@@ -109,5 +109,6 @@ export default function createRootView(
     frame(camera: Camera) {
       rn.frame(camera, rootTag);
     },
+    rootTag: rootTag,
   };
 }

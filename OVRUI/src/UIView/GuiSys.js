@@ -206,8 +206,12 @@ export default class GuiSys {
   /**
   * Add a Three.js object as a child of the guiRoot obejct
   */
-  add(child) {
-    this.guiRoot.add(child);
+  add(child, container) {
+    if (container) {
+      container.add(child);
+    } else {
+      this.guiRoot.add(child);
+    }
   }
 
   /**
@@ -215,7 +219,9 @@ export default class GuiSys {
   * It is the job of the caller to handle deallocation of the object
   */
   remove(child) {
-    this.guiRoot.remove(child);
+    if (child.parent) {
+      child.parent.remove(child);
+    }
   }
 
   /**

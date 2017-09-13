@@ -268,8 +268,10 @@ export class ReactNativeContext {
    * @param props - props that is posted to the registered module
    * @return returns the tag of the rootview
    */
-  createRootView(module: string, props: {[prop: string]: any}) {
+  createRootView(module: string, props: {[prop: string]: any}, container?: SceneGraphNode) {
     const tag = this.currentRootTag;
+    // TODO: Root tags should be sourced from UIManager instead, which
+    // is aware of availability.
     this.currentRootTag += ROOT_VIEW_INCREMENT;
     this.bridge.postMessage(
       JSON.stringify({
@@ -280,8 +282,10 @@ export class ReactNativeContext {
       })
     );
     this._moduleForTag[tag] = module;
-    this._cameraParentFromTag[tag] = new THREE.Object3D();
-    this.UIManager.createRootView(tag);
+    if (!container) {
+      this._cameraParentFromTag[tag] = new THREE.Object3D();
+    }
+    this.UIManager.createRootView(tag, container);
     return tag;
   }
 
