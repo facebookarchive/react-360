@@ -181,6 +181,7 @@ declare module 'three' {
     minFilter: number,
     magFilter: number,
     needsUpdate: boolean,
+    repeat: Vector2,
 
     constructor(HTMLCanvasElement | HTMLVideoElement | Image): this,
 
@@ -200,6 +201,7 @@ declare module 'three' {
 
   declare class Vector2 {
     constructor(x: number, y: number): Vector2,
+    set(x: number, y: number): void,
   }
 
   declare class Vector3 {
