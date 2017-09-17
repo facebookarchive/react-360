@@ -21,7 +21,7 @@ import type {GuiSys} from 'ovrui';
 import type {Geometry, Texture, Material, ShaderMaterial} from 'three';
 import type {ReactNativeContext} from '../ReactNativeContext';
 
-type ResourceSpecifier = void | null | string | {uri: string};
+type ResourceSpecifier = void | null | string | {uri: string, repeat: Array<number>};
 
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
@@ -175,12 +175,12 @@ export default class RCTBaseMesh extends RCTBaseView {
           }
           this._texture = texture;
           this._texture.needsUpdate = true;
+          this._textureURL = url;
           if (repeat && Array.isArray(repeat)) {
             this._texture.wrapS = THREE.RepeatWrapping;
             this._texture.wrapT = THREE.RepeatWrapping;
             this._texture.repeat.set(...repeat);
           }
-          this._textureURL = url;
           // TODO: Consider providing props on BaseMesh to control these as well
           this._litMaterial.map = this._texture;
           this._unlitMaterial.map = this._texture;
