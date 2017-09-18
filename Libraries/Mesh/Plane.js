@@ -65,10 +65,21 @@ const Plane = createReactClass({
     materialParameters: PropTypes.object,
 
     /**
-     * `texture` is a string specifying the url of the texture to be used for the Plane face,
-     * this must be an http address
+     * The texture property specifies the url of the texture to be used for the Model.
+     * To make texture repeat, pass an object with `repeat` property, for example:
+     * `texture={{ ...asset('path/to/texture.jpg'), repeat: [4, 4] }}`
+     *
+     * First and second element in `repeat` sets how many times texture is repeated
+     * in x and y directions.
      */
-    texture: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
+    texture: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.shape({
+        uri: PropTypes.string.isRequired,
+        repeat: PropTypes.arrayOf(PropTypes.number),
+      }),
+    ]),
 
     /**
      * Specifying true for this property causes the object to be displayed as a wireframe
