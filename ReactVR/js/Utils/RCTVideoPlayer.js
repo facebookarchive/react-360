@@ -58,7 +58,7 @@ RCTVideoPlayer.prototype = Object.assign(Object.create(Object.prototype), {
     this.onUpdateTexture && this.onUpdateTexture(source);
   },
 
-  _updateTextureWithPoster(usePoster) {
+  _updateTextureWithPoster() {
     this.onUpdateTexture && this.onUpdateTexture(this._poster);
   },
 
@@ -217,7 +217,7 @@ RCTVideoPlayer.prototype = Object.assign(Object.create(Object.prototype), {
 
   setPoster(url) {
     this._poster = url;
-    if (this._PlayStatus === 'loading') {
+    if (this._PlayStatus === 'loading' && this._poster) {
       this._updateTextureWithPoster();
     }
   },
