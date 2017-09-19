@@ -21,9 +21,19 @@ MockTextureLoader.prototype.load = function(url, onLoad, onProgress, onError) {
 };
 MockTextureLoader.prototype.setCrossOrigin = function() {};
 
+const MockVector2 = function(x, y) {
+  this.x = x;
+  this.y = y;
+};
+MockVector2.prototype.set = function(x, y) {
+  this.x = x;
+  this.y = y;
+};
+
 const MockTexture = function(source) {
   this.map = source;
   this._disposed = false;
+  this.repeat = new MockVector2(1, 1);
 };
 MockTexture.prototype.dispose = function() {
   this._disposed = true;
@@ -51,6 +61,7 @@ jest.mock('three', () => {
     Matrix4: jest.fn(() => ({})),
     Ray: jest.fn(() => ({})),
     Sphere: jest.fn(() => ({})),
+    RepeatWrapping: 1000,
   };
 });
 
@@ -99,6 +110,28 @@ describe('RCTBaseMesh', () => {
         expect(mesh._textureURL).toBe(path);
         expect(manager.isTextureLoading(path)).toBe(false);
         expect(manager.isTextureCached(path)).toBe(true);
+      })
+      .then(() => {
+        done();
+      });
+  });
+
+  it('sets texture repeat mode', done => {
+    const repeatWrappingMock = 1000;
+    const repeatX = 4;
+    const repeatY = 4;
+    const manager = new TextureManager();
+    const mesh = new BaseMesh({}, {TextureManager: manager});
+    const path = 'http://example.net/img.png';
+    mesh.props.texture = {uri: path, repeat: [repeatX, repeatY]};
+    const tex = new MockTexture();
+    TextureLoads[path].onLoad(tex);
+    Promise.resolve()
+      .then(() => {
+        expect(mesh._texture.wrapS).toBe(repeatWrappingMock);
+        expect(mesh._texture.wrapT).toBe(repeatWrappingMock);
+        expect(mesh._texture.repeat.x).toBe(repeatX);
+        expect(mesh._texture.repeat.y).toBe(repeatY);
       })
       .then(() => {
         done();
