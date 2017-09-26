@@ -14,12 +14,10 @@ import {fetchAndCacheOBJ, removeOBJReference} from '../Loaders/WavefrontOBJ/OBJL
 import {
   BufferAttribute,
   BufferGeometry,
-  FlatShading,
   Group,
   Mesh,
   Material,
   NoColors,
-  SmoothShading,
   VertexColors,
 } from 'three';
 import extractURL from '../Utils/extractURL';
