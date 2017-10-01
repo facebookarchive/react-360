@@ -106,6 +106,7 @@ declare module 'three' {
   declare class Matrix4 {
     decompose(Vector3, Quaternion, Vector3): this,
     fromArray(Array<number>): void,
+    getInverse(matrix: Matrix4): Matrix4,
   }
 
   declare class Mesh extends Object3D {
@@ -129,6 +130,16 @@ declare module 'three' {
 
   declare class MultiMaterial extends Material {
     constructor(multi: Array<any>): MultiMaterial,
+  }
+
+  declare class Ray {
+    copy(ray: Ray): Ray,
+    applyMatrix4(matrix: Matrix4): void,
+    intersectSphere(sphere: Sphere, intersectionPoint: Vector3) : Vector3;
+  }
+
+  declare class Sphere {
+    constructor(center: Vector3, radius: number): Sphere,
   }
 
   declare class ShaderMaterial extends Material {
@@ -208,6 +219,8 @@ declare module 'three' {
     x: number,
     y: number,
     z: number,
+    applyMatrix4(matrix: Matrix4): void,
+    clone(): Vector3,
     constructor(): this,
     constructor(x: number, y: number, z: number): this,
     copy(v: Vector3): this,

@@ -10,11 +10,43 @@
  */
 
 import RCTBaseMesh from './BaseMesh';
-import {SphereBufferGeometry} from 'three';
+import * as THREE from 'three';
 import merge from '../Utils/merge';
 
 import type {GuiSys} from 'ovrui';
 import type {ReactNativeContext} from '../ReactNativeContext';
+
+const sphereRayCast = (function() {
+  // avoid create temp objects;
+  const inverseMatrix = new THREE.Matrix4();
+  const ray = new THREE.Ray();
+  const intersectionPoint = new THREE.Vector3();
+  const intersectionPointWorld = new THREE.Vector3();
+  return function(sphere, raycaster, intersects) {
+    // transform the ray into the space of the sphere
+    inverseMatrix.getInverse(this.matrixWorld);
+    ray.copy(raycaster.ray).applyMatrix4(inverseMatrix);
+    const intersect = ray.intersectSphere(sphere, intersectionPoint);
+    if (intersect === null) {
+      return;
+    }
+
+    // determine hit location in world space
+    intersectionPointWorld.copy(intersectionPoint);
+    intersectionPointWorld.applyMatrix4(this.matrixWorld);
+
+    const distance = raycaster.ray.origin.distanceTo(intersectionPointWorld);
+    if (distance < raycaster.near || distance > raycaster.far) {
+      return;
+    }
+
+    intersects.push({
+      distance: distance,
+      point: intersectionPointWorld.clone(),
+      object: this,
+    });
+  };
+})();
 
 export default class RCTSphere extends RCTBaseMesh {
   _radius: number;
@@ -74,12 +106,14 @@ export default class RCTSphere extends RCTBaseMesh {
   }
 
   _generateGeometry() {
-    const geometry = new SphereBufferGeometry(
+    const geometry = new THREE.SphereBufferGeometry(
       this._radius,
       this._widthSegments,
       this._heightSegments
     );
     this._setGeometry(geometry);
+    const sphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), this._radius);
+    this.mesh.raycast = sphereRayCast.bind(this.mesh, sphere);
   }
 
   static describe() {
