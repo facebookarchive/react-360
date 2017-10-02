@@ -806,6 +806,7 @@ export default class RCTBaseView {
     const allValue = this.YGNode.getBorder(Yoga.EDGE_ALL);
     return Number.isNaN(value) ? (Number.isNaN(allValue) ? 0 : allValue) : value;
   }
+
   /*
    * The previous functions map react attributes of the
    * same name minus _ to the values in Yoga
@@ -815,41 +816,46 @@ export default class RCTBaseView {
    * Given a layout object, calculate the associate transforms for three.js
    */
   presentLayout(): void {
-    const left = this.YGNode.getComputedLeft();
-    const top = this.YGNode.getComputedTop();
-    const width = this.YGNode.getComputedWidth();
-    const height = this.YGNode.getComputedHeight();
-    const x = -this.style.layoutOrigin[0] * width;
-    const y = -this.style.layoutOrigin[1] * height;
+    if (this.YGNode.getHasNewLayout()) {
+      this.YGNode.setHasNewLayout(false);
 
-    if (this.props.onLayout) {
-      // send an event to the interested view which details
-      // the layout location in the frame of the parent view
-      // takes into account he layoutOrigin
-      this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-        this.getTag(),
-        'topLayout',
-        {
-          x: x + left,
-          y: y + top,
-          width: width,
-          height: height,
-        },
+      const left = this.YGNode.getComputedLeft();
+      const top = this.YGNode.getComputedTop();
+      const width = this.YGNode.getComputedWidth();
+      const height = this.YGNode.getComputedHeight();
+      const x = -this.style.layoutOrigin[0] * width;
+      const y = -this.style.layoutOrigin[1] * height;
+
+      if (this.props.onLayout) {
+        // send an event to the interested view which details
+        // the layout location in the frame of the parent view
+        // takes into account he layoutOrigin
+        this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+          this.getTag(),
+          'topLayout',
+          {
+            x: x + left,
+            y: y + top,
+            width: width,
+            height: height,
+          },
+        ]);
+      }
+      this.view.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+      this.view.setBorderWidth([
+        this._getBorderValue(Yoga.EDGE_LEFT),
+        this._getBorderValue(Yoga.EDGE_TOP),
+        this._getBorderValue(Yoga.EDGE_RIGHT),
+        this._getBorderValue(Yoga.EDGE_BOTTOM),
       ]);
+      this.view.setFrame &&
+        this.view.setFrame(x + left, -(y + top), width, height, this.UIManager._layoutAnimation);
     }
     // it transform is set apply to UIView
     if (this.style.transform) {
       this.view.setLocalTransform && this.view.setLocalTransform(this.style.transform);
     }
-    this.view.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
-    this.view.setBorderWidth([
-      this._getBorderValue(Yoga.EDGE_LEFT),
-      this._getBorderValue(Yoga.EDGE_TOP),
-      this._getBorderValue(Yoga.EDGE_RIGHT),
-      this._getBorderValue(Yoga.EDGE_BOTTOM),
-    ]);
-    this.view.setFrame &&
-      this.view.setFrame(x + left, -(y + top), width, height, this.UIManager._layoutAnimation);
+
     this.view.owner = this;
     if (this._borderRadiusDirty) {
       const borderRadius = isPositive(this._borderRadius) ? this._borderRadius : 0;
