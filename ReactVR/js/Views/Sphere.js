@@ -16,6 +16,25 @@ import merge from '../Utils/merge';
 import type {GuiSys} from 'ovrui';
 import type {ReactNativeContext} from '../ReactNativeContext';
 
+const SphereGeometryCache = {};
+
+function createSphereGeometry(radius: number, heightSegments: number, widthSegments: number) {
+  const key = `${radius}:${heightSegments}:${widthSegments}`;
+  const cache = SphereGeometryCache[key];
+  if (cache) {
+    cache.count++;
+    return cache.geom;
+  }
+  const geometry = new THREE.SphereBufferGeometry(radius, widthSegments, heightSegments);
+
+  SphereGeometryCache[key] = {
+    geom: geometry,
+    count: 1,
+  };
+
+  return geometry;
+}
+
 const sphereRayCast = (function() {
   // avoid create temp objects;
   const inverseMatrix = new THREE.Matrix4();
@@ -106,11 +125,7 @@ export default class RCTSphere extends RCTBaseMesh {
   }
 
   _generateGeometry() {
-    const geometry = new THREE.SphereBufferGeometry(
-      this._radius,
-      this._widthSegments,
-      this._heightSegments
-    );
+    const geometry = createSphereGeometry(this._radius, this._widthSegments, this._heightSegments);
     this._setGeometry(geometry);
     const sphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), this._radius);
     this.mesh.raycast = sphereRayCast.bind(this.mesh, sphere);
