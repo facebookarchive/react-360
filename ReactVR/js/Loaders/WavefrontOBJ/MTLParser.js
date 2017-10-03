@@ -438,11 +438,20 @@ export function readLine(state: MTLParserState, line: string, lineNumber: number
       }
     }
   }
-  if (
-    line.substr(index, 8).toLowerCase() === 'map_bump' ||
-    line.substr(index, 4).toLowerCase() === 'bump'
-  ) {
-    const tex = readTextureOptions(line.substr(index + 6).trim());
+  if (line.substr(index, 8).toLowerCase() === 'map_bump') {
+    const tex = readTextureOptions(line.substr(index + 8).trim());
+    if (tex.file) {
+      if (!latest.textureMap) {
+        latest.textureMap = {};
+      }
+      if (!tex.options.imfchan) {
+        tex.options.imfchan = 'l';
+      }
+      latest.textureMap.bump = tex;
+    }
+  }
+  if (line.substr(index, 4).toLowerCase() === 'bump') {
+    const tex = readTextureOptions(line.substr(index + 4).trim());
     if (tex.file) {
       if (!latest.textureMap) {
         latest.textureMap = {};
@@ -454,7 +463,7 @@ export function readLine(state: MTLParserState, line: string, lineNumber: number
     }
   }
   if (line.substr(index, 4).toLowerCase() === 'disp') {
-    const tex = readTextureOptions(line.substr(index + 6).trim());
+    const tex = readTextureOptions(line.substr(index + 4).trim());
     if (tex.file) {
       if (!latest.textureMap) {
         latest.textureMap = {};
@@ -463,7 +472,7 @@ export function readLine(state: MTLParserState, line: string, lineNumber: number
     }
   }
   if (line.substr(index, 5).toLowerCase() === 'decal') {
-    const tex = readTextureOptions(line.substr(index + 6).trim());
+    const tex = readTextureOptions(line.substr(index + 5).trim());
     if (tex.file) {
       if (!latest.textureMap) {
         latest.textureMap = {};
