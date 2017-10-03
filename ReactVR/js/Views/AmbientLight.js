@@ -11,64 +11,38 @@
  * RCTAmbientLight: runtime implementation of the <AmbientLight >
  * https://threejs.org/docs/index.html#api/lights/AmbientLight
  * @class RCTAmbientLight
- * @extends RCTBaseView
+ * @extends RCTBaseLight
  * @flow
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
+import RCTBaseLight from './BaseLight';
 import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 
 import type {GuiSys} from 'ovrui';
 
-export default class RCTAmbientLight extends RCTBaseView {
+export default class RCTAmbientLight extends RCTBaseLight {
   /**
    * constructor: allocates the required resources and sets defaults
    */
   constructor(guiSys: GuiSys) {
     super();
+
     // create the ambient light as a child of an empty UIView
     // this allows embedding in layouts
-    const light = new THREE.AmbientLight();
+    this.light = new THREE.AmbientLight();
     this.view = new OVRUI.UIView(guiSys);
-    this.view.add(light);
-    // In "physically correct" mode, the product of color * intensity is
-    // interpreted as luminous intensity measured in candelas.
-    Object.defineProperty(
-      this.props,
-      'intensity',
-      ({
-        set: value => {
-          light.intensity = value;
-        },
-      }: Object)
-    );
+    this.view.add(this.light);
+
     // Color of the light.
     Object.defineProperty(
       this.style,
       'color',
       ({
         set: value => {
-          light.color.set(value);
+          this.light.color.set(value);
         },
       }: Object)
     );
-
-    // defaults that match three.js
-    this.props.intensity = 1;
-  }
-
-  /**
-   * Describes the properties representable by this view type and merges
-   * with super type
-   */
-  static describe() {
-    return merge(super.describe(), {
-      // declare the native props sent from react to runtime
-      NativeProps: {
-        intensity: 'number',
-      },
-    });
   }
 }

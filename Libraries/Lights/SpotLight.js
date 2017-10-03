@@ -59,6 +59,23 @@ const SpotLight = createReactClass({
      * values between zero and 100. Default is zero.
      */
     penumbra: PropTypes.number,
+
+    /**
+     * Shadow options
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+      mapSize: PropTypes.shape({
+        width: PropTypes.number,
+        height: PropTypes.number,
+      }),
+      camera: PropTypes.shape({
+        near: PropTypes.number,
+        far: PropTypes.number,
+      }),
+      bias: PropTypes.number,
+    }),
   },
 
   viewConfig: {
@@ -70,6 +87,7 @@ const SpotLight = createReactClass({
       decay: true,
       angle: true,
       penumbra: true,
+      shadow: true,
     },
   },
 

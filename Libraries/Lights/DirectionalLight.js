@@ -44,6 +44,23 @@ const DirectionalLight = createReactClass({
      * Intensity of the light
      */
     intensity: PropTypes.number,
+
+    /**
+     * Shadow options
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+      mapSize: PropTypes.shape({
+        width: PropTypes.number,
+        height: PropTypes.number,
+      }),
+      camera: PropTypes.shape({
+        near: PropTypes.number,
+        far: PropTypes.number,
+      }),
+      bias: PropTypes.number,
+    }),
   },
 
   viewConfig: {
@@ -51,6 +68,7 @@ const DirectionalLight = createReactClass({
     validAttributes: {
       ...ReactNativeViewAttributes.RCTView,
       intensity: true,
+      shadow: true,
     },
   },
 

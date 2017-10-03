@@ -348,6 +348,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         texture: 'object',
         wireframe: 'boolean',
         materialParameters: 'object',
+        shadow: 'object',
       },
     });
   }

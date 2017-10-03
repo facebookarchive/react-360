@@ -111,6 +111,7 @@ const Plane = createReactClass({
       ...ReactNativeViewAttributes.RCTView,
       dimWidth: true,
       dimHeight: true,
+      shadow: true,
     },
   },
 
