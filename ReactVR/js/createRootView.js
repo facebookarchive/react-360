@@ -62,8 +62,8 @@ export default function createRootView(
       if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
         console.log(
           'We detected that you have the React Devtools extension installed. ' +
-          'Please note that at this time, React VR is only compatible with the ' +
-          'standalone Inspector (npm run devtools).'
+            'Please note that at this time, React VR is only compatible with the ' +
+            'standalone Inspector (npm run devtools).'
         );
       }
     }
@@ -84,10 +84,12 @@ export default function createRootView(
     contextOptions.enableHotReload = options.enableHotReload;
   }
 
-  let bridge = options.bridge || new WebWorkerBridge({
-    enableDevTools: enableDevTools,
-    enableHotReload: contextOptions.enableHotReload,
-  });
+  const bridge =
+    options.bridge ||
+    new WebWorkerBridge({
+      enableDevTools: enableDevTools,
+      enableHotReload: contextOptions.enableHotReload,
+    });
 
   let bundleURL = options.bundle || '../index.bundle?platform=vr';
   // append the query param to make the RN packager wrap the components

@@ -16,7 +16,7 @@
 export default function bundleFromLocation(root: string): string {
   let path = location.pathname;
   try {
-    let absoluteURL = new URL(root);
+    const absoluteURL = new URL(root);
     return absoluteURL.toString();
   } catch (error) {
     //location is not an absolute URL, generate one from the root
