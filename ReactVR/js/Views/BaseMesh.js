@@ -23,6 +23,11 @@ import type {ReactNativeContext} from '../ReactNativeContext';
 
 type ResourceSpecifier = void | null | string | {uri: string, repeat?: Array<number>};
 
+type ShadowOptions = {
+  cast: boolean,
+  receive: boolean,
+};
+
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
   _lit: boolean;
@@ -105,6 +110,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         set: this._setMaterialParameters.bind(this),
       }: Object)
     );
+
     Object.defineProperty(
       this.props,
       'texture',
@@ -120,6 +126,14 @@ export default class RCTBaseMesh extends RCTBaseView {
         set: this._setColor.bind(this),
       }: Object)
     );
+
+    Object.defineProperty(
+      this.props,
+      'shadow',
+      ({
+        set: this._setShadow.bind(this),
+      }: Object)
+    );
   }
 
   _setColor(color: ?number) {
@@ -131,6 +145,18 @@ export default class RCTBaseMesh extends RCTBaseView {
       this._litMaterial.color.setHex(color);
       this._unlitMaterial.color.setHex(color);
     }
+  }
+
+  _setShadow(value: ShadowOptions) {
+    this.view.castShadow = value.cast;
+    this.view.receiveShadow = value.receive;
+
+    this.view.traverse(child => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = value.cast;
+        child.receiveShadow = value.receive;
+      }
+    });
   }
 
   _setTexture(value: ResourceSpecifier) {

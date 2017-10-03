@@ -95,6 +95,14 @@ const Plane = createReactClass({
      * Height of the box in meters
      */
     dimHeight: PropTypes.number,
+
+    /**
+     * Shadow options
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+    }),
   },
 
   viewConfig: {
