@@ -121,6 +121,7 @@ export default class RCTBaseView {
   children: Array<RCTBaseView>;
   view: UIView;
   isDirty: boolean;
+  _transformDirty: boolean;
   receivesMoveEvent: boolean;
   /**
    * constructor: sets defaults for all views
@@ -132,6 +133,7 @@ export default class RCTBaseView {
     this._borderBottomLeftRadius = null;
     this._borderBottomRightRadius = null;
     this._borderRadiusDirty = false;
+    this._transformDirty = true;
     this.YGNode = Yoga.Node.create();
     /* $FlowFixMe */
     this.UIManager = null;
@@ -807,6 +809,14 @@ export default class RCTBaseView {
     return Number.isNaN(value) ? (Number.isNaN(allValue) ? 0 : allValue) : value;
   }
 
+  _transform(value: any): void {
+    if (value === null) {
+      this.style.transform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    } else {
+      this.style.transform = value;
+    }
+    this._transformDirty = true;
+  }
   /*
    * The previous functions map react attributes of the
    * same name minus _ to the values in Yoga
@@ -853,7 +863,12 @@ export default class RCTBaseView {
     }
     // it transform is set apply to UIView
     if (this.style.transform) {
-      this.view.setLocalTransform && this.view.setLocalTransform(this.style.transform);
+      if (this._transformDirty) {
+        if (this.view.setLocalTransform) {
+          this.view.setLocalTransform(this.style.transform);
+          this._transformDirty = false;
+        }
+      }
     }
 
     this.view.owner = this;
