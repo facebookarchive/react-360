@@ -23,19 +23,19 @@ module.exports = config => ({
     "test": "jest"
   },
   "dependencies": {
-    "ovrui": "~1.3.0",
-    "react": "16.0.0-alpha.12",
-    "react-native": "~0.45.0",
-    "three": "^0.85.2",
-    "react-vr": "~1.3.0",
-    "react-vr-web": "~1.3.0"
+    "ovrui": "~2.0.0",
+    "react": "16.0.0",
+    "react-native": "~0.48.0",
+    "three": "^0.87.0",
+    "react-vr": "~2.0.0",
+    "react-vr-web": "~2.0.0"
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",
     "babel-preset-react-native": "^1.9.1",
     "jest": "^19.0.2",
-    "react-devtools": "^2.1.3",
-    "react-test-renderer": "~15.4.1",
+    "react-devtools": "^2.5.2",
+    "react-test-renderer": "16.0.0",
     "xopen": "1.0.0"
   },
   "jest": {

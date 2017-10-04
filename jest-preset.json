@@ -12,6 +12,7 @@
   },
   "modulePathIgnorePatterns": [
     "<rootDir>/node_modules/react-native/Libraries/react-native/",
+    "<rootDir>/node_modules/react-native/node_modules/fbjs/",
     "<rootDir>/node_modules/react-native/packager/"
   ],
   "transformIgnorePatterns": [

@@ -38,6 +38,14 @@ const mockNativeModules = {
     pause: jest.fn(),
     stop: jest.fn(),
   },
+  AsyncLocalStorage: {
+    multiGet: jest.fn((keys, callback) => process.nextTick(() => callback(null, []))),
+    multiSet: jest.fn((entries, callback) => process.nextTick(() => callback(null))),
+    multiRemove: jest.fn((keys, callback) => process.nextTick(() => callback(null))),
+    multiMerge: jest.fn((entries, callback) => process.nextTick(() => callback(null))),
+    clear: jest.fn(callback => process.nextTick(() => callback(null))),
+    getAllKeys: jest.fn(callback => process.nextTick(() => callback(null, []))),
+  },
   BlobModule: {
     BLOB_URI_SCHEME: 'content',
     BLOB_URI_HOST: null,
@@ -66,6 +74,23 @@ const mockNativeModules = {
   Location: {
     reload: jest.fn(),
     replace: jest.fn(),
+  },
+  Timing: {
+    createTimer: jest.fn(),
+    deleteTimer: jest.fn(),
+  },
+  UIManager: {
+    blur: jest.fn(),
+    createView: jest.fn(),
+    dispatchViewManagerCommand: jest.fn(),
+    focus: jest.fn(),
+    setChildren: jest.fn(),
+    manageChildren: jest.fn(),
+    updateView: jest.fn(),
+    removeSubviewsFromContainerWithID: jest.fn(),
+    replaceExistingNonRootView: jest.fn(),
+    customBubblingEventTypes: {},
+    customDirectEventTypes: {},
   },
   VideoModule: {
     addHandle: jest.fn(),
