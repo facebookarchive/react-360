@@ -273,6 +273,12 @@ const VideoControl = createReactClass({
 
   _onClickProgress(progress) {
     this.props.playerState.seekTo(this.state.duration * progress);
+
+    // If media is not playing, we will not be getting progress updates, so let's
+    // manually update the progress bar to reflect the most recent progress click.
+    if (this.state.playStatus !== 'playing') {
+      this.setState({currentTime: this.state.duration * progress});
+    }
   },
 
   render: function() {
