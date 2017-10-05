@@ -25,9 +25,11 @@ import {
 import extractURL from '../Utils/extractURL';
 import type {OBJParserState} from '../Loaders/WavefrontOBJ/OBJTypes';
 import type {UIView} from 'ovrui';
+import type {ShadowOptions} from '../Views/BaseMesh';
 
 class ObjMeshInstance {
   _lit: boolean;
+  _shadow: ShadowOptions;
 
   _objURL: string | null;
   _mtlURL: string | null;
@@ -41,6 +43,7 @@ class ObjMeshInstance {
 
   constructor(value: any, parent: UIView, litMaterial: Material, unlitMaterial: Material) {
     this._lit = true;
+    this._shadow = {};
     this._objURL = null;
     this._mtlURL = null;
     this._objState = null;
@@ -240,13 +243,18 @@ class ObjMeshInstance {
         }
         material = multi;
       }
+
       if (previousGroup) {
         const mesh = group.children[index];
         if (mesh && mesh instanceof Mesh) {
           mesh.material = material;
+          mesh.castShadow = this._shadow.cast;
+          mesh.receiveShadow = this._shadow.receive;
         }
       } else if (bufferGeometry) {
         const mesh = new Mesh(bufferGeometry, material);
+        mesh.castShadow = this._shadow.cast;
+        mesh.receiveShadow = this._shadow.receive;
         group.add(mesh);
       }
       index++;
@@ -278,6 +286,16 @@ class ObjMeshInstance {
     const changed = this._lit !== flag;
     this._lit = flag;
     if (changed) {
+      this._updateMeshes(this._mesh);
+    }
+  }
+
+  setShadow(value: any): void {
+    const changedCast = this._shadow.cast !== value.cast;
+    const changedReceive = this._shadow.receive !== value.receive;
+    this._shadow = value;
+
+    if (changedCast || changedReceive) {
       this._updateMeshes(this._mesh);
     }
   }

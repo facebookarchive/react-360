@@ -23,9 +23,9 @@ import type {ReactNativeContext} from '../ReactNativeContext';
 
 type ResourceSpecifier = void | null | string | {uri: string, repeat?: Array<number>};
 
-type ShadowOptions = {
-  cast: boolean,
-  receive: boolean,
+export type ShadowOptions = {
+  cast?: boolean,
+  receive?: boolean,
 };
 
 export default class RCTBaseMesh extends RCTBaseView {
@@ -43,7 +43,7 @@ export default class RCTBaseMesh extends RCTBaseView {
   mesh: any;
   _geometry: any;
   _rnctx: ReactNativeContext;
-  _shadow: any;
+  _shadow: ShadowOptions;
 
   constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
     super();

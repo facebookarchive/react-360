@@ -16,6 +16,7 @@ import merge from '../Utils/merge';
 import type {GuiSys} from 'ovrui';
 import type {MeshInstance} from '../Loaders/ModelLoaderRegistry';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import type {ShadowOptions} from './BaseMesh';
 
 export default class RCTModel extends RCTBaseMesh {
   instance: MeshInstance | null;
@@ -44,7 +45,11 @@ export default class RCTModel extends RCTBaseMesh {
       }
     }
     this.instance = createModelInstance(value, this.view, this._litMaterial, this._unlitMaterial);
-    this.instance && this.instance.setLit(this._lit);
+
+    if (this.instance) {
+      this.instance.setLit(this._lit);
+      this.instance.setShadow(this._shadow);
+    }
   }
 
   _setLit(flag: boolean) {
@@ -54,6 +59,15 @@ export default class RCTModel extends RCTBaseMesh {
       return;
     }
     this.instance.setLit(flag);
+  }
+
+  _setShadow(value: ShadowOptions) {
+    this._shadow = value;
+
+    if (!this.instance) {
+      return;
+    }
+    this.instance.setShadow(value);
   }
 
   frame(timeStamp: number, deltaTime: number) {
