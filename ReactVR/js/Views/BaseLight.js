@@ -60,6 +60,12 @@ export default class RCTBaseLight extends RCTBaseView {
   }
 
   _setShadow(value: ShadowOptions) {
+    if (!value) {
+      this.light.castShadow = false;
+      this.light.receiveShadow = false;
+      return;
+    }
+
     const {cast, receive, ...restShadowValues} = value;
 
     this.light.castShadow = cast;

@@ -62,7 +62,7 @@ export default class RCTModel extends RCTBaseMesh {
   }
 
   _setShadow(value: ShadowOptions) {
-    this._shadow = value;
+    this._shadow = value || {};
 
     if (!this.instance) {
       return;

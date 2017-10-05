@@ -150,7 +150,7 @@ export default class RCTBaseMesh extends RCTBaseView {
   }
 
   _setShadow(value: ShadowOptions) {
-    this._shadow = value;
+    this._shadow = value || {};
 
     this.view.castShadow = this._shadow.cast;
     this.view.receiveShadow = this._shadow.receive;
