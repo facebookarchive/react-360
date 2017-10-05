@@ -290,7 +290,7 @@ class ObjMeshInstance {
     }
   }
 
-  setShadow(value: any): void {
+  setShadow(value: ShadowOptions): void {
     const changedCast = this._shadow.cast !== value.cast;
     const changedReceive = this._shadow.receive !== value.receive;
     this._shadow = value;

@@ -191,6 +191,12 @@ class GLTF2MeshInstance {
     }
   }
 
+  setShadow(value: ShadowOptions): void {
+    if (__DEV__) {
+      console.log('Shadows are not supported for GLTF2 models');
+    }
+  }
+
   setTexture(value: string): void {
     if (__DEV__) {
       console.log('Texture mode is not supported for GLTF2 models');
