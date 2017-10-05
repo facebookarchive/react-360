@@ -43,6 +43,7 @@ export default class RCTBaseMesh extends RCTBaseView {
   mesh: any;
   _geometry: any;
   _rnctx: ReactNativeContext;
+  _shadow: any;
 
   constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
     super();
@@ -61,6 +62,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         value: null,
       },
     };
+    this._shadow = {};
     this._rnctx = rnctx;
 
     this.mesh = null;
@@ -148,15 +150,15 @@ export default class RCTBaseMesh extends RCTBaseView {
   }
 
   _setShadow(value: ShadowOptions) {
-    this.view.castShadow = value.cast;
-    this.view.receiveShadow = value.receive;
+    this._shadow = value;
 
-    this.view.traverse(child => {
-      if (child instanceof THREE.Mesh) {
-        child.castShadow = value.cast;
-        child.receiveShadow = value.receive;
-      }
-    });
+    this.view.castShadow = this._shadow.cast;
+    this.view.receiveShadow = this._shadow.receive;
+
+    if (this.mesh) {
+      this.mesh.castShadow = this._shadow.cast;
+      this.mesh.receiveShadow = this._shadow.receive;
+    }
   }
 
   _setTexture(value: ResourceSpecifier) {
@@ -249,6 +251,9 @@ export default class RCTBaseMesh extends RCTBaseView {
         : this._lit ? this._litMaterial : this._unlitMaterial;
       this.mesh = new THREE.Mesh(geometry, mat);
       this.view.add(this.mesh);
+
+      this.mesh.castShadow = this._shadow.cast;
+      this.mesh.receiveShadow = this._shadow.receive;
     } else {
       this.mesh.geometry = geometry;
     }

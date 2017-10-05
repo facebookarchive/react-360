@@ -21,6 +21,18 @@ type ShadowOptions = {
   receive: boolean,
 };
 
+function _setDeeply(base, props) {
+  for (const prop in props) {
+    if (typeof props[prop] === 'object') {
+      _setDeeply(base[prop], props[prop]);
+    } else {
+      base[prop] = props[prop];
+    }
+  }
+
+  return base;
+}
+
 export default class RCTBaseLight extends RCTBaseView {
   /**
    * constructor: allocates the required resources and sets defaults
@@ -54,7 +66,7 @@ export default class RCTBaseLight extends RCTBaseView {
     this.light.receiveShadow = receive;
 
     if (Object.keys(restShadowValues).length !== 0) {
-      this.light.shadow = merge(this.light.shadow, restShadowValues);
+      _setDeeply(this.light.shadow, restShadowValues);
     }
   }
 
