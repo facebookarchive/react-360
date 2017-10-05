@@ -89,8 +89,8 @@ describe('RCTBaseLight', () => {
       receive: true,
     };
 
-    expect(bl.light.castShadow).toBe(true);
-    expect(bl.light.receiveShadow).toBe(true);
+    expect(bl.light.castShadow).toBeTruthy();
+    expect(bl.light.receiveShadow).toBeTruthy();
   });
 
   it('removes shadow when it is not defined', () => {
@@ -101,13 +101,13 @@ describe('RCTBaseLight', () => {
       receive: true,
     };
 
-    expect(bl.light.castShadow).toBe(true);
-    expect(bl.light.receiveShadow).toBe(true);
+    expect(bl.light.castShadow).toBeTruthy();
+    expect(bl.light.receiveShadow).toBeTruthy();
 
     bl.props.shadow = null;
 
-    expect(bl.light.castShadow).toBe(false);
-    expect(bl.light.receiveShadow).toBe(false);
+    expect(bl.light.castShadow).toBeFalsy();
+    expect(bl.light.receiveShadow).toBeFalsy();
   });
 
   it('sets shadow advances options', () => {
