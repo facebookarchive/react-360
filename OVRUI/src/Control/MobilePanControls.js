@@ -12,7 +12,6 @@ import THREE from '../ThreeShim';
 // Unit vector
 const X_UNIT = new THREE.Vector3(1, 0, 0);
 const Y_UNIT = new THREE.Vector3(0, 1, 0);
-const Z_UNIT = new THREE.Vector3(0, 0, 1);
 
 // Preallocated Quaternion to use each frame.
 const rotation = new THREE.Quaternion();

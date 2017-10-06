@@ -8,7 +8,7 @@
  */
 
 module.exports = config => ({
-  filename: 'client.js',
+  filename: 'index-test.js',
   contents: `import 'react-native';
 import 'react-vr';
 import React from 'react';

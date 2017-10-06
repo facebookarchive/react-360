@@ -63,7 +63,7 @@ a dedicated **`setState`** function, for example:
 
 * **Events** - Components can generate events that are raised when certain UI action occur. For example, the **`View`** component generates
 **`onEnter`** and **`onExit`** events when the cursor enters and exits its area, respectively. Such events can be handled within the
-component declaration to properly processes the interaction, for example:
+component declaration to properly process the interaction, for example:
         <View onEnter={() => this.setState({hasFocus: true})}>
 
 * **Layout** - React uses the flexbox algorithm and layout rules to automatically position components within a 2D plane. This layout

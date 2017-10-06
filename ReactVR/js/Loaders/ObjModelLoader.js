@@ -14,12 +14,10 @@ import {fetchAndCacheOBJ, removeOBJReference} from '../Loaders/WavefrontOBJ/OBJL
 import {
   BufferAttribute,
   BufferGeometry,
-  FlatShading,
   Group,
   Mesh,
   Material,
   NoColors,
-  SmoothShading,
   VertexColors,
 } from 'three';
 import extractURL from '../Utils/extractURL';
@@ -219,7 +217,7 @@ class ObjMeshInstance {
       if (materials.length === 1) {
         // Use the only material
         material = this._getMaterial(materials[0].name);
-        material.shading = obj.smooth ? SmoothShading : FlatShading;
+        material.flatShading = !obj.smooth;
       } else if (materials.length > 1) {
         // Construct a multi-material
         const multi = [];
@@ -234,7 +232,7 @@ class ObjMeshInstance {
               bufferGeometry.addGroup(materials[i].startGroup, length, i);
             }
             const mtr = this._getMaterial(materials[i].name);
-            mtr.shading = obj.smooth ? SmoothShading : FlatShading;
+            mtr.flatShading = !obj.smooth;
             multi.push(mtr);
           }
         }

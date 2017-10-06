@@ -61,6 +61,9 @@ const panoRayCast = (function() {
   };
 })();
 
+let sphereGeometry = undefined;
+let cubeGeometry = undefined;
+
 export default class RCTPano extends RCTBaseView {
   /**
    * constructor: allocates the required resources and sets defaults
@@ -68,10 +71,13 @@ export default class RCTPano extends RCTBaseView {
   constructor(guiSys, rnctx) {
     super();
 
+    sphereGeometry = sphereGeometry || new THREE.SphereGeometry(1000, 50, 50);
+    cubeGeometry = cubeGeometry || new CubePanoBufferGeometry(2000, 3, 2, 1.01);
+
     this._tintOpacity = 1.0;
     this._styleOpacity = 1.0;
-    this._sphereGeometry = new THREE.SphereGeometry(1000, 50, 50);
-    this._cubeGeometry = new CubePanoBufferGeometry(2000, 3, 2, 1.01);
+    this._sphereGeometry = sphereGeometry;
+    this._cubeGeometry = cubeGeometry;
     this._material = new OVRUI.StereoBasicTextureMaterial({
       color: 'white',
       side: THREE.DoubleSide,
