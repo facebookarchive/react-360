@@ -156,6 +156,8 @@ declare module 'three' {
     quaternion: Quaternion,
     rotation: Euler,
     uuid: string,
+    castShadow: boolean | void,
+    receiveShadow: boolean | void,
 
     constructor(): Object3D,
     add(obj: Object3D): void,

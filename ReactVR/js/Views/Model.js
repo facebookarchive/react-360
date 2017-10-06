@@ -46,10 +46,8 @@ export default class RCTModel extends RCTBaseMesh {
     }
     this.instance = createModelInstance(value, this.view, this._litMaterial, this._unlitMaterial);
 
-    if (this.instance) {
-      this.instance.setLit(this._lit);
-      this.instance.setShadow(this._shadow);
-    }
+    this.instance && this.instance.setLit(this._lit);
+    this.instance && this.instance.setShadow(this._shadow);
   }
 
   _setLit(flag: boolean) {

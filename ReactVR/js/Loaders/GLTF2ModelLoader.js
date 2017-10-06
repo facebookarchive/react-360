@@ -16,6 +16,7 @@ import type {Material} from 'three';
 
 import GLTF2Loader from 'three-gltf2-loader';
 import RefCountCache from '../Utils/RefCountCache';
+import type {ShadowOptions} from '../Views/BaseMesh';
 
 GLTF2Loader(THREE);
 

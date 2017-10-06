@@ -16,6 +16,7 @@
  */
 
 import RCTBaseLight from './BaseLight';
+import merge from '../Utils/merge';
 import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 
@@ -47,13 +48,15 @@ export default class RCTAmbientLight extends RCTBaseLight {
   }
 
   /**
-   * Describes the properties representable by this view type
+   * Describes the properties representable by this view type and merges
+   * with super type
    */
   static describe() {
-    return {
+    return merge(super.describe(), {
+      // declare the native props sent from react to runtime
       NativeProps: {
         intensity: 'number',
       },
-    };
+    });
   }
 }
