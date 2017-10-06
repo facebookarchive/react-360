@@ -45,4 +45,15 @@ export default class RCTAmbientLight extends RCTBaseLight {
       }: Object)
     );
   }
+
+  /**
+   * Describes the properties representable by this view type
+   */
+  static describe() {
+    return {
+      NativeProps: {
+        intensity: 'number',
+      },
+    };
+  }
 }
