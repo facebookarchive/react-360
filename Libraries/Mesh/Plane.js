@@ -97,7 +97,10 @@ const Plane = createReactClass({
     dimHeight: PropTypes.number,
 
     /**
-     * Shadow options
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows object to cast shadow
+     *  * `receive` - allows object to receive shadows
      */
     shadow: PropTypes.shape({
       cast: PropTypes.bool,

@@ -104,6 +104,17 @@ const Sphere = createReactClass({
      * sphere but is slower to render
      */
     heightSegments: PropTypes.number,
+
+    /**
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows object to cast shadow
+     *  * `receive` - allows object to receive shadows
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+    }),
   },
 
   viewConfig: {
@@ -113,6 +124,7 @@ const Sphere = createReactClass({
       radius: true,
       widthSegments: true,
       heightSegments: true,
+      shadow: true,
     },
   },
 
