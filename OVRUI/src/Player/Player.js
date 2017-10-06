@@ -549,7 +549,6 @@ export default class Player {
    */
   exitVR(): Promise<void> {
     if (!this.vrDisplay || !this.vrDisplay.isPresenting || !this.effect) {
-      debugger;
       if (this.vrDisplay && !this.vrDisplay.isPresenting) {
         this.setVRButtonState(true, 'View in VR', this.attemptEnterVR);
       }

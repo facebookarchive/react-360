@@ -1,6 +1,6 @@
 {
   "name": "react-vr-cli",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "The React VR CLI for project setup",
   "license": "BSD-3-Clause",
   "engines": {

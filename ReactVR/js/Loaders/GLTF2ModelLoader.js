@@ -15,7 +15,6 @@ import type {UIView} from 'ovrui';
 import type {Material} from 'three';
 
 import GLTF2Loader from 'three-gltf2-loader';
-import fetchResource from '../Utils/fetchResource';
 import RefCountCache from '../Utils/RefCountCache';
 
 GLTF2Loader(THREE);

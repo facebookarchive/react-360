@@ -168,12 +168,14 @@ describe('RCTBaseView', () => {
     ]);
 
     bv.style.layoutOrigin = [0.5, 0.5];
+    // call present to check layout is only sent when necessary
     bv.presentLayout();
-    expect(cf.mock.calls[1]).toEqual([
-      'RCTEventEmitter',
-      'receiveEvent',
-      [4, 'topLayout', {x: 50, y: 5, width: 200, height: 100}],
-    ]);
+    // force a change
+    bv._top(10);
+    bv.YGNode.calculateLayout(Yoga.UNDEFINED, Yoga.UNDEFINED, Yoga.DIRECTION_LTR);
+    bv.presentLayout();
+    expect(bv.YGNode.getComputedTop()).toBe(10);
+    expect(cf.mock.calls.length).toEqual(2);
   });
 
   it('applies transforms to views', () => {

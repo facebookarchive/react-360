@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "ovrui",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "UI toolkit for building WebVR applications",
   "license": "BSD-3-Clause",
   "repository": {
@@ -36,7 +36,7 @@
     "watch": "rollup -c --watch"
   },
   "dependencies": {
-    "three": "^0.85.2"
+    "three": "^0.87.0"
   },
   "jest": {
     "testMatch": [

@@ -176,11 +176,19 @@ Tr  0.0
 Ns  6.0
 illum 2
 #
+newmtl bump
+map_bump bump.jpg
+#
+newmtl othertex
+bump bump.jpg
+disp disp.jpg
+decal decal.jpg
+#
 # END`
         );
       })
       .then(state => {
-        expect(state.length).toBe(3);
+        expect(state.length).toBe(5);
         expect(state[0].name).toBe('Head');
         expect(state[0].textureMap.diffuse.file).toBe('head.jpg');
         expect(state[0].ambient).toEqual([0.6, 0.4, 0.2]);
@@ -207,6 +215,14 @@ illum 2
         expect(state[2].opacity).toBe(1.0);
         expect(state[2].specularExp).toBe(6.0);
         expect(state[2].illum).toBe(2);
+
+        expect(state[3].name).toBe('bump');
+        expect(state[3].textureMap.bump.file).toBe('bump.jpg');
+
+        expect(state[4].name).toBe('othertex');
+        expect(state[4].textureMap.bump.file).toBe('bump.jpg');
+        expect(state[4].textureMap.displacement.file).toBe('disp.jpg');
+        expect(state[4].textureMap.decal.file).toBe('decal.jpg');
       })
       .then(done, err => console.error(err));
   });
