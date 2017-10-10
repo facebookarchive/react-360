@@ -64,6 +64,16 @@ const panoRayCast = (function() {
 let sphereGeometry = undefined;
 let cubeGeometry = undefined;
 
+// Only dispose certain textures, not those that is from video.
+// A texture manager would be useful to help track the lifetime of textures.
+const tryDisposeTexture = texture => {
+  if (texture._needsDispose) {
+    texture.dispose();
+  } else if (Prefetch.isCachedTexture(texture)) {
+    Prefetch.removeTextureFromCache(texture);
+  }
+};
+
 export default class RCTPano extends RCTBaseView {
   /**
    * constructor: allocates the required resources and sets defaults
@@ -200,19 +210,15 @@ export default class RCTPano extends RCTBaseView {
           return;
         }
         this._globe.scale.x = -1;
-        // Only dispose certain textures, not those that have been
-        // prefetched or from video. A texture manager would be useful
-        // to help track the lifetime of textures.
-        if (this._material.map && this._material.map._needsDispose) {
-          this._material.map.dispose();
+        if (this._material.map) {
+          tryDisposeTexture(this._material.map);
         }
         if (
           this._material.envMap &&
-          this._material.envMap._needsDispose &&
           this._material.envMap !== this._material._leftEnvMap &&
           this._material.envMap !== this._material._rightEnvMap
         ) {
-          this._material.envMap.dispose();
+          tryDisposeTexture(this._material.envMap);
         }
         if (texture === undefined) {
           this._material.map = undefined;
@@ -251,11 +257,11 @@ export default class RCTPano extends RCTBaseView {
 
         this._numTexturesToLoad--;
         if (this._numTexturesToLoad === 0) {
-          if (this._material._leftEnvMap && this._material._leftEnvMap._needsDispose) {
-            this._material._leftEnvMap.dispose();
+          if (this._material._leftEnvMap) {
+            tryDisposeTexture(this._material._leftEnvMap);
           }
-          if (this._material._rightEnvMap && this._material._rightEnvMap._needsDispose) {
-            this._material._rightEnvMap.dispose();
+          if (this._material._rightEnvMap) {
+            tryDisposeTexture(this._material._rightEnvMap);
           }
           this._material._leftEnvMap = this._nextLeftEnvMap;
           this._material._rightEnvMap = this._nextRightEnvMap;
@@ -320,6 +326,22 @@ export default class RCTPano extends RCTBaseView {
    * Dispose of any associated resources
    */
   dispose() {
+    if (this._material.map) {
+      tryDisposeTexture(this._material.map);
+    }
+    if (
+      this._material.envMap &&
+      this._material.envMap !== this._material._leftEnvMap &&
+      this._material.envMap !== this._material._rightEnvMap
+    ) {
+      tryDisposeTexture(this._material.envMap);
+    }
+    if (this._material._leftEnvMap) {
+      tryDisposeTexture(this._material._leftEnvMap);
+    }
+    if (this._material._rightEnvMap) {
+      tryDisposeTexture(this._material._rightEnvMap);
+    }
     if (this._localResource) {
       this._localResource.dispose();
     }
