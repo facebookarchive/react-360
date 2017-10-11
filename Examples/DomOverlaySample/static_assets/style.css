@@ -1,0 +1,35 @@
+.container {
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 10000000000000;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  background-color: rgba(0,0,0,0.9);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  opacity: 1;
+  pointer-events: auto;
+}
+.content {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 20px 20px 40px;
+}
+.close {
+  width: 50px;
+  height: 50px;
+  margin-left: auto;
+  margin-top: -15px;
+  margin-right: -15px;
+  background: url('x.png') center center no-repeat;
+  background-size: 30px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.close:hover {
+  opacity: 1;
+}
