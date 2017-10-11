@@ -81,7 +81,17 @@ declare module 'three' {
     set(number, number, number, string): this,
   }
 
-  declare class Geometry {}
+  declare class Face3 {
+    constructor(number, number, number): this,
+  }
+
+  declare class Geometry {
+    vertices: Array<Vector3>,
+    faces: Array<Face3>,
+    faceVertexUvs: Array<Array<Array<Vector2>>>,
+    verticesNeedUpdate: boolean,
+    elementsNeedUpdate: boolean,
+  }
 
   declare class Group extends Object3D {
     constructor(): Group,
@@ -114,10 +124,11 @@ declare module 'three' {
     name: string,
 
     constructor(geom: Geometry, material: Material | Array<Material>): Mesh,
+    raycast(any, any): void,
   }
 
   declare class MeshBasicMaterial extends Material {
-    constructor(?{color: number | string}): MeshBasicMaterial,
+    constructor(?{color?: number | string}): MeshBasicMaterial,
   }
 
   declare class MeshLambertMaterial extends Material {
@@ -168,6 +179,7 @@ declare module 'three' {
     y: number,
     z: number,
     w: number,
+    constructor(): Quaternion,
     constructor(number, number, number, number): Quaternion,
     clone(): Quaternion,
     fromArray(Array<number> | Float32Array): this,

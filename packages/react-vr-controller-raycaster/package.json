@@ -1,0 +1,22 @@
+{
+  "name": "react-vr-controller-raycaster",
+  "version": "1.0.0",
+  "description": "3dof and 6dof controller raycaster for React VR applications",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-vr.git"
+  },
+  "bugs": "https://github.com/facebook/react-vr/issues",
+  "main": "ControllerRayCaster.js",
+  "files": [
+    "ControllerRayCaster.js",
+    "ControllerRenderer.js",
+    "README.md",
+    "LICENSE",
+    "PATENTS"
+  ],
+  "peerDependencies": {
+    "ovrui": ">=1.4.0"
+  }
+}
