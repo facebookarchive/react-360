@@ -25,7 +25,7 @@ jest.dontMock('./middleware');
 
 const createStore = require('redux').createStore;
 const applyMiddleware = require('redux').applyMiddleware;
-const clientPredictionConsistency = require('./replicate').clientPredictionConsistency;
+const resyncConsistency = require('./replicate').resyncConsistency;
 const app = require('./reducers').default;
 const isValid = require('./reducers/validate').isValid;
 const syncState = require('./actions').syncState;
@@ -67,7 +67,7 @@ let store;
 
 beforeEach(() => {
   fakeSend = jest.fn();
-  replicateActions = clientPredictionConsistency(syncState, fakeIsMaster, isValid, fakeSend);
+  replicateActions = resyncConsistency(syncState, fakeIsMaster, isValid, fakeSend);
   store = createStore(
     app,
     applyMiddleware(

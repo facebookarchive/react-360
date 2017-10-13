@@ -25,7 +25,7 @@ const reducers = combineReducers({
 const app = (state, action) => {
   switch (action.type) {
     case 'SYNC_STATE':
-      return {...action.state};
+      return action.state;
     case 'HIDE':
       const value = state.board[action.square.row][action.square.column];
       if (scorer(value, state.scores)) {

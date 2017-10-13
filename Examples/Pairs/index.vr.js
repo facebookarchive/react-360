@@ -21,7 +21,7 @@ import uuid from 'uuid';
 import Board from './components/Board';
 import Scores from './components/Scores';
 import {syncState, heartbeat, connect, disconnect} from './actions';
-import {clientPredictionConsistency} from './replicate';
+import {replayConsistency} from './replicate';
 import app from './reducers';
 import isValid from './reducers/validate';
 import {
@@ -46,7 +46,7 @@ const send = action => {
   ws.send(JSON.stringify(action));
 };
 
-const replicateActions = clientPredictionConsistency(syncState, isMaster, isValid, send);
+const replicateActions = replayConsistency(syncState, isMaster, isValid, send);
 // const replicateActions = dumbTerminalConsistency(isMaster, isValid, send),
 
 const store = createStore(
