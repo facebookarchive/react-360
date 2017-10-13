@@ -135,7 +135,8 @@ class GLTF2MeshInstance {
     // stop any leftover animations
     const newActiveAnimations = {};
     for (const index in definition.animations) {
-      const num = definition.animations[index].key || index;
+      const key = definition.animations[index].key;
+      const num = isNaN(key) ? index : key;
       const animName = 'animation_' + num;
       newActiveAnimations[animName] = true;
       // start animations which have yet to be started
