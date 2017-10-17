@@ -8,6 +8,7 @@
     "dashjs": "~2.4.1"
   },
   "devDependencies": {
+    "request": "^2.83.0",
     "tar-fs": "~1.15.2"
   },
   "peerDependencies": {
