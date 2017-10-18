@@ -30,9 +30,15 @@ Unlike in React, **the Y axis points up, not down.** This enables stronger overl
 
 Also, **the Z axis points forwards towards the user**. Because the default view of the user starts out at the origin, this means they start out looking in the –Z direction. Take care to place objects at a negative distance, such as -3 meters, if they are to be visible at the start. Here is an example of how such a transformation can be specified through a **`transform`** style property. We discuss chaining transforms later in this topic.
 ```
-<Text style={{ position: 'absolute', transform: [{translate: [0, 0, -6]}],
-               layoutOrigin: [0.5, 0.5] }}
-      fontSize={0.4} text='Office Lobby' />
+<Text
+  style={{
+    position: 'absolute',
+    transform: [{translate: [0, 0, -6]}],
+    layoutOrigin: [0.5, 0.5],
+    fontSize: 0.4
+  }}>
+  Office Lobby
+</Text>
 ```
 
 ### Units
@@ -46,11 +52,21 @@ Rotation units are in degrees.
 Transforms place the various components in 3D space. React VR extends the transform style of React to be fully 3D. Here is a code example for a mesh transform from one of our samples.
 
 ```
-<Model style={{
-    transform : [   {translate : [0, -30, -300]}, { scale : 0.1 },
-                    {rotateY : this.state.rotation}, {rotateX : -90} ] }}
-    source={{url:'./creature/', mesh:'creature.obj', mtl:'creature.mtl',
-    lit : true}}
+<Model
+  style={{
+    transform: [
+      {translate: [0, -30, -300]},
+      {scale: 0.1},
+      {rotateY: this.state.rotation},
+      {rotateX: -90}
+    ]
+  }}
+  source={{
+    url: './creature/',
+    mesh: 'creature.obj',
+    mtl: 'creature.mtl',
+    lit: true
+  }}
 />
 ```
 
@@ -61,7 +77,7 @@ Transforms are represented as an array of objects within a style. Transforms wit
     transform: [
       {rotateZ : this.state.rotation},
       {translate: [0, 2, 0]},
-      {scale : 0.01 },
+      {scale : 0.01},
     ],
   }}
 ```
@@ -74,7 +90,7 @@ The result of the transform example below is quite different:
     transform: [
       {translate: [0, 2, 0]},
       {rotateZ : this.state.rotation},
-      {scale : 0.01 },
+      {scale : 0.01},
     ],
   }}
 ```
@@ -87,9 +103,9 @@ Transform properties are described by a sequence of commands paired with values 
 
 ```
 transform: [
-              {TRANSFORM_COMMAND: TRANSFORM_VALUE},
-              ...
-            ]
+  {TRANSFORM_COMMAND: TRANSFORM_VALUE},
+  ...
+]
 ```
 
 **`TRANSFORM_COMMAND`** can be one of the following.
