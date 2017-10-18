@@ -10,7 +10,7 @@ previous: reactnative
 
 React VR makes use of a Flexbox style layout algorithm to automatically position components and their children.
 
-The library we use, [Yoga](https://github.com/facebook/yoga), tries to follows the web implementation of flexbox as much as possible. Yoga does make changes to the default properties, and [these changes](http://jsfiddle.net/vjeux/y11txxv9/) can be forked to allow testing in a browser environment.
+The library we use, [Yoga](https://github.com/facebook/yoga), tries to follow the web implementation of flexbox as much as possible. Yoga does make changes to the default properties, and [these changes](http://jsfiddle.net/vjeux/y11txxv9/) can be forked to allow testing in a browser environment.
 
 #### Layout Sample
 
@@ -35,7 +35,7 @@ render() {
   // <View> below creates a view that is 2 meters wide and is positioned
   // 5 meters in front of the user (z = -5). Its child items are laid out
   // in a 'column' and marked to 'stretch' to the width of the view container.
-  // This causes call child view to have the same width.
+  // This causes all child views to have the same width.
   return (
     <View>
       <Pano source={asset('chess-world.jpg')}/>

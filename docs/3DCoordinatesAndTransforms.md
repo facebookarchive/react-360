@@ -107,7 +107,7 @@ For example, a matrix which scales all axes by `0.01` and then translates by `[3
 ```
   style={{
     transform: [
-      {matrix : [0.01,0,0,0, 0,0.01,0,0, 0,0,0.01,0, 3,2,0,1]},
+      {matrix : [0.01,0,0,0, 0,0.01,0,0, 0,0,0.01,0, 3,2,1,1]},
     ],
   }}
 ```

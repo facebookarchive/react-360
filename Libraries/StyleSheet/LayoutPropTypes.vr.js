@@ -223,7 +223,7 @@ const LayoutPropTypes = {
 
   /**
    * `animation` defines a native per view version of the `LayoutAnimation`
-   * This is currently only availble on the native version of react VR
+   * This is currently only available on the native version of react VR
    */
   animation: ReactPropTypes.object,
 
