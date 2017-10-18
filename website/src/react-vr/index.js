@@ -33,7 +33,7 @@ var index = React.createClass({
             <Prism>
 
 {`import React from 'react';
-import {AppRegistry, Pano, Text, View} from 'react-vr';
+import {AppRegistry, asset, Pano, Text, View} from 'react-vr';
 
 class WelcomeToVR extends React.Component {
   render() {
