@@ -310,4 +310,5 @@ it provides much less control than **`Animated`** and other animation libraries.
 If you can't get **`LayoutAnimation`** to do what you want, you may need to use
 another approach.
 
-See LayoutAnimation.js for more information.
+See [LayoutAnimation.js](https://github.com/facebook/react-native/blob/master/Libraries/LayoutAnimation/LayoutAnimation.js)
+for more information.
