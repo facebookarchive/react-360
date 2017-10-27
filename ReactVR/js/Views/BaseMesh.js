@@ -81,6 +81,18 @@ export default class RCTBaseMesh extends RCTBaseView {
         },
       }: Object)
     );
+    Object.defineProperty(
+      this.props,
+      'pointerEvents',
+      ({
+        set: value => {
+          if (value === null) {
+            value = 'auto';
+          }
+          this.view.setPointerEvents(value);
+        },
+      }: Object)
+    );
 
     Object.defineProperty(
       this.props,
@@ -319,6 +331,7 @@ export default class RCTBaseMesh extends RCTBaseView {
       // register the properties sent from react to runtime
       NativeProps: {
         lit: 'boolean',
+        pointerEvents: 'string',
         texture: 'object',
         wireframe: 'boolean',
         materialParameters: 'object',
