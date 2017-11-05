@@ -183,6 +183,7 @@ export default class Player {
     (this: any).onDisplayDeactivate = this.onDisplayDeactivate.bind(this);
     (this: any).onDisplayConnect = this.onDisplayConnect.bind(this);
     (this: any).onDisplayDisconnect = this.onDisplayDisconnect.bind(this);
+    (this: any).onDisplayPresentChange = this.onDisplayPresentChange.bind(this);
     (this: any).handleFullscreenChange = this.handleFullscreenChange.bind(this);
     (this: any).exitVR = this.exitVR.bind(this);
     (this: any).resetAngles = this.resetAngles.bind(this);
@@ -367,6 +368,8 @@ export default class Player {
     // Listen for headsets that connect / disconnect after the page has loaded
     window.addEventListener('vrdisplayconnect', this.onDisplayConnect);
     window.addEventListener('vrdisplaydisconnect', this.onDisplayDisconnect);
+    // Listen for presentation changes to catch external triggers (like the back button)
+    window.addEventListener('vrdisplaypresentchange', this.onDisplayPresentChange);
     // Listen for pointer becoming restricted / unrestricted
     window.addEventListener('vrdisplaypointerrestricted', this.handlePointerRestricted);
     window.addEventListener('vrdisplaypointerunrestricted', this.handlePointerUnrestricted);
@@ -805,6 +808,17 @@ export default class Player {
   onDisplayDeactivate({display}: VRDisplayEvent) {
     if (display === this.vrDisplay) {
       this.exitVR();
+    }
+  }
+
+  onDisplayPresentChange({display}: VRDisplayEvent) {
+    if (this.vrDisplay && display && display.displayId === this.vrDisplay.displayId) {
+      if (!display.isPresenting) {
+        this.setVRButtonState(true, 'View in VR', this.attemptEnterVR);
+        if (this.onExitVR) {
+          this.onExitVR();
+        }
+      }
     }
   }
 
