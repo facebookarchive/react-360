@@ -43,7 +43,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * </CylindricalPanel>
  * ```
  *
- * The width and height of the cylinder must be specified, and the width must also corresponds to
+ * The width and height of the cylinder must be specified, and the width must also correspond to
  * the arc that the cylinder covers. The default density is 4680px, which has been empirically
  * defined to match a 1px unit on panel space to 1px on the eye. That is, the defaults allow transferring
  * pixel units from 2D to also work in VR.
