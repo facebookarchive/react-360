@@ -96,6 +96,7 @@ function createMaterial(url: string, raw: RawMTL, forceBasic: boolean = false): 
   };
   const mtlDirectory = url.substr(0, url.lastIndexOf('/') + 1);
   const isPhong = !forceBasic && raw.illum !== 0 && raw.illum !== 1;
+  const isTranparent = raw.illum === 4 || raw.illum === 6 || raw.illum === 7 || raw.illum === 9;
   if (raw.specular) {
     // Specular only supported on Phong
     if (isPhong) {
@@ -143,9 +144,9 @@ function createMaterial(url: string, raw: RawMTL, forceBasic: boolean = false): 
     : raw.illum === 0 || raw.illum === 1
         ? new THREE.MeshLambertMaterial(params)
         : new THREE.MeshPhongMaterial(params);
-  if (raw.opacity && raw.opacity < 1.0) {
+  if (isTranparent || (raw.opacity && raw.opacity < 1.0)) {
     material.transparent = true;
-    material.opacity = raw.opacity;
+    material.opacity = raw.opacity || 1.0;
   }
   material.url = url;
   return material;
