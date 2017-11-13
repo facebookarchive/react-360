@@ -78,13 +78,13 @@ export default class OBJGroup {
       if (!face[i][1]) {
         uvs.push(-1);
       } else {
-        uvs.push(face[i][1] < 0 ? face[i][1] + this.vertices.length : face[i][1] - 1);
+        uvs.push(face[i][1] < 0 ? face[i][1] + this.textureCoords.length : face[i][1] - 1);
         this.geometry.hasUVs = true;
       }
       if (!face[i][2]) {
         normals.push(-1);
       } else {
-        normals.push(face[i][2] < 0 ? face[i][2] + this.vertices.length : face[i][2] - 1);
+        normals.push(face[i][2] < 0 ? face[i][2] + this.normals.length : face[i][2] - 1);
         this.geometry.hasNormals = true;
       }
     }
