@@ -2,6 +2,10 @@
 
 React VR is actively being developed by Oculus and Facebook, and is used to power a growing number of internal and external applications. We've put together this document to help make the public contribution process clearer and answer any questions you may have.
 
+## Code of Conduct
+
+Facebook has adopted a Code of Conduct that we expect project participants to adhere to. Please [read the full text](https://code.facebook.com/pages/876921332402685/open-source-code-of-conduct) so that you can understand what actions will and will not be tolerated.
+
 ## Pull Requests
 
 Our core team will be monitoring for pull requests. New pull requests will automatically run against our continuous integration suite, which should detect the majority of formatting and testing issues. After this, one of our team members will run some Facebook-specific integration tests on it, to make sure it doesn't break any of our applications. Once that has completed, one member of the team will sign off on the changes and merge the pull request. Any API changes might require us to fix internal uses, which could cause some delay. We'll do our best to provide updates and feedback in a timely manner throughout the process.
