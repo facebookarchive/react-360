@@ -52,6 +52,37 @@ export default class RCTPrefetch extends RCTBaseView {
       return;
     }
 
+    const onError = () => {
+      onLoadEnd();
+    };
+
+    const onLoad = texture => {
+      // call onLoad in React
+      if (texture !== undefined) {
+        RCTPrefetch.addToCache(uri, texture);
+        console.log('ONLOAD', uri, texture)
+        this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+          this.getTag(),
+          'topLoad',
+          [],
+        ]);
+      }
+
+      onLoadEnd();
+    };
+
+    const onLoadEnd = () => {
+      // call onLoadEnd in React
+      this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+        this.getTag(),
+        'topLoadEnd',
+        [],
+      ]);
+    };
+
+    // No progress indication for now.
+    const onProgress = undefined;
+
     if (Array.isArray(uri)) {
       // Cubemap, check proper format
       if (uri.length !== 6 || !uri[0].uri) {
@@ -65,13 +96,13 @@ export default class RCTPrefetch extends RCTBaseView {
 
       const loader = new THREE.CubeTextureLoader();
       loader.setCrossOrigin('Access-Control-Allow-Origin');
-      loader.load(urls, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
+      loader.load(urls, onLoad, onProgress, onError);
     } else {
       // Panorama
       const url = RCTPrefetch.getUri(uri);
       const loader = new THREE.TextureLoader();
       loader.setCrossOrigin('Access-Control-Allow-Origin');
-      loader.load(url, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
+      loader.load(url, onLoad, onProgress, onError);
     }
   }
 

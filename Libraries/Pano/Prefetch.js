@@ -52,10 +52,28 @@ const Prefetch = createReactClass({
       // Opaque type returned by require('./image.jpg')
       PropTypes.number,
     ]),
+
+    /**
+     * Option onLoad callback called on success
+     **/
+    onLoad: PropTypes.func,
+
+    /**
+     * Option onLoadEnd callback called on success or failure
+     **/
+    onLoadEnd: PropTypes.func,
   },
 
   getDefaultProps: function() {
     return {};
+  },
+
+  _onLoad: function() {
+    this.props.onLoad && this.props.onLoad();
+  },
+
+  _onLoadEnd: function() {
+    this.props.onLoadEnd && this.props.onLoadEnd();
   },
 
   render: function() {
@@ -71,7 +89,7 @@ const Prefetch = createReactClass({
     }
 
     return (
-      <RKPrefetch {...props}>
+      <RKPrefetch {...props} onLoad={this._onLoad} onLoadEnd={this._onLoadEnd}>
         {this.props.children}
       </RKPrefetch>
     );
