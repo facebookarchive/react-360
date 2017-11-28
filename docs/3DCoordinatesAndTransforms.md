@@ -62,10 +62,8 @@ Transforms place the various components in 3D space. React VR extends the transf
     ]
   }}
   source={{
-    url: './creature/',
-    mesh: 'creature.obj',
-    mtl: 'creature.mtl',
-    lit: true
+    obj: asset('creature.obj'),
+    mtl: asset('creature.mtl')
   }}
 />
 ```
