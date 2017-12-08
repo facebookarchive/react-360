@@ -43,7 +43,7 @@
     "react": "16.0.0",
     "react-native": "~0.48.0",
     "three": "^0.87.0",
-    "three-gltf2-loader": "^1.0.0"
+    "three-gltf2-loader": "~1.1.0"
   },
   "scripts": {
     "flow": "flow",

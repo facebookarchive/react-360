@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "ovrui": "~2.0.0",
-    "three-gltf2-loader": "^1.0.0"
+    "three-gltf2-loader": "~1.1.0"
   }
 }
