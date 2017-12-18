@@ -23,6 +23,11 @@ import type {ReactNativeContext} from '../ReactNativeContext';
 
 type ResourceSpecifier = void | null | string | {uri: string, repeat?: Array<number>};
 
+export type ShadowOptions = {
+  cast?: boolean,
+  receive?: boolean,
+};
+
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
   _lit: boolean;
@@ -38,6 +43,7 @@ export default class RCTBaseMesh extends RCTBaseView {
   mesh: any;
   _geometry: any;
   _rnctx: ReactNativeContext;
+  _shadow: ShadowOptions;
 
   constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
     super();
@@ -56,6 +62,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         value: null,
       },
     };
+    this._shadow = {};
     this._rnctx = rnctx;
 
     this.mesh = null;
@@ -117,6 +124,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         set: this._setMaterialParameters.bind(this),
       }: Object)
     );
+
     Object.defineProperty(
       this.props,
       'texture',
@@ -132,6 +140,14 @@ export default class RCTBaseMesh extends RCTBaseView {
         set: this._setColor.bind(this),
       }: Object)
     );
+
+    Object.defineProperty(
+      this.props,
+      'shadow',
+      ({
+        set: this._setShadow.bind(this),
+      }: Object)
+    );
   }
 
   _setColor(color: ?number) {
@@ -142,6 +158,18 @@ export default class RCTBaseMesh extends RCTBaseView {
     } else {
       this._litMaterial.color.setHex(color);
       this._unlitMaterial.color.setHex(color);
+    }
+  }
+
+  _setShadow(value: ShadowOptions) {
+    this._shadow = value || {};
+
+    this.view.castShadow = this._shadow.cast;
+    this.view.receiveShadow = this._shadow.receive;
+
+    if (this.mesh) {
+      this.mesh.castShadow = this._shadow.cast;
+      this.mesh.receiveShadow = this._shadow.receive;
     }
   }
 
@@ -235,6 +263,9 @@ export default class RCTBaseMesh extends RCTBaseView {
         : this._lit ? this._litMaterial : this._unlitMaterial;
       this.mesh = new THREE.Mesh(geometry, mat);
       this.view.add(this.mesh);
+
+      this.mesh.castShadow = this._shadow.cast;
+      this.mesh.receiveShadow = this._shadow.receive;
     } else {
       this.mesh.geometry = geometry;
     }
@@ -335,6 +366,7 @@ export default class RCTBaseMesh extends RCTBaseView {
         texture: 'object',
         wireframe: 'boolean',
         materialParameters: 'object',
+        shadow: 'object',
       },
     });
   }

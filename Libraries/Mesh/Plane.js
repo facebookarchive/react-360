@@ -95,6 +95,17 @@ const Plane = createReactClass({
      * Height of the box in meters
      */
     dimHeight: PropTypes.number,
+
+    /**
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows object to cast shadow
+     *  * `receive` - allows object to receive shadows
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+    }),
   },
 
   viewConfig: {
@@ -103,6 +114,7 @@ const Plane = createReactClass({
       ...ReactNativeViewAttributes.RCTView,
       dimWidth: true,
       dimHeight: true,
+      shadow: true,
     },
   },
 

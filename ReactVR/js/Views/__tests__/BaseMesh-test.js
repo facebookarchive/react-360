@@ -9,6 +9,13 @@
 
 'use strict';
 
+const MockUIView = jest.fn(() => ({
+  add: jest.fn(),
+  remove: jest.fn(),
+}));
+
+const MockGeometry = jest.fn(() => ({}));
+
 const TextureLoads = {};
 
 const MockTextureLoader = function() {};
@@ -55,6 +62,9 @@ jest.mock('three', () => {
     MeshPhongMaterial: jest.fn(() => {
       return {dispose() {}};
     }),
+    Mesh: jest.fn(() => {
+      return {dispose() {}};
+    }),
     BufferGeometry: jest.fn(() => ({})),
     Vector3: jest.fn(() => ({})),
     Vector4: jest.fn(() => ({})),
@@ -68,7 +78,7 @@ jest.mock('three', () => {
 jest.mock(
   'ovrui',
   () => ({
-    UIView: jest.fn(),
+    UIView: MockUIView,
   }),
   {virtual: true}
 );
@@ -237,5 +247,19 @@ describe('RCTBaseMesh', () => {
       .then(() => {
         done();
       });
+  });
+
+  it('sets shadow casting and receiving', () => {
+    const manager = new TextureManager();
+    const mesh = new BaseMesh({}, {TextureManager: manager});
+
+    mesh._setGeometry(MockGeometry);
+
+    mesh.props.shadow = {
+      cast: true,
+    };
+
+    expect(mesh.view.castShadow).toBeTruthy();
+    expect(mesh.mesh.castShadow).toBeTruthy();
   });
 });

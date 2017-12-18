@@ -10,49 +10,44 @@
 /**
  * RCTPointLight: runtime implementation of the <PointLight >
  * https://threejs.org/docs/index.html#api/lights/PointLight
- * @class RCTAmbientLight
- * @extends RCTBaseView
+ * @class RCTPointLight
+ * @extends RCTBaseLight
  */
 
-import RCTBaseView from './BaseView';
+import RCTBaseLight from './BaseLight';
 import merge from '../Utils/merge';
 import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 
-export default class RCTPointLight extends RCTBaseView {
+export default class RCTPointLight extends RCTBaseLight {
   /**
    * constructor: allocates the required resources and sets defaults
    */
   constructor(guiSys) {
     super();
-    const light = new THREE.PointLight();
+
+    this.light = new THREE.PointLight();
     this.view = new OVRUI.UIView(guiSys);
-    this.view.add(light);
-    // In "physically correct" mode, the product of color * intensity is
-    // interpreted as luminous intensity measured in candelas.
-    Object.defineProperty(this.props, 'intensity', {
-      set: value => {
-        light.intensity = value;
-      },
-    });
+    this.view.add(this.light);
+
     // If non-zero, light will attenuate linearly from maximum intensity at
     // light position down to zero at distance.
     Object.defineProperty(this.props, 'distance', {
       set: value => {
-        light.distance = value;
+        this.light.distance = value;
       },
     });
     // The amount the light dims along the distance of the light
     // In "physically correct" mode, decay = 2 leads to physically realistic light falloff.
     Object.defineProperty(this.props, 'decay', {
       set: value => {
-        light.decay = value;
+        this.light.decay = value;
       },
     });
     // Color of the light.
     Object.defineProperty(this.style, 'color', {
       set: value => {
-        light.color.set(value);
+        this.light.color.set(value);
       },
     });
 
@@ -70,7 +65,6 @@ export default class RCTPointLight extends RCTBaseView {
     return merge(super.describe(), {
       // declare the native props sent from react to runtime
       NativeProps: {
-        intensity: 'number',
         distance: 'number',
         decay: 'number',
       },

@@ -118,6 +118,17 @@ const Cylinder = createReactClass({
      * Set material parameters in three.js
      */
     materialParameters: PropTypes.object,
+
+    /**
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows object to cast shadow
+     *  * `receive` - allows object to receive shadows
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+    }),
   },
 
   viewConfig: {
@@ -128,6 +139,7 @@ const Cylinder = createReactClass({
       radiusBottom: true,
       dimHeight: true,
       segments: true,
+      shadow: true,
     },
   },
 

@@ -118,12 +118,24 @@ const Model = createReactClass({
      * Specifying true for this property will cause the object to be displayed as a wireframe
      */
     wireframe: PropTypes.bool,
+
+    /**
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows object to cast shadow
+     *  * `receive` - allows object to receive shadows
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+    }),
   },
 
   viewConfig: {
     uiViewClassName: 'Model',
     validAttributes: {
       ...ReactNativeViewAttributes.RCTView,
+      shadow: true,
     },
   },
 

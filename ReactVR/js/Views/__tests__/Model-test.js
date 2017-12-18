@@ -81,6 +81,7 @@ describe('RCTModel', () => {
   it('loads the object upon setting the obj property', done => {
     const m = new Model();
     m.props.source = {obj: {uri: 'mesh.obj'}};
+
     // Wait for the loader
     setTimeout(() => {
       try {
@@ -109,5 +110,33 @@ describe('RCTModel', () => {
         done.fail(err);
       }
     }, 1);
+  });
+
+  it('sets lit property when changed', () => {
+    const m = new Model();
+    m.instance = {
+      setLit: jest.fn(),
+    };
+
+    m.props.lit = true;
+
+    expect(m.instance.setLit.mock.calls.length).toBe(1);
+    expect(m.instance.setLit.mock.calls[0][0]).toBe(true);
+  });
+
+  it('sets shadow property when changed', () => {
+    const m = new Model();
+    const shadowValue = {
+      cast: true,
+    };
+
+    m.instance = {
+      setShadow: jest.fn(),
+    };
+
+    m.props.shadow = shadowValue;
+
+    expect(m.instance.setShadow.mock.calls.length).toBe(1);
+    expect(m.instance.setShadow.mock.calls[0][0]).toBe(shadowValue);
   });
 });

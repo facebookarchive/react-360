@@ -16,6 +16,7 @@ import type {Material} from 'three';
 
 import GLTF2Loader from 'three-gltf2-loader';
 import RefCountCache from '../Utils/RefCountCache';
+import type {ShadowOptions} from '../Views/BaseMesh';
 
 GLTF2Loader(THREE);
 
@@ -187,6 +188,12 @@ class GLTF2MeshInstance {
   setLit(flag: boolean): void {
     if (__DEV__) {
       console.log('Lit mode is not supported for GLTF2 models');
+    }
+  }
+
+  setShadow(value: ShadowOptions): void {
+    if (__DEV__) {
+      console.log('Shadows are not supported for GLTF2 models');
     }
   }
 

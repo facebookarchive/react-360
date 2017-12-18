@@ -59,6 +59,26 @@ const SpotLight = createReactClass({
      * values between zero and 100. Default is zero.
      */
     penumbra: PropTypes.number,
+
+    /**
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows light to cast shadow
+     *  * `receive` - allows light to receive shadows
+     *  * `mapSize` - defines width and height of shadow map
+     *  * `camera` - defines properties of light's camera
+     *  * `bias` - shadow map bias
+     *
+     * For reference see three.js
+     * [LightShadow](https://threejs.org/docs/#api/lights/shadows/LightShadow) class.
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+      mapSize: PropTypes.object,
+      camera: PropTypes.object,
+      bias: PropTypes.number,
+    }),
   },
 
   viewConfig: {
@@ -70,6 +90,7 @@ const SpotLight = createReactClass({
       decay: true,
       angle: true,
       penumbra: true,
+      shadow: true,
     },
   },
 

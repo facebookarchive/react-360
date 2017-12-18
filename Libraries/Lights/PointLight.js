@@ -49,6 +49,26 @@ const PointLight = createReactClass({
      * In "physically correct" mode, decay = 2 leads to physically realistic light falloff.
      */
     decay: PropTypes.number,
+
+    /**
+     * Defines properties for shadows.
+     *
+     *  * `cast` - allows light to cast shadow
+     *  * `receive` - allows light to receive shadows
+     *  * `mapSize` - defines width and height of shadow map
+     *  * `camera` - defines properties of light's camera
+     *  * `bias` - shadow map bias
+     *
+     * For reference see three.js
+     * [LightShadow](https://threejs.org/docs/#api/lights/shadows/LightShadow) class.
+     */
+    shadow: PropTypes.shape({
+      cast: PropTypes.bool,
+      receive: PropTypes.bool,
+      mapSize: PropTypes.object,
+      camera: PropTypes.object,
+      bias: PropTypes.number,
+    }),
   },
 
   viewConfig: {
@@ -58,6 +78,7 @@ const PointLight = createReactClass({
       intensity: true,
       distance: true,
       decay: true,
+      shadow: true,
     },
   },
 

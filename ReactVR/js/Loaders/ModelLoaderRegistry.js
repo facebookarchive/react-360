@@ -13,6 +13,7 @@ import * as THREE from 'three';
 import type {UIView} from 'ovrui';
 import ObjModelLoader from '../Loaders/ObjModelLoader';
 import GLTF2ModelLoader from '../Loaders/GLTF2ModelLoader';
+import type {ShadowOptions} from '../Views/BaseMesh';
 
 export interface MeshInstance {
   // returns false if instance can't be updated and instances needs to be recreated
@@ -20,6 +21,7 @@ export interface MeshInstance {
 
   // already established apis
   setLit(value: boolean): void,
+  setShadow(value: ShadowOptions): void,
   setTexture(value: string): void,
   setWireframe(value: boolean): void,
 
