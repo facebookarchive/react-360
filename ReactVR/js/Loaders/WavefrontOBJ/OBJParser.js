@@ -20,8 +20,8 @@ import OBJGroup from './OBJGroup';
 
 import type {OBJParserState} from './OBJTypes';
 
-const POINTS_TEST = /^\s+(-?[\d\.e+-]+)\s+(-?[\d\.e+-]+)\s+(-?[\d\.e+-]+)/;
-const TEXTURE_POINTS_TEST = /^\s+(-?[\d\.e+-]+)\s+(-?[\d\.e+-]+)/;
+const POINTS_TEST = /^\s+(-?[\d\.eE+-]+)\s+(-?[\d\.eE+-]+)\s+(-?[\d\.eE+-]+)/;
+const TEXTURE_POINTS_TEST = /^\s+(-?[\d\.eE+-]+)\s+(-?[\d\.eE+-]+)/;
 const PAIR_TEST = /^\s*(-?\d+)(\/-?\d+)?\s*/;
 const TRIPLET_TEST = /^\s*(-?\d+)\/?(-?\d+)?(\/-?\d+)?\s*/;
 const SMOOTHING_TEST = /^\s*(\d+|on|off)/;
