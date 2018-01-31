@@ -8,7 +8,8 @@
     "dashjs": "~2.4.1"
   },
   "devDependencies": {
-    "tar-fs": "~1.15.2"
+    "tar-fs": "~1.15.2",
+    "request": "^2.83.0"
   },
   "peerDependencies": {
     "react": "~15.4.1",
