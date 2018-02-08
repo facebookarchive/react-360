@@ -49,7 +49,7 @@ export default class KeyboardEventInput extends EventInput {
   }
 
   _onKeyboardEvent(e: KeyboardEvent) {
-    this._batchedEvents.push({
+    const event = {
       type: this.getEventType(),
       eventType: e.type,
       altKey: e.altKey,
@@ -60,7 +60,20 @@ export default class KeyboardEventInput extends EventInput {
       metaKey: e.metaKey,
       repeat: e.repeat,
       shiftKey: e.shiftKey,
-    });
+    };
+
+    // New event fields
+    if (e.repeat) {
+      event.action = 'repeat';
+    } else if (e.type === 'keydown') {
+      event.action = 'down';
+    } else if (e.type === 'keyup') {
+      event.action = 'up';
+    }
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      event.buttonClass = 'confirm';
+    }
+    this._batchedEvents.push(event);
   }
 
   getEvents(): null | Array<KeyboardInputEvent> {

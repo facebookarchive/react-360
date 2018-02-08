@@ -117,7 +117,14 @@ export default class TouchEventInput extends EventInput {
         shiftKey: e.shiftKey,
         targetTouches: createTouchList((e: any).targetTouches, viewport),
         touches: createTouchList(e.touches, viewport),
+        buttonClass: 'confirm',
       };
+      // New event fields
+      if (e.type === 'touchstart') {
+        touchEvent.action = 'down';
+      } else if (e.type === 'touchend' || e.type === 'touchcancel') {
+        touchEvent.action = 'up';
+      }
       this._batchedEvents.push(touchEvent);
       if (this._immediateListener) {
         this._immediateListener(touchEvent);

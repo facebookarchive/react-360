@@ -83,12 +83,13 @@ export default class MouseEventInput extends EventInput {
   _onMouseEvent(e: MouseEvent) {
     const target = e.currentTarget;
     if (target && target === this._target) {
-      const viewport = typeof target.getBoundingClientRect === 'function'
-        ? target.getBoundingClientRect()
-        : getDocumentBounds();
+      const viewport =
+        typeof target.getBoundingClientRect === 'function'
+          ? target.getBoundingClientRect()
+          : getDocumentBounds();
       const viewportX = (e.clientX - viewport.left) / viewport.width * 2 - 1;
       const viewportY = -((e.clientY - viewport.top) / viewport.height) * 2 + 1;
-      this._batchedEvents.push({
+      const event = {
         type: this.getEventType(),
         eventType: e.type,
         altKey: e.altKey,
@@ -99,7 +100,17 @@ export default class MouseEventInput extends EventInput {
         shiftKey: e.shiftKey,
         viewportX: viewportX,
         viewportY: viewportY,
-      });
+      };
+      // New event fields
+      if (e.type === 'mousedown') {
+        event.action = 'down';
+      } else if (e.type === 'mouseup') {
+        event.action = 'up';
+      }
+      if (e.button === 0) {
+        event.buttonClass = 'confirm';
+      }
+      this._batchedEvents.push(event);
     }
   }
 
