@@ -43,6 +43,34 @@ const getGamepads = (navigator.getGamepads
 const LONG_PRESS_TIME = 500;
 const AXIS_EPSILON = 0.001; // Smallest axis change needed to record a change event
 
+const TOUCH_RE = /Oculus Touch/;
+function getButtonClass(gamepad, button) {
+  if (TOUCH_RE.test(gamepad.id)) {
+    switch (button) {
+      case 1: // index trigger
+      case 3: // primary button
+        return 'confirm';
+      case 4:
+        return 'back';
+    }
+    return null;
+  } else if (gamepad.mapping === 'standard') {
+    switch (button) {
+      case 0:
+        return 'confirm';
+      case 1:
+        return 'back';
+    }
+    return null;
+  }
+  switch (button) {
+    case 0:
+    case 1:
+      return 'confirm';
+  }
+  return null;
+}
+
 export default class GamepadEventInput extends EventInput {
   _previousState: Array<GamepadState>;
 
@@ -81,30 +109,48 @@ export default class GamepadEventInput extends EventInput {
             if (pressed) {
               buttonState.pressed = true;
               buttonState.startTime = now;
-              events.push({
+              const event = {
                 type: this.getEventType(),
                 eventType: 'keydown',
                 button: btn,
                 gamepad: id,
                 repeat: false,
-              });
+                action: 'down',
+              };
+              const buttonClass = getButtonClass(gamepads[id], btn);
+              if (buttonClass) {
+                event.buttonClass = buttonClass;
+              }
+              events.push(event);
             } else {
               buttonState.pressed = false;
-              events.push({
+              const event = {
                 type: this.getEventType(),
                 eventType: 'keyup',
                 button: btn,
                 gamepad: id,
-              });
+                action: 'up',
+              };
+              const buttonClass = getButtonClass(gamepads[id], btn);
+              if (buttonClass) {
+                event.buttonClass = buttonClass;
+              }
+              events.push(event);
             }
           } else if (pressed && now - buttonState.startTime > LONG_PRESS_TIME) {
-            events.push({
+            const event = {
               type: this.getEventType(),
               eventType: 'keydown',
               button: btn,
               gamepad: id,
               repeat: true,
-            });
+              action: 'repeat',
+            };
+            const buttonClass = getButtonClass(gamepads[id], btn);
+            if (buttonClass) {
+              event.buttonClass = buttonClass;
+            }
+            events.push(event);
           }
         }
 
