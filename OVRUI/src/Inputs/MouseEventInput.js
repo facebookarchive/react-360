@@ -89,7 +89,7 @@ export default class MouseEventInput extends EventInput {
           : getDocumentBounds();
       const viewportX = (e.clientX - viewport.left) / viewport.width * 2 - 1;
       const viewportY = -((e.clientY - viewport.top) / viewport.height) * 2 + 1;
-      const event = {
+      const event: Object = {
         type: this.getEventType(),
         eventType: e.type,
         altKey: e.altKey,

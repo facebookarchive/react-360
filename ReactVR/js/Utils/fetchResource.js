@@ -17,7 +17,10 @@ export type FetchResourceOptions = {
  * Promise wrapper around a simple GET request, ideal for fetching external
  * text and binary resources.
  */
-export default function fetchResource(url: string, options: FetchResourceOptions = {}) {
+export default function fetchResource(
+  url: string,
+  options: FetchResourceOptions = {},
+): Promise<any> {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
     req.addEventListener('load', () => {

@@ -67,7 +67,7 @@ export default class VREffect {
     );
   }
 
-  requestPresent() {
+  requestPresent(): Promise<void> {
     if (!this.vrDisplay) {
       return Promise.reject();
     }
@@ -86,7 +86,7 @@ export default class VREffect {
       });
   }
 
-  exitPresent() {
+  exitPresent(): Promise<void> {
     if (!this.vrDisplay) {
       // If there is no display, exiting should be seen as "successful,"
       // since it leaves us in the same expected state

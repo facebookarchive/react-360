@@ -109,7 +109,7 @@ export default class GamepadEventInput extends EventInput {
             if (pressed) {
               buttonState.pressed = true;
               buttonState.startTime = now;
-              const event = {
+              const event: Object = {
                 type: this.getEventType(),
                 eventType: 'keydown',
                 button: btn,
@@ -124,7 +124,7 @@ export default class GamepadEventInput extends EventInput {
               events.push(event);
             } else {
               buttonState.pressed = false;
-              const event = {
+              const event: Object = {
                 type: this.getEventType(),
                 eventType: 'keyup',
                 button: btn,
@@ -138,7 +138,7 @@ export default class GamepadEventInput extends EventInput {
               events.push(event);
             }
           } else if (pressed && now - buttonState.startTime > LONG_PRESS_TIME) {
-            const event = {
+            const event: Object = {
               type: this.getEventType(),
               eventType: 'keydown',
               button: btn,

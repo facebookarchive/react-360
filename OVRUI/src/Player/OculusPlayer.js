@@ -29,7 +29,7 @@ const visibilityEvent = 'hidden' in document ? 'visibilitychange' : 'webkitvisib
  * @return A promise that is resolved if launching the external application is
  *   successful, and rejected if it fails.
  */
-export function attemptOculusPlayer() {
+export function attemptOculusPlayer(): Promise<void> {
   const url = 'ovrweb:' + window.location.toString();
   return new Promise((resolve, reject) => {
     if (isEdge && typeof navigator.msLaunchUri === 'function') {
