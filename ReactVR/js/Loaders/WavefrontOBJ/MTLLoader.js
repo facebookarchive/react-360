@@ -9,13 +9,11 @@
  * @flow
  */
 
-import {readMTLFile} from './MTLParser';
+import type {Material} from 'three';
+import * as THREE from 'three';
 import RefCountCache from '../../Utils/RefCountCache';
 import fetchResource from '../../Utils/fetchResource';
-import * as THREE from 'three';
-
-import type {RawMTL, Texture} from './MTLParser';
-import type {Material} from 'three';
+import {type RawMTL, type Texture, readMTLFile} from './MTLParser';
 
 type MaterialMap = {
   [name: string]: {
@@ -28,12 +26,12 @@ type MaterialMap = {
 // per ReactNativeContext later on
 const mtlStateCache: RefCountCache<MaterialMap> = new RefCountCache(
   // Cleanup method
-  function(url, entry) {
+  (url, entry) => {
     for (const name in entry) {
       entry[name].lit.dispose();
       entry[name].unlit.dispose();
     }
-  }
+  },
 );
 const mtlLoaders: {[path: string]: Promise<MaterialMap>} = {};
 
@@ -54,7 +52,7 @@ function addTextureMap(
   directory: string,
   params: {[key: string]: any},
   type: string,
-  tex: Texture
+  tex: Texture,
 ): void {
   const mapParam = MAP_TO_THREE_NAME[type] || type;
   if (params[mapParam]) {
@@ -64,7 +62,10 @@ function addTextureMap(
   // Load the file, relative to the directory of the MTL file.
   const path = directory + tex.file;
   const scale = new THREE.Vector2(tex.options.scale[0], tex.options.scale[1]);
-  const offset = new THREE.Vector2(tex.options.origin[0], tex.options.origin[1]);
+  const offset = new THREE.Vector2(
+    tex.options.origin[0],
+    tex.options.origin[1],
+  );
   if (type === 'bump') {
     if (tex.options.bumpMultiplier) {
       params.bumpScale = tex.options.bumpMultiplier;
@@ -90,25 +91,42 @@ function addTextureMap(
  * createMaterial takes the intermediate parsed form of a material from a MTL
  * file and constructs a Three.js Material out of it.
  */
-function createMaterial(url: string, raw: RawMTL, forceBasic: boolean = false): Material {
+function createMaterial(
+  url: string,
+  raw: RawMTL,
+  forceBasic: boolean = false,
+): Material {
   const params: {[key: string]: any} = {
     name: raw.name,
   };
   const mtlDirectory = url.substr(0, url.lastIndexOf('/') + 1);
   const isPhong = !forceBasic && raw.illum !== 0 && raw.illum !== 1;
-  const isTranparent = raw.illum === 4 || raw.illum === 6 || raw.illum === 7 || raw.illum === 9;
+  const isTranparent =
+    raw.illum === 4 || raw.illum === 6 || raw.illum === 7 || raw.illum === 9;
   if (raw.specular) {
     // Specular only supported on Phong
     if (isPhong) {
-      params.specular = new THREE.Color(raw.specular[0], raw.specular[1], raw.specular[2]);
+      params.specular = new THREE.Color(
+        raw.specular[0],
+        raw.specular[1],
+        raw.specular[2],
+      );
     }
   }
   if (raw.diffuse) {
-    params.color = new THREE.Color(raw.diffuse[0], raw.diffuse[1], raw.diffuse[2]);
+    params.color = new THREE.Color(
+      raw.diffuse[0],
+      raw.diffuse[1],
+      raw.diffuse[2],
+    );
   }
   if (raw.emissive) {
     if (!forceBasic) {
-      params.emissive = new THREE.Color(raw.emissive[0], raw.emissive[1], raw.emissive[2]);
+      params.emissive = new THREE.Color(
+        raw.emissive[0],
+        raw.emissive[1],
+        raw.emissive[2],
+      );
     }
   }
   if (raw.specularExp) {
@@ -142,8 +160,8 @@ function createMaterial(url: string, raw: RawMTL, forceBasic: boolean = false): 
   const material = forceBasic
     ? new THREE.MeshBasicMaterial(params)
     : raw.illum === 0 || raw.illum === 1
-        ? new THREE.MeshLambertMaterial(params)
-        : new THREE.MeshPhongMaterial(params);
+      ? new THREE.MeshLambertMaterial(params)
+      : new THREE.MeshPhongMaterial(params);
   if (isTranparent || (raw.opacity && raw.opacity < 1.0)) {
     material.transparent = true;
     material.opacity = raw.opacity || 1.0;
@@ -152,7 +170,7 @@ function createMaterial(url: string, raw: RawMTL, forceBasic: boolean = false): 
   return material;
 }
 
-export function fetchAndCacheMTL(mtl: string) {
+export function fetchAndCacheMTL(mtl: string): Promise<MaterialMap> {
   if (mtlStateCache.has(mtl)) {
     mtlStateCache.addReference(mtl);
     return Promise.resolve(mtlStateCache.get(mtl));

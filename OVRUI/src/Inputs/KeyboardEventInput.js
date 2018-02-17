@@ -49,7 +49,7 @@ export default class KeyboardEventInput extends EventInput {
   }
 
   _onKeyboardEvent(e: KeyboardEvent) {
-    const event = {
+    const event: Object = {
       type: this.getEventType(),
       eventType: e.type,
       altKey: e.altKey,

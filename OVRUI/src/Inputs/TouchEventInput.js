@@ -107,7 +107,7 @@ export default class TouchEventInput extends EventInput {
       const viewport = typeof target.getBoundingClientRect === 'function'
         ? target.getBoundingClientRect()
         : getDocumentBounds();
-      const touchEvent = {
+      const touchEvent: Object = {
         type: this.getEventType(),
         eventType: e.type,
         altKey: e.altKey,
