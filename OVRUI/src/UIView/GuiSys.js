@@ -52,7 +52,7 @@ function matrixDistance(matrixA, matrixB) {
   const x = matrixA.elements[12] - matrixB.elements[12];
   const y = matrixA.elements[13] - matrixB.elements[13];
   const z = matrixA.elements[14] - matrixB.elements[14];
-  return Math.sqrt(x * x + y * x + z * z);
+  return Math.sqrt(x * x + y * y + z * z);
 }
 
 function applyUpdates(node, currentOpacity, updateContext, index, clipRect) {
