@@ -187,6 +187,10 @@ export default class Surface {
     return this._renderTarget;
   }
 
+  getNode(): THREE.Object3D {
+    return this._mesh;
+  }
+
   /**
    * Change the pixel dimensions of the surface, recomputing the geometry to
    * maintain the density.

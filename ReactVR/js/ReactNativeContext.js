@@ -9,6 +9,8 @@
  * @flow
  */
 
+/* eslint-disable import/order,no-console */
+
 import AndroidConstants from './Modules/AndroidConstants';
 import AsyncLocalStorage from './Modules/AsyncLocalStorage';
 import ControllerInfo from './Modules/ControllerInfo';
@@ -38,16 +40,16 @@ import * as THREE from 'three';
 import type Bridge from './Bridge/Bridge';
 import type Module from './Modules/Module';
 import type {GuiSys, UIView, UIViewEvent} from 'ovrui';
-import type {Camera, Object3D} from 'three';
+import type {Camera, Object3D, Scene} from 'three';
 import type {CustomView} from './Modules/UIManager';
 
 type Message = [Array<number>, Array<number>, Array<any>];
 
 export type ContextOptions = {
   assetRoot?: string,
+  customViews?: Array<CustomView>,
   enableHotReload?: boolean,
   isLowLatency?: boolean,
-  customViews?: Array<CustomView>,
 };
 
 const ROOT_VIEW_INCREMENT = 10;
@@ -207,8 +209,14 @@ export class ReactNativeContext {
     this.registerModule(this.GlyphTextures);
 
     // Register event listener to Guisys
-    guiSys.eventDispatcher.addEventListener('GuiSysEvent', this._onGuiSysEvent.bind(this));
-    guiSys.eventDispatcher.addEventListener('UIViewEvent', this._onUIViewEvent.bind(this));
+    guiSys.eventDispatcher.addEventListener(
+      'GuiSysEvent',
+      this._onGuiSysEvent.bind(this),
+    );
+    guiSys.eventDispatcher.addEventListener(
+      'UIViewEvent',
+      this._onUIViewEvent.bind(this),
+    );
 
     // register the worker onmessage function
     // messages are not execute at point of recieving
@@ -234,14 +242,16 @@ export class ReactNativeContext {
           cmd: 'moduleConfig',
           moduleConfig: {remoteModuleConfig: describe(this)},
         },
-        replaceHiddenAttributes
-      )
+        replaceHiddenAttributes,
+      ),
     );
 
-    this.bridge.postMessage(JSON.stringify({cmd: 'bundle', bundleName: bundle}));
+    this.bridge.postMessage(
+      JSON.stringify({cmd: 'bundle', bundleName: bundle}),
+    );
     if (this.enableHotReload) {
       const bundleURL = new URL(bundle);
-      console.warn('HotReload on ' + bundle);
+      console.warn(`HotReload on ${bundle}`);
       this.callFunction('HMRClient', 'enable', [
         'vr',
         bundleURL.pathname.toString().substr(1),
@@ -268,7 +278,11 @@ export class ReactNativeContext {
    * @param props - props that is posted to the registered module
    * @return returns the tag of the rootview
    */
-  createRootView(module: string, props: {[prop: string]: any}, container?: SceneGraphNode) {
+  createRootView(
+    module: string,
+    props: {[prop: string]: any},
+    container?: SceneGraphNode | Scene,
+  ) {
     const tag = this.currentRootTag;
     // TODO: Root tags should be sourced from UIManager instead, which
     // is aware of availability.
@@ -279,7 +293,7 @@ export class ReactNativeContext {
         module: 'AppRegistry',
         function: 'runApplication',
         args: [module, {initialProps: props, rootTag: tag}],
-      })
+      }),
     );
     this._moduleForTag[tag] = module;
     if (!container) {
@@ -301,7 +315,7 @@ export class ReactNativeContext {
         module: 'AppRegistry',
         function: 'runApplication',
         args: [this._moduleForTag[tag], {initialProps: props, rootTag: tag}],
-      })
+      }),
     );
   }
 
@@ -325,7 +339,7 @@ export class ReactNativeContext {
         module: 'AppRegistry',
         function: 'unmountApplicationComponentAtRootTag',
         args: [tag],
-      })
+      }),
     );
   }
 
@@ -358,28 +372,40 @@ export class ReactNativeContext {
       case OVRUI.UIViewEventType.FOCUS_LOST:
         {
           const viewTag = event.view ? this.getHitTag(event.view) : undefined;
-          const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
+          const targetTag = event.args.target
+            ? this.getHitTag(event.args.target)
+            : undefined;
           const payload = {
             target: targetTag,
             source: event.args.source,
           };
           if (viewTag) {
             // Dispatch exit event
-            this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topExit', payload]);
+            this.callFunction('RCTEventEmitter', 'receiveEvent', [
+              viewTag,
+              'topExit',
+              payload,
+            ]);
           }
         }
         break;
       case OVRUI.UIViewEventType.FOCUS_GAINED:
         {
           const viewTag = event.view ? this.getHitTag(event.view) : undefined;
-          const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
+          const targetTag = event.args.target
+            ? this.getHitTag(event.args.target)
+            : undefined;
           const payload = {
             target: targetTag,
             source: event.args.source,
           };
           if (viewTag) {
             // Dispatch enter event
-            this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topEnter', payload]);
+            this.callFunction('RCTEventEmitter', 'receiveEvent', [
+              viewTag,
+              'topEnter',
+              payload,
+            ]);
           }
         }
         break;
@@ -398,7 +424,11 @@ export class ReactNativeContext {
     const frameStart = window.performance ? performance.now() : Date.now();
     this.Timing && this.Timing.frame(frameStart);
     // Send current cursor position if the currently-hit view is listening
-    if (this.lastHit && this.lastHit.owner && this.lastHit.owner.receivesMoveEvent) {
+    if (
+      this.lastHit &&
+      this.lastHit.owner &&
+      this.lastHit.owner.receivesMoveEvent
+    ) {
       const intersect = this.guiSys.getLastLocalIntersect();
       if (!intersect) {
         this.lastLocalIntersect = null;
@@ -412,7 +442,11 @@ export class ReactNativeContext {
         ) {
           const viewTag = this.getHitTag(this.lastHit);
           const payload = {offset: intersect};
-          this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topMove', payload]);
+          this.callFunction('RCTEventEmitter', 'receiveEvent', [
+            viewTag,
+            'topMove',
+            payload,
+          ]);
           this.lastLocalIntersect = intersect;
         }
       }
@@ -426,7 +460,7 @@ export class ReactNativeContext {
         for (let i = 0; i < moduleIndex.length; i++) {
           this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
             this.modules[moduleIndex[i]],
-            params[i]
+            params[i],
           );
         }
       }
@@ -469,7 +503,7 @@ export class ReactNativeContext {
     if (camera.parent && camera.parent.uuid !== cameraParent.uuid) {
       console.warn(
         'Camera object already has a parent; ' +
-          "Use of 'transform' property on <Scene> will have no effect."
+          "Use of 'transform' property on <Scene> will have no effect.",
       );
       this._cameraParentFromTag[rootTag] = null;
       return;
@@ -501,7 +535,8 @@ export class ReactNativeContext {
     * @param hit - scene object
     * @returns the tag of the closest view with a tag or undefined if not found
    **/
-  getHitTag(hit: ?UIView) {
+  getHitTag(hitStart: ?UIView) {
+    let hit = hitStart;
     while (hit) {
       if (hit.tag) {
         return hit.tag;
@@ -524,7 +559,7 @@ export class ReactNativeContext {
         module: moduleName,
         function: functionName,
         args: args,
-      })
+      }),
     );
   }
 
@@ -539,7 +574,7 @@ export class ReactNativeContext {
         cmd: 'invoke',
         id: id,
         args: args,
-      })
+      }),
     );
   }
 
@@ -552,7 +587,11 @@ export class ReactNativeContext {
     this.modules.push(module);
   }
 
-  registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
+  registerTextureSource(
+    name: string,
+    source: Element,
+    options: {[key: string]: any} = {},
+  ) {
     this.TextureManager.registerLocalTextureSource(name, source, options);
   }
 }

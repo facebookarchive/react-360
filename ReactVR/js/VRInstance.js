@@ -9,16 +9,16 @@
  * @flow
  */
 
-import {Scene} from 'three';
+import {Scene, type Camera} from 'three';
 import {Player, GuiSys} from 'ovrui';
 import bundleFromLocation from './bundleFromLocation';
 import createRootView from './createRootView';
+import Surface from './Compositor/Surface';
 
 import type Bridge from './Bridge/Bridge';
 import type {RootView} from './createRootView';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
-import type {Camera} from 'three';
 
 type VRInstanceOptions = {
   allowCarmelDeeplink?: boolean,
@@ -46,6 +46,11 @@ type VRInstanceOptions = {
   width?: number,
 };
 
+type Root = {
+  initialProps: Object,
+  name: string,
+};
+
 /**
  * VRInstance represents a mounted React VR application.
  * It contains such core pieces as an OVRUI player, a Three.js scene and camera,
@@ -58,6 +63,7 @@ export default class VRInstance {
   scene: Scene;
 
   _looping: boolean;
+  _defaultSurface: ?Surface;
 
   /**
    * Construct a VRInstance with a specific React VR application.
@@ -84,13 +90,15 @@ export default class VRInstance {
     bundle: string,
     root: string,
     parent: Element | string,
-    options: VRInstanceOptions = {}
+    options: VRInstanceOptions = {},
   ) {
     if (!bundle) {
       throw new Error('Cannot initialize ReactVR without specifying a bundle');
     }
     if (!root) {
-      throw new Error('Cannot initialize ReactVR without specifying the root component');
+      throw new Error(
+        'Cannot initialize ReactVR without specifying the root component',
+      );
     }
 
     // Initialize the scene that will hold our contents
@@ -105,10 +113,14 @@ export default class VRInstance {
       elementOrId: parent,
 
       // Optional Player configuration
-      antialias: options.hasOwnProperty('antialias') ? options.antialias : false,
+      antialias: options.hasOwnProperty('antialias')
+        ? options.antialias
+        : false,
       calculateVerticalFOV: options.calculateVerticalFOV,
       camera: options.camera,
-      canvasAlpha: options.hasOwnProperty('canvasAlpha') ? options.antialias : true,
+      canvasAlpha: options.hasOwnProperty('canvasAlpha')
+        ? options.antialias
+        : true,
       width: options.width,
       height: options.height,
       onEnterVR: () => this._onEnterVR(),
@@ -177,7 +189,11 @@ export default class VRInstance {
         continue;
       }
       const params = subScenes[item];
-      this.player.renderOffscreen(params.scene, params.camera, params.renderTarget);
+      this.player.renderOffscreen(
+        params.scene,
+        params.camera,
+        params.renderTarget,
+      );
     }
     this.player.render(this.scene);
 
@@ -188,12 +204,18 @@ export default class VRInstance {
 
   _onEnterVR() {
     this.rootView.context &&
-      this.rootView.context.callFunction('RCTDeviceEventEmitter', 'emit', ['onEnterVR', []]);
+      this.rootView.context.callFunction('RCTDeviceEventEmitter', 'emit', [
+        'onEnterVR',
+        [],
+      ]);
   }
 
   _onExitVR() {
     this.rootView.context &&
-      this.rootView.context.callFunction('RCTDeviceEventEmitter', 'emit', ['onExitVR', []]);
+      this.rootView.context.callFunction('RCTDeviceEventEmitter', 'emit', [
+        'onExitVR',
+        [],
+      ]);
   }
 
   /**
@@ -218,7 +240,11 @@ export default class VRInstance {
     return this.player.camera;
   }
 
-  registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
+  registerTextureSource(
+    name: string,
+    source: Element,
+    options: {[key: string]: any} = {},
+  ) {
     if (this.rootView && this.rootView.context) {
       this.rootView.context.registerTextureSource(name, source, options);
     }
@@ -228,9 +254,17 @@ export default class VRInstance {
    * Mount a new root component on an existing scenegraph node, returning its
    * unique identifier
    */
-  mountComponent(name: string, initialProps: {[prop: string]: any}, container: SceneGraphNode) {
+  mountComponent(
+    name: string,
+    initialProps: {[prop: string]: any},
+    container: SceneGraphNode,
+  ) {
     if (this.rootView) {
-      const tag = this.rootView.context.createRootView(name, initialProps, container);
+      const tag = this.rootView.context.createRootView(
+        name,
+        initialProps,
+        container,
+      );
       return tag;
     }
     return null;
@@ -243,5 +277,53 @@ export default class VRInstance {
     if (this.rootView) {
       this.rootView.context.destroyRootView(tag);
     }
+  }
+
+  /**
+   * New API for creating a root component, designed for mounting with
+   * renderToSurface or renderToLocation commands.
+   *
+   * For now, it just returns a simple object designed to encapsulate the
+   * information necessary for mounting.
+   */
+  createRoot(name: string, initialProps: Object = {}): Root {
+    return {
+      name,
+      initialProps,
+    };
+  }
+
+  /**
+   * Render a React tree to a 2D Surface. This uses a pixel-based coordinate
+   * system in two dimensions.
+   * Takes a root object returned from the createRoot method, and an instance
+   * of a Surface, returning the unique tag of the React root.
+   */
+  renderToSurface(root: Root, surface: Surface): number | null {
+    if (this.rootView) {
+      this.scene.add(surface.getNode());
+      this.guiSys.registerOffscreenRender(
+        surface.getScene(),
+        surface.getCamera(),
+        surface.getRenderTarget(),
+      );
+      const tag = this.rootView.context.createRootView(
+        root.name,
+        root.initialProps,
+        surface.getScene(),
+      );
+      return tag;
+    }
+    return null;
+  }
+
+  /**
+   * Returns the rendering system's default 2D surface.
+   */
+  getDefaultSurface() {
+    if (!this._defaultSurface) {
+      this._defaultSurface = new Surface(1000, 600);
+    }
+    return this._defaultSurface;
   }
 }

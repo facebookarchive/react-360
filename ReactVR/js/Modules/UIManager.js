@@ -9,6 +9,8 @@
  * @flow
  */
 
+/* eslint-disable import/order,no-console */
+
 import RCTBox from '../Views/Box';
 import RCTCylinder from '../Views/Cylinder';
 import RCTPlane from '../Views/Plane';
@@ -103,7 +105,11 @@ export default class UIManager extends Module {
   /**
    * Construct a UIManager with a React Native Context and an OVRUI GuiSys.
    */
-  constructor(rnctx: ReactNativeContext, guiSys: GuiSys, customViews: Array<CustomView> = []) {
+  constructor(
+    rnctx: ReactNativeContext,
+    guiSys: GuiSys,
+    customViews: Array<CustomView> = [],
+  ) {
     super('UIManager');
     this._rnctx = rnctx;
     this._guiSys = guiSys;
@@ -149,75 +155,83 @@ export default class UIManager extends Module {
     this._rootViews = {};
     this._viewsOfType = {};
     this._layoutAnimation = null;
-    this.registerViewType('RCTView', RCTView.describe(), function() {
+    this.registerViewType('RCTView', RCTView.describe(), () => {
       return new RCTView(guiSys);
     });
-    this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), function() {
+    this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), () => {
       return new RCTLiveEnvCamera(guiSys);
     });
-    this.registerViewType('RCTImageView', RCTImage.describe(), function() {
+    this.registerViewType('RCTImageView', RCTImage.describe(), () => {
       return new RCTImage(guiSys, rnctx);
     });
-    this.registerViewType('Pano', RCTPano.describe(), function() {
+    this.registerViewType('Pano', RCTPano.describe(), () => {
       return new RCTPano(guiSys, rnctx);
     });
-    this.registerViewType('Model', RCTModel.describe(), function() {
+    this.registerViewType('Model', RCTModel.describe(), () => {
       return new RCTModel(guiSys, rnctx);
     });
-    this.registerViewType('Scene', RCTScene.describe(), function() {
+    this.registerViewType('Scene', RCTScene.describe(), () => {
       return new RCTScene(guiSys);
     });
-    this.registerViewType('Sound', RCTSound.describe(), function() {
+    this.registerViewType('Sound', RCTSound.describe(), () => {
       return new RCTSound(guiSys, rnctx);
     });
-    this.registerViewType('RCTText', RCTText.describe(), function() {
+    this.registerViewType('RCTText', RCTText.describe(), () => {
       return new RCTText(guiSys);
     });
-    this.registerViewType('RCTRawText', RCTRawText.describe(), function() {
+    this.registerViewType('RCTRawText', RCTRawText.describe(), () => {
       return new RCTRawText(guiSys);
     });
-    this.registerViewType('Video', RCTVideo.describe(), function() {
+    this.registerViewType('Video', RCTVideo.describe(), () => {
       return new RCTVideo(guiSys, rnctx);
     });
-    this.registerViewType('VideoPano', RCTVideoPano.describe(), function() {
+    this.registerViewType('VideoPano', RCTVideoPano.describe(), () => {
       return new RCTVideoPano(guiSys, rnctx);
     });
-    this.registerViewType('AmbientLight', RCTAmbientLight.describe(), function() {
+    this.registerViewType('AmbientLight', RCTAmbientLight.describe(), () => {
       return new RCTAmbientLight(guiSys);
     });
-    this.registerViewType('DirectionalLight', RCTDirectionalLight.describe(), function() {
-      return new RCTDirectionalLight(guiSys);
-    });
-    this.registerViewType('PointLight', RCTPointLight.describe(), function() {
+    this.registerViewType(
+      'DirectionalLight',
+      RCTDirectionalLight.describe(),
+      () => {
+        return new RCTDirectionalLight(guiSys);
+      },
+    );
+    this.registerViewType('PointLight', RCTPointLight.describe(), () => {
       return new RCTPointLight(guiSys);
     });
-    this.registerViewType('SpotLight', RCTSpotLight.describe(), function() {
+    this.registerViewType('SpotLight', RCTSpotLight.describe(), () => {
       return new RCTSpotLight(guiSys);
     });
-    this.registerViewType('CylindricalPanel', RCTCylindricalPanel.describe(), function() {
-      return new RCTCylindricalPanel(guiSys);
-    });
-    this.registerViewType('QuadPanel', RCTQuadPanel.describe(), function() {
+    this.registerViewType(
+      'CylindricalPanel',
+      RCTCylindricalPanel.describe(),
+      () => {
+        return new RCTCylindricalPanel(guiSys);
+      },
+    );
+    this.registerViewType('QuadPanel', RCTQuadPanel.describe(), () => {
       return new RCTQuadPanel(guiSys);
     });
-    this.registerViewType('Box', RCTBox.describe(), function() {
+    this.registerViewType('Box', RCTBox.describe(), () => {
       return new RCTBox(guiSys, rnctx);
     });
-    this.registerViewType('Cylinder', RCTCylinder.describe(), function() {
+    this.registerViewType('Cylinder', RCTCylinder.describe(), () => {
       return new RCTCylinder(guiSys, rnctx);
     });
-    this.registerViewType('Plane', RCTPlane.describe(), function() {
+    this.registerViewType('Plane', RCTPlane.describe(), () => {
       return new RCTPlane(guiSys, rnctx);
     });
-    this.registerViewType('Sphere', RCTSphere.describe(), function() {
+    this.registerViewType('Sphere', RCTSphere.describe(), () => {
       return new RCTSphere(guiSys, rnctx);
     });
-    this.registerViewType('Prefetch', RCTPrefetch.describe(), function() {
+    this.registerViewType('Prefetch', RCTPrefetch.describe(), () => {
       return new RCTPrefetch(guiSys);
     });
 
     customViews.forEach(({name, view}) => {
-      this.registerViewType(name, view.describe(), function() {
+      this.registerViewType(name, view.describe(), () => {
         return new view(guiSys);
       });
     });
@@ -292,7 +306,7 @@ export default class UIManager extends Module {
     moveTo: ?Array<number>,
     addChildTags: Array<number>,
     addAtIndices: Array<number>,
-    removeFrom: Array<number>
+    removeFrom: Array<number>,
   ) {
     const cssNodeToManage = this._views[String(tag)];
     if (!cssNodeToManage) {
@@ -354,10 +368,10 @@ export default class UIManager extends Module {
     // 3) Iterate the views being added by index low to high and add them. Like the view removal,
     //    iteration direction is important to preserve the correct index.
 
-    viewsToAdd.sort(function(a, b) {
+    viewsToAdd.sort((a, b) => {
       return a.index - b.index;
     });
-    indicesToRemove.sort(function(a, b) {
+    indicesToRemove.sort((a, b) => {
       return a - b;
     });
 
@@ -388,7 +402,11 @@ export default class UIManager extends Module {
    * @param view - description of the view that includes the properties that it supports
    * @param viewCreator - function that returns a created view
    */
-  registerViewType(name: string, view: ViewDescription, viewCreator: () => RCTBaseView) {
+  registerViewType(
+    name: string,
+    view: ViewDescription,
+    viewCreator: () => RCTBaseView,
+  ) {
     // Flow doesn't like computed properties on classes
     (this: any)[name] = view;
     this._viewCreator[name] = viewCreator;
@@ -411,9 +429,9 @@ export default class UIManager extends Module {
         view.props[a] = attr[a];
       } else {
         /* $FlowFixMe */
-        if (typeof view['_' + a] === 'function') {
+        if (typeof view[`_${a}`] === 'function') {
           /* $FlowFixMe */
-          view['_' + a](attr[a]);
+          view[`_${a}`](attr[a]);
         } else {
           view.style[a] = attr[a];
         }
@@ -459,7 +477,7 @@ export default class UIManager extends Module {
    * root view tags IDs are always (multiples of ten + one)
    * @param tag - react tag to use
    */
-  createRootView(tag: number, container?: SceneGraphNode) {
+  createRootView(tag: number, container?: SceneGraphNode | THREE.Scene) {
     // create a View with defaults
     this._rootViews[String(tag)] = this.createView(tag, 'RCTView', tag, {});
     this._guiSys.add(this._rootViews[String(tag)].view, container);
@@ -510,7 +528,7 @@ export default class UIManager extends Module {
       null,
       [newReactTag],
       [indexOfView],
-      [indexOfView]
+      [indexOfView],
     );
   }
 
@@ -582,7 +600,11 @@ export default class UIManager extends Module {
       // Called recursively to layout subtrees of flexbox tree. Uses node.style.
       const rootView = this._rootViews[tag];
       // use css-layout flex box to apply new flow
-      rootView.YGNode.calculateLayout(Yoga.UNDEFINED, Yoga.UNDEFINED, Yoga.DIRECTION_LTR);
+      rootView.YGNode.calculateLayout(
+        Yoga.UNDEFINED,
+        Yoga.UNDEFINED,
+        Yoga.DIRECTION_LTR,
+      );
       // present the layout to the view implementations from root to child
       this.presentLayout(rootView);
     }
@@ -594,18 +616,19 @@ export default class UIManager extends Module {
    * @param rootTag - root view tag to look for Scene under
    */
   getSceneCameraTransform(rootTag: number) {
-    const scenes = this._viewsOfType['Scene'];
-    if (!scenes || Object.keys(scenes).length === 0) {
+    const sceneViews = this._viewsOfType['Scene'];
+    if (!sceneViews || Object.keys(sceneViews).length === 0) {
       return null;
     }
-    const scene = (function(scenes, rootTag) {
+    const scene = (function(scenes: any) {
       for (const tag in scenes) {
         const item = scenes[tag];
         if (item.rootTag === rootTag) {
           return item;
         }
       }
-    })(scenes, rootTag);
+      return null;
+    })(sceneViews);
     return scene && scene.style && scene.style.transform;
   }
 
@@ -633,7 +656,7 @@ export default class UIManager extends Module {
     fontSize: number,
     width: number,
     maxLineCount: number,
-    callbackID: number
+    callbackID: number,
   ) {
     const wordWrapped = OVRUI.wrapLines(
       this._guiSys.font,
@@ -641,7 +664,7 @@ export default class UIManager extends Module {
       fontSize,
       width,
       undefined,
-      maxLineCount
+      maxLineCount,
     );
     const dim = OVRUI.measureText(this._guiSys.font, wordWrapped, fontSize);
     this._rnctx.invokeCallback(callbackID, [dim.maxHeight]);
@@ -676,9 +699,9 @@ export default class UIManager extends Module {
           bounds.max.z - bounds.min.z,
           1,
           1,
-          1
+          1,
         ),
-        new THREE.MeshBasicMaterial({wireframe: true, color: 0xe44dd9})
+        new THREE.MeshBasicMaterial({wireframe: true, color: 0xe44dd9}),
       );
       (boundViz: any).__REACT_VR_BOUNDING = true;
       uiView.add(boundViz);
@@ -706,9 +729,11 @@ export default class UIManager extends Module {
     const h = view.YGNode.getComputedHeight();
     while (view) {
       x +=
-        view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+        view.YGNode.getComputedLeft() -
+        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
       y +=
-        view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+        view.YGNode.getComputedTop() -
+        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
     // [x, y, w, h, left, top]
@@ -732,9 +757,11 @@ export default class UIManager extends Module {
     const h = view.YGNode.getComputedHeight();
     while (view) {
       x +=
-        view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+        view.YGNode.getComputedLeft() -
+        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
       y +=
-        view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+        view.YGNode.getComputedTop() -
+        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
     this._rnctx.invokeCallback(callback, [x, y, w, h]);
@@ -754,7 +781,7 @@ export default class UIManager extends Module {
     reactTag: number,
     ancestorTag: number,
     errorCallback: number,
-    successCallback: number
+    successCallback: number,
   ) {
     let view = this._views[String(reactTag)];
     if (!view) {
@@ -767,9 +794,11 @@ export default class UIManager extends Module {
     const h = view.YGNode.getComputedHeight();
     while (view && view.tag !== ancestorTag) {
       x +=
-        view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+        view.YGNode.getComputedLeft() -
+        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
       y +=
-        view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+        view.YGNode.getComputedTop() -
+        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
       view = view.getParent();
     }
     this._rnctx.invokeCallback(successCallback, [x, y, w, h]);
@@ -782,16 +811,22 @@ export default class UIManager extends Module {
    * window which can cause unexpected results when measuring relative to things like ScrollViews
    * that can have offset content on the screen.
    */
-  measureLayoutRelativeToParent(reactTag: number, errorCallback: number, successCallback: number) {
+  measureLayoutRelativeToParent(
+    reactTag: number,
+    errorCallback: number,
+    successCallback: number,
+  ) {
     const view = this._views[String(reactTag)];
     if (!view) {
       this._rnctx.invokeCallback(successCallback, []);
       return;
     }
     const x =
-      view.YGNode.getComputedLeft() - view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
+      view.YGNode.getComputedLeft() -
+      view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
     const y =
-      view.YGNode.getComputedTop() - view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
+      view.YGNode.getComputedTop() -
+      view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
     const w = view.YGNode.getComputedWidth();
     const h = view.YGNode.getComputedHeight();
     this._rnctx.invokeCallback(successCallback, [x, y, w, h]);
@@ -819,17 +854,21 @@ export default class UIManager extends Module {
    * @param commandId - the command id for the native view to invoke different functions
    * @param commandArgs - the arguments of the command
    */
-  dispatchViewManagerCommand(reactTag: number, commandId: number, commandArgs: Array<any>) {
+  dispatchViewManagerCommand(
+    reactTag: number,
+    commandId: number,
+    commandArgs: Array<any>,
+  ) {
     const view = this._views[String(reactTag)];
     if (!view) {
       console.warn(
-        `UIManager.dispatchViewManagerCommand: dispatching command on a nonexistent view: ${reactTag}`
+        `UIManager.dispatchViewManagerCommand: dispatching command on a nonexistent view: ${reactTag}`,
       );
       return;
     }
     view.receiveCommand(commandId, commandArgs);
   }
 
-  //TODO:
-  //findSubviewIn
+  // TODO:
+  // findSubviewIn
 }
