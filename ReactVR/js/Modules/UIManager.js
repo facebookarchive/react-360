@@ -96,7 +96,7 @@ export default class UIManager extends Module {
   };
   _views: {[tag: string]: RCTBaseView};
   _viewTypes: {[tag: string]: string};
-  _viewCreator: {[name: string]: () => RCTBaseView};
+  _viewCreator: {[name: string]: (...any) => RCTBaseView};
   _rootViews: {[tag: string]: RCTBaseView};
   _viewsOfType: {[name: string]: {[tag: string]: RCTBaseView}};
   _layoutAnimation: any;
@@ -176,8 +176,8 @@ export default class UIManager extends Module {
     this.registerViewType('Sound', RCTSound.describe(), () => {
       return new RCTSound(guiSys, rnctx);
     });
-    this.registerViewType('RCTText', RCTText.describe(), () => {
-      return new RCTText(guiSys);
+    this.registerViewType('RCTText', RCTText.describe(), (options = {}) => {
+      return new RCTText(guiSys, rnctx, !!options.inSurfaceContext);
     });
     this.registerViewType('RCTRawText', RCTRawText.describe(), () => {
       return new RCTRawText(guiSys);
@@ -245,7 +245,9 @@ export default class UIManager extends Module {
    * @param attr - object containing attributes to set
    */
   createView(tag: number, type: string, rootTag: number, attr: Attributes) {
-    const newView = this._viewCreator[type]();
+    const rootView = this._rootViews[String(rootTag)];
+    const inSurfaceContext = !!(rootView && rootView.inSurfaceContext);
+    const newView = this._viewCreator[type]({inSurfaceContext});
     this._views[String(tag)] = newView;
     newView.UIManager = this;
     newView.tag = tag;
@@ -477,10 +479,18 @@ export default class UIManager extends Module {
    * root view tags IDs are always (multiples of ten + one)
    * @param tag - react tag to use
    */
-  createRootView(tag: number, container?: SceneGraphNode | THREE.Scene) {
+  createRootView(
+    tag: number,
+    container?: SceneGraphNode | THREE.Scene,
+    inSurfaceContext?: boolean,
+  ) {
     // create a View with defaults
-    this._rootViews[String(tag)] = this.createView(tag, 'RCTView', tag, {});
-    this._guiSys.add(this._rootViews[String(tag)].view, container);
+    const view = this.createView(tag, 'RCTView', tag, {});
+    if (inSurfaceContext) {
+      view.inSurfaceContext = true;
+    }
+    this._rootViews[String(tag)] = view;
+    this._guiSys.add(view.view, container);
   }
 
   /**
@@ -616,7 +626,7 @@ export default class UIManager extends Module {
    * @param rootTag - root view tag to look for Scene under
    */
   getSceneCameraTransform(rootTag: number) {
-    const sceneViews = this._viewsOfType['Scene'];
+    const sceneViews = this._viewsOfType.Scene;
     if (!sceneViews || Object.keys(sceneViews).length === 0) {
       return null;
     }
@@ -637,7 +647,7 @@ export default class UIManager extends Module {
    * @param rootTag - root view tag to look for Scene under
    */
   getLayers() {
-    const CylindricalPanels = this._viewsOfType['CylindricalPanel'];
+    const CylindricalPanels = this._viewsOfType.CylindricalPanel;
     return CylindricalPanels;
   }
 

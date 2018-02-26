@@ -15,6 +15,8 @@
  * @flow
  */
 
+/* eslint-disable */
+
 import RCTBaseView from './BaseView';
 import merge from '../Utils/merge';
 import * as OVRUI from 'ovrui';
@@ -64,12 +66,13 @@ export default class RCTText extends RCTBaseView {
   /**
    * constructor: allocates the required resources and sets defaults
    */
-  constructor(guiSys: GuiSys) {
+  constructor(guiSys: GuiSys, rnctx: any, inSurfaceContext: boolean) {
     super();
     this.view = new OVRUI.UIView(guiSys);
     this.view.clippingEnabled = true;
     this.guiSys = guiSys;
     this.isTextNode = true;
+    this.inSurfaceContext = inSurfaceContext;
     this._textDirty = true;
     this._visualTextDirty = true;
     this._fontBorderSize = 0;
@@ -151,7 +154,7 @@ export default class RCTText extends RCTBaseView {
       ({
         set: value => {
           if (value === null) {
-            value = 0.1;
+            value = this.inSurfaceContext ? 20 : 0.1;
           }
           this.view.setTextSize(value);
           this._fontSize = value;
@@ -226,7 +229,7 @@ export default class RCTText extends RCTBaseView {
     );
     // defaults
     this.style.fontWeight = '200';
-    this.style.fontSize = 0.1;
+    this.style.fontSize = this.inSurfaceContext ? 20 : 0.1;
     this.style.textAlign = 'auto';
     this.style.textAlignVertical = 'auto';
     this.props.numberOfLines = 0;

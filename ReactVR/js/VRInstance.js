@@ -311,6 +311,7 @@ export default class VRInstance {
         root.name,
         root.initialProps,
         surface.getScene(),
+        true,
       );
       return tag;
     }

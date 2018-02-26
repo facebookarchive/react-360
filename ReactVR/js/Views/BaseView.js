@@ -15,6 +15,8 @@
  * @flow
  */
 
+/* eslint-disable */
+
 import isPositive from '../Utils/isPositive';
 import * as Yoga from '../Utils/Yoga.bundle';
 import UIManager from '../Modules/UIManager';
@@ -114,6 +116,7 @@ export default class RCTBaseView {
   tag: number;
   rootTag: number;
   interactableCount: number;
+  inSurfaceContext: boolean;
   mouseInteractableCount: number;
   YGNode: any;
   UIManager: UIManager;
@@ -146,6 +149,7 @@ export default class RCTBaseView {
       layoutOrigin: [0, 0],
     };
     this.interactableCount = 0;
+    this.inSurfaceContext = false;
     this.mouseInteractableCount = 0;
     this.isDirty = true;
     this.receivesMoveEvent = false;

@@ -282,6 +282,7 @@ export class ReactNativeContext {
     module: string,
     props: {[prop: string]: any},
     container?: SceneGraphNode | Scene,
+    inSurfaceContext?: boolean,
   ) {
     const tag = this.currentRootTag;
     // TODO: Root tags should be sourced from UIManager instead, which
@@ -299,7 +300,7 @@ export class ReactNativeContext {
     if (!container) {
       this._cameraParentFromTag[tag] = new THREE.Object3D();
     }
-    this.UIManager.createRootView(tag, container);
+    this.UIManager.createRootView(tag, container, inSurfaceContext);
     return tag;
   }
 
