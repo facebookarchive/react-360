@@ -30,7 +30,8 @@
     "__fbBatchedBridgeConfig": false,
     "Class": false,
     "SceneGraphNode": false,
-    "VRDisplay": false
+    "VRDisplay": false,
+    "VRFrameData": false
   },
 
   "rules": {

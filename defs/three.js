@@ -67,13 +67,19 @@ declare module 'three' {
     constructor(number, number, number): SphereBufferGeometry;
   }
 
+  declare class SphereGeometry extends Geometry {
+    constructor(number, number, number): SphereGeometry;
+  }
+
   declare class Camera extends Object3D {
     aspect: number;
     bottom: number;
     far: number;
     fov: number;
     left: number;
+    matrixWorldInverse: Matrix4;
     near: number;
+    projectionMatrix: Matrix4;
     right: number;
     top: number;
 
@@ -112,6 +118,7 @@ declare module 'three' {
     elementsNeedUpdate: boolean;
 
     dispose(): void;
+    scale(number, number, number): this;
   }
 
   declare class Group extends Object3D {
@@ -136,7 +143,7 @@ declare module 'three' {
 
   declare class Matrix4 {
     decompose(Vector3, Quaternion, Vector3): this;
-    fromArray(Array<number>): void;
+    fromArray(Array<number> | $TypedArray): void;
     getInverse(matrix: Matrix4): Matrix4;
   }
 
@@ -168,21 +175,6 @@ declare module 'three' {
     constructor(multi: Array<any>): MultiMaterial;
   }
 
-  declare class Ray {
-    copy(ray: Ray): Ray;
-    applyMatrix4(matrix: Matrix4): void;
-    intersectSphere(sphere: Sphere, intersectionPoint: Vector3): Vector3;
-  }
-
-  declare class Sphere {
-    constructor(center: Vector3, radius: number): Sphere;
-  }
-
-  declare class ShaderMaterial extends Material {
-    constructor(): ShaderMaterial;
-    uniforms: any;
-  }
-
   declare class Object3D {
     children: Array<Object3D>;
     matrixAutoUpdate: boolean;
@@ -201,6 +193,11 @@ declare module 'three' {
 
   declare class OrthographicCamera extends Camera {}
 
+  declare class PerspectiveCamera extends Camera {
+    constructor(): PerspectiveCamera;
+    constructor(number, number, number, number): PerspectiveCamera;
+  }
+
   declare class Quaternion {
     x: number;
     y: number;
@@ -216,6 +213,12 @@ declare module 'three' {
     setFromEuler(Euler): this;
   }
 
+  declare class Ray {
+    copy(ray: Ray): Ray;
+    applyMatrix4(matrix: Matrix4): void;
+    intersectSphere(sphere: Sphere, intersectionPoint: Vector3): Vector3;
+  }
+
   declare class Scene extends Object3D {
     autoUpdate: boolean;
     background: Color | Texture | null;
@@ -223,6 +226,15 @@ declare module 'three' {
     backgroundRight: Color | Texture | null;
     scale: Vector3;
     constructor(): Scene;
+  }
+
+  declare class Sphere {
+    constructor(center: Vector3, radius: number): Sphere;
+  }
+
+  declare class ShaderMaterial extends Material {
+    constructor(): ShaderMaterial;
+    uniforms: any;
   }
 
   declare class Texture {
@@ -281,7 +293,7 @@ declare module 'three' {
   }
 
   declare class WebGLRenderer {
-    domElement: Element;
+    domElement: HTMLCanvasElement;
     localClippingEnabled: boolean;
     sortObjects: boolean;
     constructor(): this;
@@ -292,7 +304,10 @@ declare module 'three' {
     setClearColor(number | string | Color, ?number): this;
     setPixelRatio(number): this;
     setRenderTarget(e: ?Element): this;
+    setScissor(number, number, number, number): this;
+    setScissorTest(boolean): this;
     setSize(number, number, ?boolean): this;
+    setViewport(number, number, number, number): this;
   }
 
   declare class WebGLRenderTarget {
