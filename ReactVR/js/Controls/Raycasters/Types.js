@@ -9,11 +9,11 @@
  * @flow
  */
 
-export type Quaternion = [number, number, number, number];
+import {type Ray, type Vec3} from '../Types';
 
-export type Vec3 = [number, number, number];
-
-export type Ray = {
-  direction: [number, number, number],
-  origin: [number, number, number],
-};
+export interface Raycaster {
+  fillDirection(direction: Ray): boolean;
+  fillOrigin(origin: Vec3): boolean;
+  getMaxLength(): number;
+  getType(): string;
+}
