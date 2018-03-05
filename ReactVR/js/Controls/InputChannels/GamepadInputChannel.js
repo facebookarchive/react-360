@@ -27,6 +27,22 @@ const getGamepads = (navigator.getGamepads
 
 const LONG_PRESS_TIME = 500;
 
+// Touch controller buttons: thumbstick, trigger, grip, A/X, B/Y
+const MAPPING_SHARED_TOUCH = [
+  undefined,
+  'confirm',
+  undefined,
+  'confirm',
+  'back',
+];
+// MS Mixed Reality controller buttons: thumbstick, trigger, grip, menu, trackpad
+const MAPPING_SHARED_MSMR = [
+  undefined,
+  'confirm',
+  undefined,
+  undefined,
+  'confirm',
+];
 const WELL_KNOWN_MAPPINGS = {
   // Gear VR HMD Touchpad
   'Gear VR Touchpad': ['confirm'],
@@ -34,11 +50,14 @@ const WELL_KNOWN_MAPPINGS = {
   'Gear VR Controller': ['confirm', 'confirm'],
   // Daydream Controller
   'Daydream Controller': ['confirm'],
-  // Oculus Touch mapping
-  'Oculus Touch (Left)': [undefined, 'confirm', undefined, 'confirm', 'back'],
-  'Oculus Touch (Right)': [undefined, 'confirm', undefined, 'confirm', 'back'],
+  // Oculus Touch
+  'Oculus Touch (Left)': MAPPING_SHARED_TOUCH,
+  'Oculus Touch (Right)': MAPPING_SHARED_TOUCH,
+  // Standard MS Mixed Reality
+  'Spatial Controller (Spatial Interaction Source) 045E-065B': MAPPING_SHARED_MSMR,
+  // Samsung Odyssey
+  'Spatial Controller (Spatial Interaction Source) 045E-065D': MAPPING_SHARED_MSMR,
   // TODO: Vive Wand mapping
-  // TODO: Microsoft Mixed Reality Controller mapping
 };
 
 export const STANDARD_MAPPING = [
