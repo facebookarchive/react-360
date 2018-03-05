@@ -7,6 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+/* eslint-disable */
+
 /**
  * RCTPano: runtime implementation of the <Pano source={{uri:URL}}>
  * creates a 1000 m radius globe that as a child of the view
@@ -16,6 +18,7 @@
  * @extends RCTBaseView
  */
 
+import StereoBasicTextureMaterial from '../Compositor/Environment/StereoBasicTextureMaterial';
 import RCTBaseView from './BaseView';
 import merge from '../Utils/merge';
 import StereoOffsetRepeats from '../Utils/StereoOffsetRepeats';
@@ -88,7 +91,7 @@ export default class RCTPano extends RCTBaseView {
     this._styleOpacity = 1.0;
     this._sphereGeometry = sphereGeometry;
     this._cubeGeometry = cubeGeometry;
-    this._material = new OVRUI.StereoBasicTextureMaterial({
+    this._material = new StereoBasicTextureMaterial({
       color: 'white',
       side: THREE.DoubleSide,
     });

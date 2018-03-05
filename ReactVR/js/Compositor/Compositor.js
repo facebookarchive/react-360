@@ -10,7 +10,11 @@
  */
 
 import * as THREE from 'three';
+import Environment, {type PanoOptions} from './Environment/Environment';
 import Surface from './Surface';
+
+const LEFT = 'left';
+const RIGHT = 'right';
 
 const leftCamera = new THREE.PerspectiveCamera();
 leftCamera.matrixAutoUpdate = false;
@@ -21,7 +25,7 @@ export default class Compositor {
   _camera: THREE.Camera;
   _canvas: HTMLCanvasElement;
   _defaultSurface: ?Surface;
-  _environmentMesh: THREE.Mesh;
+  _environment: Environment;
   _frame: HTMLElement;
   _isCursorVisible: boolean;
   _renderer: THREE.WebGLRenderer;
@@ -47,19 +51,16 @@ export default class Compositor {
     frame.appendChild(this._renderer.domElement);
     this._scene = scene;
 
-    // Temporary mesh elements until global enviroment pano is set up
-    const sphereGeom = new THREE.SphereGeometry(1000, 50, 50);
-    sphereGeom.scale(-1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({
-      map: new THREE.TextureLoader().load('chess-world.jpg'),
-    });
-    this._environmentMesh = new THREE.Mesh(sphereGeom, material);
-
-    scene.add(this._environmentMesh);
+    this._environment = new Environment();
+    scene.add(this._environment.getPanoNode());
   }
 
   setCursorVisibility(vis: boolean) {
     this._isCursorVisible = vis;
+  }
+
+  setBackground(src: string, options: PanoOptions = {}) {
+    this._environment.setSource(src, options);
   }
 
   isCursorVisible(): boolean {
@@ -95,7 +96,12 @@ export default class Compositor {
     this._renderer.setSize(width, height, false);
   }
 
+  prepareForRender(eye: ?string) {
+    this._environment.prepareForRender(eye);
+  }
+
   render(position: Array<number>, quat: Array<number>) {
+    this.prepareForRender(null);
     this._camera.position.set(position[0], position[1], position[2]);
     this._camera.quaternion.set(quat[0], quat[1], quat[2], quat[3]);
 
@@ -125,12 +131,14 @@ export default class Compositor {
     const w = 0.5 * size.width;
     const h = size.height;
 
+    this.prepareForRender(LEFT);
     this._renderer.setViewport(x, y, w, h);
     this._renderer.setScissor(x, y, w, h);
     this._renderer.render(this._scene, leftCamera);
 
     x = w;
 
+    this.prepareForRender(RIGHT);
     this._renderer.setViewport(x, y, w, h);
     this._renderer.setScissor(x, y, w, h);
     this._renderer.render(this._scene, rightCamera);

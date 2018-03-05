@@ -69,6 +69,7 @@ declare module 'three' {
 
   declare class SphereGeometry extends Geometry {
     constructor(number, number, number): SphereGeometry;
+    constructor(number, number, number, ?number, ?number, ?number): SphereGeometry;
   }
 
   declare class Camera extends Object3D {
@@ -93,6 +94,7 @@ declare module 'three' {
   declare class Color {
     constructor(): this;
     constructor(number, number, number): this;
+    constructor(Color): this;
     setHex(number): void;
     set(number): void;
   }
@@ -233,8 +235,9 @@ declare module 'three' {
   }
 
   declare class ShaderMaterial extends Material {
-    constructor(): ShaderMaterial;
+    constructor(?Object): ShaderMaterial;
     uniforms: any;
+    copy(any): any;
   }
 
   declare class Texture {
@@ -262,6 +265,10 @@ declare module 'three' {
     ): any;
     setCrossOrigin(origin: 'anonymous' | 'use-credentials'): void;
   }
+
+  declare var UniformsUtils: {
+    merge(...any): any;
+  };
 
   declare class Vector2 {
     constructor(x: number, y: number): Vector2;
