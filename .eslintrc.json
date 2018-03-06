@@ -28,7 +28,10 @@
     "__DEV__": true,
     "__dirname": false,
     "__fbBatchedBridgeConfig": false,
-    "VRDisplay": false
+    "Class": false,
+    "SceneGraphNode": false,
+    "VRDisplay": false,
+    "VRFrameData": false
   },
 
   "rules": {
