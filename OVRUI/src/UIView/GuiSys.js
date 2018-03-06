@@ -47,6 +47,8 @@ let frameUpdateUID = 0;
 
 // Preallocate, to avoid rebuilding each frame
 const raycaster = new THREE.Raycaster();
+const rayCameraPos = new THREE.Vector3();
+const rayCameraQuat = new THREE.Quaternion();
 
 function matrixDistance(matrixA, matrixB) {
   const x = matrixA.elements[12] - matrixB.elements[12];
@@ -324,94 +326,115 @@ export default class GuiSys {
         }
         r++;
       }
-      if (origin && direction) {
-        let firstHit = null;
-        let firstAlmostHit = null;
-        const cameraPosition = camera.getWorldPosition();
-        raycaster.ray.origin.set(
-          cameraPosition.x + origin[0],
-          cameraPosition.y + origin[1],
-          cameraPosition.z + origin[2]
-        );
-        raycaster.ray.direction.fromArray(direction);
-        raycaster.ray.direction.normalize();
-        raycaster.ray.direction.applyQuaternion(camera.getWorldQuaternion());
-        raycaster.far = maxLength;
-        const rotatedDirection = [
-          raycaster.ray.direction.x,
-          raycaster.ray.direction.y,
-          raycaster.ray.direction.z,
-        ];
-        const hits = raycaster.intersectObject(this.root, true);
-        for (let i = 0; i < hits.length; i++) {
-          let hit = hits[i];
-          if (hit.uv && hit.object && hit.object.subScene) {
-            const distanceToSubscene = hit.distance;
-            const scene = hit.object.subScene;
-            raycaster.ray.origin.set(
-              scene._rttWidth * hit.uv.x,
-              scene._rttHeight * (1 - hit.uv.y),
-              0.1
-            );
-            raycaster.ray.direction.set(0, 0, -1);
-            const subHits = [];
-            intersectObject(scene, raycaster, subHits);
-            if (subHits.length === 0) {
-              continue;
-            }
-            hit = subHits[subHits.length - 1];
-            hit.distance = distanceToSubscene;
-          }
-          if (!firstHit && !hit.isAlmostHit) {
-            firstHit = hit;
-          }
-          if (!firstAlmostHit && hit.isAlmostHit) {
-            firstAlmostHit = hit;
-          }
-        }
-
-        const source = caster.getType();
-        if (firstHit) {
-          this.updateLastHit(firstHit.object, source);
-          if (firstHit.uv) {
-            this._cursor.lastLocalX = firstHit.uv.x;
-            this._cursor.lastLocalY = firstHit.uv.y;
-          }
-          // Always update distance since object could be moving
-          this._cursor.intersectDistance = firstHit.distance;
-        } else {
-          this.updateLastHit(null, source);
-          this._cursor.lastLocalX = null;
-          this._cursor.lastLocalY = null;
-        }
-
-        if (this.cursorVisibility === 'auto') {
-          // Set lastAlmostHit if firstHit not found or isn't interactable.
-          // For example <Pano> generates a hit but usually isn't interactive.
-          if (firstAlmostHit && !(firstHit && firstHit.object.isInteractable)) {
-            this._cursor.lastAlmostHit = firstAlmostHit.object;
-            this._cursor.intersectDistance = firstAlmostHit.distance;
-          } else {
-            this._cursor.lastAlmostHit = null;
-          }
-        }
-
-        this._cursor.rayOrigin = origin;
-        this._cursor.rayDirection = rotatedDirection;
-        this._cursor.drawsCursor = caster.drawsCursor();
-      } else {
-        this._cursor.lastHit = null;
-        this._cursor.source = null;
-        this._cursor.drawsCursor = false;
-        this._cursor.rayOrigin = null;
-        this._cursor.rayDirection = null;
-      }
+      this._processRayData(
+        camera.getWorldPosition(),
+        camera.getWorldQuaternion(),
+        origin,
+        direction,
+        maxLength,
+        caster ? caster.getType() : null,
+        caster ? caster.drawsCursor() : null
+      );
     }
 
     const renderTarget = renderer ? renderer.domElement : null;
     this._domElement = renderTarget;
     this._fireInputEvents(renderTarget);
     this._updateMouseCursorStyle(renderTarget);
+  }
+
+  _processRayData(worldPosition, worldQuat, localPosition, localDirection, maxLength, source, drawsCursor) {
+    if (localPosition && localDirection) {
+      // initialize preallocated data components from Three.js objects or raw arrays
+      if (worldPosition instanceof THREE.Vector3) {
+        rayCameraPos.copy(worldPosition);
+      } else {
+        rayCameraPos.set(worldPosition[0], worldPosition[1], worldPosition[2]);
+      }
+      if (worldQuat instanceof THREE.Quaternion) {
+        rayCameraQuat.copy(worldQuat);
+      } else {
+        rayCameraQuat.set(worldQuat[0], worldQuat[1], worldQuat[2], worldQuat[3]);
+      }
+      let firstHit = null;
+      let firstAlmostHit = null;
+      raycaster.ray.origin.set(
+        rayCameraPos.x + localPosition[0],
+        rayCameraPos.y + localPosition[1],
+        rayCameraPos.z + localPosition[2]
+      );
+      raycaster.ray.direction.fromArray(localDirection);
+      raycaster.ray.direction.normalize();
+      raycaster.ray.direction.applyQuaternion(rayCameraQuat);
+      raycaster.far = maxLength;
+      const rotatedDirection = [
+        raycaster.ray.direction.x,
+        raycaster.ray.direction.y,
+        raycaster.ray.direction.z,
+      ];
+      const hits = raycaster.intersectObject(this.root, true);
+      for (let i = 0; i < hits.length; i++) {
+        let hit = hits[i];
+        if (hit.uv && hit.object && hit.object.subScene) {
+          const distanceToSubscene = hit.distance;
+          const scene = hit.object.subScene;
+          raycaster.ray.origin.set(
+            scene._rttWidth * hit.uv.x,
+            scene._rttHeight * (1 - hit.uv.y),
+            0.1
+          );
+          raycaster.ray.direction.set(0, 0, -1);
+          const subHits = [];
+          intersectObject(scene, raycaster, subHits);
+          if (subHits.length === 0) {
+            continue;
+          }
+          hit = subHits[subHits.length - 1];
+          hit.distance = distanceToSubscene;
+        }
+        if (!firstHit && !hit.isAlmostHit) {
+          firstHit = hit;
+        }
+        if (!firstAlmostHit && hit.isAlmostHit) {
+          firstAlmostHit = hit;
+        }
+      }
+
+      if (firstHit) {
+        this.updateLastHit(firstHit.object, source);
+        if (firstHit.uv) {
+          this._cursor.lastLocalX = firstHit.uv.x;
+          this._cursor.lastLocalY = firstHit.uv.y;
+        }
+        // Always update distance since object could be moving
+        this._cursor.intersectDistance = firstHit.distance;
+      } else {
+        this.updateLastHit(null, source);
+        this._cursor.lastLocalX = null;
+        this._cursor.lastLocalY = null;
+      }
+
+      if (this.cursorVisibility === 'auto') {
+        // Set lastAlmostHit if firstHit not found or isn't interactable.
+        // For example <Pano> generates a hit but usually isn't interactive.
+        if (firstAlmostHit && !(firstHit && firstHit.object.isInteractable)) {
+          this._cursor.lastAlmostHit = firstAlmostHit.object;
+          this._cursor.intersectDistance = firstAlmostHit.distance;
+        } else {
+          this._cursor.lastAlmostHit = null;
+        }
+      }
+
+      this._cursor.rayOrigin = origin;
+      this._cursor.rayDirection = rotatedDirection;
+      this._cursor.drawsCursor = drawsCursor;
+    } else {
+      this._cursor.lastHit = null;
+      this._cursor.source = null;
+      this._cursor.drawsCursor = false;
+      this._cursor.rayOrigin = null;
+      this._cursor.rayDirection = null;
+    }
   }
 
   /**

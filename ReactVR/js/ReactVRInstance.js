@@ -113,9 +113,36 @@ export default class ReactVRInstance {
     this.controls.fillEvents(this._events);
     this.controls.fillRays(this._rays);
 
+    // Get Camera position and orientation, so that the raycasters can be
+    // properly computed
+    const display = this.vrState.getCurrentDisplay();
+    const frameData = this._frameData;
+    if (display && display.isPresenting && frameData) {
+      display.getFrameData(frameData);
+      // Fill camera properties from frameData
+      const pose = frameData.pose;
+      if (pose.position) {
+        const position = pose.position;
+        this._cameraPosition[0] = position[0];
+        this._cameraPosition[1] = position[1];
+        this._cameraPosition[2] = position[2];
+      }
+      if (pose.orientation) {
+        const orientation = pose.orientation;
+        this._cameraQuat[0] = orientation[0];
+        this._cameraQuat[1] = orientation[1];
+        this._cameraQuat[2] = orientation[2];
+        this._cameraQuat[3] = orientation[3];
+      }
+    } else {
+      this.controls.fillCameraProperties(
+        this._cameraPosition,
+        this._cameraQuat,
+      );
+    }
     // Update runtime
     // Compute intersections
-    this.runtime.setRays(this._rays);
+    this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
     this.runtime.queueEvents(this._events);
     // Update each view
     this.runtime.frame(
@@ -123,10 +150,7 @@ export default class ReactVRInstance {
       this.compositor.getRenderer(),
     );
 
-    const display = this.vrState.getCurrentDisplay();
-    if (display && display.isPresenting && this._frameData) {
-      const frameData = this._frameData;
-      display.getFrameData(frameData);
+    if (display && display.isPresenting && frameData) {
       this.compositor.renderVR(display, frameData);
       if (this._looping) {
         this._nextFrame = {
@@ -135,10 +159,6 @@ export default class ReactVRInstance {
         };
       }
     } else {
-      this.controls.fillCameraProperties(
-        this._cameraPosition,
-        this._cameraQuat,
-      );
       this.compositor.render(this._cameraPosition, this._cameraQuat);
       if (this._looping) {
         this._nextFrame = {

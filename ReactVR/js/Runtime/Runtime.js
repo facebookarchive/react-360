@@ -13,6 +13,7 @@ import {GuiSys} from 'ovrui';
 import {type Camera, type Scene, type WebGLRenderer} from 'three';
 import WebWorkerBridge from '../Bridge/WebWorkerBridge';
 import Surface from '../Compositor/Surface';
+import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {ReactNativeContext} from '../ReactNativeContext';
 
 /**
@@ -79,7 +80,21 @@ export default class Runtime {
     // to be implemented in a future diff
   }
 
-  setRays(rays: Array<*>) {
-    // to be implemented in a future diff
+  setRays(rays: Array<Ray>, cameraPosition: Vec3, cameraQuat: Quaternion) {
+    if (rays.length > 0) {
+      // TODO: Support multiple raycasters
+      const ray = rays[0];
+      // Temporary injection into GuiSys until it can be broken up into more
+      // granular Runtime components
+      this.guiSys._processRayData(
+        cameraPosition,
+        cameraQuat,
+        ray.origin,
+        ray.direction,
+        ray.maxLength,
+        ray.type,
+        ray.drawsCursor,
+      );
+    }
   }
 }
