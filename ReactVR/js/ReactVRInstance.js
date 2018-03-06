@@ -13,6 +13,7 @@ import * as THREE from 'three';
 import bundleFromLocation from './bundleFromLocation';
 import Compositor from './Compositor/Compositor';
 import type Surface from './Compositor/Surface';
+import Overlay from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
 import Controls from './Controls/Controls';
@@ -45,6 +46,7 @@ type AnimationFrameData =
 export default class ReactVRInstance {
   _cameraPosition: Vec3;
   _cameraQuat: Quaternion;
+  _eventLayer: HTMLElement;
   _events: Array<InputEvent>;
   _frameData: ?VRFrameData;
   _looping: boolean;
@@ -52,6 +54,7 @@ export default class ReactVRInstance {
   _rays: Array<Ray>;
   controls: Controls;
   compositor: Compositor;
+  overlay: Overlay;
   runtime: Runtime;
   scene: THREE.Scene;
   vrState: VRState;
@@ -61,6 +64,7 @@ export default class ReactVRInstance {
    * bundle and a DOM component to mount within.
    */
   constructor(bundle: string, parent: HTMLElement) {
+    (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);
 
     this._cameraPosition = [0, 0, 0];
@@ -74,14 +78,26 @@ export default class ReactVRInstance {
     this._looping = false;
     this._nextFrame = null;
 
+    this._eventLayer = document.createElement('div');
+    this._eventLayer.style.width = `${parent.clientWidth}px`;
+    this._eventLayer.style.height = `${parent.clientHeight}px`;
+    parent.appendChild(this._eventLayer);
     this.scene = new THREE.Scene();
-    this.compositor = new Compositor(parent, this.scene);
+    this.compositor = new Compositor(this._eventLayer, this.scene);
     this.controls = new Controls();
+    this.overlay = new Overlay(parent);
     this.runtime = new Runtime(this.scene, bundleFromLocation(bundle));
     this.vrState = new VRState();
+    this.vrState.onDisplayChange(display => {
+      if (display) {
+        this.overlay.setVRButtonState(true, 'View in VR', this.enterVR);
+      } else {
+        this.overlay.setVRButtonState(false, 'No Headset', null);
+      }
+    });
 
-    const cameraController = new MousePanCameraController(parent);
-    const raycaster = new MouseRaycaster(parent);
+    const cameraController = new MousePanCameraController(this._eventLayer);
+    const raycaster = new MouseRaycaster(this._eventLayer);
     raycaster.enable();
     this.controls.addCameraController(cameraController);
     this.controls.addEventChannel(new KeyboardInputChannel());
@@ -227,5 +243,30 @@ export default class ReactVRInstance {
       }
       this._nextFrame = null;
     }
+  }
+
+  /**
+   *
+   */
+  enterVR() {
+    const display = this.vrState.getCurrentDisplay();
+    if (!display || display.isPresenting) {
+      return;
+    }
+    display
+      .requestPresent([
+        {
+          source: this.compositor.getCanvas(),
+        },
+      ])
+      .then(() => {
+        const leftParams = display.getEyeParameters('left');
+        const rightParams = display.getEyeParameters('right');
+        this.compositor.resize(
+          leftParams.renderWidth + rightParams.renderWidth,
+          Math.min(leftParams.renderHeight, rightParams.renderHeight),
+          1,
+        );
+      });
   }
 }
