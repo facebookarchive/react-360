@@ -15,6 +15,7 @@ import bundleFromLocation from './js/bundleFromLocation';
 import createRootView from './js/createRootView';
 import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
+import merge from './js/Utils/merge';
 import VRInstance from './js/VRInstance';
 import {BasicVideoPlayer, addCustomizedVideoPlayer, getSupportedFormats} from './js/Video/OVRVideo';
 
@@ -24,6 +25,7 @@ export {bundleFromLocation};
 export {createRootView};
 export {Module};
 export {RCTBaseView};
+export {merge};
 export {ReactNativeContext};
 export {VRInstance};
 export {BasicVideoPlayer};
