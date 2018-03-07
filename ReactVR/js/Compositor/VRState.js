@@ -17,10 +17,12 @@ type Callback = (...any) => mixed;
 
 export default class VRState {
   vrDisplay: ?VRDisplay;
+  _displayChangeCallbacks: Array<Callback>;
   _enterCallbacks: Array<Callback>;
   _exitCallbacks: Array<Callback>;
 
   constructor() {
+    this._displayChangeCallbacks = [];
     this._enterCallbacks = [];
     this._exitCallbacks = [];
 
@@ -60,6 +62,12 @@ export default class VRState {
     }
   }
 
+  _callDisplayChangeCallbacks() {
+    for (let i = 0; i < this._displayChangeCallbacks.length; i++) {
+      this._displayChangeCallbacks[i](this.vrDisplay);
+    }
+  }
+
   onEnter(cb: Callback) {
     this._enterCallbacks.push(cb);
   }
@@ -68,8 +76,13 @@ export default class VRState {
     this._exitCallbacks.push(cb);
   }
 
+  onDisplayChange(cb: Callback) {
+    this._displayChangeCallbacks.push(cb);
+  }
+
   setCurrentDisplay(display: ?VRDisplay) {
     this.vrDisplay = display;
+    this._callDisplayChangeCallbacks();
   }
 
   getCurrentDisplay(): ?VRDisplay {

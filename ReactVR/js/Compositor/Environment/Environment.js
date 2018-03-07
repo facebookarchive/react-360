@@ -10,6 +10,7 @@
  */
 
 import * as THREE from 'three';
+import type ResourceManager from '../../Utils/ResourceManager';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
 
 export type PanoFormat = 'MONO' | 'TOP_BOTTOM' | 'LEFT_RIGHT';
@@ -18,10 +19,14 @@ export type PanoOptions = {
   format?: PanoFormat,
 };
 
+type TextureMetadata = {
+  height: number,
+  tex: THREE.Texture,
+  width: number,
+};
+
 /**
- * Promise-ify image loading
- * Will eventually be replaced with the standard texture cache, so we can
- * maintain a single cache and use features like locally-generated textures.
+ * Promise-ify image loading, used as a backup when no TextureManager is used
  */
 function loadImage(src: string): Promise<Image> {
   return new Promise((resolve, reject) => {
@@ -39,7 +44,8 @@ function loadImage(src: string): Promise<Image> {
 }
 
 /**
- * Stores the various pieces of global environment state
+ * Stores the various pieces of global environment state, including cursor
+ * position, background media playback, and panoramic background rendering.
  */
 export default class Environment {
   _panoEyeOffsets: Array<[number, number, number, number]>;
@@ -47,8 +53,11 @@ export default class Environment {
   _panoGeomSphere: THREE.Geometry;
   _panoMaterial: StereoBasicTextureMaterial;
   _panoMesh: THREE.Mesh;
+  _panoSource: ?string;
+  _resourceManager: ?ResourceManager<Image>;
 
-  constructor() {
+  constructor(rm: ?ResourceManager<Image>) {
+    this._resourceManager = rm;
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 50, 50);
     this._panoGeomHemisphere = new THREE.SphereGeometry(
@@ -85,18 +94,41 @@ export default class Environment {
     this._panoMesh.needsUpdate = true;
   }
 
+  _loadImage(src: string): Promise<TextureMetadata> {
+    if (this._resourceManager) {
+      this._resourceManager.addReference(src);
+    }
+    return (this._resourceManager
+      ? this._resourceManager.getResourceForURL(src)
+      : loadImage(src)
+    ).then(img => {
+      const tex = new THREE.Texture(img);
+      tex.minFilter = THREE.LinearFilter;
+      tex.needsUpdate = true;
+      return {
+        tex,
+        width: img.width,
+        height: img.height,
+      };
+    });
+  }
+
   getPanoNode(): THREE.Mesh {
     return this._panoMesh;
   }
 
   setSource(src: string, options: PanoOptions = {}): Promise<void> {
-    return loadImage(src).then(img => {
-      const tex = new THREE.Texture(img);
-      tex.minFilter = THREE.LinearFilter;
-      tex.needsUpdate = true;
-      this._panoMaterial.map = tex;
-      const width = img.width;
-      const height = img.height;
+    if (this._resourceManager && this._panoSource) {
+      this._resourceManager.removeReference(this._panoSource);
+    }
+    this._panoSource = src;
+    return this._loadImage(src).then(data => {
+      if (src !== this._panoSource) {
+        return;
+      }
+      this._panoMaterial.map = data.tex;
+      const width = data.width;
+      const height = data.height;
       if (width === height) {
         // 1:1 ratio, 180 mono or top/bottom 360 3D
         if (options.format === 'TOP_BOTTOM') {

@@ -93,4 +93,8 @@ export default class MouseRaycaster implements Raycaster {
 
     return true;
   }
+
+  drawsCursor() {
+    return false;
+  }
 }

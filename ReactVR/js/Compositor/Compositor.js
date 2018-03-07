@@ -10,6 +10,9 @@
  */
 
 import * as THREE from 'three';
+import {type Quaternion, type Vec3} from '../Controls/Types';
+import createRemoteImageManager from '../Utils/createRemoteImageManager';
+import type ResourceManager from '../Utils/ResourceManager';
 import Environment, {type PanoOptions} from './Environment/Environment';
 import Surface from './Surface';
 
@@ -31,12 +34,14 @@ export default class Compositor {
   _renderer: THREE.WebGLRenderer;
   _scene: THREE.Scene;
   _surfaces: {[name: string]: Surface};
+  _resourceManager: ResourceManager<Image>;
 
   constructor(frame: HTMLElement, scene: THREE.Scene) {
     this._frame = frame;
     this._isCursorVisible = false;
     this._defaultSurface = null;
     this._surfaces = {};
+    this._resourceManager = createRemoteImageManager();
 
     this._camera = new THREE.PerspectiveCamera(
       60,
@@ -51,7 +56,7 @@ export default class Compositor {
     frame.appendChild(this._renderer.domElement);
     this._scene = scene;
 
-    this._environment = new Environment();
+    this._environment = new Environment(this._resourceManager);
     scene.add(this._environment.getPanoNode());
   }
 
@@ -91,6 +96,14 @@ export default class Compositor {
     return this._canvas;
   }
 
+  getCamera(): THREE.Camera {
+    return this._camera;
+  }
+
+  getRenderer(): THREE.WebGLRenderer {
+    return this._renderer;
+  }
+
   resize(width: number, height: number, pixelRatio: number = 1) {
     this._renderer.setPixelRatio(pixelRatio);
     this._renderer.setSize(width, height, false);
@@ -100,7 +113,7 @@ export default class Compositor {
     this._environment.prepareForRender(eye);
   }
 
-  render(position: Array<number>, quat: Array<number>) {
+  render(position: Vec3, quat: Quaternion) {
     this.prepareForRender(null);
     this._camera.position.set(position[0], position[1], position[2]);
     this._camera.quaternion.set(quat[0], quat[1], quat[2], quat[3]);

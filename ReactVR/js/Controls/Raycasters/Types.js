@@ -12,6 +12,7 @@
 import {type Ray, type Vec3} from '../Types';
 
 export interface Raycaster {
+  drawsCursor(): boolean;
   fillDirection(direction: Ray): boolean;
   fillOrigin(origin: Vec3): boolean;
   getMaxLength(): number;

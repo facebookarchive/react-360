@@ -36,7 +36,13 @@ export default class Controls {
 
   addRaycaster(caster: any) {
     this.raycasters.push(caster);
-    this._rayObjects.push({direction: [0, 0, 0], origin: [0, 0, 0]});
+    this._rayObjects.push({
+      direction: [0, 0, 0],
+      drawsCursor: false,
+      maxLength: Infinity,
+      origin: [0, 0, 0],
+      type: '',
+    });
   }
 
   fillEvents(queue: Array<InputEvent>) {
@@ -54,6 +60,9 @@ export default class Controls {
         caster.fillDirection(rayObject.direction) &&
         caster.fillOrigin(rayObject.origin)
       ) {
+        rayObject.type = caster.getType();
+        rayObject.maxLength = caster.getMaxLength();
+        rayObject.drawsCursor = caster.drawsCursor();
         queue.push(rayObject);
       }
     }
