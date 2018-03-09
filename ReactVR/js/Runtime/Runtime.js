@@ -14,6 +14,7 @@ import {type Camera, type Scene, type WebGLRenderer} from 'three';
 import WebWorkerBridge from '../Bridge/WebWorkerBridge';
 import Surface from '../Compositor/Surface';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
+import {type InputEvent} from '../Controls/InputChannels/Types';
 import {ReactNativeContext} from '../ReactNativeContext';
 
 /**
@@ -76,8 +77,13 @@ export default class Runtime {
     }
   }
 
-  queueEvents(rays: Array<*>) {
-    // to be implemented in a future diff
+  queueEvents(events: Array<InputEvent>) {
+    for (let i = 0; i < events.length; i++) {
+      this.guiSys.eventDispatcher.dispatchEvent({
+        type: 'InputChannelEvent',
+        args: events[i],
+      });
+    }
   }
 
   setRays(rays: Array<Ray>, cameraPosition: Vec3, cameraQuat: Quaternion) {
