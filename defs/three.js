@@ -208,7 +208,7 @@ declare module 'three' {
     constructor(): Quaternion;
     constructor(number, number, number, number): Quaternion;
     clone(): Quaternion;
-    fromArray(Array<number> | Float32Array): this;
+    fromArray(Array<number> | Float32Array | [number, number, number, number]): this;
     multiply(Quaternion): this;
     premultiply(Quaternion): this;
     set(number, number, number, number): this;

@@ -12,6 +12,7 @@
 import * as THREE from 'three';
 import bundleFromLocation from './bundleFromLocation';
 import Compositor from './Compositor/Compositor';
+import Location from './Compositor/Location';
 import type Surface from './Compositor/Surface';
 import Overlay from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
@@ -46,6 +47,7 @@ type AnimationFrameData =
 export default class ReactVRInstance {
   _cameraPosition: Vec3;
   _cameraQuat: Quaternion;
+  _defaultLocation: Location;
   _eventLayer: HTMLElement;
   _events: Array<InputEvent>;
   _frameData: ?VRFrameData;
@@ -193,6 +195,16 @@ export default class ReactVRInstance {
   }
 
   /**
+   * Return the default location found at the world origin.
+   */
+  getDefaultLocation(): Location {
+    if (!this._defaultLocation) {
+      this._defaultLocation = new Location();
+    }
+    return this._defaultLocation;
+  }
+
+  /**
    * Render a React tree to a 2D Surface. This uses a pixel-based coordinate
    * system in two dimensions.
    * Takes a root object returned from the createRoot method, and an instance
@@ -211,8 +223,11 @@ export default class ReactVRInstance {
    * Render a 3D React tree to a location in space. This uses a meter-based
    * coordinate system.
    */
-  renderToLocation() {
-    throw new Error('renderToLocation is not implemented');
+  renderToLocation(root: Root, location: Location): number | null {
+    if (!this._looping) {
+      this.start();
+    }
+    return this.runtime.createRootView(root.name, root.initialProps, location);
   }
 
   /**

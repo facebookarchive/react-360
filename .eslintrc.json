@@ -28,6 +28,7 @@
     "__DEV__": true,
     "__dirname": false,
     "__fbBatchedBridgeConfig": false,
+    "AnimationFrameID": false,
     "Class": false,
     "SceneGraphNode": false,
     "VRDisplay": false,
