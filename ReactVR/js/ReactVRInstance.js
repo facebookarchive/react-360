@@ -168,21 +168,37 @@ export default class ReactVRInstance {
       this.compositor.getRenderer(),
     );
 
+    this.overlay.setCameraRotation(this._cameraQuat);
+
     if (display && display.isPresenting && frameData) {
       this.compositor.renderVR(display, frameData);
       if (this._looping) {
-        this._nextFrame = {
-          vr: true,
-          id: display.requestAnimationFrame(this.frame),
-        };
+        // Avoid reallocating objects each frame
+        if (this._nextFrame) {
+          const nextFrame: any = this._nextFrame;
+          nextFrame.vr = true;
+          nextFrame.id = display.requestAnimationFrame(this.frame);
+        } else {
+          this._nextFrame = {
+            vr: true,
+            id: display.requestAnimationFrame(this.frame),
+          };
+        }
       }
     } else {
       this.compositor.render(this._cameraPosition, this._cameraQuat);
       if (this._looping) {
-        this._nextFrame = {
-          vr: false,
-          id: requestAnimationFrame(this.frame),
-        };
+        // Avoid reallocating objects each frame
+        if (this._nextFrame) {
+          const nextFrame: any = this._nextFrame;
+          nextFrame.vr = false;
+          nextFrame.id = requestAnimationFrame(this.frame);
+        } else {
+          this._nextFrame = {
+            vr: false,
+            id: requestAnimationFrame(this.frame),
+          };
+        }
       }
     }
   }
