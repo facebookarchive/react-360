@@ -17,11 +17,28 @@ import Surface from '../Compositor/Surface';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import {ReactNativeContext} from '../ReactNativeContext';
+import {rotateByQuaternion} from '../Utils/Math';
 
 type LocationNode = {
   location: Location,
   node: THREE.Object3D,
 };
+
+const raycaster = new THREE.Raycaster();
+function intersectObject(
+  object: Object,
+  ray: THREE.Raycaster,
+  intersects: Array<Object>,
+) {
+  if (object.visible === false) {
+    return;
+  }
+  object.raycast(ray, intersects);
+  const children = object.children;
+  for (let i = 0, l = children.length; i < l; i++) {
+    intersectObject(children[i], ray, intersects);
+  }
+}
 
 /**
  * Runtime wraps the majority of React VR logic. It sends event data to the
@@ -127,15 +144,50 @@ export default class Runtime {
     if (rays.length > 0) {
       // TODO: Support multiple raycasters
       const ray = rays[0];
-      // Temporary injection into GuiSys until it can be broken up into more
-      // granular Runtime components
-      this.guiSys._processRayData(
-        cameraPosition,
-        cameraQuat,
-        ray.origin,
-        ray.direction,
-        ray.maxLength,
-        ray.type,
+
+      // Place the ray relative to camera space
+      ray.origin[0] += cameraPosition[0];
+      ray.origin[1] += cameraPosition[1];
+      ray.origin[2] += cameraPosition[2];
+      rotateByQuaternion(ray.direction, cameraQuat);
+
+      // This will get replaced with the trig-based raycaster for surfaces
+      let firstHit = null;
+      raycaster.ray.origin.fromArray(ray.origin);
+      raycaster.ray.direction.fromArray(ray.direction);
+      const hits = raycaster.intersectObject(this.guiSys.root, true);
+      for (let i = 0; i < hits.length; i++) {
+        let hit = hits[i];
+        if (hit.uv && hit.object && hit.object.subScene) {
+          const distanceToSubscene = hit.distance;
+          const scene = hit.object.subScene;
+          raycaster.ray.origin.set(
+            scene._rttWidth * hit.uv.x,
+            scene._rttHeight * (1 - hit.uv.y),
+            0.1,
+          );
+          raycaster.ray.direction.set(0, 0, -1);
+          const subHits = [];
+          intersectObject(scene, raycaster, subHits);
+          if (subHits.length === 0) {
+            continue;
+          }
+          hit = subHits[subHits.length - 1];
+          hit.distance = distanceToSubscene;
+        }
+        if (!firstHit && !hit.isAlmostHit) {
+          firstHit = hit;
+        }
+      }
+      if (firstHit) {
+        this.guiSys.updateLastHit(firstHit.object, ray.type);
+        this.guiSys._cursor.intersectDistance = firstHit.distance;
+      } else {
+        this.guiSys.updateLastHit(null, ray.type);
+      }
+      this.guiSys.setCursorProperties(
+        ray.origin.slice(),
+        ray.direction.slice(),
         ray.drawsCursor,
       );
     }
