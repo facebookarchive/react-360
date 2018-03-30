@@ -11,7 +11,8 @@
 
 import {GuiSys} from 'ovrui';
 import * as THREE from 'three';
-import WebWorkerBridge from '../Bridge/WebWorkerBridge';
+import type ReactExecutor from '../Executor/ReactExecutor';
+import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
 import Location from '../Compositor/Location';
 import Surface from '../Compositor/Surface';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
@@ -47,18 +48,17 @@ function intersectObject(
  */
 export default class Runtime {
   _rootLocations: Array<LocationNode>;
-  bridge: WebWorkerBridge;
   context: ReactNativeContext;
+  executor: ReactExecutor;
   guiSys: GuiSys;
 
   constructor(scene: THREE.Scene, bundle: string) {
     this._rootLocations = [];
-    this.bridge = new WebWorkerBridge({
+    this.executor = new ReactExecutorWebWorker({
       enableDevTools: false,
-      enableHotReload: false,
     });
     this.guiSys = new GuiSys(scene, {});
-    this.context = new ReactNativeContext(this.guiSys, this.bridge, {});
+    this.context = new ReactNativeContext(this.guiSys, this.executor, {});
     this.context.init(bundle);
   }
 

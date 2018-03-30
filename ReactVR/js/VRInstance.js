@@ -15,7 +15,7 @@ import bundleFromLocation from './bundleFromLocation';
 import createRootView from './createRootView';
 import Surface from './Compositor/Surface';
 
-import type Bridge from './Bridge/Bridge';
+import type ReactExecutor from './Executor/ReactExecutor';
 import type {RootView} from './createRootView';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
@@ -24,7 +24,6 @@ type VRInstanceOptions = {
   allowCarmelDeeplink?: boolean,
   antialias?: boolean,
   assetRoot?: string,
-  bridge?: Bridge,
   calculateVerticalFOV?: (number, number) => number,
   camera?: Camera,
   canvasAlpha?: boolean,
@@ -32,6 +31,7 @@ type VRInstanceOptions = {
   customViews?: Array<CustomView>,
   disableTouchPanning?: boolean,
   enableHotReload?: boolean,
+  executor?: ReactExecutor,
   font?: any,
   height?: number,
   hideCompass?: boolean,
@@ -153,10 +153,10 @@ export default class VRInstance {
     this.rootView = createRootView(this.guiSys, root, {
       // Name of the mounted root module, from AppRegistry
       assetRoot: assetRoot,
-      bridge: options.bridge,
       bundle: bundleFromLocation(bundle),
       customViews: options.customViews,
       enableHotReload: options.enableHotReload,
+      executor: options.executor,
       initialProps: options.initialProps,
       isLowLatency: !this.player.isMobile,
       nativeModules: options.nativeModules,
