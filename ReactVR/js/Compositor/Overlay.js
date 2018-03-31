@@ -9,18 +9,23 @@
  * @flow
  */
 
+import {type Quaternion} from '../Controls/Types';
+import {createCompassGlyph, createViewInVrGlyph} from './Glyphs';
+
 type Handler = () => mixed;
 
 // Apply a set of styles to a DOM node
-function setStyles(node: HTMLElement, styles: {[style: string]: any}) {
+function setStyles(node: Element, styles: {[style: string]: any}) {
+  // Cast style, since Flow thinks SVG nodes are generic Elements
+  const style: CSSStyleDeclaration = (node: any).style;
   for (const property in styles) {
     let destination = property;
     // Handle prefixed properties
-    if (!node.style.hasOwnProperty(destination)) {
+    if (!style.hasOwnProperty(destination)) {
       const uppercase = destination[0].toUpperCase() + destination.substr(1);
-      if (node.style.hasOwnProperty(`moz${uppercase}`)) {
+      if (style.hasOwnProperty(`moz${uppercase}`)) {
         destination = `moz${uppercase}`;
-      } else if (node.style.hasOwnProperty(`webkit${uppercase}`)) {
+      } else if (style.hasOwnProperty(`webkit${uppercase}`)) {
         destination = `webkit${uppercase}`;
       }
     }
@@ -38,6 +43,22 @@ const WRAPPER_STYLES = {
   pointerEvents: 'none',
   userSelect: 'none',
 };
+const COMPASS_WRAPPER_STYLES = {
+  backgroundColor: 'rgba(0,0,0,0.7)',
+  borderRadius: '100%',
+  height: '30px',
+  marginTop: '-20px',
+  padding: '5px',
+  position: 'absolute',
+  right: '20px',
+  top: '50%',
+  width: '30px',
+};
+const COMPASS_STYLES = {
+  cursor: 'pointer',
+  pointerEvents: 'initial',
+  transformOrigin: '50% 50%',
+};
 const VR_BUTTON_STYLES = {
   background: 'rgba(0, 0, 0, 0.7)',
   border: '2px solid #ffffff',
@@ -49,6 +70,7 @@ const VR_BUTTON_STYLES = {
   fontFamily: 'Helvetica, Arial, sans-serif',
   fontSize: '16px',
   fontWeight: 'normal',
+  height: '38px',
   left: '18px',
   padding: '0 10px',
   pointerEvents: 'initial',
@@ -62,6 +84,7 @@ const VR_BUTTON_LABEL_STYLES = {
 };
 
 export default class Overlay {
+  _compass: Element;
   _vrButton: HTMLElement;
   _vrButtonHandler: ?Handler;
   _vrButtonText: Text;
@@ -71,11 +94,14 @@ export default class Overlay {
     this._wrapper = document.createElement('div');
     setStyles(this._wrapper, WRAPPER_STYLES);
     frame.appendChild(this._wrapper);
-    if (frame.style.position === 'static' || frame.style.position === '') {
+    const frameStyle = window.getComputedStyle(frame);
+    if (frameStyle.position === 'static' || frameStyle.position === '') {
       frame.style.position = 'relative';
     }
     this._vrButton = document.createElement('a');
     setStyles(this._vrButton, VR_BUTTON_STYLES);
+    const vrGlyph = createViewInVrGlyph(38, 38, '#ffffff');
+    this._vrButton.appendChild(vrGlyph);
     const vrButtonLabel = document.createElement('span');
     setStyles(vrButtonLabel, VR_BUTTON_LABEL_STYLES);
     this._vrButton.appendChild(vrButtonLabel);
@@ -93,6 +119,13 @@ export default class Overlay {
     });
     this._vrButton.style.display = 'none';
     this._wrapper.appendChild(this._vrButton);
+
+    const compassWrapper = document.createElement('div');
+    setStyles(compassWrapper, COMPASS_WRAPPER_STYLES);
+    this._compass = createCompassGlyph(30, 30, '#ffffff');
+    setStyles(this._compass, COMPASS_STYLES);
+    compassWrapper.appendChild(this._compass);
+    this._wrapper.appendChild(compassWrapper);
   }
 
   enableVRButton() {
@@ -119,5 +152,24 @@ export default class Overlay {
     }
     this.setVRButtonText(text);
     this.setVRButtonHandler(handler);
+  }
+
+  setCameraRotation(quat: Quaternion) {
+    // Rotate compass by rotating <0, 0, -1> by the camera quaternion, then
+    // computing the angle between that vector (projected onto the xz plane)
+    // and the original via dot-product.
+    const x = quat[0];
+    const y = quat[1];
+    const z = quat[2];
+    const w = quat[3];
+    const xx = x * x;
+    const yy = y * y;
+    const s = 1 / (xx + yy + z * z + w * w);
+    const projectX = -2 * s * (x * z + y * w);
+    const projectZ = -1 + 2 * s * (xx + yy);
+    const projectMag = Math.sqrt(projectX * projectX + projectZ * projectZ);
+    const compassAngle =
+      (projectX > 0 ? 1 : -1) * Math.acos(-1 * projectZ / projectMag);
+    (this._compass: any).style.transform = `rotate(${compassAngle}rad)`;
   }
 }

@@ -216,9 +216,16 @@ declare module 'three' {
   }
 
   declare class Ray {
+    direction: Vector3;
+    origin: Vector3;
     copy(ray: Ray): Ray;
     applyMatrix4(matrix: Matrix4): void;
     intersectSphere(sphere: Sphere, intersectionPoint: Vector3): Vector3;
+  }
+
+  declare class Raycaster {
+    ray: Ray;
+    intersectObject(Object, boolean): Array<Object>;
   }
 
   declare class Scene extends Object3D {
@@ -303,7 +310,7 @@ declare module 'three' {
     domElement: HTMLCanvasElement;
     localClippingEnabled: boolean;
     sortObjects: boolean;
-    constructor(): this;
+    constructor(params?: Object): this;
     getClearAlpha(): number;
     getClearColor(): Color;
     getSize(): {width: number, height: number};

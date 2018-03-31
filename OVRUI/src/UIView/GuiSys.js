@@ -425,16 +425,30 @@ export default class GuiSys {
         }
       }
 
-      this._cursor.rayOrigin = origin;
-      this._cursor.rayDirection = rotatedDirection;
-      this._cursor.drawsCursor = drawsCursor;
+      this.setCursorProperties(
+        [
+          rayCameraPos.x + localPosition[0],
+          rayCameraPos.y + localPosition[1],
+          rayCameraPos.z + localPosition[2],
+        ],
+        rotatedDirection,
+        drawsCursor,
+      );
     } else {
-      this._cursor.lastHit = null;
-      this._cursor.source = null;
-      this._cursor.drawsCursor = false;
-      this._cursor.rayOrigin = null;
-      this._cursor.rayDirection = null;
+      this.setLastHit(null, null);
+      this.setCursorProperties(null, null, false)
     }
+  }
+
+  setLastHit(lastHit, source) {
+    this._cursor.lastHit = lastHit;
+    this._cursor.source = source;
+  }
+
+  setCursorProperties(rayOrigin, rayDirection, drawsCursor) {
+    this._cursor.rayOrigin = rayOrigin;
+    this._cursor.rayDirection = rayDirection;
+    this._cursor.drawsCursor = drawsCursor;
   }
 
   /**

@@ -37,7 +37,7 @@ import RCTSourceCode from './Modules/RCTSourceCode';
 import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 
-import type Bridge from './Bridge/Bridge';
+import type ReactExecutor from './Executor/ReactExecutor';
 import type Module from './Modules/Module';
 import type {GuiSys, UIView, UIViewEvent} from 'ovrui';
 import type {Camera, Object3D, Scene} from 'three';
@@ -54,19 +54,6 @@ export type ContextOptions = {
 
 const ROOT_VIEW_INCREMENT = 10;
 const ONMOVE_EPSILON = 0.0001;
-
-/**
- * replaceHiddenAttributes is a callback function used by the JSON.stringify,
- * the purpose is to prevent the serialization of any key that starts in '_' as
- * these are denoted to be private to the class
- **/
-function replaceHiddenAttributes<T>(key: string, value: T): T | void {
-  if (key.charAt && key.charAt(0) === '_') {
-    return undefined;
-  } else {
-    return value;
-  }
-}
 
 /**
  * describe
@@ -133,10 +120,10 @@ function describe(ctx: ReactNativeContext) {
  **/
 export class ReactNativeContext {
   AudioModule: RCTAudioModule;
-  bridge: Bridge;
   currentRootTag: number;
   guiSys: GuiSys;
   enableHotReload: boolean;
+  executor: ReactExecutor;
   GlyphTextures: GlyphTextures;
   HeadModel: RCTHeadModel;
   isLowLatency: boolean;
@@ -156,16 +143,20 @@ export class ReactNativeContext {
   _moduleForTag: Array<string>;
 
   /**
-   * Construct a ReactNativeContext given the gui and url for the bridge
-   * the construction registers the core modules used by most applications
+   * Construct a ReactNativeContext given the gui and execution environment.
+   * The construction registers the core modules used by most applications
    * new modules can be registered after this but prior to the init call
    * @param guiSys - instance of OVRUI.guiSys
-   * @param bridgeURL - url of location of bridge
+   * @param executor - Executor instance to run React code in
    */
-  constructor(guiSys: GuiSys, bridge: Bridge, options: ContextOptions = {}) {
+  constructor(
+    guiSys: GuiSys,
+    executor: ReactExecutor,
+    options: ContextOptions = {},
+  ) {
     this.modules = [];
     this.currentRootTag = 1;
-    this.bridge = bridge;
+    this.executor = executor;
     this.guiSys = guiSys;
     this.messages = [];
     this.isLowLatency = !!options.isLowLatency; // Whether this context should target 90fps
@@ -217,18 +208,6 @@ export class ReactNativeContext {
       'UIViewEvent',
       this._onUIViewEvent.bind(this),
     );
-
-    // register the worker onmessage function
-    // messages are not execute at point of recieving
-    // but queue for later dispatch in the `frame` function
-    this.bridge.setMessageHandler(msg => {
-      if (msg.cmd === 'exec') {
-        const results = msg.results;
-        if (results && results.length) {
-          this.messages.push(results);
-        }
-      }
-    });
   }
 
   /**
@@ -236,19 +215,9 @@ export class ReactNativeContext {
    * @param bundle - url of the bundle
    */
   init(bundle: string) {
-    this.bridge.postMessage(
-      JSON.stringify(
-        {
-          cmd: 'moduleConfig',
-          moduleConfig: {remoteModuleConfig: describe(this)},
-        },
-        replaceHiddenAttributes,
-      ),
-    );
+    this.executor.moduleConfig(describe(this));
+    this.executor.exec(bundle);
 
-    this.bridge.postMessage(
-      JSON.stringify({cmd: 'bundle', bundleName: bundle}),
-    );
     if (this.enableHotReload) {
       const bundleURL = new URL(bundle);
       console.warn(`HotReload on ${bundle}`);
@@ -288,14 +257,11 @@ export class ReactNativeContext {
     // TODO: Root tags should be sourced from UIManager instead, which
     // is aware of availability.
     this.currentRootTag += ROOT_VIEW_INCREMENT;
-    this.bridge.postMessage(
-      JSON.stringify({
-        cmd: 'exec',
-        module: 'AppRegistry',
-        function: 'runApplication',
-        args: [module, {initialProps: props, rootTag: tag}],
-      }),
-    );
+    this.executor.call('AppRegistry', 'runApplication', [
+      module,
+      {initialProps: props, rootTag: tag},
+    ]);
+
     this._moduleForTag[tag] = module;
     if (!container) {
       this._cameraParentFromTag[tag] = new THREE.Object3D();
@@ -310,14 +276,10 @@ export class ReactNativeContext {
    * @param props - props that is posted to the registered module
    */
   updateRootView(tag: number, props: {[prop: string]: any}) {
-    this.bridge.postMessage(
-      JSON.stringify({
-        cmd: 'exec',
-        module: 'AppRegistry',
-        function: 'runApplication',
-        args: [this._moduleForTag[tag], {initialProps: props, rootTag: tag}],
-      }),
-    );
+    this.executor.call('AppRegistry', 'runApplication', [
+      this._moduleForTag[tag],
+      {initialProps: props, rootTag: tag},
+    ]);
   }
 
   /**
@@ -334,14 +296,9 @@ export class ReactNativeContext {
       }
       delete this._cameraParentFromTag[tag];
     }
-    this.bridge.postMessage(
-      JSON.stringify({
-        cmd: 'exec',
-        module: 'AppRegistry',
-        function: 'unmountApplicationComponentAtRootTag',
-        args: [tag],
-      }),
-    );
+    this.executor.call('AppRegistry', 'unmountApplicationComponentAtRootTag', [
+      tag,
+    ]);
   }
 
   /**
@@ -452,22 +409,26 @@ export class ReactNativeContext {
         }
       }
     }
-    this.bridge.postMessage(JSON.stringify({cmd: 'flush'}));
-    for (const results of this.messages) {
-      if (results && results.length >= 3) {
-        const moduleIndex = results[0];
-        const funcIndex = results[1];
-        const params = results[2];
-        for (let i = 0; i < moduleIndex.length; i++) {
-          this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
-            this.modules[moduleIndex[i]],
-            params[i],
-          );
+    this.executor.flush();
+    let msg = this.executor.poll();
+    while (msg) {
+      if (msg.cmd === 'exec') {
+        const results = msg.results;
+        if (results && results.length >= 3) {
+          const moduleIndex = results[0];
+          const funcIndex = results[1];
+          const params = results[2];
+          for (let i = 0; i < moduleIndex.length; i++) {
+            this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
+              this.modules[moduleIndex[i]],
+              params[i],
+            );
+          }
         }
       }
+      msg = this.executor.poll();
     }
 
-    this.messages = [];
     this.UIManager && this.UIManager.frame(frameStart);
     this.HeadModel && this.HeadModel.frame(camera);
     this.VideoModule && this.VideoModule.frame();
@@ -484,9 +445,9 @@ export class ReactNativeContext {
   }
 
   /**
-    * Updates the camera parent with current <Scene> transform, if any.
-    * Do nothing if there is no <Scene>, the <Scene> has no transform property,
-    * or the camera already has a parent object.
+   * Updates the camera parent with current <Scene> transform, if any.
+   * Do nothing if there is no <Scene>, the <Scene> has no transform property,
+   * or the camera already has a parent object.
    **/
   _applySceneTransform(camera: Camera, rootTag: number) {
     const worldMatrix = this.UIManager.getSceneCameraTransform(rootTag);
@@ -532,9 +493,9 @@ export class ReactNativeContext {
   }
 
   /**
-    * getHitTag
-    * @param hit - scene object
-    * @returns the tag of the closest view with a tag or undefined if not found
+   * getHitTag
+   * @param hit - scene object
+   * @returns the tag of the closest view with a tag or undefined if not found
    **/
   getHitTag(hitStart: ?UIView) {
     let hit = hitStart;
@@ -548,41 +509,28 @@ export class ReactNativeContext {
   }
 
   /**
-    * calls a particular function within a react module
-    * @param moduleName - module within the react bundle
-    * @param functionName - name of the function
-    * @param args - array of args passed to react bundle over webworker
+   * calls a particular function within a react module
+   * @param moduleName - module within the react bundle
+   * @param functionName - name of the function
+   * @param args - array of args passed to react bundle over webworker
    **/
   callFunction(moduleName: string, functionName: string, args: Array<any>) {
-    this.bridge.postMessage(
-      JSON.stringify({
-        cmd: 'exec',
-        module: moduleName,
-        function: functionName,
-        args: args,
-      }),
-    );
+    this.executor.call(moduleName, functionName, args);
   }
 
   /**
-    * calls a particular callback within a react module
-    * @param id - callback specified by react
-    * @param args - array of args passed to react bundle over webworker
+   * calls a particular callback within a react module
+   * @param id - callback specified by react
+   * @param args - array of args passed to react bundle over webworker
    **/
   invokeCallback(id: number, args: Array<any>) {
-    this.bridge.postMessage(
-      JSON.stringify({
-        cmd: 'invoke',
-        id: id,
-        args: args,
-      }),
-    );
+    this.executor.invoke(id, args);
   }
 
   /**
-    * registers a module for use by the context
-    * must be specified prior to calling init
-    * @param module - instance of a module to register, extends Module
+   * registers a module for use by the context
+   * must be specified prior to calling init
+   * @param module - instance of a module to register, extends Module
    **/
   registerModule(module: Module) {
     this.modules.push(module);

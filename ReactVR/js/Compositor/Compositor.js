@@ -49,7 +49,9 @@ export default class Compositor {
       1,
       1000,
     );
-    this._renderer = new THREE.WebGLRenderer();
+    this._renderer = new THREE.WebGLRenderer({
+      antialias: true,
+    });
     this._canvas = this._renderer.domElement;
     this._renderer.setPixelRatio(window.devicePixelRatio);
     this._renderer.setSize(frame.clientWidth, frame.clientHeight);

@@ -9,22 +9,21 @@
  * @flow
  */
 
-import {ReactNativeContext} from './ReactNativeContext';
-import WebWorkerBridge from './Bridge/WebWorkerBridge';
-
-import type Bridge from './Bridge/Bridge';
-import type Module from './Modules/Module';
 import type {GuiSys} from 'ovrui';
-import type {ContextOptions} from './ReactNativeContext';
 import type {Camera} from 'three';
+
+import type ReactExecutor from './Executor/ReactExecutor';
+import ReactExecutorWebWorker from './Executor/ReactExecutorWebWorker';
+import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
+import {ReactNativeContext, type ContextOptions} from './ReactNativeContext';
 
 type RootViewOptions = {
   assetRoot?: string,
   bundle?: string,
-  bridge?: Bridge,
   customViews?: Array<CustomView>,
   enableHotReload?: boolean,
+  executor?: ReactExecutor,
   initialProps?: {[prop: string]: any},
   isLowLatency?: boolean,
   nativeModules?: Array<Module>,
@@ -44,7 +43,7 @@ const HOTRELOAD_FLAG = /\bhotreload\b/;
 export default function createRootView(
   guisys: GuiSys,
   name: string,
-  options: RootViewOptions = {}
+  options: RootViewOptions = {},
 ): RootView {
   if (!guisys) {
     throw new Error('ReactVR Root View must attach to an OVRUI GUI!');
@@ -60,11 +59,13 @@ export default function createRootView(
     if (DEVTOOLS_FLAG.test(location.search)) {
       enableDevTools = true;
       if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+        /* eslint-disable no-console */
         console.log(
           'We detected that you have the React Devtools extension installed. ' +
             'Please note that at this time, React VR is only compatible with the ' +
-            'standalone Inspector (npm run devtools).'
+            'standalone Inspector (npm run devtools).',
         );
+        /* eslint-enable no-console */
       }
     }
   }
@@ -84,11 +85,10 @@ export default function createRootView(
     contextOptions.enableHotReload = options.enableHotReload;
   }
 
-  const bridge =
-    options.bridge ||
-    new WebWorkerBridge({
+  const executor =
+    options.executor ||
+    new ReactExecutorWebWorker({
       enableDevTools: enableDevTools,
-      enableHotReload: contextOptions.enableHotReload,
     });
 
   let bundleURL = options.bundle || '../index.bundle?platform=vr';
@@ -97,7 +97,7 @@ export default function createRootView(
     bundleURL += '&hot=true';
   }
 
-  const rn = new ReactNativeContext(guisys, bridge, contextOptions);
+  const rn = new ReactNativeContext(guisys, executor, contextOptions);
   if (Array.isArray(options.nativeModules)) {
     for (const module of options.nativeModules) {
       rn.registerModule(module);
