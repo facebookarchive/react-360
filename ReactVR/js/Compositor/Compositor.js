@@ -31,6 +31,7 @@ export default class Compositor {
   _environment: Environment;
   _frame: HTMLElement;
   _isCursorVisible: boolean;
+  _isMouseCursorActive: boolean;
   _renderer: THREE.WebGLRenderer;
   _scene: THREE.Scene;
   _surfaces: {[name: string]: Surface};
@@ -39,6 +40,7 @@ export default class Compositor {
   constructor(frame: HTMLElement, scene: THREE.Scene) {
     this._frame = frame;
     this._isCursorVisible = false;
+    this._isMouseCursorActive = false;
     this._defaultSurface = null;
     this._surfaces = {};
     this._resourceManager = createRemoteImageManager();
@@ -72,6 +74,13 @@ export default class Compositor {
 
   isCursorVisible(): boolean {
     return this._isCursorVisible;
+  }
+
+  setMouseCursorActive(active: boolean) {
+    if (this._isMouseCursorActive !== active) {
+      this._isMouseCursorActive = active;
+      this._frame.style.cursor = active ? 'pointer' : 'inherit';
+    }
   }
 
   addSurface(name: string, surface: Surface) {

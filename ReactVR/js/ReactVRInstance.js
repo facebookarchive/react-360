@@ -20,6 +20,8 @@ import MousePanCameraController from './Controls/CameraControllers/MousePanCamer
 import Controls from './Controls/Controls';
 import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
 import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
+import MouseInputChannel from './Controls/InputChannels/MouseInputChannel';
+import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
 import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
@@ -125,6 +127,8 @@ export default class ReactVRInstance {
     const raycaster = new MouseRaycaster(this._eventLayer);
     raycaster.enable();
     this.controls.addCameraController(cameraController);
+    this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
+    this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
     this.controls.addEventChannel(new GamepadInputChannel());
     this.controls.addRaycaster(raycaster);
@@ -199,6 +203,8 @@ export default class ReactVRInstance {
     this.compositor.frame(delta);
 
     this.overlay.setCameraRotation(this._cameraQuat);
+
+    this.compositor.setMouseCursorActive(this.runtime.isMouseCursorActive());
 
     if (display && display.isPresenting && frameData) {
       this.compositor.renderVR(display, frameData);

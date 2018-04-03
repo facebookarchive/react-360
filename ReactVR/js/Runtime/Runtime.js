@@ -216,4 +216,8 @@ export default class Runtime {
       );
     }
   }
+
+  isMouseCursorActive(): boolean {
+    return this.guiSys.mouseCursorActive;
+  }
 }
