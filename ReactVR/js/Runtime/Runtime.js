@@ -11,18 +11,25 @@
 
 import {GuiSys} from 'ovrui';
 import * as THREE from 'three';
-import type ReactExecutor from '../Executor/ReactExecutor';
-import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
 import Location from '../Compositor/Location';
 import Surface from '../Compositor/Surface';
+import type ReactExecutor from '../Executor/ReactExecutor';
+import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
+import type Module from '../Modules/Module';
 import {ReactNativeContext} from '../ReactNativeContext';
 import {rotateByQuaternion} from '../Utils/Math';
 
 type LocationNode = {
   location: Location,
   node: THREE.Object3D,
+};
+
+export type NativeModuleInitializer = ReactNativeContext => Module;
+
+export type RuntimeOptions = {
+  nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
 const raycaster = new THREE.Raycaster();
@@ -47,18 +54,35 @@ function intersectObject(
  * the Compositor how to render everything.
  */
 export default class Runtime {
+  _initialized: boolean;
   _rootLocations: Array<LocationNode>;
   context: ReactNativeContext;
   executor: ReactExecutor;
   guiSys: GuiSys;
 
-  constructor(scene: THREE.Scene, bundle: string) {
+  constructor(
+    scene: THREE.Scene,
+    bundle: string,
+    options: RuntimeOptions = {},
+  ) {
     this._rootLocations = [];
     this.executor = new ReactExecutorWebWorker({
       enableDevTools: false,
     });
     this.guiSys = new GuiSys(scene, {});
     this.context = new ReactNativeContext(this.guiSys, this.executor, {});
+    const modules = options.nativeModules;
+    if (modules) {
+      for (let i = 0; i < modules.length; i++) {
+        const m = modules[i];
+        if (typeof m === 'function') {
+          // module initializer
+          this.context.registerModule(m(this.context));
+        } else {
+          this.context.registerModule(m);
+        }
+      }
+    }
     this.context.init(bundle);
   }
 

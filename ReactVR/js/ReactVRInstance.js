@@ -23,7 +23,11 @@ import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel'
 import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
-import Runtime from './Runtime/Runtime';
+import type Module from './Modules/Module';
+import Runtime, {
+  type NativeModuleInitializer,
+  type RuntimeOptions,
+} from './Runtime/Runtime';
 
 type Root = {
   initialProps: Object,
@@ -39,6 +43,10 @@ type AnimationFrameData =
       id: AnimationFrameID,
       vr: false,
     };
+
+export type ReactVROptions = {
+  nativeModules?: Array<Module | NativeModuleInitializer>,
+};
 
 /**
  * New top-level class for the panel-first design of React VR aligned with
@@ -65,7 +73,11 @@ export default class ReactVRInstance {
    * Create a new instance of a React VR app, given a path to the React VR JS
    * bundle and a DOM component to mount within.
    */
-  constructor(bundle: string, parent: HTMLElement) {
+  constructor(
+    bundle: string,
+    parent: HTMLElement,
+    options: ReactVROptions = {},
+  ) {
     (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);
 
@@ -88,7 +100,16 @@ export default class ReactVRInstance {
     this.compositor = new Compositor(this._eventLayer, this.scene);
     this.controls = new Controls();
     this.overlay = new Overlay(parent);
-    this.runtime = new Runtime(this.scene, bundleFromLocation(bundle));
+
+    const runtimeOptions: RuntimeOptions = {};
+    if (options.nativeModules) {
+      runtimeOptions.nativeModules = options.nativeModules;
+    }
+    this.runtime = new Runtime(
+      this.scene,
+      bundleFromLocation(bundle),
+      runtimeOptions,
+    );
     this.vrState = new VRState();
     this.vrState.onDisplayChange(display => {
       if (display) {
