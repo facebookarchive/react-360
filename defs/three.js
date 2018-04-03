@@ -92,10 +92,14 @@ declare module 'three' {
   }
 
   declare class Color {
+    r: number;
+    g: number;
+    b: number;
     constructor(): this;
     constructor(number, number, number): this;
     constructor(Color): this;
     setHex(number): void;
+    setRGB(number, number, number): this;
     set(number): void;
   }
 

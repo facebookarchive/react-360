@@ -17,10 +17,12 @@ export type PanoFormat = 'MONO' | 'TOP_BOTTOM' | 'LEFT_RIGHT';
 
 export type PanoOptions = {
   format?: PanoFormat,
+  transition?: number,
 };
 
 type TextureMetadata = {
   height: number,
+  src: string,
   tex: THREE.Texture,
   width: number,
 };
@@ -51,9 +53,11 @@ export default class Environment {
   _panoEyeOffsets: Array<[number, number, number, number]>;
   _panoGeomHemisphere: THREE.Geometry;
   _panoGeomSphere: THREE.Geometry;
+  _panoLoad: ?Promise<TextureMetadata>;
   _panoMaterial: StereoBasicTextureMaterial;
   _panoMesh: THREE.Mesh;
   _panoSource: ?string;
+  _panoTransition: number;
   _resourceManager: ?ResourceManager<Image>;
 
   constructor(rm: ?ResourceManager<Image>) {
@@ -68,7 +72,7 @@ export default class Environment {
       Math.PI,
     );
     this._panoMaterial = new StereoBasicTextureMaterial({
-      color: '#ffffff',
+      color: '#000000',
       side: THREE.DoubleSide,
     });
     this._panoMaterial.useUV = 0;
@@ -76,6 +80,7 @@ export default class Environment {
     this._panoMesh.scale.set(-1, 1, 1);
     this._panoMesh.rotation.y = -Math.PI / 2;
     this._panoEyeOffsets = [[0, 0, 1, 1]];
+    this._panoTransition = 0;
   }
 
   _setPanoGeometryToSphere() {
@@ -94,7 +99,7 @@ export default class Environment {
     this._panoMesh.needsUpdate = true;
   }
 
-  _loadImage(src: string): Promise<TextureMetadata> {
+  _loadImage(src: string, options: PanoOptions): Promise<TextureMetadata> {
     if (this._resourceManager) {
       this._resourceManager.addReference(src);
     }
@@ -106,11 +111,47 @@ export default class Environment {
       tex.minFilter = THREE.LinearFilter;
       tex.needsUpdate = true;
       return {
+        src,
         tex,
+        format: options.format,
         width: img.width,
         height: img.height,
       };
     });
+  }
+
+  _updateTexture(data: TextureMetadata) {
+    if (data.src !== this._panoSource) {
+      // a new image has started loading
+      return;
+    }
+    this._panoMaterial.map = data.tex;
+    const width = data.width;
+    const height = data.height;
+    if (width === height) {
+      // 1:1 ratio, 180 mono or top/bottom 360 3D
+      if (data.format === 'TOP_BOTTOM') {
+        // 360 top-bottom 3D
+        this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
+        this._setPanoGeometryToSphere();
+      } else {
+        // assume 180 mono
+        this._panoEyeOffsets = [[0, 0, 1, 1]];
+        this._setPanoGeometryToHemisphere();
+      }
+    } else if (width / 2 === height) {
+      // 2:1 ratio, 360 mono or 180 3D
+      if (data.format === 'LEFT_RIGHT') {
+        // 180 side-by-side 3D
+        this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
+        this._setPanoGeometryToHemisphere();
+      } else {
+        // assume 360 mono
+        this._panoEyeOffsets = [[0, 0, 1, 1]];
+        this._setPanoGeometryToSphere();
+      }
+    }
+    this._panoMaterial.needsUpdate = true;
   }
 
   getPanoNode(): THREE.Mesh {
@@ -121,38 +162,23 @@ export default class Environment {
     if (this._resourceManager && this._panoSource) {
       this._resourceManager.removeReference(this._panoSource);
     }
+    const oldSrc = this._panoSource;
     this._panoSource = src;
-    return this._loadImage(src).then(data => {
-      if (src !== this._panoSource) {
-        return;
+    this._panoLoad = this._loadImage(src, options);
+    const duration =
+      typeof options.transition === 'number' ? options.transition : 500;
+    // If the duration is zero, set the transition to complete on the next frame
+    const transition = duration ? 1 / duration : 1;
+    this._panoTransition = oldSrc ? -transition : 0;
+    return this._panoLoad.then(data => {
+      if (this._panoTransition === 0) {
+        this._panoLoad = null;
+        // Fade transition completed
+        this._panoTransition = transition;
+        return this._updateTexture(data);
       }
-      this._panoMaterial.map = data.tex;
-      const width = data.width;
-      const height = data.height;
-      if (width === height) {
-        // 1:1 ratio, 180 mono or top/bottom 360 3D
-        if (options.format === 'TOP_BOTTOM') {
-          // 360 top-bottom 3D
-          this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
-          this._setPanoGeometryToSphere();
-        } else {
-          // assume 180 mono
-          this._panoEyeOffsets = [[0, 0, 1, 1]];
-          this._setPanoGeometryToHemisphere();
-        }
-      } else if (width / 2 === height) {
-        // 2:1 ratio, 360 mono or 180 3D
-        if (options.format === 'LEFT_RIGHT') {
-          // 180 side-by-side 3D
-          this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
-          this._setPanoGeometryToHemisphere();
-        } else {
-          // assume 360 mono
-          this._panoEyeOffsets = [[0, 0, 1, 1]];
-          this._setPanoGeometryToSphere();
-        }
-      }
-      this._panoMaterial.needsUpdate = true;
+      // Fade is still in progress
+      return Promise.resolve();
     });
   }
 
@@ -161,6 +187,32 @@ export default class Environment {
       this._panoMaterial.uniforms.stereoOffsetRepeat.value = this._panoEyeOffsets[1];
     } else {
       this._panoMaterial.uniforms.stereoOffsetRepeat.value = this._panoEyeOffsets[0];
+    }
+  }
+
+  frame(delta: number) {
+    const transition = this._panoTransition;
+    if (transition === 0) {
+      return;
+    }
+    const step = transition * delta;
+    const color = this._panoMaterial.color;
+    const oldValue = color.r;
+    let newValue = oldValue + step;
+    if (newValue <= 0) {
+      this._panoTransition = 0;
+      newValue = 0;
+    }
+    if (newValue >= 1) {
+      this._panoTransition = 0;
+      newValue = 1;
+    }
+    color.setRGB(newValue, newValue, newValue);
+    if (transition < 0 && this._panoTransition === 0 && this._panoLoad) {
+      this._panoLoad.then(data => {
+        this._panoTransition = -transition;
+        this._updateTexture(data);
+      });
     }
   }
 }

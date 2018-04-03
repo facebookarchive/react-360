@@ -66,8 +66,8 @@ export default class Compositor {
     this._isCursorVisible = vis;
   }
 
-  setBackground(src: string, options: PanoOptions = {}) {
-    this._environment.setSource(src, options);
+  setBackground(src: string, options: PanoOptions = {}): Promise<void> {
+    return this._environment.setSource(src, options);
   }
 
   isCursorVisible(): boolean {
@@ -113,6 +113,10 @@ export default class Compositor {
 
   prepareForRender(eye: ?string) {
     this._environment.prepareForRender(eye);
+  }
+
+  frame(delta: number) {
+    this._environment.frame(delta);
   }
 
   render(position: Vec3, quat: Quaternion) {

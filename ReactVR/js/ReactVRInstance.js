@@ -59,6 +59,7 @@ export default class ReactVRInstance {
   _eventLayer: HTMLElement;
   _events: Array<InputEvent>;
   _frameData: ?VRFrameData;
+  _lastFrameTime: number;
   _looping: boolean;
   _nextFrame: null | AnimationFrameData;
   _rays: Array<Ray>;
@@ -91,6 +92,7 @@ export default class ReactVRInstance {
     }
     this._looping = false;
     this._nextFrame = null;
+    this._lastFrameTime = 0;
 
     this._eventLayer = document.createElement('div');
     this._eventLayer.style.width = `${parent.clientWidth}px`;
@@ -146,7 +148,13 @@ export default class ReactVRInstance {
    * Core of the app rendering loop - gathers input, updates the React app, and
    * re-renders from the latest point of view.
    */
-  frame() {
+  frame(ms: number) {
+    const frameStart = ms || 0;
+    if (this._lastFrameTime === 0) {
+      this._lastFrameTime = frameStart;
+    }
+    const delta = Math.min(frameStart - this._lastFrameTime, 100);
+    this._lastFrameTime = frameStart;
     this._events.length = 0;
     this._rays.length = 0;
     this.controls.fillEvents(this._events);
@@ -188,6 +196,7 @@ export default class ReactVRInstance {
       this.compositor.getCamera(),
       this.compositor.getRenderer(),
     );
+    this.compositor.frame(delta);
 
     this.overlay.setCameraRotation(this._cameraQuat);
 
@@ -275,7 +284,7 @@ export default class ReactVRInstance {
       return;
     }
     this._looping = true;
-    this.frame();
+    this.frame(0);
   }
 
   /**
