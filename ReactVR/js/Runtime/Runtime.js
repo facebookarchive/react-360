@@ -19,7 +19,6 @@ import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
 import {ReactNativeContext} from '../ReactNativeContext';
-import {rotateByQuaternion} from '../Utils/Math';
 
 type LocationNode = {
   location: Location,
@@ -169,12 +168,6 @@ export default class Runtime {
       // TODO: Support multiple raycasters
       const ray = rays[0];
 
-      // Place the ray relative to camera space
-      ray.origin[0] += cameraPosition[0];
-      ray.origin[1] += cameraPosition[1];
-      ray.origin[2] += cameraPosition[2];
-      rotateByQuaternion(ray.direction, cameraQuat);
-
       // This will get replaced with the trig-based raycaster for surfaces
       let firstHit = null;
       raycaster.ray.origin.fromArray(ray.origin);
@@ -219,5 +212,20 @@ export default class Runtime {
 
   isMouseCursorActive(): boolean {
     return this.guiSys.mouseCursorActive;
+  }
+
+  isCursorActive(): boolean {
+    const lastHit = this.guiSys._cursor.lastHit;
+    const lastAlmostHit = this.guiSys._cursor.lastAlmostHit;
+    let active = lastHit && lastHit.isInteractable;
+    if (!active) {
+      active = lastAlmostHit && lastAlmostHit.isInteractable;
+    }
+    return !!active;
+  }
+
+  getCursorDepth(): number {
+    // Will derive from React components
+    return 2;
   }
 }

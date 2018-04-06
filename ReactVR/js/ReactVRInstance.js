@@ -30,6 +30,7 @@ import Runtime, {
   type NativeModuleInitializer,
   type RuntimeOptions,
 } from './Runtime/Runtime';
+import {rotateByQuaternion} from './Utils/Math';
 
 type Root = {
   initialProps: Object,
@@ -101,7 +102,6 @@ export default class ReactVRInstance {
     this._eventLayer.style.height = `${parent.clientHeight}px`;
     parent.appendChild(this._eventLayer);
     this.scene = new THREE.Scene();
-    this.compositor = new Compositor(this._eventLayer, this.scene);
     this.controls = new Controls();
     this.overlay = new Overlay(parent);
 
@@ -114,6 +114,8 @@ export default class ReactVRInstance {
       bundleFromLocation(bundle),
       runtimeOptions,
     );
+    this.compositor = new Compositor(this._eventLayer, this.scene);
+
     this.vrState = new VRState();
     this.vrState.onDisplayChange(display => {
       if (display) {
@@ -191,6 +193,16 @@ export default class ReactVRInstance {
         this._cameraQuat,
       );
     }
+    if (this._rays.length > 0) {
+      for (let i = 0; i < this._rays.length; i++) {
+        const ray = this._rays[i];
+        // Place the ray relative to camera space
+        ray.origin[0] += this._cameraPosition[0];
+        ray.origin[1] += this._cameraPosition[1];
+        ray.origin[2] += this._cameraPosition[2];
+        rotateByQuaternion(ray.direction, this._cameraQuat);
+      }
+    }
     // Update runtime
     // Compute intersections
     this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
@@ -201,6 +213,15 @@ export default class ReactVRInstance {
       this.compositor.getRenderer(),
     );
     this.compositor.frame(delta);
+    const cursorVis = this.compositor.getCursorVisibility();
+    if (
+      cursorVis === 'visible' ||
+      (cursorVis === 'auto' && this.runtime.isCursorActive())
+    ) {
+      this.compositor.updateCursor(this._rays, this.runtime.getCursorDepth());
+    } else {
+      this.compositor.updateCursor(null, 0);
+    }
 
     this.overlay.setCameraRotation(this._cameraQuat);
 
@@ -267,7 +288,7 @@ export default class ReactVRInstance {
     if (!this._looping) {
       this.start();
     }
-    this.scene.add(surface.getNode());
+    this.compositor.showSurface(surface);
     return this.runtime.createRootView(root.name, root.initialProps, surface);
   }
 

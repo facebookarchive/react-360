@@ -10,9 +10,10 @@
  */
 
 import * as THREE from 'three';
-import {type Quaternion, type Vec3} from '../Controls/Types';
+import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import createRemoteImageManager from '../Utils/createRemoteImageManager';
 import type ResourceManager from '../Utils/ResourceManager';
+import Cursor from './Cursor';
 import Environment, {type PanoOptions} from './Environment/Environment';
 import Surface from './Surface';
 
@@ -27,19 +28,21 @@ rightCamera.matrixAutoUpdate = false;
 export default class Compositor {
   _camera: THREE.Camera;
   _canvas: HTMLCanvasElement;
+  _cursor: Cursor;
+  _cursorVisibility: string;
   _defaultSurface: ?Surface;
   _environment: Environment;
   _frame: HTMLElement;
-  _isCursorVisible: boolean;
   _isMouseCursorActive: boolean;
   _renderer: THREE.WebGLRenderer;
   _scene: THREE.Scene;
+  _surfaceRoot: THREE.Object3D;
   _surfaces: {[name: string]: Surface};
   _resourceManager: ResourceManager<Image>;
 
   constructor(frame: HTMLElement, scene: THREE.Scene) {
     this._frame = frame;
-    this._isCursorVisible = false;
+    this._cursorVisibility = 'auto';
     this._isMouseCursorActive = false;
     this._defaultSurface = null;
     this._surfaces = {};
@@ -48,7 +51,7 @@ export default class Compositor {
     this._camera = new THREE.PerspectiveCamera(
       60,
       frame.clientWidth / frame.clientHeight,
-      1,
+      0.1,
       1000,
     );
     this._renderer = new THREE.WebGLRenderer({
@@ -62,18 +65,24 @@ export default class Compositor {
 
     this._environment = new Environment(this._resourceManager);
     scene.add(this._environment.getPanoNode());
+
+    this._surfaceRoot = new THREE.Object3D();
+    scene.add(this._surfaceRoot);
+
+    this._cursor = new Cursor();
+    scene.add(this._cursor.getMesh());
   }
 
-  setCursorVisibility(vis: boolean) {
-    this._isCursorVisible = vis;
+  setCursorVisibility(vis: string) {
+    this._cursorVisibility = vis;
   }
 
   setBackground(src: string, options: PanoOptions = {}): Promise<void> {
     return this._environment.setSource(src, options);
   }
 
-  isCursorVisible(): boolean {
-    return this._isCursorVisible;
+  getCursorVisibility(): string {
+    return this._cursorVisibility;
   }
 
   setMouseCursorActive(active: boolean) {
@@ -90,6 +99,10 @@ export default class Compositor {
       );
     }
     this._surfaces[name] = surface;
+  }
+
+  showSurface(surface: Surface) {
+    this._surfaceRoot.add(surface.getNode());
   }
 
   getSurface(name: string): ?Surface {
@@ -126,6 +139,25 @@ export default class Compositor {
 
   frame(delta: number) {
     this._environment.frame(delta);
+  }
+
+  updateCursor(rays: ?Array<Ray>, depth: number) {
+    if (!rays || rays.length < 1) {
+      this._cursor.hide();
+      return;
+    }
+    // TODO: extend to multiple rays
+    if (!rays[0].drawsCursor) {
+      this._cursor.hide();
+      return;
+    }
+    this._cursor.show();
+    const origin = rays[0].origin;
+    const direction = rays[0].direction;
+    const cameraToCursorX = origin[0] + direction[0] * depth;
+    const cameraToCursorY = origin[1] + direction[1] * depth;
+    const cameraToCursorZ = origin[2] + direction[2] * depth;
+    this._cursor.setPosition(cameraToCursorX, cameraToCursorY, cameraToCursorZ);
   }
 
   render(position: Vec3, quat: Quaternion) {

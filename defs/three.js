@@ -48,6 +48,7 @@ declare module 'three' {
   }
 
   declare class PlaneGeometry extends Geometry {
+    constructor(number, number): PlaneGeometry;
     constructor(number, number, number, number): PlaneGeometry;
   }
 
@@ -134,9 +135,12 @@ declare module 'three' {
 
   declare class Material {
     color: Color;
+    depthTest: boolean;
+    depthWrite: boolean;
     map: ?Texture;
     needsUpdate: boolean;
     opacity: number;
+    renderOrder: number;
     shading: number;
     transparent: boolean;
     url: string;
@@ -158,6 +162,7 @@ declare module 'three' {
     material: Material | Array<Material>;
     name: string;
     needsUpdate: boolean;
+    raycast: (...any) => any;
     scale: Vector3;
     visible: boolean;
 
