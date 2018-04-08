@@ -20,10 +20,17 @@ import MousePanCameraController from './Controls/CameraControllers/MousePanCamer
 import Controls from './Controls/Controls';
 import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
 import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
+import MouseInputChannel from './Controls/InputChannels/MouseInputChannel';
+import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
 import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
-import Runtime from './Runtime/Runtime';
+import type Module from './Modules/Module';
+import Runtime, {
+  type NativeModuleInitializer,
+  type RuntimeOptions,
+} from './Runtime/Runtime';
+import {rotateByQuaternion} from './Utils/Math';
 
 type Root = {
   initialProps: Object,
@@ -40,6 +47,10 @@ type AnimationFrameData =
       vr: false,
     };
 
+export type ReactVROptions = {
+  nativeModules?: Array<Module | NativeModuleInitializer>,
+};
+
 /**
  * New top-level class for the panel-first design of React VR aligned with
  * native platform capabilities.
@@ -51,6 +62,7 @@ export default class ReactVRInstance {
   _eventLayer: HTMLElement;
   _events: Array<InputEvent>;
   _frameData: ?VRFrameData;
+  _lastFrameTime: number;
   _looping: boolean;
   _nextFrame: null | AnimationFrameData;
   _rays: Array<Ray>;
@@ -65,7 +77,11 @@ export default class ReactVRInstance {
    * Create a new instance of a React VR app, given a path to the React VR JS
    * bundle and a DOM component to mount within.
    */
-  constructor(bundle: string, parent: HTMLElement) {
+  constructor(
+    bundle: string,
+    parent: HTMLElement,
+    options: ReactVROptions = {},
+  ) {
     (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);
 
@@ -79,16 +95,27 @@ export default class ReactVRInstance {
     }
     this._looping = false;
     this._nextFrame = null;
+    this._lastFrameTime = 0;
 
     this._eventLayer = document.createElement('div');
     this._eventLayer.style.width = `${parent.clientWidth}px`;
     this._eventLayer.style.height = `${parent.clientHeight}px`;
     parent.appendChild(this._eventLayer);
     this.scene = new THREE.Scene();
-    this.compositor = new Compositor(this._eventLayer, this.scene);
     this.controls = new Controls();
     this.overlay = new Overlay(parent);
-    this.runtime = new Runtime(this.scene, bundleFromLocation(bundle));
+
+    const runtimeOptions: RuntimeOptions = {};
+    if (options.nativeModules) {
+      runtimeOptions.nativeModules = options.nativeModules;
+    }
+    this.runtime = new Runtime(
+      this.scene,
+      bundleFromLocation(bundle),
+      runtimeOptions,
+    );
+    this.compositor = new Compositor(this._eventLayer, this.scene);
+
     this.vrState = new VRState();
     this.vrState.onDisplayChange(display => {
       if (display) {
@@ -102,6 +129,8 @@ export default class ReactVRInstance {
     const raycaster = new MouseRaycaster(this._eventLayer);
     raycaster.enable();
     this.controls.addCameraController(cameraController);
+    this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
+    this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
     this.controls.addEventChannel(new GamepadInputChannel());
     this.controls.addRaycaster(raycaster);
@@ -125,7 +154,13 @@ export default class ReactVRInstance {
    * Core of the app rendering loop - gathers input, updates the React app, and
    * re-renders from the latest point of view.
    */
-  frame() {
+  frame(ms: number) {
+    const frameStart = ms || 0;
+    if (this._lastFrameTime === 0) {
+      this._lastFrameTime = frameStart;
+    }
+    const delta = Math.min(frameStart - this._lastFrameTime, 100);
+    this._lastFrameTime = frameStart;
     this._events.length = 0;
     this._rays.length = 0;
     this.controls.fillEvents(this._events);
@@ -158,6 +193,16 @@ export default class ReactVRInstance {
         this._cameraQuat,
       );
     }
+    if (this._rays.length > 0) {
+      for (let i = 0; i < this._rays.length; i++) {
+        const ray = this._rays[i];
+        // Place the ray relative to camera space
+        ray.origin[0] += this._cameraPosition[0];
+        ray.origin[1] += this._cameraPosition[1];
+        ray.origin[2] += this._cameraPosition[2];
+        rotateByQuaternion(ray.direction, this._cameraQuat);
+      }
+    }
     // Update runtime
     // Compute intersections
     this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
@@ -167,8 +212,20 @@ export default class ReactVRInstance {
       this.compositor.getCamera(),
       this.compositor.getRenderer(),
     );
+    this.compositor.frame(delta);
+    const cursorVis = this.compositor.getCursorVisibility();
+    if (
+      cursorVis === 'visible' ||
+      (cursorVis === 'auto' && this.runtime.isCursorActive())
+    ) {
+      this.compositor.updateCursor(this._rays, this.runtime.getCursorDepth());
+    } else {
+      this.compositor.updateCursor(null, 0);
+    }
 
     this.overlay.setCameraRotation(this._cameraQuat);
+
+    this.compositor.setMouseCursorActive(this.runtime.isMouseCursorActive());
 
     if (display && display.isPresenting && frameData) {
       this.compositor.renderVR(display, frameData);
@@ -231,7 +288,7 @@ export default class ReactVRInstance {
     if (!this._looping) {
       this.start();
     }
-    this.scene.add(surface.getNode());
+    this.compositor.showSurface(surface);
     return this.runtime.createRootView(root.name, root.initialProps, surface);
   }
 
@@ -254,7 +311,7 @@ export default class ReactVRInstance {
       return;
     }
     this._looping = true;
-    this.frame();
+    this.frame(0);
   }
 
   /**

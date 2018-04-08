@@ -11,18 +11,24 @@
 
 import {GuiSys} from 'ovrui';
 import * as THREE from 'three';
-import type ReactExecutor from '../Executor/ReactExecutor';
-import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
 import Location from '../Compositor/Location';
 import Surface from '../Compositor/Surface';
+import type ReactExecutor from '../Executor/ReactExecutor';
+import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
+import type Module from '../Modules/Module';
 import {ReactNativeContext} from '../ReactNativeContext';
-import {rotateByQuaternion} from '../Utils/Math';
 
 type LocationNode = {
   location: Location,
   node: THREE.Object3D,
+};
+
+export type NativeModuleInitializer = ReactNativeContext => Module;
+
+export type RuntimeOptions = {
+  nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
 const raycaster = new THREE.Raycaster();
@@ -47,18 +53,35 @@ function intersectObject(
  * the Compositor how to render everything.
  */
 export default class Runtime {
+  _initialized: boolean;
   _rootLocations: Array<LocationNode>;
   context: ReactNativeContext;
   executor: ReactExecutor;
   guiSys: GuiSys;
 
-  constructor(scene: THREE.Scene, bundle: string) {
+  constructor(
+    scene: THREE.Scene,
+    bundle: string,
+    options: RuntimeOptions = {},
+  ) {
     this._rootLocations = [];
     this.executor = new ReactExecutorWebWorker({
       enableDevTools: false,
     });
     this.guiSys = new GuiSys(scene, {});
     this.context = new ReactNativeContext(this.guiSys, this.executor, {});
+    const modules = options.nativeModules;
+    if (modules) {
+      for (let i = 0; i < modules.length; i++) {
+        const m = modules[i];
+        if (typeof m === 'function') {
+          // module initializer
+          this.context.registerModule(m(this.context));
+        } else {
+          this.context.registerModule(m);
+        }
+      }
+    }
     this.context.init(bundle);
   }
 
@@ -145,12 +168,6 @@ export default class Runtime {
       // TODO: Support multiple raycasters
       const ray = rays[0];
 
-      // Place the ray relative to camera space
-      ray.origin[0] += cameraPosition[0];
-      ray.origin[1] += cameraPosition[1];
-      ray.origin[2] += cameraPosition[2];
-      rotateByQuaternion(ray.direction, cameraQuat);
-
       // This will get replaced with the trig-based raycaster for surfaces
       let firstHit = null;
       raycaster.ray.origin.fromArray(ray.origin);
@@ -191,5 +208,24 @@ export default class Runtime {
         ray.drawsCursor,
       );
     }
+  }
+
+  isMouseCursorActive(): boolean {
+    return this.guiSys.mouseCursorActive;
+  }
+
+  isCursorActive(): boolean {
+    const lastHit = this.guiSys._cursor.lastHit;
+    const lastAlmostHit = this.guiSys._cursor.lastAlmostHit;
+    let active = lastHit && lastHit.isInteractable;
+    if (!active) {
+      active = lastAlmostHit && lastAlmostHit.isInteractable;
+    }
+    return !!active;
+  }
+
+  getCursorDepth(): number {
+    // Will derive from React components
+    return 2;
   }
 }

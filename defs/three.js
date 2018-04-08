@@ -48,6 +48,7 @@ declare module 'three' {
   }
 
   declare class PlaneGeometry extends Geometry {
+    constructor(number, number): PlaneGeometry;
     constructor(number, number, number, number): PlaneGeometry;
   }
 
@@ -92,10 +93,14 @@ declare module 'three' {
   }
 
   declare class Color {
+    r: number;
+    g: number;
+    b: number;
     constructor(): this;
     constructor(number, number, number): this;
     constructor(Color): this;
     setHex(number): void;
+    setRGB(number, number, number): this;
     set(number): void;
   }
 
@@ -130,9 +135,12 @@ declare module 'three' {
 
   declare class Material {
     color: Color;
+    depthTest: boolean;
+    depthWrite: boolean;
     map: ?Texture;
     needsUpdate: boolean;
     opacity: number;
+    renderOrder: number;
     shading: number;
     transparent: boolean;
     url: string;
@@ -154,6 +162,7 @@ declare module 'three' {
     material: Material | Array<Material>;
     name: string;
     needsUpdate: boolean;
+    raycast: (...any) => any;
     scale: Vector3;
     visible: boolean;
 
