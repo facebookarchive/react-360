@@ -14,7 +14,7 @@ import bundleFromLocation from './bundleFromLocation';
 import Compositor from './Compositor/Compositor';
 import Location from './Compositor/Location';
 import type Surface from './Compositor/Surface';
-import Overlay from './Compositor/Overlay';
+import Overlay, {type OverlayInterface} from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
 import Controls from './Controls/Controls';
@@ -48,6 +48,7 @@ type AnimationFrameData =
     };
 
 export type ReactVROptions = {
+  customOverlay?: OverlayInterface,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
@@ -68,7 +69,7 @@ export default class ReactVRInstance {
   _rays: Array<Ray>;
   controls: Controls;
   compositor: Compositor;
-  overlay: Overlay;
+  overlay: OverlayInterface;
   runtime: Runtime;
   scene: THREE.Scene;
   vrState: VRState;
@@ -103,7 +104,7 @@ export default class ReactVRInstance {
     parent.appendChild(this._eventLayer);
     this.scene = new THREE.Scene();
     this.controls = new Controls();
-    this.overlay = new Overlay(parent);
+    this.overlay = options.customOverlay || new Overlay(parent);
 
     const runtimeOptions: RuntimeOptions = {};
     if (options.nativeModules) {

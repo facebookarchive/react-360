@@ -83,7 +83,12 @@ const VR_BUTTON_LABEL_STYLES = {
   verticalAlign: 'top',
 };
 
-export default class Overlay {
+export interface OverlayInterface {
+  setCameraRotation(quat: Quaternion): void;
+  setVRButtonState(visible: boolean, text: string, handler: ?Handler): void;
+}
+
+export default class Overlay implements OverlayInterface {
   _compass: Element;
   _vrButton: HTMLElement;
   _vrButtonHandler: ?Handler;
