@@ -75,14 +75,5 @@ export default class Controls {
         return;
       }
     }
-
-    // No camera controllers returned a position or rotation
-    position[0] = 0;
-    position[1] = 0;
-    position[2] = 0;
-    rotation[0] = 0;
-    rotation[1] = 0;
-    rotation[2] = 0;
-    rotation[3] = 1;
   }
 }

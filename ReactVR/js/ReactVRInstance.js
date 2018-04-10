@@ -14,9 +14,10 @@ import bundleFromLocation from './bundleFromLocation';
 import Compositor from './Compositor/Compositor';
 import Location from './Compositor/Location';
 import type Surface from './Compositor/Surface';
-import Overlay from './Compositor/Overlay';
+import Overlay, {type OverlayInterface} from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
+import DeviceOrientationCameraController from './Controls/CameraControllers/DeviceOrientationCameraController';
 import Controls from './Controls/Controls';
 import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
 import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
@@ -48,6 +49,7 @@ type AnimationFrameData =
     };
 
 export type ReactVROptions = {
+  customOverlay?: OverlayInterface,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
@@ -68,7 +70,7 @@ export default class ReactVRInstance {
   _rays: Array<Ray>;
   controls: Controls;
   compositor: Compositor;
-  overlay: Overlay;
+  overlay: OverlayInterface;
   runtime: Runtime;
   scene: THREE.Scene;
   vrState: VRState;
@@ -103,7 +105,7 @@ export default class ReactVRInstance {
     parent.appendChild(this._eventLayer);
     this.scene = new THREE.Scene();
     this.controls = new Controls();
-    this.overlay = new Overlay(parent);
+    this.overlay = options.customOverlay || new Overlay(parent);
 
     const runtimeOptions: RuntimeOptions = {};
     if (options.nativeModules) {
@@ -125,10 +127,14 @@ export default class ReactVRInstance {
       }
     });
 
-    const cameraController = new MousePanCameraController(this._eventLayer);
     const raycaster = new MouseRaycaster(this._eventLayer);
     raycaster.enable();
-    this.controls.addCameraController(cameraController);
+    this.controls.addCameraController(
+      new DeviceOrientationCameraController(this._eventLayer),
+    );
+    this.controls.addCameraController(
+      new MousePanCameraController(this._eventLayer),
+    );
     this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
