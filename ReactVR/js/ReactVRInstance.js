@@ -17,6 +17,7 @@ import type Surface from './Compositor/Surface';
 import Overlay, {type OverlayInterface} from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
+import DeviceOrientationCameraController from './Controls/CameraControllers/DeviceOrientationCameraController';
 import Controls from './Controls/Controls';
 import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
 import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
@@ -126,10 +127,14 @@ export default class ReactVRInstance {
       }
     });
 
-    const cameraController = new MousePanCameraController(this._eventLayer);
     const raycaster = new MouseRaycaster(this._eventLayer);
     raycaster.enable();
-    this.controls.addCameraController(cameraController);
+    this.controls.addCameraController(
+      new DeviceOrientationCameraController(this._eventLayer),
+    );
+    this.controls.addCameraController(
+      new MousePanCameraController(this._eventLayer),
+    );
     this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());

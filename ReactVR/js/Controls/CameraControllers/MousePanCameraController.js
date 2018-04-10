@@ -18,72 +18,122 @@ const HALF_PI = Math.PI / 2;
 export default class MousePanCameraController implements CameraController {
   _deltaYaw: number;
   _deltaPitch: number;
-  _dragging: boolean;
+  _draggingMouse: boolean;
+  _draggingTouch: boolean;
   _enabled: boolean;
   _frame: HTMLElement;
-  _lastX: number;
-  _lastY: number;
+  _lastMouseX: number;
+  _lastMouseY: number;
+  _lastTouchX: number;
+  _lastTouchY: number;
   _verticalFov: number;
 
   constructor(frame: HTMLElement, fov: number = DEFAULT_FOV) {
     this._deltaYaw = 0;
     this._deltaPitch = 0;
-    this._dragging = false;
+    this._draggingMouse = false;
+    this._draggingTouch = false;
     this._enabled = true;
     this._frame = frame;
-    this._lastX = 0;
-    this._lastY = 0;
+    this._lastMouseX = 0;
+    this._lastMouseY = 0;
+    this._lastTouchX = 0;
+    this._lastTouchY = 0;
     this._verticalFov = fov;
 
     (this: any)._onMouseDown = this._onMouseDown.bind(this);
     (this: any)._onMouseMove = this._onMouseMove.bind(this);
     (this: any)._onMouseUp = this._onMouseUp.bind(this);
+    (this: any)._onTouchStart = this._onTouchStart.bind(this);
+    (this: any)._onTouchMove = this._onTouchMove.bind(this);
+    (this: any)._onTouchEnd = this._onTouchEnd.bind(this);
     this._frame.addEventListener('mousedown', this._onMouseDown);
     document.addEventListener('mousemove', this._onMouseMove);
     document.addEventListener('mouseup', this._onMouseUp);
+    this._frame.addEventListener('touchstart', this._onTouchStart);
+    this._frame.addEventListener('touchmove', this._onTouchMove);
+    this._frame.addEventListener('touchcancel', this._onTouchEnd);
+    this._frame.addEventListener('touchend', this._onTouchEnd);
   }
 
   _onMouseDown(e: MouseEvent) {
     if (!this._enabled) {
       return;
     }
-    this._dragging = true;
-    this._lastX = e.clientX;
-    this._lastY = e.clientY;
+    this._draggingMouse = true;
+    this._lastMouseX = e.clientX;
+    this._lastMouseY = e.clientY;
   }
 
   _onMouseMove(e: MouseEvent) {
-    if (!this._dragging) {
+    if (!this._draggingMouse) {
       return;
     }
     const width = this._frame.clientWidth;
     const height = this._frame.clientHeight;
     const aspect = width / height;
-    const deltaX = e.clientX - this._lastX;
-    const deltaY = e.clientY - this._lastY;
-    this._lastX = e.clientX;
-    this._lastY = e.clientY;
+    const deltaX = e.clientX - this._lastMouseX;
+    const deltaY = e.clientY - this._lastMouseY;
+    this._lastMouseX = e.clientX;
+    this._lastMouseY = e.clientY;
     this._deltaPitch += deltaX / width * this._verticalFov * aspect;
     this._deltaYaw += deltaY / height * this._verticalFov;
     this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
   }
 
   _onMouseUp() {
-    this._dragging = false;
+    this._draggingMouse = false;
+  }
+
+  _onTouchStart(e: TouchEvent) {
+    if (!this._enabled) {
+      return;
+    }
+    this._draggingTouch = true;
+    this._lastTouchX = e.changedTouches[0].clientX;
+    this._lastTouchY = e.changedTouches[0].clientY;
+  }
+
+  _onTouchMove(e: TouchEvent) {
+    if (!this._draggingTouch) {
+      return;
+    }
+    const x = e.changedTouches[0].clientX;
+    const y = e.changedTouches[0].clientY;
+    const width = this._frame.clientWidth;
+    const height = this._frame.clientHeight;
+    const aspect = width / height;
+    const deltaX = x - this._lastTouchX;
+    const deltaY = y - this._lastTouchY;
+    this._lastTouchX = x;
+    this._lastTouchY = y;
+    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
+    this._deltaYaw += deltaY / height * this._verticalFov;
+    this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
+  }
+
+  _onTouchEnd(e: TouchEvent) {
+    this._draggingTouch = false;
   }
 
   enable() {
     this._enabled = true;
-    this._dragging = false;
+    this._draggingMouse = false;
+    this._draggingTouch = false;
   }
 
   disable() {
     this._enabled = false;
-    this._dragging = false;
+    this._draggingMouse = false;
+    this._draggingTouch = false;
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
     if (!this._enabled) {
+      return false;
+    }
+
+    if (this._deltaPitch === 0 && this._deltaYaw === 0) {
       return false;
     }
 
