@@ -158,18 +158,22 @@ export default class Environment {
     return this._panoMesh;
   }
 
-  setSource(src: string, options: PanoOptions = {}): Promise<void> {
+  setSource(src: null | string, options: PanoOptions = {}): Promise<void> {
     if (this._resourceManager && this._panoSource) {
       this._resourceManager.removeReference(this._panoSource);
     }
     const oldSrc = this._panoSource;
     this._panoSource = src;
-    this._panoLoad = this._loadImage(src, options);
     const duration =
       typeof options.transition === 'number' ? options.transition : 500;
     // If the duration is zero, set the transition to complete on the next frame
     const transition = duration ? 1 / duration : 1;
     this._panoTransition = oldSrc ? -transition : 0;
+    if (!src) {
+      this._panoLoad = null;
+      return Promise.resolve();
+    }
+    this._panoLoad = this._loadImage(src, options);
     return this._panoLoad.then(data => {
       if (this._panoTransition === 0) {
         this._panoLoad = null;
