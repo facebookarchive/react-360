@@ -134,13 +134,15 @@ class GLTF2MeshInstance {
     }
     // stop any leftover animations
     const newActiveAnimations = {};
-    for (const key in definition.animations) {
-      const animName = 'animation_' + key;
+    for (const index in definition.animations) {
+      const key = definition.animations[index].key;
+      const num = isNaN(key) ? index : key;
+      const animName = 'animation_' + num;
       newActiveAnimations[animName] = true;
       // start animations which have yet to be started
       if (this.allAnimations[animName]) {
         const anim = this.allAnimations[animName];
-        const params = definition.animations[key];
+        const params = definition.animations[num];
         if (params) {
           anim.fadeIn(params.fadeTime ? params.fadeTime : 0);
           anim.setEffectiveTimeScale(params.timeScale ? params.timeScale : 1);
@@ -157,9 +159,9 @@ class GLTF2MeshInstance {
       delete this.activeAnimations[animName];
     }
     // stop any leftover animations
-    for (const key in this.activeAnimations) {
-      if (this.allAnimations[key]) {
-        this.allAnimations[key].stop();
+    for (const index in this.activeAnimations) {
+      if (this.allAnimations[index]) {
+        this.allAnimations[index].stop();
       }
     }
     this.activeAnimations = newActiveAnimations;
