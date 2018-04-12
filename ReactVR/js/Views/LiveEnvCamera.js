@@ -85,23 +85,40 @@ export default class RCTLiveEnvCamera extends RCTBaseView {
     navigator.getUserMedia =
       navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-    const constraints = {
-      video: {facingMode: {exact: 'environment'}},
-    };
     const video = document.createElement('video');
     const videoTexture = new THREE.Texture(video);
     videoTexture.minFilter = THREE.LinearFilter;
     this._video = video;
     this._videoTexture = videoTexture;
-    navigator.getUserMedia(
-      constraints,
-      stream => {
-        video.src = window.URL.createObjectURL(stream);
-      },
-      error => {
-        console.log('navigator.getUserMedia error: ', error);
-      }
-    );
+
+    navigator.mediaDevices.enumerateDevices()
+    .then(function(devices) {
+      console.log(devices);
+      const backCamera = devices.filter(device => device.label.indexOf("back") > -1)[0] // Back camera id in Oculus Browser
+        || devices[4]; // Back camera id in Samsung Internet VR
+
+      var videoConstraints = {
+        video: {
+            mandatory: {},
+            optional: [{
+                sourceId: backCamera.deviceId
+            }]
+        }
+      };
+
+      navigator.getUserMedia(
+        videoConstraints,
+        stream => {
+          video.src = window.URL.createObjectURL(stream);
+        },
+        error => {
+          console.log('navigator.getUserMedia error: ', error);
+        }
+      );
+    })
+    .catch(function(err) {
+      console.log(err.name + ": " + err.message);
+    });
 
     this._sphereGeometry = new THREE.SphereGeometry(SPHERE_RADIUS, 5, 5);
     this._material = new THREE.ShaderMaterial({
