@@ -26,6 +26,7 @@ import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
 import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
+import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import type Module from './Modules/Module';
 import Runtime, {
   type NativeModuleInitializer,
@@ -127,8 +128,6 @@ export default class ReactVRInstance {
       }
     });
 
-    const raycaster = new MouseRaycaster(this._eventLayer);
-    raycaster.enable();
     this.controls.addCameraController(
       new DeviceOrientationCameraController(this._eventLayer),
     );
@@ -139,7 +138,8 @@ export default class ReactVRInstance {
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
     this.controls.addEventChannel(new GamepadInputChannel());
-    this.controls.addRaycaster(raycaster);
+    this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
+    this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
   }
 
   /**

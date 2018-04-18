@@ -12,6 +12,7 @@
 import {type Quaternion, type Ray, type Vec3} from './Types';
 import {type CameraController} from './CameraControllers/Types';
 import {type InputChannel, type InputEvent} from './InputChannels/Types';
+import {type Raycaster} from './Raycasters/Types';
 
 export default class Controls {
   cameraControllers: Array<CameraController>;
@@ -34,7 +35,7 @@ export default class Controls {
     this.eventChannels.push(channel);
   }
 
-  addRaycaster(caster: any) {
+  addRaycaster(caster: Raycaster) {
     this.raycasters.push(caster);
     this._rayObjects.push({
       direction: [0, 0, 0],
@@ -43,6 +44,30 @@ export default class Controls {
       origin: [0, 0, 0],
       type: '',
     });
+  }
+
+  clearCameraControllers() {
+    this.cameraControllers.length = 0;
+  }
+
+  clearEventChannels() {
+    this.eventChannels.length = 0;
+  }
+
+  clearRaycasters() {
+    this.raycasters.length = 0;
+  }
+
+  getCameraControllers(): Array<CameraController> {
+    return this.cameraControllers.slice();
+  }
+
+  getEventChannels(): Array<InputChannel> {
+    return this.eventChannels.slice();
+  }
+
+  getRaycasters(): Array<Raycaster> {
+    return this.raycasters.slice();
   }
 
   fillEvents(queue: Array<InputEvent>) {

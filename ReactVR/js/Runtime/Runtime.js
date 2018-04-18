@@ -164,50 +164,52 @@ export default class Runtime {
   }
 
   setRays(rays: Array<Ray>, cameraPosition: Vec3, cameraQuat: Quaternion) {
-    if (rays.length > 0) {
-      // TODO: Support multiple raycasters
-      const ray = rays[0];
-
-      // This will get replaced with the trig-based raycaster for surfaces
-      let firstHit = null;
-      raycaster.ray.origin.fromArray(ray.origin);
-      raycaster.ray.direction.fromArray(ray.direction);
-      const hits = raycaster.intersectObject(this.guiSys.root, true);
-      for (let i = 0; i < hits.length; i++) {
-        let hit = hits[i];
-        if (hit.uv && hit.object && hit.object.subScene) {
-          const distanceToSubscene = hit.distance;
-          const scene = hit.object.subScene;
-          raycaster.ray.origin.set(
-            scene._rttWidth * hit.uv.x,
-            scene._rttHeight * (1 - hit.uv.y),
-            0.1,
-          );
-          raycaster.ray.direction.set(0, 0, -1);
-          const subHits = [];
-          intersectObject(scene, raycaster, subHits);
-          if (subHits.length === 0) {
-            continue;
-          }
-          hit = subHits[subHits.length - 1];
-          hit.distance = distanceToSubscene;
-        }
-        if (!firstHit && !hit.isAlmostHit) {
-          firstHit = hit;
-        }
-      }
-      if (firstHit) {
-        this.guiSys.updateLastHit(firstHit.object, ray.type);
-        this.guiSys._cursor.intersectDistance = firstHit.distance;
-      } else {
-        this.guiSys.updateLastHit(null, ray.type);
-      }
-      this.guiSys.setCursorProperties(
-        ray.origin.slice(),
-        ray.direction.slice(),
-        ray.drawsCursor,
-      );
+    if (rays.length < 1) {
+      this.guiSys.updateLastHit(null, '');
+      return;
     }
+    // TODO: Support multiple raycasters
+    const ray = rays[0];
+
+    // This will get replaced with the trig-based raycaster for surfaces
+    let firstHit = null;
+    raycaster.ray.origin.fromArray(ray.origin);
+    raycaster.ray.direction.fromArray(ray.direction);
+    const hits = raycaster.intersectObject(this.guiSys.root, true);
+    for (let i = 0; i < hits.length; i++) {
+      let hit = hits[i];
+      if (hit.uv && hit.object && hit.object.subScene) {
+        const distanceToSubscene = hit.distance;
+        const scene = hit.object.subScene;
+        raycaster.ray.origin.set(
+          scene._rttWidth * hit.uv.x,
+          scene._rttHeight * (1 - hit.uv.y),
+          0.1,
+        );
+        raycaster.ray.direction.set(0, 0, -1);
+        const subHits = [];
+        intersectObject(scene, raycaster, subHits);
+        if (subHits.length === 0) {
+          continue;
+        }
+        hit = subHits[subHits.length - 1];
+        hit.distance = distanceToSubscene;
+      }
+      if (!firstHit && !hit.isAlmostHit) {
+        firstHit = hit;
+      }
+    }
+    if (firstHit) {
+      this.guiSys.updateLastHit(firstHit.object, ray.type);
+      this.guiSys._cursor.intersectDistance = firstHit.distance;
+    } else {
+      this.guiSys.updateLastHit(null, ray.type);
+    }
+    this.guiSys.setCursorProperties(
+      ray.origin.slice(),
+      ray.direction.slice(),
+      ray.drawsCursor,
+    );
   }
 
   isMouseCursorActive(): boolean {

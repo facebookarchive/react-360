@@ -12,14 +12,16 @@
 import {type Ray, type Vec3} from '../Types';
 import {type Raycaster} from './Types';
 
-const TYPE = 'mouse';
+const TYPE = 'touch';
+const TOUCH_RELEASE_DELAY = 300;
 
-export default class MouseRaycaster implements Raycaster {
+export default class TouchRaycaster implements Raycaster {
   _enabled: boolean;
   _fov: number;
   _frame: HTMLElement;
   _lastX: number | null;
   _lastY: number | null;
+  _touchReleaseTimeout: null | TimeoutID;
 
   constructor(frame: HTMLElement, fov: number = 60) {
     this._enabled = true;
@@ -27,21 +29,66 @@ export default class MouseRaycaster implements Raycaster {
     this._frame = frame;
     this._lastX = null;
     this._lastY = null;
+    this._touchReleaseTimeout = null;
 
-    (this: any)._onMouseMove = this._onMouseMove.bind(this);
-    frame.addEventListener('mousemove', this._onMouseMove);
+    (this: any)._onTouchMove = this._onTouchMove.bind(this);
+    (this: any)._onTouchEnd = this._onTouchEnd.bind(this);
+    (this: any)._resetLastReading = this._resetLastReading.bind(this);
+
+    frame.addEventListener('touchstart', this._onTouchMove);
+    frame.addEventListener('touchmove', this._onTouchMove);
+    frame.addEventListener('touchend', this._onTouchEnd);
+    frame.addEventListener('touchcancel', this._onTouchEnd);
   }
 
-  _onMouseMove(e: MouseEvent) {
+  _onTouchMove(e: TouchEvent) {
     if (!this._enabled) {
+      return;
+    }
+    const {targetTouches} = e;
+    if (!targetTouches || targetTouches.length < 1) {
+      this._endTouch();
       return;
     }
     const width = this._frame.clientWidth;
     const height = this._frame.clientHeight;
-    const x = e.offsetX / width * 2 - 1;
-    const y = -(e.offsetY / height) * 2 + 1;
+    const rawTouch = e.targetTouches[0];
+    let localX = rawTouch.pageX;
+    let localY = rawTouch.pageY;
+    let frame = this._frame;
+    while (frame && frame instanceof HTMLElement) {
+      localX -= frame.offsetLeft;
+      localY -= frame.offsetTop;
+      frame = frame.parentNode;
+    }
+    const x = localX / width * 2 - 1;
+    const y = -(localY / height) * 2 + 1;
     this._lastX = x;
     this._lastY = y;
+  }
+
+  _onTouchEnd(e: TouchEvent) {
+    if (!this._enabled) {
+      return;
+    }
+    this._endTouch();
+  }
+
+  _endTouch() {
+    if (this._touchReleaseTimeout) {
+      clearTimeout(this._touchReleaseTimeout);
+    }
+    // Set a timeout before clearing the last position. This accounts for the
+    // finger briefly leaving the screen.
+    this._touchReleaseTimeout = setTimeout(
+      this._resetLastReading,
+      TOUCH_RELEASE_DELAY,
+    );
+  }
+
+  _resetLastReading() {
+    this._lastX = null;
+    this._lastY = null;
   }
 
   enable() {
