@@ -52,6 +52,7 @@ type AnimationFrameData =
 
 export type ReactVROptions = {
   customOverlay?: OverlayInterface,
+  fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
@@ -68,7 +69,9 @@ export default class ReactVRInstance {
   _frameData: ?VRFrameData;
   _lastFrameTime: number;
   _looping: boolean;
+  _needsResize: boolean;
   _nextFrame: null | AnimationFrameData;
+  _parent: HTMLElement;
   _rays: Array<Ray>;
   controls: Controls;
   compositor: Compositor;
@@ -88,10 +91,13 @@ export default class ReactVRInstance {
   ) {
     (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);
+    (this: any)._onResize = this._onResize.bind(this);
 
     this._cameraPosition = [0, 0, 0];
     this._cameraQuat = [0, 0, 0, 1];
     this._events = [];
+    this._needsResize = false;
+    this._parent = parent;
     this._rays = [];
     this._frameData = null;
     if ('VRFrameData' in window) {
@@ -100,6 +106,18 @@ export default class ReactVRInstance {
     this._looping = false;
     this._nextFrame = null;
     this._lastFrameTime = 0;
+
+    if (options.fullScreen) {
+      parent.style.position = 'fixed';
+      parent.style.top = '0';
+      parent.style.left = '0';
+      parent.style.margin = '0';
+      parent.style.padding = '0';
+      parent.style.width = '100%';
+      parent.style.height = `${window.innerHeight}px`;
+
+      window.addEventListener('resize', this._onResize);
+    }
 
     this._eventLayer = document.createElement('div');
     this._eventLayer.style.width = `${parent.clientWidth}px`;
@@ -146,6 +164,10 @@ export default class ReactVRInstance {
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
   }
 
+  _onResize() {
+    this._needsResize = true;
+  }
+
   /**
    * New API for creating a root component, designed for mounting with
    * renderToSurface or renderToLocation commands.
@@ -171,6 +193,15 @@ export default class ReactVRInstance {
     }
     const delta = Math.min(frameStart - this._lastFrameTime, 100);
     this._lastFrameTime = frameStart;
+
+    if (this._needsResize) {
+      const height = window.innerHeight;
+      const width = this._parent.clientWidth;
+      this._parent.style.height = `${height}px`;
+      this.resize(width, height);
+      this._needsResize = false;
+    }
+
     this._events.length = 0;
     this._rays.length = 0;
     this.controls.fillEvents(this._events);
@@ -366,5 +397,11 @@ export default class ReactVRInstance {
           1,
         );
       });
+  }
+
+  resize(width: number, height: number) {
+    this._eventLayer.style.width = `${width}px`;
+    this._eventLayer.style.height = `${height}px`;
+    this.compositor.resizeCanvas(width, height);
   }
 }
