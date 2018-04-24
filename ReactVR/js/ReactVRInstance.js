@@ -28,11 +28,9 @@ import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
+import AudioModule from './Modules/AudioModule';
 import type Module from './Modules/Module';
-import Runtime, {
-  type NativeModuleInitializer,
-  type RuntimeOptions,
-} from './Runtime/Runtime';
+import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
 import {rotateByQuaternion} from './Utils/Math';
 
 type Root = {
@@ -61,6 +59,7 @@ export type ReactVROptions = {
  * native platform capabilities.
  */
 export default class ReactVRInstance {
+  _audioModule: ?AudioModule;
   _cameraPosition: Vec3;
   _cameraQuat: Quaternion;
   _defaultLocation: Location;
@@ -127,10 +126,17 @@ export default class ReactVRInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
-    const runtimeOptions: RuntimeOptions = {};
-    if (options.nativeModules) {
-      runtimeOptions.nativeModules = options.nativeModules;
-    }
+    const runtimeOptions = {
+      nativeModules: [
+        ctx => {
+          const audio = new AudioModule(ctx);
+          this._audioModule = audio;
+          return audio;
+        },
+        ...(options.nativeModules || []),
+      ],
+      customViews: [],
+    };
     this.runtime = new Runtime(
       this.scene,
       bundleFromLocation(bundle),
@@ -253,6 +259,11 @@ export default class ReactVRInstance {
       this.compositor.getCamera(),
       this.compositor.getRenderer(),
     );
+    if (this._audioModule) {
+      const audioModule = this._audioModule;
+      audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
+      audioModule.frame(delta);
+    }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
     if (
