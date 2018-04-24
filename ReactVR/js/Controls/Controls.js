@@ -17,7 +17,7 @@ import {type Raycaster} from './Raycasters/Types';
 export default class Controls {
   cameraControllers: Array<CameraController>;
   eventChannels: Array<InputChannel>;
-  raycasters: Array<any>;
+  raycasters: Array<Raycaster>;
   _rayObjects: Array<Ray>;
 
   constructor() {
@@ -40,6 +40,7 @@ export default class Controls {
     this._rayObjects.push({
       direction: [0, 0, 0],
       drawsCursor: false,
+      hasAbsoluteCoordinates: false,
       maxLength: Infinity,
       origin: [0, 0, 0],
       type: '',
@@ -88,6 +89,7 @@ export default class Controls {
         rayObject.type = caster.getType();
         rayObject.maxLength = caster.getMaxLength();
         rayObject.drawsCursor = caster.drawsCursor();
+        rayObject.hasAbsoluteCoordinates = caster.hasAbsoluteCoordinates();
         queue.push(rayObject);
       }
     }

@@ -16,6 +16,7 @@ export type Vec3 = [number, number, number];
 export type Ray = {
   direction: [number, number, number],
   drawsCursor: boolean,
+  hasAbsoluteCoordinates: boolean,
   maxLength: number,
   origin: [number, number, number],
   type: string,

@@ -9,7 +9,7 @@
  * @flow
  */
 
-import {type Ray, type Vec3} from '../Types';
+import {type Vec3} from '../Types';
 import {type Raycaster} from './Types';
 
 const TYPE = 'mouse';
@@ -60,7 +60,7 @@ export default class MouseRaycaster implements Raycaster {
     return Infinity;
   }
 
-  fillDirection(direction: Ray): boolean {
+  fillDirection(direction: Vec3): boolean {
     if (!this._enabled) {
       return false;
     }
@@ -95,6 +95,10 @@ export default class MouseRaycaster implements Raycaster {
   }
 
   drawsCursor() {
+    return false;
+  }
+
+  hasAbsoluteCoordinates() {
     return false;
   }
 }

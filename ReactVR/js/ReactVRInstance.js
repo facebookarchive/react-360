@@ -26,6 +26,7 @@ import MouseInputChannel from './Controls/InputChannels/MouseInputChannel';
 import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
 import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
+import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import AudioModule from './Modules/AudioModule';
@@ -166,6 +167,7 @@ export default class ReactVRInstance {
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
     this.controls.addEventChannel(new GamepadInputChannel());
+    this.controls.addRaycaster(new ControllerRaycaster());
     this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
   }
@@ -243,11 +245,13 @@ export default class ReactVRInstance {
     if (this._rays.length > 0) {
       for (let i = 0; i < this._rays.length; i++) {
         const ray = this._rays[i];
-        // Place the ray relative to camera space
-        ray.origin[0] += this._cameraPosition[0];
-        ray.origin[1] += this._cameraPosition[1];
-        ray.origin[2] += this._cameraPosition[2];
-        rotateByQuaternion(ray.direction, this._cameraQuat);
+        if (!ray.hasAbsoluteCoordinates) {
+          // Place the ray relative to camera space
+          ray.origin[0] += this._cameraPosition[0];
+          ray.origin[1] += this._cameraPosition[1];
+          ray.origin[2] += this._cameraPosition[2];
+          rotateByQuaternion(ray.direction, this._cameraQuat);
+        }
       }
     }
     // Update runtime

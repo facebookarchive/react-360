@@ -228,6 +228,6 @@ export default class Runtime {
 
   getCursorDepth(): number {
     // Will derive from React components
-    return 2;
+    return this.guiSys._cursor.intersectDistance;
   }
 }
