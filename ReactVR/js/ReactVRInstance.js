@@ -29,8 +29,10 @@ import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
 import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
+import type ReactExecutor from './Executor/ReactExecutor';
 import AudioModule from './Modules/AudioModule';
 import type Module from './Modules/Module';
+import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
 import {rotateByQuaternion} from './Utils/Math';
 
@@ -50,7 +52,10 @@ type AnimationFrameData =
     };
 
 export type ReactVROptions = {
+  assetRoot?: string,
   customOverlay?: OverlayInterface,
+  customViews?: Array<CustomView>,
+  executor?: ReactExecutor,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
@@ -127,7 +132,14 @@ export default class ReactVRInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
+    let assetRoot = options.assetRoot || 'static_assets/';
+    if (!assetRoot.endsWith('/')) {
+      assetRoot += '/';
+    }
     const runtimeOptions = {
+      assetRoot: assetRoot,
+      customViews: options.customViews || [],
+      executor: options.executor,
       nativeModules: [
         ctx => {
           const audio = new AudioModule(ctx);
@@ -136,7 +148,6 @@ export default class ReactVRInstance {
         },
         ...(options.nativeModules || []),
       ],
-      customViews: [],
     };
     this.runtime = new Runtime(
       this.scene,

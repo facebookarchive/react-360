@@ -18,6 +18,7 @@ import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
+import type {CustomView} from '../Modules/UIManager';
 import {ReactNativeContext} from '../ReactNativeContext';
 
 type LocationNode = {
@@ -28,6 +29,9 @@ type LocationNode = {
 export type NativeModuleInitializer = ReactNativeContext => Module;
 
 export type RuntimeOptions = {
+  assetRoot?: string,
+  customViews?: Array<CustomView>,
+  executor?: ReactExecutor,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
@@ -65,11 +69,16 @@ export default class Runtime {
     options: RuntimeOptions = {},
   ) {
     this._rootLocations = [];
-    this.executor = new ReactExecutorWebWorker({
-      enableDevTools: false,
-    });
+    this.executor =
+      options.executor ||
+      new ReactExecutorWebWorker({
+        enableDevTools: false,
+      });
     this.guiSys = new GuiSys(scene, {});
-    this.context = new ReactNativeContext(this.guiSys, this.executor, {});
+    this.context = new ReactNativeContext(this.guiSys, this.executor, {
+      assetRoot: options.assetRoot,
+      customViews: options.customViews || [],
+    });
     const modules = options.nativeModules;
     if (modules) {
       for (let i = 0; i < modules.length; i++) {
