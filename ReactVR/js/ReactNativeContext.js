@@ -22,6 +22,7 @@ import LinkingManager from './Modules/LinkingManager';
 import Location from './Modules/Location';
 import LocationObserver from './Modules/LocationObserver';
 import Networking from './Modules/Networking';
+import PlatformConstants from './Modules/PlatformConstants';
 import {RCTResourceManager} from './Utils/RCTResourceManager';
 import {RCTInputControls} from './Utils/RCTInputControls';
 import RCTHeadModel from './Utils/RCTHeadModel';
@@ -189,6 +190,7 @@ export class ReactNativeContext {
     this.registerModule(new LinkingManager(this));
     this.registerModule(new Location(this));
     this.registerModule(new LocationObserver(this));
+    this.registerModule(new PlatformConstants());
     this.registerModule(this.Timing);
     this.registerModule(this.VideoModule);
     this.registerModule(this.AudioModule);

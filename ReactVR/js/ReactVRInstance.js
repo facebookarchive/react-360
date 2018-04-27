@@ -17,6 +17,7 @@ import type Surface from './Compositor/Surface';
 import Overlay, {type OverlayInterface} from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
+import ScrollPanCameraController from './Controls/CameraControllers/ScrollPanCameraController';
 import DeviceOrientationCameraController from './Controls/CameraControllers/DeviceOrientationCameraController';
 import Controls from './Controls/Controls';
 import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
@@ -25,12 +26,14 @@ import MouseInputChannel from './Controls/InputChannels/MouseInputChannel';
 import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
 import {type InputEvent} from './Controls/InputChannels/Types';
 import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
+import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
+import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
+import type ReactExecutor from './Executor/ReactExecutor';
+import AudioModule from './Modules/AudioModule';
 import type Module from './Modules/Module';
-import Runtime, {
-  type NativeModuleInitializer,
-  type RuntimeOptions,
-} from './Runtime/Runtime';
+import type {CustomView} from './Modules/UIManager';
+import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
 import {rotateByQuaternion} from './Utils/Math';
 
 type Root = {
@@ -49,7 +52,11 @@ type AnimationFrameData =
     };
 
 export type ReactVROptions = {
+  assetRoot?: string,
   customOverlay?: OverlayInterface,
+  customViews?: Array<CustomView>,
+  executor?: ReactExecutor,
+  fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
@@ -58,6 +65,7 @@ export type ReactVROptions = {
  * native platform capabilities.
  */
 export default class ReactVRInstance {
+  _audioModule: ?AudioModule;
   _cameraPosition: Vec3;
   _cameraQuat: Quaternion;
   _defaultLocation: Location;
@@ -66,7 +74,9 @@ export default class ReactVRInstance {
   _frameData: ?VRFrameData;
   _lastFrameTime: number;
   _looping: boolean;
+  _needsResize: boolean;
   _nextFrame: null | AnimationFrameData;
+  _parent: HTMLElement;
   _rays: Array<Ray>;
   controls: Controls;
   compositor: Compositor;
@@ -86,10 +96,13 @@ export default class ReactVRInstance {
   ) {
     (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);
+    (this: any)._onResize = this._onResize.bind(this);
 
     this._cameraPosition = [0, 0, 0];
     this._cameraQuat = [0, 0, 0, 1];
     this._events = [];
+    this._needsResize = false;
+    this._parent = parent;
     this._rays = [];
     this._frameData = null;
     if ('VRFrameData' in window) {
@@ -99,6 +112,18 @@ export default class ReactVRInstance {
     this._nextFrame = null;
     this._lastFrameTime = 0;
 
+    if (options.fullScreen) {
+      parent.style.position = 'fixed';
+      parent.style.top = '0';
+      parent.style.left = '0';
+      parent.style.margin = '0';
+      parent.style.padding = '0';
+      parent.style.width = '100%';
+      parent.style.height = `${window.innerHeight}px`;
+
+      window.addEventListener('resize', this._onResize);
+    }
+
     this._eventLayer = document.createElement('div');
     this._eventLayer.style.width = `${parent.clientWidth}px`;
     this._eventLayer.style.height = `${parent.clientHeight}px`;
@@ -107,10 +132,23 @@ export default class ReactVRInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
-    const runtimeOptions: RuntimeOptions = {};
-    if (options.nativeModules) {
-      runtimeOptions.nativeModules = options.nativeModules;
+    let assetRoot = options.assetRoot || 'static_assets/';
+    if (!assetRoot.endsWith('/')) {
+      assetRoot += '/';
     }
+    const runtimeOptions = {
+      assetRoot: assetRoot,
+      customViews: options.customViews || [],
+      executor: options.executor,
+      nativeModules: [
+        ctx => {
+          const audio = new AudioModule(ctx);
+          this._audioModule = audio;
+          return audio;
+        },
+        ...(options.nativeModules || []),
+      ],
+    };
     this.runtime = new Runtime(
       this.scene,
       bundleFromLocation(bundle),
@@ -127,19 +165,26 @@ export default class ReactVRInstance {
       }
     });
 
-    const raycaster = new MouseRaycaster(this._eventLayer);
-    raycaster.enable();
     this.controls.addCameraController(
       new DeviceOrientationCameraController(this._eventLayer),
     );
     this.controls.addCameraController(
       new MousePanCameraController(this._eventLayer),
     );
+    this.controls.addCameraController(
+      new ScrollPanCameraController(this._eventLayer),
+    );
     this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
     this.controls.addEventChannel(new GamepadInputChannel());
-    this.controls.addRaycaster(raycaster);
+    this.controls.addRaycaster(new ControllerRaycaster());
+    this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
+    this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
+  }
+
+  _onResize() {
+    this._needsResize = true;
   }
 
   /**
@@ -167,6 +212,15 @@ export default class ReactVRInstance {
     }
     const delta = Math.min(frameStart - this._lastFrameTime, 100);
     this._lastFrameTime = frameStart;
+
+    if (this._needsResize) {
+      const height = window.innerHeight;
+      const width = this._parent.clientWidth;
+      this._parent.style.height = `${height}px`;
+      this.resize(width, height);
+      this._needsResize = false;
+    }
+
     this._events.length = 0;
     this._rays.length = 0;
     this.controls.fillEvents(this._events);
@@ -202,11 +256,13 @@ export default class ReactVRInstance {
     if (this._rays.length > 0) {
       for (let i = 0; i < this._rays.length; i++) {
         const ray = this._rays[i];
-        // Place the ray relative to camera space
-        ray.origin[0] += this._cameraPosition[0];
-        ray.origin[1] += this._cameraPosition[1];
-        ray.origin[2] += this._cameraPosition[2];
-        rotateByQuaternion(ray.direction, this._cameraQuat);
+        if (!ray.hasAbsoluteCoordinates) {
+          // Place the ray relative to camera space
+          ray.origin[0] += this._cameraPosition[0];
+          ray.origin[1] += this._cameraPosition[1];
+          ray.origin[2] += this._cameraPosition[2];
+          rotateByQuaternion(ray.direction, this._cameraQuat);
+        }
       }
     }
     // Update runtime
@@ -218,6 +274,11 @@ export default class ReactVRInstance {
       this.compositor.getCamera(),
       this.compositor.getRenderer(),
     );
+    if (this._audioModule) {
+      const audioModule = this._audioModule;
+      audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
+      audioModule.frame(delta);
+    }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
     if (
@@ -362,5 +423,11 @@ export default class ReactVRInstance {
           1,
         );
       });
+  }
+
+  resize(width: number, height: number) {
+    this._eventLayer.style.width = `${width}px`;
+    this._eventLayer.style.height = `${height}px`;
+    this.compositor.resizeCanvas(width, height);
   }
 }

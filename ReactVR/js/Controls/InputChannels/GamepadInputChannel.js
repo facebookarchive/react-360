@@ -22,7 +22,9 @@ type Mapping = Array<?string>;
 
 const getGamepads = (navigator.getGamepads
   ? navigator.getGamepads
-  : navigator.webkitGetGamepads ? navigator.webkitGetGamepads : () => []
+  : navigator.webkitGetGamepads
+    ? navigator.webkitGetGamepads
+    : () => []
 ).bind(navigator);
 
 const LONG_PRESS_TIME = 500;
@@ -48,6 +50,8 @@ const WELL_KNOWN_MAPPINGS = {
   'Gear VR Touchpad': ['confirm'],
   // Gear VR Controller
   'Gear VR Controller': ['confirm', 'confirm'],
+  // Oculus Go Controller
+  'Oculus Go Controller': ['confirm', 'confirm'],
   // Daydream Controller
   'Daydream Controller': ['confirm'],
   // Oculus Touch

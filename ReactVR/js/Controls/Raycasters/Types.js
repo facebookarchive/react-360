@@ -9,12 +9,13 @@
  * @flow
  */
 
-import {type Ray, type Vec3} from '../Types';
+import {type Vec3} from '../Types';
 
 export interface Raycaster {
   drawsCursor(): boolean;
-  fillDirection(direction: Ray): boolean;
+  fillDirection(direction: Vec3): boolean;
   fillOrigin(origin: Vec3): boolean;
   getMaxLength(): number;
   getType(): string;
+  hasAbsoluteCoordinates(): boolean;
 }

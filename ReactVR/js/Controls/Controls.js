@@ -12,11 +12,12 @@
 import {type Quaternion, type Ray, type Vec3} from './Types';
 import {type CameraController} from './CameraControllers/Types';
 import {type InputChannel, type InputEvent} from './InputChannels/Types';
+import {type Raycaster} from './Raycasters/Types';
 
 export default class Controls {
   cameraControllers: Array<CameraController>;
   eventChannels: Array<InputChannel>;
-  raycasters: Array<any>;
+  raycasters: Array<Raycaster>;
   _rayObjects: Array<Ray>;
 
   constructor() {
@@ -34,15 +35,40 @@ export default class Controls {
     this.eventChannels.push(channel);
   }
 
-  addRaycaster(caster: any) {
+  addRaycaster(caster: Raycaster) {
     this.raycasters.push(caster);
     this._rayObjects.push({
       direction: [0, 0, 0],
       drawsCursor: false,
+      hasAbsoluteCoordinates: false,
       maxLength: Infinity,
       origin: [0, 0, 0],
       type: '',
     });
+  }
+
+  clearCameraControllers() {
+    this.cameraControllers.length = 0;
+  }
+
+  clearEventChannels() {
+    this.eventChannels.length = 0;
+  }
+
+  clearRaycasters() {
+    this.raycasters.length = 0;
+  }
+
+  getCameraControllers(): Array<CameraController> {
+    return this.cameraControllers.slice();
+  }
+
+  getEventChannels(): Array<InputChannel> {
+    return this.eventChannels.slice();
+  }
+
+  getRaycasters(): Array<Raycaster> {
+    return this.raycasters.slice();
   }
 
   fillEvents(queue: Array<InputEvent>) {
@@ -63,6 +89,7 @@ export default class Controls {
         rayObject.type = caster.getType();
         rayObject.maxLength = caster.getMaxLength();
         rayObject.drawsCursor = caster.drawsCursor();
+        rayObject.hasAbsoluteCoordinates = caster.hasAbsoluteCoordinates();
         queue.push(rayObject);
       }
     }

@@ -17,10 +17,6 @@
     "ReactVR.js",
     "README.md"
   ],
-  "peerDependencies": {
-    "react": "16.0.0",
-    "react-native": "~0.48.0"
-  },
   "dependencies": {
     "ovrui": "~2.0.0",
     "three-gltf2-loader": "~1.1.0"

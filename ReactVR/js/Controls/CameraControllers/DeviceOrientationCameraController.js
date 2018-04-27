@@ -40,6 +40,14 @@ function getScreenOrientation(): number {
   return ((angle: any): number) * DEG_TO_RAD;
 }
 
+function isSupported() {
+  return (
+    'DeviceOrientationEvent' in window &&
+    /Mobi/i.test(navigator.userAgent) &&
+    !/OculusBrowser/i.test(navigator.userAgent)
+  );
+}
+
 /**
  * Camera controls linked to device orientation.
  * Allows a "Magic Window" effect, where users rotate a mobile device to see
@@ -69,7 +77,7 @@ export default class DeviceOrientationCameraController
     this._beta = null;
     this._dragging = false;
     this._gamma = null;
-    this._enabled = true;
+    this._enabled = isSupported();
     this._frame = frame;
     this._lastX = 0;
     this._lastY = 0;
