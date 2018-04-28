@@ -51,6 +51,8 @@ function intersectObject(
   }
 }
 
+const DEVTOOLS_FLAG = /\bdevtools\b/;
+
 /**
  * Runtime wraps the majority of React VR logic. It sends event data to the
  * Executor, builds an in-memory realization of the React nodes, and tells
@@ -69,10 +71,25 @@ export default class Runtime {
     options: RuntimeOptions = {},
   ) {
     this._rootLocations = [];
+    let enableDevTools = false;
+    if (__DEV__) {
+      if (DEVTOOLS_FLAG.test(location.search)) {
+        enableDevTools = true;
+        if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+          /* eslint-disable no-console */
+          console.log(
+            'We detected that you have the React Devtools extension installed. ' +
+              'Please note that at this time, React VR is only compatible with the ' +
+              'standalone Inspector (npm run devtools).',
+          );
+          /* eslint-enable no-console */
+        }
+      }
+    }
     this.executor =
       options.executor ||
       new ReactExecutorWebWorker({
-        enableDevTools: false,
+        enableDevTools,
       });
     this.guiSys = new GuiSys(scene, {});
     this.context = new ReactNativeContext(this.guiSys, this.executor, {
