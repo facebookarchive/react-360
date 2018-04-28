@@ -10,18 +10,18 @@
  */
 
 /**
-  * OBJParser handles the parsing of Waveform OBJ files.
-  * It reads through the string contents of an OBJ file and produces a state
-  * object containing information declared in the file. This can be consumed by
-  * external loaders to create proper meshes for any rendering engine.
-  */
+ * OBJParser handles the parsing of Waveform OBJ files.
+ * It reads through the string contents of an OBJ file and produces a state
+ * object containing information declared in the file. This can be consumed by
+ * external loaders to create proper meshes for any rendering engine.
+ */
 
 import OBJGroup from './OBJGroup';
 
 import type {OBJParserState} from './OBJTypes';
 
-const POINTS_TEST = /^\s+(-?[\d\.e+-]+)\s+(-?[\d\.e+-]+)\s+(-?[\d\.e+-]+)/;
-const TEXTURE_POINTS_TEST = /^\s+(-?[\d\.e+-]+)\s+(-?[\d\.e+-]+)/;
+const POINTS_TEST = /^\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)/;
+const TEXTURE_POINTS_TEST = /^\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)/;
 const PAIR_TEST = /^\s*(-?\d+)(\/-?\d+)?\s*/;
 const TRIPLET_TEST = /^\s*(-?\d+)\/?(-?\d+)?(\/-?\d+)?\s*/;
 const SMOOTHING_TEST = /^\s*(\d+|on|off)/;
@@ -31,14 +31,21 @@ const SMOOTHING_TEST = /^\s*(\d+|on|off)/;
  * as an array. It throws an error if anything unexpected is encountered, or if
  * there are not three numbers to read.
  */
-export function readPoints(remainder: string, lineNumber: number): Array<number> {
+export function readPoints(
+  remainder: string,
+  lineNumber: number,
+): Array<number> {
   const match = remainder.match(POINTS_TEST);
   if (!match) {
-    throw new Error('Expected a series of numbers on line ' + lineNumber);
+    throw new Error(`Expected a series of numbers on line ${lineNumber}`);
   }
-  const points = [parseFloat(match[1]), parseFloat(match[2]), parseFloat(match[3])];
+  const points = [
+    parseFloat(match[1]),
+    parseFloat(match[2]),
+    parseFloat(match[3]),
+  ];
   if (isNaN(points[0]) || isNaN(points[1]) || isNaN(points[2])) {
-    throw new Error('Invalid number on line ' + lineNumber);
+    throw new Error(`Invalid number on line ${lineNumber}`);
   }
   if (match[0].length < remainder.length) {
     // There are potentially more points to read
@@ -51,7 +58,7 @@ export function readPoints(remainder: string, lineNumber: number): Array<number>
         parseFloat(colorMatch[3]),
       ];
       if (isNaN(color[0]) || isNaN(color[1]) || isNaN(color[2])) {
-        throw new Error('Invalid number on line ' + lineNumber);
+        throw new Error(`Invalid number on line ${lineNumber}`);
       }
       points.push(color[0], color[1], color[2]);
     }
@@ -64,14 +71,17 @@ export function readPoints(remainder: string, lineNumber: number): Array<number>
  * returning them as an array. It throws an error if anything unexpected is
  * encountered, or if there are not two numbers to read.
  */
-export function readTexturePoints(remainder: string, lineNumber: number): [number, number] {
+export function readTexturePoints(
+  remainder: string,
+  lineNumber: number,
+): [number, number] {
   const match = remainder.match(TEXTURE_POINTS_TEST);
   if (!match) {
-    throw new Error('Expected a series of numbers on line ' + lineNumber);
+    throw new Error(`Expected a series of numbers on line ${lineNumber}`);
   }
   const points = [parseFloat(match[1]), parseFloat(match[2])];
   if (isNaN(points[0]) || isNaN(points[1])) {
-    throw new Error('Invalid number on line ' + lineNumber);
+    throw new Error(`Invalid number on line ${lineNumber}`);
   }
   return points;
 }
@@ -83,21 +93,25 @@ export function readTexturePoints(remainder: string, lineNumber: number): [numbe
  * It returns the pairs as an array of length-2 arrays, and throws if anything
  * unexpected is encountered.
  */
-export function readPairs(remainder: string, lineNumber: number): Array<[number, number]> {
+export function readPairs(
+  rawRemainder: string,
+  lineNumber: number,
+): Array<[number, number]> {
+  let remainder = rawRemainder;
   const pairs = [];
   while (remainder.length > 0) {
     const match = remainder.match(PAIR_TEST);
     if (!match) {
-      throw new Error('Expected a vertex id on line ' + lineNumber);
+      throw new Error(`Expected a vertex id on line ${lineNumber}`);
     }
     const fullMatch = match[0];
     const vertex = parseInt(match[1], 10);
     const texture = match[2] ? parseInt(match[2].substr(1), 10) : 0;
     if (isNaN(vertex)) {
-      throw new Error('Invalid vertex id on line ' + lineNumber);
+      throw new Error(`Invalid vertex id on line ${lineNumber}`);
     }
     if (isNaN(texture)) {
-      throw new Error('Invalid texture point id on line ' + lineNumber);
+      throw new Error(`Invalid texture point id on line ${lineNumber}`);
     }
     pairs.push([vertex, texture]);
     remainder = remainder.substr(fullMatch.length);
@@ -114,27 +128,28 @@ export function readPairs(remainder: string, lineNumber: number): Array<[number,
  * anything unexpected is encountered.
  */
 export function readTriplets(
-  remainder: string,
-  lineNumber: number
+  rawRemainder: string,
+  lineNumber: number,
 ): Array<[number, number, number]> {
+  let remainder = rawRemainder;
   const triplets = [];
   while (remainder.length > 0) {
     const match = remainder.match(TRIPLET_TEST);
     if (!match) {
-      throw new Error('Expected a vertex id on line ' + lineNumber);
+      throw new Error(`Expected a vertex id on line ${lineNumber}`);
     }
     const fullMatch = match[0];
     const vertex = parseInt(match[1], 10);
     const texture = match[2] ? parseInt(match[2], 10) : 0;
     const normal = match[3] ? parseInt(match[3].substr(1), 10) : 0;
     if (isNaN(vertex)) {
-      throw new Error('Invalid vertex id on line ' + lineNumber);
+      throw new Error(`Invalid vertex id on line ${lineNumber}`);
     }
     if (isNaN(texture)) {
-      throw new Error('Invalid texture point id on line ' + lineNumber);
+      throw new Error(`Invalid texture point id on line ${lineNumber}`);
     }
     if (isNaN(normal)) {
-      throw new Error('Invalid normal id on line ' + lineNumber);
+      throw new Error(`Invalid normal id on line ${lineNumber}`);
     }
     triplets.push([vertex, texture, normal]);
     remainder = remainder.substr(fullMatch.length);
@@ -146,7 +161,11 @@ export function readTriplets(
  * readLine parses a single line from an OBJ file. It updates the state object
  * with any declarations encountered on that line.
  */
-export function readLine(state: OBJParserState, line: string, lineNumber: number) {
+export function readLine(
+  state: OBJParserState,
+  line: string,
+  lineNumber: number,
+) {
   let index = 0;
   const length = line.length;
   while ((index < length && line[index] === ' ') || line[index] === '\t') {
@@ -183,7 +202,9 @@ export function readLine(state: OBJParserState, line: string, lineNumber: number
       // Parametric curve point
       throw new Error('Parametric curve points (vp) are currently unsupported');
     }
-    throw new Error('Unknown identifier: v' + (index + 1 < line.length ? line[index + 1] : ''));
+    throw new Error(
+      `Unknown identifier: v${index + 1 < line.length ? line[index + 1] : ''}`,
+    );
   }
   if (first === 'f') {
     // Face declaration
@@ -192,7 +213,9 @@ export function readLine(state: OBJParserState, line: string, lineNumber: number
       state.currentObject.addFace(triplets);
       return;
     }
-    throw new Error('Unknown identifier: f' + (index + 1 < line.length ? line[index + 1] : ''));
+    throw new Error(
+      `Unknown identifier: f${index + 1 < line.length ? line[index + 1] : ''}`,
+    );
   }
   if (first === 'l') {
     if (line[index + 1] === ' ' || line[index + 1] === '\t') {
@@ -201,29 +224,41 @@ export function readLine(state: OBJParserState, line: string, lineNumber: number
       // state.currentObject.addLine(pairs);
       return;
     }
-    throw new Error('Unknown identifier: l' + (index + 1 < line.length ? line[index + 1] : ''));
+    throw new Error(
+      `Unknown identifier: l${index + 1 < line.length ? line[index + 1] : ''}`,
+    );
   }
   if (first === 's') {
     if (line[index + 1] === ' ' || line[index + 1] === '\t') {
       // Smoothing group
       const match = line.substr(index + 1).match(SMOOTHING_TEST);
       if (!match) {
-        throw new Error('Invalid smoothing flag on line ' + lineNumber);
+        throw new Error(`Invalid smoothing flag on line ${lineNumber}`);
       }
       const flag = match[1];
       state.currentObject.setSmoothing(flag !== 'off');
       return;
     }
-    throw new Error('Unknown identifier: s' + (index + 1 < line.length ? line[index + 1] : ''));
+    throw new Error(
+      `Unknown identifier: s${index + 1 < line.length ? line[index + 1] : ''}`,
+    );
   }
   if (first === 'g' || first === 'o') {
     if (line[index + 1] === ' ' || line[index + 1] === '\t') {
       // New object group
       const name = line.substr(2).trim();
-      const obj = new OBJGroup(state.vertices, state.textureCoords, state.normals, name);
+      const obj = new OBJGroup(
+        state.vertices,
+        state.textureCoords,
+        state.normals,
+        name,
+      );
       if (state.currentObject && state.currentObject.materials.length > 0) {
         // Inherit the last material from the last object
-        const inherited = state.currentObject.materials[state.currentObject.materials.length - 1];
+        const inherited =
+          state.currentObject.materials[
+            state.currentObject.materials.length - 1
+          ];
         obj.addMaterial(inherited.name, inherited.lib);
       }
       state.objects.push(obj);
@@ -236,7 +271,9 @@ export function readLine(state: OBJParserState, line: string, lineNumber: number
       // Reference to an external MTL file
       const path = line.substr(index + 7).trim();
       if (path.length < 1) {
-        throw new Error('mtllib must provide a file path on line ' + lineNumber);
+        throw new Error(
+          `mtllib must provide a file path on line ${lineNumber}`,
+        );
       }
       state.materialLibraries.push(path);
       return;
@@ -248,7 +285,9 @@ export function readLine(state: OBJParserState, line: string, lineNumber: number
       // Reference to a named material
       const mtl = line.substr(index + 7).trim();
       if (mtl.length < 1) {
-        throw new Error('usemtl must provide a material name on line ' + lineNumber);
+        throw new Error(
+          `usemtl must provide a material name on line ${lineNumber}`,
+        );
       }
       const lib = state.materialLibraries[state.materialLibraries.length - 1];
       state.currentObject.addMaterial(mtl, lib);
@@ -258,7 +297,8 @@ export function readLine(state: OBJParserState, line: string, lineNumber: number
   }
 }
 
-export function readOBJFile(data: string): Promise<OBJParserState> {
+export function readOBJFile(rawData: string): Promise<OBJParserState> {
+  let data = rawData;
   const vertices = [];
   const textureCoords = [];
   const normals = [];
