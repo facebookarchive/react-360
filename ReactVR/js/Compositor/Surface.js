@@ -308,4 +308,6 @@ export default class Surface {
     const halfHeight = radius * Math.PI * height / density;
     return new THREE.PlaneGeometry(halfWidth * 2, halfHeight * 2, 1, 1);
   }
+
+  static SurfaceShape = SurfaceShape;
 }

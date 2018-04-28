@@ -12,9 +12,11 @@
 
 import bundleFromLocation from './js/bundleFromLocation';
 import createRootView from './js/createRootView';
+import Location from './js/Compositor/Location';
 import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
 import ReactVRInstance from './js/ReactVRInstance';
+import Surface from './js/Compositor/Surface';
 import VRInstance from './js/VRInstance';
 import {
   BasicVideoPlayer,
@@ -26,10 +28,12 @@ import {ReactNativeContext} from './js/ReactNativeContext';
 
 export {bundleFromLocation};
 export {createRootView};
+export {Location};
 export {Module};
 export {RCTBaseView};
 export {ReactNativeContext};
 export {ReactVRInstance};
+export {Surface};
 export {VRInstance};
 export {BasicVideoPlayer};
 export {addCustomizedVideoPlayer};
