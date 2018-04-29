@@ -52,6 +52,7 @@ function intersectObject(
 }
 
 const DEVTOOLS_FLAG = /\bdevtools\b/;
+const SURFACE_DEPTH = 4; // 4 meters
 
 /**
  * Runtime wraps the majority of React VR logic. It sends event data to the
@@ -59,6 +60,7 @@ const DEVTOOLS_FLAG = /\bdevtools\b/;
  * the Compositor how to render everything.
  */
 export default class Runtime {
+  _cursorIntersectsSurface: boolean;
   _initialized: boolean;
   _rootLocations: Array<LocationNode>;
   context: ReactNativeContext;
@@ -71,6 +73,7 @@ export default class Runtime {
     options: RuntimeOptions = {},
   ) {
     this._rootLocations = [];
+    this._cursorIntersectsSurface = false;
     let enableDevTools = false;
     if (__DEV__) {
       if (DEVTOOLS_FLAG.test(location.search)) {
@@ -202,9 +205,11 @@ export default class Runtime {
     raycaster.ray.origin.fromArray(ray.origin);
     raycaster.ray.direction.fromArray(ray.direction);
     const hits = raycaster.intersectObject(this.guiSys.root, true);
+    let hitSurface = false;
     for (let i = 0; i < hits.length; i++) {
       let hit = hits[i];
       if (hit.uv && hit.object && hit.object.subScene) {
+        hitSurface = true;
         const distanceToSubscene = hit.distance;
         const scene = hit.object.subScene;
         raycaster.ray.origin.set(
@@ -225,6 +230,7 @@ export default class Runtime {
         firstHit = hit;
       }
     }
+    this._cursorIntersectsSurface = hitSurface;
     if (firstHit) {
       this.guiSys.updateLastHit(firstHit.object, ray.type);
       this.guiSys._cursor.intersectDistance = firstHit.distance;
@@ -243,6 +249,10 @@ export default class Runtime {
   }
 
   isCursorActive(): boolean {
+    if (this._cursorIntersectsSurface) {
+      return true;
+    }
+
     const lastHit = this.guiSys._cursor.lastHit;
     const lastAlmostHit = this.guiSys._cursor.lastAlmostHit;
     let active = lastHit && lastHit.isInteractable;
@@ -254,6 +264,9 @@ export default class Runtime {
 
   getCursorDepth(): number {
     // Will derive from React components
+    if (this._cursorIntersectsSurface) {
+      return SURFACE_DEPTH;
+    }
     return this.guiSys._cursor.intersectDistance;
   }
 }

@@ -53,6 +53,7 @@ export default class Cursor {
 
   setPosition(x: number, y: number, z: number) {
     this._mesh.position.set(x, y, z);
+    this._mesh.rotation.set(0, Math.atan2(x, z), 0, 'YXZ');
   }
 
   static createDefaultCursorImage() {
