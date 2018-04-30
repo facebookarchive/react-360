@@ -16,6 +16,8 @@ import type ResourceManager from '../Utils/ResourceManager';
 import Cursor from './Cursor';
 import Environment, {type PanoOptions} from './Environment/Environment';
 import Surface from './Surface';
+import type {VideoPlayer} from './Video/Types';
+import VideoPlayerManager from './Video/VideoPlayerManager';
 
 const LEFT = 'left';
 const RIGHT = 'right';
@@ -39,6 +41,7 @@ export default class Compositor {
   _surfaceRoot: THREE.Object3D;
   _surfaces: {[name: string]: Surface};
   _resourceManager: ResourceManager<Image>;
+  _videoPlayers: VideoPlayerManager;
 
   constructor(frame: HTMLElement, scene: THREE.Scene) {
     this._frame = frame;
@@ -47,6 +50,7 @@ export default class Compositor {
     this._defaultSurface = null;
     this._surfaces = {};
     this._resourceManager = createRemoteImageManager();
+    this._videoPlayers = new VideoPlayerManager();
 
     this._camera = new THREE.PerspectiveCamera(
       60,
@@ -63,7 +67,10 @@ export default class Compositor {
     frame.appendChild(this._renderer.domElement);
     this._scene = scene;
 
-    this._environment = new Environment(this._resourceManager);
+    this._environment = new Environment(
+      this._resourceManager,
+      this._videoPlayers,
+    );
     scene.add(this._environment.getPanoNode());
 
     this._surfaceRoot = new THREE.Object3D();
@@ -79,6 +86,14 @@ export default class Compositor {
 
   setBackground(src: string, options: PanoOptions = {}): Promise<void> {
     return this._environment.setSource(src, options);
+  }
+
+  setBackgroundVideo(handle: string, options: PanoOptions = {}): Promise<void> {
+    return this._environment.setVideoSource(handle, options);
+  }
+
+  createVideoPlayer(handle: string): VideoPlayer {
+    return this._videoPlayers.createPlayer(handle);
   }
 
   getCursorVisibility(): string {
@@ -145,6 +160,7 @@ export default class Compositor {
 
   frame(delta: number) {
     this._environment.frame(delta);
+    this._videoPlayers.frame();
   }
 
   updateCursor(rays: ?Array<Ray>, depth: number) {

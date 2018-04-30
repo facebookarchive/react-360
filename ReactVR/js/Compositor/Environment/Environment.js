@@ -11,20 +11,15 @@
 
 import * as THREE from 'three';
 import type ResourceManager from '../../Utils/ResourceManager';
+import type VideoPlayerManager from '../Video/VideoPlayerManager';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
+import type {TextureMetadata} from './Types';
 
 export type PanoFormat = 'MONO' | 'TOP_BOTTOM' | 'LEFT_RIGHT';
 
 export type PanoOptions = {
   format?: PanoFormat,
   transition?: number,
-};
-
-type TextureMetadata = {
-  height: number,
-  src: string,
-  tex: THREE.Texture,
-  width: number,
 };
 
 /**
@@ -59,9 +54,11 @@ export default class Environment {
   _panoSource: ?string;
   _panoTransition: number;
   _resourceManager: ?ResourceManager<Image>;
+  _videoPlayers: ?VideoPlayerManager;
 
-  constructor(rm: ?ResourceManager<Image>) {
+  constructor(rm: ?ResourceManager<Image>, videoPlayers: ?VideoPlayerManager) {
     this._resourceManager = rm;
+    this._videoPlayers = videoPlayers;
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 50, 50);
     this._panoGeomHemisphere = new THREE.SphereGeometry(
@@ -150,6 +147,14 @@ export default class Environment {
         this._panoEyeOffsets = [[0, 0, 1, 1]];
         this._setPanoGeometryToSphere();
       }
+    } else {
+      if (data.format === 'TOP_BOTTOM') {
+        this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
+        this._setPanoGeometryToSphere();
+      } else if (data.format === 'BOTTOM_TOP') {
+        this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
+        this._setPanoGeometryToSphere();
+      }
     }
     this._panoMaterial.needsUpdate = true;
   }
@@ -158,23 +163,22 @@ export default class Environment {
     return this._panoMesh;
   }
 
-  setSource(src: null | string, options: PanoOptions = {}): Promise<void> {
-    if (this._resourceManager && this._panoSource) {
-      this._resourceManager.removeReference(this._panoSource);
-    }
-    const oldSrc = this._panoSource;
-    this._panoSource = src;
-    const duration =
-      typeof options.transition === 'number' ? options.transition : 500;
-    // If the duration is zero, set the transition to complete on the next frame
+  _setBackground(
+    loader: ?Promise<TextureMetadata>,
+    id: ?string,
+    transitionTime: ?number,
+  ): Promise<void> {
+    const oldID = this._panoSource;
+    this._panoSource = id;
+    const duration = typeof transitionTime === 'number' ? transitionTime : 500;
     const transition = duration ? 1 / duration : 1;
-    this._panoTransition = oldSrc ? -transition : 0;
-    if (!src) {
+    this._panoTransition = oldID ? -transition : 0;
+    if (!loader) {
       this._panoLoad = null;
       return Promise.resolve();
     }
-    this._panoLoad = this._loadImage(src, options);
-    return this._panoLoad.then(data => {
+    this._panoLoad = loader;
+    return loader.then(data => {
       if (this._panoTransition === 0) {
         this._panoLoad = null;
         // Fade transition completed
@@ -184,6 +188,24 @@ export default class Environment {
       // Fade is still in progress
       return Promise.resolve();
     });
+  }
+
+  setSource(src: null | string, options: PanoOptions = {}): Promise<void> {
+    if (this._resourceManager && this._panoSource) {
+      this._resourceManager.removeReference(this._panoSource);
+    }
+    const loader = src ? this._loadImage(src, options) : null;
+    return this._setBackground(loader, src, options.transition);
+  }
+
+  setVideoSource(handle: string, options: PanoOptions = {}) {
+    const player = this._videoPlayers
+      ? this._videoPlayers.getPlayer(handle)
+      : null;
+    const loader = player
+      ? player.load().then(data => ({...data, src: handle}))
+      : null;
+    return this._setBackground(loader, handle, options.transition);
   }
 
   prepareForRender(eye: ?string) {
