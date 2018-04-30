@@ -127,9 +127,13 @@ export default class Environment {
     const height = data.height;
     if (width === height) {
       // 1:1 ratio, 180 mono or top/bottom 360 3D
-      if (data.format === 'TOP_BOTTOM') {
+      if (data.format === '3DTB') {
         // 360 top-bottom 3D
         this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
+        this._setPanoGeometryToSphere();
+      } else if (data.format === '3DBT') {
+        // 360 top-bottom 3D
+        this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere();
       } else {
         // assume 180 mono
@@ -138,7 +142,7 @@ export default class Environment {
       }
     } else if (width / 2 === height) {
       // 2:1 ratio, 360 mono or 180 3D
-      if (data.format === 'LEFT_RIGHT') {
+      if (data.format === '3DLR') {
         // 180 side-by-side 3D
         this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
         this._setPanoGeometryToHemisphere();
@@ -148,10 +152,10 @@ export default class Environment {
         this._setPanoGeometryToSphere();
       }
     } else {
-      if (data.format === 'TOP_BOTTOM') {
+      if (data.format === '3DTB') {
         this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
         this._setPanoGeometryToSphere();
-      } else if (data.format === 'BOTTOM_TOP') {
+      } else if (data.format === '3DBT') {
         this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere();
       }

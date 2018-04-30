@@ -41,11 +41,14 @@ export default class BrowserVideoPlayer implements VideoPlayer {
   _element: HTMLVideoElement;
   _load: ?Promise<TextureMetadata>;
   _playing: boolean;
+  _primed: boolean;
   _texture: ?THREE.Texture;
 
   constructor() {
     this._playing = false;
+    this._primed = false;
     this._element = document.createElement('video');
+    this._element.muted = true;
     this._element.style.display = 'none';
     // Prevents the default go to fullscreen behavior on iOS 10+
     this._element.setAttribute('playsinline', 'playsinline');
@@ -65,6 +68,9 @@ export default class BrowserVideoPlayer implements VideoPlayer {
   };
 
   setSource(src: string, format?: string) {
+    if (this._texture) {
+      this._texture.dispose();
+    }
     this._element.src = src;
     this._element.load();
     this._load = new Promise((resolve, reject) => {
@@ -113,7 +119,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
   }
 
   setVolume(vol: number) {
-    this._element.volume = vol;
+    this._element.volume = Math.max(0, Math.min(vol, 1));
   }
 
   setMuted(muted: boolean) {

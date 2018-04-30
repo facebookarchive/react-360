@@ -31,6 +31,7 @@ import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import type ReactExecutor from './Executor/ReactExecutor';
 import AudioModule from './Modules/AudioModule';
+import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
@@ -78,6 +79,7 @@ export default class ReactVRInstance {
   _nextFrame: null | AnimationFrameData;
   _parent: HTMLElement;
   _rays: Array<Ray>;
+  _videoModule: ?VideoModule;
   controls: Controls;
   compositor: Compositor;
   overlay: OverlayInterface;
@@ -132,6 +134,7 @@ export default class ReactVRInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
+    this.compositor = new Compositor(this._eventLayer, this.scene);
     let assetRoot = options.assetRoot || 'static_assets/';
     if (!assetRoot.endsWith('/')) {
       assetRoot += '/';
@@ -146,6 +149,13 @@ export default class ReactVRInstance {
           this._audioModule = audio;
           return audio;
         },
+        ctx => {
+          const video = new VideoModule(
+            this.compositor.getVideoPlayerManager(),
+          );
+          this._videoModule = video;
+          return video;
+        },
         ...(options.nativeModules || []),
       ],
     };
@@ -154,7 +164,6 @@ export default class ReactVRInstance {
       bundleFromLocation(bundle),
       runtimeOptions,
     );
-    this.compositor = new Compositor(this._eventLayer, this.scene);
 
     this.vrState = new VRState();
     this.vrState.onDisplayChange(display => {

@@ -96,6 +96,10 @@ export default class Compositor {
     return this._videoPlayers.createPlayer(handle);
   }
 
+  getVideoPlayerManager(): VideoPlayerManager {
+    return this._videoPlayers;
+  }
+
   getCursorVisibility(): string {
     return this._cursorVisibility;
   }

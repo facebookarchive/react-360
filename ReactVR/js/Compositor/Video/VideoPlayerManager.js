@@ -23,6 +23,9 @@ export default class VideoPlayerManager {
   }
 
   createPlayer(handle: string) {
+    if (this._players[handle]) {
+      return this._players[handle];
+    }
     const player = new BrowserVideoPlayer();
     this._players[handle] = player;
     return player;
@@ -32,8 +35,13 @@ export default class VideoPlayerManager {
     return this._players[handle];
   }
 
-  removePlayer(handle: string) {
+  destroyPlayer(handle: string) {
+    const player = this._players[handle];
+    if (!player) {
+      return;
+    }
     delete this._players[handle];
+    player.destroy();
   }
 
   frame() {
