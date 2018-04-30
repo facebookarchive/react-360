@@ -10,11 +10,11 @@
  */
 
 import * as THREE from 'three';
-import extractURL from '../Utils/extractURL';
-import type {UIView} from 'ovrui';
 import type {Material} from 'three';
-
 import GLTF2Loader from 'three-gltf2-loader';
+import extractURL from '../Utils/extractURL';
+import type UIView from '../OVRUI/UIView/UIView';
+
 import RefCountCache from '../Utils/RefCountCache';
 
 GLTF2Loader(THREE);
@@ -34,7 +34,7 @@ function recursiveDispose(node) {
   }
 }
 
-const gltfStateCache: RefCountCache<any> = new RefCountCache(function(url, entry) {
+const gltfStateCache: RefCountCache<any> = new RefCountCache((url, entry) => {
   recursiveDispose(entry.scene);
 });
 const loadList = {};
@@ -62,10 +62,10 @@ class GLTF2MeshInstance {
       } else {
         // disabling until gltf clone issue is resolved
         // https://github.com/mrdoob/three.js/issues/11573
-        //gltfStateCache.addEntry(this.url, gltf);
+        // gltfStateCache.addEntry(this.url, gltf);
       }
       // https://github.com/mrdoob/three.js/issues/11573
-      //this.scene = gltf.scene.clone();
+      // this.scene = gltf.scene.clone();
       this.scene = gltf.scene;
 
       this.mixer = new THREE.AnimationMixer(this.scene);
@@ -103,7 +103,7 @@ class GLTF2MeshInstance {
 
     // disabling as there a problems with cloning gltf models
     // https://github.com/mrdoob/three.js/issues/11573
-    //loadList[this.url] = [onLoad];
+    // loadList[this.url] = [onLoad];
 
     // $FlowFixMe
     const loader = new THREE.GLTF2Loader();
@@ -111,16 +111,16 @@ class GLTF2MeshInstance {
       this.url,
       gltf => {
         onLoad(gltf);
-        /*for (const callback of loadList[this.url]) {
+        /* for (const callback of loadList[this.url]) {
           callback(gltf);
         }
-        delete loadList[this.url];*/
+        delete loadList[this.url]; */
       },
       () => {},
       () => {
         console.error('failed to load GLTF', this.url);
         delete loadList[this.url];
-      }
+      },
     );
   }
 
@@ -135,7 +135,7 @@ class GLTF2MeshInstance {
     // stop any leftover animations
     const newActiveAnimations = {};
     for (const key in definition.animations) {
-      const animName = 'animation_' + key;
+      const animName = `animation_${key}`;
       newActiveAnimations[animName] = true;
       // start animations which have yet to be started
       if (this.allAnimations[animName]) {
@@ -222,7 +222,7 @@ export default class GLTF2ModelLoader {
     definition: any,
     parent: UIView,
     litMaterial: Material,
-    unlitMaterial: Material
+    unlitMaterial: Material,
   ): GLTF2MeshInstance {
     return new GLTF2MeshInstance(definition, parent);
   }

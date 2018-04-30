@@ -14,12 +14,12 @@
  * @flow
  */
 
-import RCTBaseView from './BaseView';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseView from './BaseView';
 
 export default class RCTImage extends RCTBaseView {
   _rnctx: ReactNativeContext;
@@ -29,7 +29,7 @@ export default class RCTImage extends RCTBaseView {
    */
   constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
     super();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this._rnctx = rnctx;
 
     // assign the property function mappings
@@ -39,15 +39,14 @@ export default class RCTImage extends RCTBaseView {
       ({
         set: value => {
           // call onLoadStart in React
-          this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-            this.getTag(),
-            'topLoadStart',
-            [],
-          ]);
+          this.UIManager._rnctx.callFunction(
+            'RCTEventEmitter',
+            'receiveEvent',
+            [this.getTag(), 'topLoadStart', []],
+          );
           // only interested in the uri for the source
           if (value.uri.indexOf('texture://') === 0) {
-            this._rnctx.TextureManager
-              .getTextureForURL(value.uri)
+            this._rnctx.TextureManager.getTextureForURL(value.uri)
               .then(tex => {
                 this.view.setImageTexture(tex);
                 const image = tex.image;
@@ -60,56 +59,64 @@ export default class RCTImage extends RCTBaseView {
                   width = image.width || 0;
                   height = image.height || 0;
                 }
-                this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-                  this.getTag(),
-                  'topLoad',
-                  {
-                    url: value.uri,
-                    source: value,
-                    width: width,
-                    height: height,
-                  },
-                ]);
+                this.UIManager._rnctx.callFunction(
+                  'RCTEventEmitter',
+                  'receiveEvent',
+                  [
+                    this.getTag(),
+                    'topLoad',
+                    {
+                      url: value.uri,
+                      source: value,
+                      width: width,
+                      height: height,
+                    },
+                  ],
+                );
                 // call onLoadEvent in React
-                this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-                  this.getTag(),
-                  'topLoadEnd',
-                  [],
-                ]);
+                this.UIManager._rnctx.callFunction(
+                  'RCTEventEmitter',
+                  'receiveEvent',
+                  [this.getTag(), 'topLoadEnd', []],
+                );
               })
               .catch(() => {
                 // call onLoadEvent in React
-                this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-                  this.getTag(),
-                  'topLoadEnd',
-                  [],
-                ]);
+                this.UIManager._rnctx.callFunction(
+                  'RCTEventEmitter',
+                  'receiveEvent',
+                  [this.getTag(), 'topLoadEnd', []],
+                );
               });
           } else {
             this.view.setImage(value.uri, (loaded, width, height) => {
               // call onLoad in React
               if (loaded) {
-                this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-                  this.getTag(),
-                  'topLoad',
-                  {
-                    url: value.uri,
-                    source: value,
-                    width: width,
-                    height: height,
-                  },
-                ]);
+                this.UIManager._rnctx.callFunction(
+                  'RCTEventEmitter',
+                  'receiveEvent',
+                  [
+                    this.getTag(),
+                    'topLoad',
+                    {
+                      url: value.uri,
+                      source: value,
+                      width: width,
+                      height: height,
+                    },
+                  ],
+                );
               }
               // call onLoadEvent in React
-              this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-                this.getTag(),
-                'topLoadEnd',
-                [],
-              ]);
+              this.UIManager._rnctx.callFunction(
+                'RCTEventEmitter',
+                'receiveEvent',
+                [this.getTag(), 'topLoadEnd', []],
+              );
             });
           }
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -121,7 +128,7 @@ export default class RCTImage extends RCTBaseView {
           }
           this.view.setResizeMode(value);
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -130,7 +137,7 @@ export default class RCTImage extends RCTBaseView {
         set: value => {
           this.view.setInset(value);
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -139,7 +146,7 @@ export default class RCTImage extends RCTBaseView {
         set: value => {
           this.view.setInsetSize(value);
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -148,7 +155,7 @@ export default class RCTImage extends RCTBaseView {
         set: value => {
           this.view.setTextureCrop(value);
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -160,7 +167,7 @@ export default class RCTImage extends RCTBaseView {
           }
           this.view.setPointerEvents(value);
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -173,10 +180,15 @@ export default class RCTImage extends RCTBaseView {
           if (typeof value === 'number') {
             this.view.setHitSlop(value, value, value, value);
           } else {
-            this.view.setHitSlop(value.left, value.top, value.right, value.bottom);
+            this.view.setHitSlop(
+              value.left,
+              value.top,
+              value.right,
+              value.bottom,
+            );
           }
         },
-      }: Object)
+      }: Object),
     );
     this.props.inset = [0.0, 0.0, 0.0, 0.0];
     this.props.insetSize = [0.0, 0.0, 0.0, 0.0];
@@ -193,7 +205,7 @@ export default class RCTImage extends RCTBaseView {
           }
           this.view.setImageColor(value);
         },
-      }: Object)
+      }: Object),
     );
   }
 

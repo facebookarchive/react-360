@@ -7,15 +7,24 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-const DEFAULT_Z_OFFSET = 1;
-
-import THREE from '../ThreeShim';
-
-import {setParams, defaultScaleType, resizeModetoScaleType, PointerEvents} from './UIViewUtil';
+import * as THREE from 'three';
 
 import {VectorGeometry} from '../FourByFourRect/VectorGeometry';
 
-import {CENTER_LINE, CENTER, BitmapFontGeometry, measureText} from '../SDFFont/SDFFont';
+import {
+  CENTER_LINE,
+  CENTER,
+  BitmapFontGeometry,
+  measureText,
+} from '../SDFFont/SDFFont';
+import {
+  setParams,
+  defaultScaleType,
+  resizeModetoScaleType,
+  PointerEvents,
+} from './UIViewUtil';
+
+const DEFAULT_Z_OFFSET = 1;
 
 const BACKGROUND_MAT_INDEX = 0;
 const BORDER_MAT_INDEX = 1;
@@ -40,11 +49,13 @@ const DEFAULT_IMAGE_COLOR = 0xffffff;
  *   create:,
  *   update:
  * }
-**/
+ **/
 
 const AnimationFunctions = {
   spring: function(dt) {
-    return 1 + Math.pow(2, -10 * dt) * Math.sin((dt - 0.5 / 4) * Math.PI * 2 / 0.5);
+    return (
+      1 + Math.pow(2, -10 * dt) * Math.sin((dt - 0.5 / 4) * Math.PI * 2 / 0.5)
+    );
   },
   linear: function(dt) {
     return dt;
@@ -101,7 +112,11 @@ export default function UIView(guiSys, params) {
   this.imageMaterial.transparent = true;
   this.imageMaterial.visible = false;
   this.imageMaterial.depthWrite = false;
-  this.material = [this.backgroundMaterial, this.borderMaterial, this.imageMaterial];
+  this.material = [
+    this.backgroundMaterial,
+    this.borderMaterial,
+    this.imageMaterial,
+  ];
   this.material.side = THREE.DoubleSide;
   this.guiSys = guiSys;
   this.zIndex = 0;
@@ -145,11 +160,21 @@ export default function UIView(guiSys, params) {
   this.textVAlign = CENTER;
   this.textColor = new THREE.Color();
   this.textSize = 2;
-  this.textMesh = new THREE.Mesh(new THREE.BufferGeometry(), guiSys.font.material);
+  this.textMesh = new THREE.Mesh(
+    new THREE.BufferGeometry(),
+    guiSys.font.material,
+  );
   this.textMesh.type = 'SDFText';
   this.textMesh.textClip = [-16384, -16384, 16384, 16384];
   this.textMesh.visible = false;
-  this.textMesh.onBeforeRender = function(renderer, scene, camera, geometry, material, group) {
+  this.textMesh.onBeforeRender = function(
+    renderer,
+    scene,
+    camera,
+    geometry,
+    material,
+    group,
+  ) {
     if (geometry && geometry.isSDFText) {
       geometry.onBeforeRender(this, material);
     }
@@ -205,7 +230,11 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       if (this.text) {
         if (this.textDirty) {
           if (this.autoScale) {
-            config.dim = measureText(this.guiSys.font, this.text, this.textSize);
+            config.dim = measureText(
+              this.guiSys.font,
+              this.text,
+              this.textSize,
+            );
             this.frame[2] = config.dim.maxWidth;
             this.frame[3] = config.dim.maxHeight;
           }
@@ -223,7 +252,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
             this.guiSys.font,
             this.text,
             this.textSize,
-            config
+            config,
           );
           this.textMesh.visible = !!this.textMesh.geometry;
           this.textMesh.material = this.textMesh.geometry.materials;
@@ -256,7 +285,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
         transform.makeTranslation(
           x + this.localPosition[0],
           y + this.localPosition[1],
-          z + this.localPosition[2]
+          z + this.localPosition[2],
         );
         this.matrix.multiplyMatrices(transform, this.localRotate);
       }
@@ -269,7 +298,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
           this.borderRadius,
           BACKGROUND_MAT_INDEX,
           IMAGE_MAT_INDEX,
-          BORDER_MAT_INDEX
+          BORDER_MAT_INDEX,
         );
         this.needsUpdate = true;
         this.frameDirty = false;
@@ -360,16 +389,24 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
     this.targetFrame[3] = height;
     if (animator) {
       const self = this;
-      const startFrame = [this.frame[0], this.frame[1], this.frame[2], this.frame[3]];
+      const startFrame = [
+        this.frame[0],
+        this.frame[1],
+        this.frame[2],
+        this.frame[3],
+      ];
       const startTime = Date.now();
-      const animState = this.frame[2] === 0 && this.frame[3] === 0 && animator.create
-        ? animator.create
-        : animator.update;
+      const animState =
+        this.frame[2] === 0 && this.frame[3] === 0 && animator.create
+          ? animator.create
+          : animator.update;
 
       const frameAnimation = function(curTime) {
         const deltaTime = curTime - startTime;
         const dt = animState
-          ? AnimationFunctions[animState.type](Math.min(1, deltaTime / animator.duration))
+          ? AnimationFunctions[animState.type](
+              Math.min(1, deltaTime / animator.duration),
+            )
           : 1;
         const omdt = 1 - dt;
         self.frame[0] = startFrame[0] * omdt + x * dt;
@@ -379,7 +416,9 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
         self.dirtyGeometry = true;
         self.frameDirty = true;
         if (deltaTime < animator.duration && animState) {
-          self.animatorHandle = self.guiSys.requestFrameFunction(frameAnimation);
+          self.animatorHandle = self.guiSys.requestFrameFunction(
+            frameAnimation,
+          );
         } else {
           self.animatorHandle = null;
         }
@@ -444,7 +483,11 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       // Avoid reloading the material if the URL is the same as the one already loaded.
       if (this.imageMaterial.mapurl === url) {
         loaded &&
-          loaded(true, this.imageMaterial.map.naturalWidth, this.imageMaterial.map.naturalHeight);
+          loaded(
+            true,
+            this.imageMaterial.map.naturalWidth,
+            this.imageMaterial.map.naturalHeight,
+          );
         return;
       }
 
@@ -465,7 +508,12 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
           this.updateOffsetRepeat();
           this.imageMaterial.visible = true;
           this.imageMaterial.needsUpdate = true;
-          loaded && loaded(true, texture.image.naturalWidth, texture.image.naturalHeight);
+          loaded &&
+            loaded(
+              true,
+              texture.image.naturalWidth,
+              texture.image.naturalHeight,
+            );
         },
         xhr => {
           /* onProgress */
@@ -475,7 +523,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
           this.imageMaterial.map && this.imageMaterial.map.dispose();
           this.imageMaterial.map = undefined;
           loaded && loaded(false);
-        }
+        },
       );
       this.imageMaterial.visible = !!invisibleTillLoad;
     } else {
@@ -507,7 +555,10 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
 
       // Make sure our material is no longer visible.
       this.imageMaterial.visible = false;
-    } else if (texture instanceof THREE.Texture || texture.isWebGLRenderTarget) {
+    } else if (
+      texture instanceof THREE.Texture ||
+      texture.isWebGLRenderTarget
+    ) {
       // Only work with instances of THREE.Texture (including derived types)
       // We are no longer represented by an image URL so delete the property to prevent later comparison.
       delete this.imageMaterial.mapurl;
@@ -541,7 +592,8 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       this.imageOpacity = 1.0;
       this.imageMaterial.color.set(DEFAULT_IMAGE_COLOR);
     } else {
-      this.imageOpacity = typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
+      this.imageOpacity =
+        typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
       this.imageMaterial.color.set.apply(this.imageMaterial.color, args);
     }
     this.imageMaterial.needsUpdate = true;
@@ -554,8 +606,12 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       this.backgroundMaterial.color.set(DEFAULT_BACKGROUND_COLOR);
       this.backgroundMaterial.visible = false;
     } else {
-      this.backgroundOpacity = typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
-      this.backgroundMaterial.color.set.apply(this.backgroundMaterial.color, args);
+      this.backgroundOpacity =
+        typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
+      this.backgroundMaterial.color.set.apply(
+        this.backgroundMaterial.color,
+        args,
+      );
       this.backgroundMaterial.visible = true;
     }
     this.backgroundMaterial.needsUpdate = true;
@@ -567,7 +623,8 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
       this.borderOpacity = 1.0;
       this.borderMaterial.color.set(DEFAULT_BORDER_COLOR);
     } else {
-      this.borderOpacity = typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
+      this.borderOpacity =
+        typeof args[0] === 'number' ? ((args[0] >> 24) & 0xff) / 255.0 : 1.0;
       this.borderMaterial.color.set.apply(this.borderMaterial.color, arguments);
     }
     this.borderMaterial.needsUpdate = true;
@@ -600,7 +657,10 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
     ) {
       this.borderWidth = newValue.slice();
       this.borderMaterial.visible =
-        newValue[0] > 0 || newValue[1] > 0 || newValue[2] > 0 || newValue[3] > 0;
+        newValue[0] > 0 ||
+        newValue[1] > 0 ||
+        newValue[2] > 0 ||
+        newValue[3] > 0;
       this.frameDirty = true;
       this.dirtyGeometry = true;
     }
@@ -638,9 +698,15 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
     // In opengl uv coordinate system, [0, 0] is the left-bottom
     // of the texture, we flip the y here to translate from crop
     // to uv
-    const offset = new THREE.Vector2(this.crop[0], 1 - (this.crop[1] + this.crop[3]));
+    const offset = new THREE.Vector2(
+      this.crop[0],
+      1 - (this.crop[1] + this.crop[3]),
+    );
     const repeat = new THREE.Vector2(this.crop[2], this.crop[3]);
-    if (this.imageMaterial.map.offset === offset && this.imageMaterial.map.repeat === repeat) {
+    if (
+      this.imageMaterial.map.offset === offset &&
+      this.imageMaterial.map.repeat === repeat
+    ) {
       return;
     }
     // The uv OffsetRepeat in three.js is set in texture, not material.
@@ -648,8 +714,12 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
     this.imageMaterial.map.repeat = repeat;
     this.imageMaterial.needsUpdate = true;
 
-    const width = this.imageMaterial.map.image ? this.imageMaterial.map.image.width : 0;
-    const height = this.imageMaterial.map.image ? this.imageMaterial.map.image.height : 0;
+    const width = this.imageMaterial.map.image
+      ? this.imageMaterial.map.image.width
+      : 0;
+    const height = this.imageMaterial.map.image
+      ? this.imageMaterial.map.image.height
+      : 0;
     if (width !== this.textureDim[0] || height !== this.textureDim[0]) {
       this.textureDim = [width, height];
       this.frameDirty = true;
@@ -750,15 +820,18 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
   // This function determine whether this view can be the target of a hit event.
   shouldAcceptHitEvent: function() {
     // We do not accept the hit event if this view is not supposed to receive it.
-    return !(this.pointerEvents === PointerEvents.NONE ||
-      this.pointerEvents === PointerEvents.BOX_NONE);
+    return !(
+      this.pointerEvents === PointerEvents.NONE ||
+      this.pointerEvents === PointerEvents.BOX_NONE
+    );
   },
 
   // This function determine whether this view's subviews can be the target of hit event.
   shouldInterceptHitEvent: function() {
     // We intercept the hit event if the subviews are not supposed to receive it.
     return (
-      this.pointerEvents === PointerEvents.NONE || this.pointerEvents === PointerEvents.BOX_ONLY
+      this.pointerEvents === PointerEvents.NONE ||
+      this.pointerEvents === PointerEvents.BOX_ONLY
     );
   },
 

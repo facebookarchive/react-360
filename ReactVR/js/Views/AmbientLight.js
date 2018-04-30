@@ -15,12 +15,12 @@
  * @flow
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
+import UIView from '../OVRUI/UIView/UIView';
+import merge from '../Utils/merge';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
+import RCTBaseView from './BaseView';
 
 export default class RCTAmbientLight extends RCTBaseView {
   /**
@@ -31,7 +31,7 @@ export default class RCTAmbientLight extends RCTBaseView {
     // create the ambient light as a child of an empty UIView
     // this allows embedding in layouts
     const light = new THREE.AmbientLight();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.add(light);
     // In "physically correct" mode, the product of color * intensity is
     // interpreted as luminous intensity measured in candelas.
@@ -42,7 +42,7 @@ export default class RCTAmbientLight extends RCTBaseView {
         set: value => {
           light.intensity = value;
         },
-      }: Object)
+      }: Object),
     );
     // Color of the light.
     Object.defineProperty(
@@ -52,7 +52,7 @@ export default class RCTAmbientLight extends RCTBaseView {
         set: value => {
           light.color.set(value);
         },
-      }: Object)
+      }: Object),
     );
 
     // defaults that match three.js

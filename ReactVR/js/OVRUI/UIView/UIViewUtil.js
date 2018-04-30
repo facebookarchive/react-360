@@ -20,9 +20,9 @@ export function setParams(object, params) {
   }
 
   for (const key in params) {
-    const func = 'set' + key.charAt(0).toUpperCase() + key.slice(1); // capitalize first letter
+    const func = `set${key.charAt(0).toUpperCase()}${key.slice(1)}`; // capitalize first letter
     if (typeof object[func] !== 'function') {
-      console.warn('"' + func + '" is not a function of UIView.');
+      console.warn(`"${func}" is not a function of UIView.`);
       continue;
     }
 
@@ -105,7 +105,12 @@ const ScaleCenterCrop = {
       border: {
         cssBorderWidth: borderWidth,
       },
-      cropUV: [cropOffset[0], cropOffset[1], 1 - cropOffset[0], 1 - cropOffset[1]],
+      cropUV: [
+        cropOffset[0],
+        cropOffset[1],
+        1 - cropOffset[0],
+        1 - cropOffset[1],
+      ],
     };
   },
 };
@@ -136,7 +141,7 @@ export function resizeModetoScaleType(resizeModeValue) {
     // When null or undefined, use the default.
     return defaultScaleType();
   } else {
-    console.error("Invalid resize mode: '" + resizeModeValue + "'");
+    console.error(`Invalid resize mode: '${resizeModeValue}'`);
     return defaultScaleType();
   }
 }

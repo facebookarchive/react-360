@@ -9,8 +9,6 @@
  * @flow
  */
 
-import {fetchAndCacheMTL, removeMTLReference} from '../Loaders/WavefrontOBJ/MTLLoader';
-import {fetchAndCacheOBJ, removeOBJReference} from '../Loaders/WavefrontOBJ/OBJLoader';
 import {
   BufferAttribute,
   BufferGeometry,
@@ -20,9 +18,17 @@ import {
   NoColors,
   VertexColors,
 } from 'three';
+import {
+  fetchAndCacheMTL,
+  removeMTLReference,
+} from '../Loaders/WavefrontOBJ/MTLLoader';
+import {
+  fetchAndCacheOBJ,
+  removeOBJReference,
+} from '../Loaders/WavefrontOBJ/OBJLoader';
 import extractURL from '../Utils/extractURL';
 import type {OBJParserState} from '../Loaders/WavefrontOBJ/OBJTypes';
-import type {UIView} from 'ovrui';
+import type UIView from '../OVRUI/UIView/UIView';
 
 class ObjMeshInstance {
   _lit: boolean;
@@ -37,7 +43,12 @@ class ObjMeshInstance {
   _mesh: any;
   _view: UIView;
 
-  constructor(value: any, parent: UIView, litMaterial: Material, unlitMaterial: Material) {
+  constructor(
+    value: any,
+    parent: UIView,
+    litMaterial: Material,
+    unlitMaterial: Material,
+  ) {
     this._lit = true;
     this._objURL = null;
     this._mtlURL = null;
@@ -55,7 +66,9 @@ class ObjMeshInstance {
       if (value.obj) {
         const url = extractURL(value.obj);
         if (!url) {
-          throw new Error('Invalid value for "obj" property: ' + JSON.stringify(value.obj));
+          throw new Error(
+            `Invalid value for "obj" property: ${JSON.stringify(value.obj)}`,
+          );
         }
         resource = url;
       }
@@ -68,7 +81,9 @@ class ObjMeshInstance {
       if (value.mtl) {
         const url = extractURL(value.mtl);
         if (!url) {
-          throw new Error('Invalid value for "mtl" property: ' + JSON.stringify(value.mtl));
+          throw new Error(
+            `Invalid value for "mtl" property: ${JSON.stringify(value.mtl)}`,
+          );
         }
         resource = url;
       }
@@ -112,8 +127,8 @@ class ObjMeshInstance {
           }
         },
         err => {
-          console.error('Failed to fetch resource: ' + JSON.stringify(value));
-        }
+          console.error(`Failed to fetch resource: ${JSON.stringify(value)}`);
+        },
       )
       .catch(err => {
         console.error('Failed to update mesh:', err);
@@ -144,7 +159,9 @@ class ObjMeshInstance {
 
     const url = extractURL(value);
     if (!url) {
-      throw new Error('Invalid value for "mtl" property: ' + JSON.stringify(value));
+      throw new Error(
+        `Invalid value for "mtl" property: ${JSON.stringify(value)}`,
+      );
     }
     fetchAndCacheMTL(url)
       .then(
@@ -157,8 +174,8 @@ class ObjMeshInstance {
           }
         },
         err => {
-          console.error('Failed to fetch resource: ' + url);
-        }
+          console.error(`Failed to fetch resource: ${url}`);
+        },
       )
       .catch(err => {
         console.error('Failed to update mesh:', err);
@@ -169,7 +186,9 @@ class ObjMeshInstance {
     if (!this._objState) {
       return;
     }
-    const fallbackMaterial = this._lit ? this._litMaterial : this._unlitMaterial;
+    const fallbackMaterial = this._lit
+      ? this._litMaterial
+      : this._unlitMaterial;
     const group = previousGroup || new Group();
     let index = 0;
     this._objState.objects.forEach(obj => {
@@ -184,16 +203,21 @@ class ObjMeshInstance {
       if (bufferGeometry) {
         bufferGeometry.addAttribute(
           'position',
-          new BufferAttribute(new Float32Array(geometry.position), 3)
+          new BufferAttribute(new Float32Array(geometry.position), 3),
         );
-        bufferGeometry.setIndex(new BufferAttribute(new Uint32Array(geometry.index), 1));
+        bufferGeometry.setIndex(
+          new BufferAttribute(new Uint32Array(geometry.index), 1),
+        );
         if (geometry.hasUVs) {
-          bufferGeometry.addAttribute('uv', new BufferAttribute(new Float32Array(geometry.uv), 2));
+          bufferGeometry.addAttribute(
+            'uv',
+            new BufferAttribute(new Float32Array(geometry.uv), 2),
+          );
         }
         if (geometry.hasNormals) {
           bufferGeometry.addAttribute(
             'normal',
-            new BufferAttribute(new Float32Array(geometry.normal), 3)
+            new BufferAttribute(new Float32Array(geometry.normal), 3),
           );
         } else {
           // Automatically compute vertex normals from face normals
@@ -202,7 +226,7 @@ class ObjMeshInstance {
         if (geometry.hasVertexColors) {
           bufferGeometry.addAttribute(
             'color',
-            new BufferAttribute(new Float32Array(geometry.color), 3)
+            new BufferAttribute(new Float32Array(geometry.color), 3),
           );
 
           this._litMaterial.vertexColors = VertexColors;
@@ -259,7 +283,7 @@ class ObjMeshInstance {
     const material = this._materialMap[name];
     if (!material) {
       if (__DEV__) {
-        console.warn('OBJ attempted to load unknown material: ' + name);
+        console.warn(`OBJ attempted to load unknown material: ${name}`);
       }
       return this._lit ? this._litMaterial : this._unlitMaterial;
     }
@@ -308,7 +332,6 @@ class ObjMeshInstance {
       }
       this._mesh = null;
     }
-    return;
   }
 }
 
@@ -323,7 +346,7 @@ export default class ObjModelLoader {
     definition: any,
     parent: UIView,
     litMaterial: Material,
-    unlitMaterial: Material
+    unlitMaterial: Material,
   ): ObjMeshInstance {
     return new ObjMeshInstance(definition, parent, litMaterial, unlitMaterial);
   }

@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const MockUIView = jest.fn(() => ({
   setResizeMode: jest.fn(),
   setInset: jest.fn(),
@@ -27,13 +25,6 @@ jest
   .dontMock('../../Utils/merge')
   .dontMock('../../Utils/isPositive')
   .dontMock('../../Utils/Yoga.bundle')
-  .mock(
-    'ovrui',
-    () => ({
-      UIView: MockUIView,
-    }),
-    {virtual: true}
-  )
   .mock('ovr-audio', () => ({}), {virtual: true})
   .mock(
     'three',
@@ -59,7 +50,7 @@ jest
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
     }),
-    {virtual: true}
+    {virtual: true},
   );
 const Image = require('../Image').default;
 
@@ -75,7 +66,11 @@ describe('RCTImage', () => {
     };
     i.props.source = {uri: 'http://example.com/img.jpg'};
     expect(i.view.setImage.mock.calls[0][0]).toBe('http://example.com/img.jpg');
-    expect(cf.mock.calls[0]).toEqual(['RCTEventEmitter', 'receiveEvent', [3, 'topLoadStart', []]]);
+    expect(cf.mock.calls[0]).toEqual([
+      'RCTEventEmitter',
+      'receiveEvent',
+      [3, 'topLoadStart', []],
+    ]);
     i.view.setImage.mock.calls[0][1](true, 320, 240);
     expect(cf.mock.calls[1]).toEqual([
       'RCTEventEmitter',
@@ -91,7 +86,11 @@ describe('RCTImage', () => {
         },
       ],
     ]);
-    expect(cf.mock.calls[2]).toEqual(['RCTEventEmitter', 'receiveEvent', [3, 'topLoadEnd', []]]);
+    expect(cf.mock.calls[2]).toEqual([
+      'RCTEventEmitter',
+      'receiveEvent',
+      [3, 'topLoadEnd', []],
+    ]);
   });
 
   it('initializes inset at creation time', () => {

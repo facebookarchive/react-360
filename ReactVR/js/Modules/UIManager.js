@@ -36,10 +36,10 @@ import RCTPrefetch from '../Views/Prefetch';
 
 import Module from './Module';
 import * as THREE from 'three';
-import * as OVRUI from 'ovrui';
+import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
 import * as Yoga from '../Utils/Yoga.bundle';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
 import type RCTBaseView from '../Views/BaseView';
 
@@ -668,7 +668,7 @@ export default class UIManager extends Module {
     maxLineCount: number,
     callbackID: number,
   ) {
-    const wordWrapped = OVRUI.wrapLines(
+    const wordWrapped = SDFFont.wrapLines(
       this._guiSys.font,
       text,
       fontSize,
@@ -676,7 +676,7 @@ export default class UIManager extends Module {
       undefined,
       maxLineCount,
     );
-    const dim = OVRUI.measureText(this._guiSys.font, wordWrapped, fontSize);
+    const dim = SDFFont.measureText(this._guiSys.font, wordWrapped, fontSize);
     this._rnctx.invokeCallback(callbackID, [dim.maxHeight]);
   }
 

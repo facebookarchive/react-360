@@ -14,11 +14,11 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
+import UIView from '../OVRUI/UIView/UIView';
+import merge from '../Utils/merge';
 import * as Yoga from '../Utils/Yoga.bundle';
+import RCTBaseView from './BaseView';
 
 // display texture always infront of the camera
 const basic_vert = `
@@ -83,7 +83,9 @@ export default class RCTLiveEnvCamera extends RCTBaseView {
     super();
 
     navigator.getUserMedia =
-      navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia;
 
     const constraints = {
       video: {facingMode: {exact: 'environment'}},
@@ -100,7 +102,7 @@ export default class RCTLiveEnvCamera extends RCTBaseView {
       },
       error => {
         console.log('navigator.getUserMedia error: ', error);
-      }
+      },
     );
 
     this._sphereGeometry = new THREE.SphereGeometry(SPHERE_RADIUS, 5, 5);
@@ -123,7 +125,7 @@ export default class RCTLiveEnvCamera extends RCTBaseView {
     this._globe.rotation.y = -Math.PI / 2;
     this._globe.onUpdate = this._onUpdate;
 
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.add(this._globe);
   }
 

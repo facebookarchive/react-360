@@ -16,10 +16,10 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
+import UIView from '../OVRUI/UIView/UIView';
+import merge from '../Utils/merge';
+import RCTBaseView from './BaseView';
 
 export default class RCTDirectionalLight extends RCTBaseView {
   /**
@@ -35,7 +35,7 @@ export default class RCTDirectionalLight extends RCTBaseView {
     const light = new THREE.PointLight();
     light.decay = 0;
     light.position.set(0, 1000, 0);
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.add(light);
     // In "physically correct" mode, the product of color * intensity is
     // interpreted as luminous intensity measured in candelas.

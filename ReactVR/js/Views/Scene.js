@@ -14,9 +14,9 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
+import RCTBaseView from './BaseView';
 
 export default class RCTScene extends RCTBaseView {
   /**
@@ -24,7 +24,7 @@ export default class RCTScene extends RCTBaseView {
    */
   constructor(guiSys) {
     super();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
   }
 
   /**

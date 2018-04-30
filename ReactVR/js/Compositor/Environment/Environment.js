@@ -73,6 +73,7 @@ export default class Environment {
     });
     this._panoMaterial.useUV = 0;
     this._panoMesh = new THREE.Mesh(this._panoGeomSphere, this._panoMaterial);
+    this._panoMesh.visible = false;
     this._panoMesh.scale.set(-1, 1, 1);
     this._panoMesh.rotation.y = -Math.PI / 2;
     this._panoEyeOffsets = [[0, 0, 1, 1]];
@@ -121,6 +122,7 @@ export default class Environment {
       // a new image has started loading
       return;
     }
+    this._panoMesh.visible = true;
     this._panoMaterial.map = data.tex;
     const width = data.width;
     const height = data.height;

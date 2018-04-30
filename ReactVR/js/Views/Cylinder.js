@@ -9,12 +9,12 @@
  * @flow
  */
 
-import RCTBaseMesh from './BaseMesh';
 import {CylinderBufferGeometry} from 'three';
 import merge from '../Utils/merge';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseMesh from './BaseMesh';
 
 export default class RCTCylinder extends RCTBaseMesh {
   _radiusTop: number;
@@ -40,7 +40,7 @@ export default class RCTCylinder extends RCTBaseMesh {
           this._radiusTop = radiusTop;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -51,7 +51,7 @@ export default class RCTCylinder extends RCTBaseMesh {
           this._radiusBottom = radiusBottom;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -62,7 +62,7 @@ export default class RCTCylinder extends RCTBaseMesh {
           this._dimHeight = height;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -73,7 +73,7 @@ export default class RCTCylinder extends RCTBaseMesh {
           this._segments = segments;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     (this: any)._generateGeometry = this._generateGeometry.bind(this);
@@ -91,7 +91,7 @@ export default class RCTCylinder extends RCTBaseMesh {
       this._radiusTop,
       this._radiusBottom,
       this._dimHeight,
-      this._segments
+      this._segments,
     );
     this._setGeometry(geometry);
   }

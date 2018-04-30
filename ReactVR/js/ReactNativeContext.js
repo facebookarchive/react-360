@@ -35,12 +35,14 @@ import WebSocketModule from './Modules/WebSocketModule';
 import ReactVRConstants from './Modules/ReactVRConstants';
 import RCTExceptionsManager from './Modules/RCTExceptionsManager';
 import RCTSourceCode from './Modules/RCTSourceCode';
-import * as OVRUI from 'ovrui';
+import {GuiSysEventType, UIViewEventType} from './OVRUI/UIView/GuiSysEvent';
 import * as THREE from 'three';
 
 import type ReactExecutor from './Executor/ReactExecutor';
 import type Module from './Modules/Module';
-import type {GuiSys, UIView, UIViewEvent} from 'ovrui';
+import type GuiSys from './OVRUI/UIView/GuiSys';
+import type UIView from './OVRUI/UIView/UIView';
+import type {UIViewEvent} from './OVRUI/UIView/GuiSysEvent';
 import type {Camera, Object3D, Scene} from 'three';
 import type {CustomView} from './Modules/UIManager';
 
@@ -309,7 +311,7 @@ export class ReactNativeContext {
    */
   _onGuiSysEvent(event: UIViewEvent) {
     switch (event.eventType) {
-      case OVRUI.GuiSysEventType.HIT_CHANGED:
+      case GuiSysEventType.HIT_CHANGED:
         if (
           this.lastHit !== event.args.currentHit ||
           this.lastSource !== event.args.currentSource
@@ -329,7 +331,7 @@ export class ReactNativeContext {
    */
   _onUIViewEvent(event: UIViewEvent) {
     switch (event.eventType) {
-      case OVRUI.UIViewEventType.FOCUS_LOST:
+      case UIViewEventType.FOCUS_LOST:
         {
           const viewTag = event.view ? this.getHitTag(event.view) : undefined;
           const targetTag = event.args.target
@@ -349,7 +351,7 @@ export class ReactNativeContext {
           }
         }
         break;
-      case OVRUI.UIViewEventType.FOCUS_GAINED:
+      case UIViewEventType.FOCUS_GAINED:
         {
           const viewTag = event.view ? this.getHitTag(event.view) : undefined;
           const targetTag = event.args.target

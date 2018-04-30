@@ -14,13 +14,20 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
+import getSupportedFormats from '../Audio/getSupportedFormats';
+import UIView from '../OVRUI/UIView/UIView';
 import extractURL from '../Utils/extractURL';
 import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
-import getSupportedFormats from '../Audio/getSupportedFormats';
+import RCTBaseView from './BaseView';
 
-export type PlayStatus = 'closed' | 'loading' | 'error' | 'ended' | 'paused' | 'playing' | 'ready';
+export type PlayStatus =
+  | 'closed'
+  | 'loading'
+  | 'error'
+  | 'ended'
+  | 'paused'
+  | 'playing'
+  | 'ready';
 
 const COMMAND_SEEK_TO = 1;
 const COMMAND_PLAY = 2;
@@ -32,7 +39,7 @@ export default class RCTSound extends RCTBaseView {
    */
   constructor(guiSys, rnctx) {
     super();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this._rnctx = rnctx;
     this._audioModule = rnctx.AudioModule;
     this._counter = 0;
@@ -123,7 +130,9 @@ export default class RCTSound extends RCTBaseView {
           }
           if (!url) {
             if (__DEV__) {
-              console.warn('<Sound> source format values must be in the form {uri: "..."}');
+              console.warn(
+                '<Sound> source format values must be in the form {uri: "..."}',
+              );
             }
             return;
           }
@@ -170,17 +179,41 @@ export default class RCTSound extends RCTBaseView {
         }
 
         // Register callbacks and load audio.
-        this._audioModule._addMediaEventListener(this._handle, 'canplay', this._onCanPlay);
-        this._audioModule._addMediaEventListener(this._handle, 'ended', this._onEnded);
-        this._audioModule._addMediaEventListener(this._handle, 'playing', this._onPlaying);
-        this._audioModule._addMediaEventListener(this._handle, 'pause', this._onPause);
-        this._audioModule._addMediaEventListener(this._handle, 'error', this._onError);
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'canplay',
+          this._onCanPlay,
+        );
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'ended',
+          this._onEnded,
+        );
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'playing',
+          this._onPlaying,
+        );
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'pause',
+          this._onPause,
+        );
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'error',
+          this._onError,
+        );
         this._audioModule._addMediaEventListener(
           this._handle,
           'durationchange',
-          this._onDurationChange
+          this._onDurationChange,
         );
-        this._audioModule._addMediaEventListener(this._handle, 'timeupdate', this._onTimeUpdate);
+        this._audioModule._addMediaEventListener(
+          this._handle,
+          'timeupdate',
+          this._onTimeUpdate,
+        );
         this._audioModule.load(this._handle);
         this._updatePlayStatus('loading');
       },
@@ -295,7 +328,11 @@ export default class RCTSound extends RCTBaseView {
   }
 
   _emitEvent(eventType, args) {
-    this._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [this.getTag(), eventType, args]);
+    this._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+      this.getTag(),
+      eventType,
+      args,
+    ]);
   }
 
   _updatePlayStatus(status) {

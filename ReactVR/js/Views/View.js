@@ -16,11 +16,11 @@
  * @flow
  */
 
-import RCTBaseView from './BaseView';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
+import RCTBaseView from './BaseView';
 
 export default class RCTView extends RCTBaseView {
   /**
@@ -28,7 +28,7 @@ export default class RCTView extends RCTBaseView {
    */
   constructor(guiSys: GuiSys) {
     super();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
 
     Object.defineProperty(
       this.props,
@@ -40,7 +40,7 @@ export default class RCTView extends RCTBaseView {
           }
           this.view.setPointerEvents(value);
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -53,10 +53,15 @@ export default class RCTView extends RCTBaseView {
           if (typeof value === 'number') {
             this.view.setHitSlop(value, value, value, value);
           } else {
-            this.view.setHitSlop(value.left, value.top, value.right, value.bottom);
+            this.view.setHitSlop(
+              value.left,
+              value.top,
+              value.right,
+              value.bottom,
+            );
           }
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -69,10 +74,15 @@ export default class RCTView extends RCTBaseView {
           if (typeof value === 'number') {
             this.view.setCursorVisibilitySlop(value, value, value, value);
           } else {
-            this.view.setCursorVisibilitySlop(value.left, value.top, value.right, value.bottom);
+            this.view.setCursorVisibilitySlop(
+              value.left,
+              value.top,
+              value.right,
+              value.bottom,
+            );
           }
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -84,7 +94,7 @@ export default class RCTView extends RCTBaseView {
           }
           this.view.setBillboarding(value);
         },
-      }: Object)
+      }: Object),
     );
   }
 

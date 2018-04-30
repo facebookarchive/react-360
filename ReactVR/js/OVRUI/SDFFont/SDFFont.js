@@ -25,7 +25,7 @@
  * the internal width. Good values are in the 0.4 to 0.5 range.
  */
 
-import THREE from '../ThreeShim';
+import * as THREE from 'three';
 import {DEFAULT_FONT_TEXTURE, DEFAULT_FONT_JSON} from './DefaultFont';
 
 export const BASELINE = 'baseline';
@@ -217,7 +217,7 @@ export function splitLines(
   maxWidth,
   maxHeight,
   maxLines,
-  hasPerPixelClip
+  hasPerPixelClip,
 ) {
   let lineStart = 0;
   let lastOption = 0;
@@ -282,7 +282,7 @@ export function wrapLines(
   maxWidth,
   maxHeight,
   maxLines,
-  hasPerPixelClip
+  hasPerPixelClip,
 ) {
   return splitLines(
     fontObject,
@@ -291,7 +291,7 @@ export function wrapLines(
     maxWidth,
     maxHeight,
     maxLines,
-    hasPerPixelClip
+    hasPerPixelClip,
   ).join('\n');
 }
 
@@ -389,8 +389,14 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
   // Caller may have already computed dim via measureText, e.g. for autoScaling.
   const dim = config.dim || measureText(fontObject, text, fontHeight);
   // encode the fontParams within bytes to allow compactly passing in vertex shader
-  const fontParamsAlphaCenter = Math.min(255, fontParms.AlphaCenter * 255 || 108);
-  const fontParamsColorCenter = Math.min(255, fontParms.ColorCenter * 255 || 128);
+  const fontParamsAlphaCenter = Math.min(
+    255,
+    fontParms.AlphaCenter * 255 || 108,
+  );
+  const fontParamsColorCenter = Math.min(
+    255,
+    fontParms.ColorCenter * 255 || 128,
+  );
 
   // Run the constructor of the superclass
   THREE.BufferGeometry.apply(this);
@@ -440,7 +446,8 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
     const md = baseFont.MaxDescent;
     const fh = baseFont.FontHeight;
     const maxFontHeight = ma + md;
-    const maxTextHeight = (fh * (dim.numLines - 1) + maxFontHeight) * yBaseScale;
+    const maxTextHeight =
+      (fh * (dim.numLines - 1) + maxFontHeight) * yBaseScale;
     curPos[1] = (maxTextHeight - fontHeight) * 0.5 - md * yBaseScale;
   } else if (vAlign === TOP) {
     curPos[1] = frame[1] + frame[3] - fontHeight;
@@ -508,7 +515,11 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
 
     if (curFontObject !== lastFontObject) {
       if (lastGroupIndex !== index) {
-        this.addGroup(lastGroupIndex * 6, (index - lastGroupIndex) * 6, materials.length);
+        this.addGroup(
+          lastGroupIndex * 6,
+          (index - lastGroupIndex) * 6,
+          materials.length,
+        );
         materials.push(lastFontObject.material);
       }
       lastGroupIndex = index;
@@ -543,9 +554,12 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
     textColorBuffer[index * 16 + 2] = textColor[2];
     textColorBuffer[index * 16 + 3] = textColor[3];
 
-    positionsBuffer[index * 12 + 3] = curPos[0] + r[0] * bearingX + u[0] * bearingY;
-    positionsBuffer[index * 12 + 4] = curPos[1] + r[1] * bearingX + u[1] * bearingY;
-    positionsBuffer[index * 12 + 5] = offsetZ + r[2] * bearingX + u[2] * bearingY;
+    positionsBuffer[index * 12 + 3] =
+      curPos[0] + r[0] * bearingX + u[0] * bearingY;
+    positionsBuffer[index * 12 + 4] =
+      curPos[1] + r[1] * bearingX + u[1] * bearingY;
+    positionsBuffer[index * 12 + 5] =
+      offsetZ + r[2] * bearingX + u[2] * bearingY;
     texCoordBuffer[index * 8 + 2] = s0;
     texCoordBuffer[index * 8 + 3] = t0;
     fontParmsBuffer[index * 16 + 4] = fontParamsAlphaCenter;
@@ -606,12 +620,17 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
         object.parent.textColor.r,
         object.parent.textColor.g,
         object.parent.textColor.b,
-        object.opacity
+        object.opacity,
       );
     }
     const textClip = object.textClip;
     if (textClip && object.parent.clippingEnabled) {
-      material.uniforms.clipRegion.value.set(textClip[0], textClip[1], textClip[2], textClip[3]);
+      material.uniforms.clipRegion.value.set(
+        textClip[0],
+        textClip[1],
+        textClip[2],
+        textClip[3],
+      );
     } else {
       material.uniforms.clipRegion.value.set(-16384, -16384, 16384, 16384);
     }
@@ -619,11 +638,21 @@ export function BitmapFontGeometry(fontObject, text, fontHeight, config = {}) {
   this.textClip = [-16384, -16384, 16384, 16384];
   this.addAttribute('position', new THREE.BufferAttribute(positionsBuffer, 3));
   this.addAttribute('uv', new THREE.BufferAttribute(texCoordBuffer, 2));
-  this.addAttribute('fontParms', new THREE.BufferAttribute(fontParmsBuffer, 4, true));
-  this.addAttribute('textColors', new THREE.BufferAttribute(textColorBuffer, 4, true));
+  this.addAttribute(
+    'fontParms',
+    new THREE.BufferAttribute(fontParmsBuffer, 4, true),
+  );
+  this.addAttribute(
+    'textColors',
+    new THREE.BufferAttribute(textColorBuffer, 4, true),
+  );
   this.setIndex(new THREE.BufferAttribute(indicesBuffer, 1));
   if (lastGroupIndex !== index) {
-    this.addGroup(lastGroupIndex * 6, (index - lastGroupIndex) * 6, materials.length);
+    this.addGroup(
+      lastGroupIndex * 6,
+      (index - lastGroupIndex) * 6,
+      materials.length,
+    );
     materials.push(lastFontObject.material);
   }
   this.computeBoundingSphere();
@@ -643,7 +672,7 @@ export function loadFont(fontName, fontTexture, loader) {
     // Use default font
     fontTexture = DEFAULT_FONT_TEXTURE;
   }
-  const tex = new THREE.TextureLoader().load(fontTexture, function(texture) {
+  const tex = new THREE.TextureLoader().load(fontTexture, texture => {
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
     texture.minFilter = THREE.LinearFilter;
@@ -737,7 +766,7 @@ export function loadFont(fontName, fontTexture, loader) {
 
   const fileLoader = loader || new THREE.FileLoader();
   return new Promise((resolve, reject) => {
-    fileLoader.load(fontName, function(response) {
+    fileLoader.load(fontName, response => {
       const data = JSON.parse(response);
       initFontData(data);
       font.data = data;

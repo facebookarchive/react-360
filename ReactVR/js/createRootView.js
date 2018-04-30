@@ -9,8 +9,8 @@
  * @flow
  */
 
-import type {GuiSys} from 'ovrui';
 import type {Camera} from 'three';
+import type GuiSys from './OVRUI/UIView/GuiSys';
 
 import type ReactExecutor from './Executor/ReactExecutor';
 import ReactExecutorWebWorker from './Executor/ReactExecutorWebWorker';

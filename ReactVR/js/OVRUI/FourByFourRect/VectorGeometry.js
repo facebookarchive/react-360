@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import THREE from '../ThreeShim';
+import * as THREE from 'three';
 
 /**
  * Util functions for generation of vector geomtry used typically used in css borders etc
@@ -30,7 +30,7 @@ function vgAddPoint(geom, pt) {
     if (dist < 0.01) {
       return;
     }
-  }*/
+  } */
   geom.positions.push(...pt);
   geom.positions.push(0);
 }
@@ -44,7 +44,7 @@ function vgAddPointBorder(geom, ptA, ptB) {
     if (dist < 0.01) {
       return;
     }
-  }*/
+  } */
   geom.positions.push(...ptA);
   geom.positions.push(0);
   geom.positions.push(...ptB);
@@ -82,8 +82,30 @@ function vgTesselateBezier(geom, x1, y1, x2, y2, x3, y3, x4, y4, level) {
   const x1234 = (x123 + x234) * 0.5;
   const y1234 = (y123 + y234) * 0.5;
 
-  vgTesselateBezier(geom, x1, y1, x12, y12, x123, y123, x1234, y1234, level + 1);
-  vgTesselateBezier(geom, x1234, y1234, x234, y234, x34, y34, x4, y4, level + 1);
+  vgTesselateBezier(
+    geom,
+    x1,
+    y1,
+    x12,
+    y12,
+    x123,
+    y123,
+    x1234,
+    y1234,
+    level + 1,
+  );
+  vgTesselateBezier(
+    geom,
+    x1234,
+    y1234,
+    x234,
+    y234,
+    x34,
+    y34,
+    x4,
+    y4,
+    level + 1,
+  );
 }
 
 function vgTesselateBezierBorder(
@@ -104,7 +126,7 @@ function vgTesselateBezierBorder(
   y3B,
   x4B,
   y4B,
-  level
+  level,
 ) {
   if (level > 10) {
     return;
@@ -169,7 +191,7 @@ function vgTesselateBezierBorder(
     y123B,
     x1234B,
     y1234B,
-    level + 1
+    level + 1,
   );
   vgTesselateBezierBorder(
     geom,
@@ -189,7 +211,7 @@ function vgTesselateBezierBorder(
     y34B,
     x4B,
     y4B,
-    level + 1
+    level + 1,
   );
 }
 
@@ -226,7 +248,7 @@ function vgFlattenPaths(commands, w, h) {
           cp2[1],
           p[0],
           p[1],
-          0
+          0,
         );
         i += 4;
         break;
@@ -310,7 +332,7 @@ function vgFlattenPathsBorder(commands, w, h) {
           cp2B[1],
           pB[0],
           pB[1],
-          0
+          0,
         );
         i += 4;
         break;
@@ -347,7 +369,16 @@ function vgRect(x, y, w, h) {
   return vgFlattenPaths(vals, w, h);
 }
 
-function vgRoundedRectVarying(x, y, w, h, radBottomRight, radBottomLeft, radTopLeft, radTopRight) {
+function vgRoundedRectVarying(
+  x,
+  y,
+  w,
+  h,
+  radBottomRight,
+  radBottomLeft,
+  radTopLeft,
+  radTopRight,
+) {
   if (
     radTopLeft < 0.001 &&
     radTopRight < 0.001 &&
@@ -424,7 +455,7 @@ export function vgRoundedBorderRectVarying(
   radBottomRight,
   radBottomLeft,
   radTopLeft,
-  radTopRight
+  radTopRight,
 ) {
   const x = Math.min(width, borderLeft);
   const w = Math.max(x, width - borderRight) - x;
@@ -566,7 +597,7 @@ export function VectorGeometry(
   borderRadius,
   backgroundIndex,
   foregroundIndex,
-  borderIndex
+  borderIndex,
 ) {
   THREE.BufferGeometry.apply(this);
 
@@ -580,7 +611,7 @@ export function VectorGeometry(
     borderRadius[0],
     borderRadius[1],
     borderRadius[2],
-    borderRadius[3]
+    borderRadius[3],
   );
   let indices = vgGenerateIndicesConvex(geom.positions.length / 3);
   const baseIndices = indices.length;
@@ -597,19 +628,25 @@ export function VectorGeometry(
       borderRadius[0],
       borderRadius[1],
       borderRadius[2],
-      borderRadius[3]
+      borderRadius[3],
     );
     const borderIndices = vgGenerateIndicesBorder(
       geom.positions.length / 3,
-      borderGeom.positions.length / 3
+      borderGeom.positions.length / 3,
     );
     geom.positions = geom.positions.concat(borderGeom.positions);
     geom.uvs = geom.uvs.concat(borderGeom.uvs);
     indices = indices.concat(borderIndices);
   }
 
-  this.addAttribute('position', new THREE.BufferAttribute(new Float32Array(geom.positions), 3));
-  this.addAttribute('uv', new THREE.BufferAttribute(new Float32Array(geom.uvs), 2));
+  this.addAttribute(
+    'position',
+    new THREE.BufferAttribute(new Float32Array(geom.positions), 3),
+  );
+  this.addAttribute(
+    'uv',
+    new THREE.BufferAttribute(new Float32Array(geom.uvs), 2),
+  );
   this.addGroup(0, baseIndices, backgroundIndex);
   this.addGroup(0, baseIndices, foregroundIndex);
   if (borderWidth) {

@@ -17,7 +17,6 @@ import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
 import ReactVRInstance from './js/ReactVRInstance';
 import Surface from './js/Compositor/Surface';
-import VRInstance from './js/VRInstance';
 import {
   BasicVideoPlayer,
   addCustomizedVideoPlayer,
@@ -34,7 +33,6 @@ export {RCTBaseView};
 export {ReactNativeContext};
 export {ReactVRInstance};
 export {Surface};
-export {VRInstance};
 export {BasicVideoPlayer};
 export {addCustomizedVideoPlayer};
 export {getSupportedFormats};

@@ -9,7 +9,8 @@
  * @flow
  */
 
-import * as OVRUI from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
+import {GuiSysEventType} from '../OVRUI/UIView/GuiSysEvent';
 import {type ReactNativeContext} from '../ReactNativeContext';
 
 type EventPayload = {
@@ -22,10 +23,10 @@ type EventPayload = {
  * Input event manager for React Native. RCTInputControls emits input events to the current focused view.
  */
 export class RCTInputControls {
-  _guiSys: OVRUI.GuiSys;
+  _guiSys: GuiSys;
   _rnctx: ReactNativeContext;
 
-  constructor(rnctx: ReactNativeContext, guiSys: OVRUI.GuiSys) {
+  constructor(rnctx: ReactNativeContext, guiSys: GuiSys) {
     this._rnctx = rnctx;
     this._guiSys = guiSys;
 
@@ -41,7 +42,7 @@ export class RCTInputControls {
 
   _onInputEvent(event: EventPayload) {
     // This function only handle input events
-    if (event.eventType !== OVRUI.GuiSysEventType.INPUT_EVENT) {
+    if (event.eventType !== GuiSysEventType.INPUT_EVENT) {
       return;
     }
 

@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const MockUIView = jest.fn(() => ({
   add: jest.fn(),
   remove: jest.fn(),
@@ -16,13 +14,6 @@ const MockUIView = jest.fn(() => ({
 
 jest
   .dontMock('../BaseView')
-  .mock(
-    'ovrui',
-    () => ({
-      UIView: MockUIView,
-    }),
-    {virtual: true}
-  )
   .mock(
     'three',
     () => ({
@@ -47,7 +38,7 @@ jest
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
     }),
-    {virtual: true}
+    {virtual: true},
   )
   .dontMock('../../Utils/Yoga.bundle');
 
@@ -154,7 +145,11 @@ describe('RCTBaseView', () => {
     bv._height(100);
     bv._top(5);
     bv._left(50);
-    bv.YGNode.calculateLayout(Yoga.UNDEFINED, Yoga.UNDEFINED, Yoga.DIRECTION_LTR);
+    bv.YGNode.calculateLayout(
+      Yoga.UNDEFINED,
+      Yoga.UNDEFINED,
+      Yoga.DIRECTION_LTR,
+    );
     bv.presentLayout();
     expect(bv.YGNode.getComputedLeft()).toBe(50);
     expect(bv.YGNode.getComputedTop()).toBe(5);
@@ -172,7 +167,11 @@ describe('RCTBaseView', () => {
     bv.presentLayout();
     // force a change
     bv._top(10);
-    bv.YGNode.calculateLayout(Yoga.UNDEFINED, Yoga.UNDEFINED, Yoga.DIRECTION_LTR);
+    bv.YGNode.calculateLayout(
+      Yoga.UNDEFINED,
+      Yoga.UNDEFINED,
+      Yoga.DIRECTION_LTR,
+    );
     bv.presentLayout();
     expect(bv.YGNode.getComputedTop()).toBe(10);
     expect(cf.mock.calls.length).toEqual(2);
@@ -202,10 +201,20 @@ describe('RCTBaseView', () => {
     bv._height(60);
     bv._top(100);
     bv._left(100);
-    bv.YGNode.calculateLayout(Yoga.UNDEFINED, Yoga.UNDEFINED, Yoga.DIRECTION_LTR);
+    bv.YGNode.calculateLayout(
+      Yoga.UNDEFINED,
+      Yoga.UNDEFINED,
+      Yoga.DIRECTION_LTR,
+    );
     bv.presentLayout();
 
-    expect(bv.view.setFrame.mock.calls[0]).toEqual([80, -70, 40, 60, undefined]);
+    expect(bv.view.setFrame.mock.calls[0]).toEqual([
+      80,
+      -70,
+      40,
+      60,
+      undefined,
+    ]);
     expect(bv.view.owner).toBe(bv);
   });
 
@@ -232,12 +241,28 @@ describe('RCTBaseView', () => {
     child._width('50%');
     child._height('70%');
 
-    bv.YGNode.calculateLayout(Yoga.UNDEFINED, Yoga.UNDEFINED, Yoga.DIRECTION_LTR);
+    bv.YGNode.calculateLayout(
+      Yoga.UNDEFINED,
+      Yoga.UNDEFINED,
+      Yoga.DIRECTION_LTR,
+    );
     bv.presentLayout();
     child.presentLayout();
-    expect(bv.view.setFrame.mock.calls[0]).toEqual([80, -70, 40, 60, undefined]);
+    expect(bv.view.setFrame.mock.calls[0]).toEqual([
+      80,
+      -70,
+      40,
+      60,
+      undefined,
+    ]);
     expect(bv.view.owner).toBe(bv);
-    expect(child.view.setFrame.mock.calls[0]).toEqual([0, -0, 20, 42, undefined]);
+    expect(child.view.setFrame.mock.calls[0]).toEqual([
+      0,
+      -0,
+      20,
+      42,
+      undefined,
+    ]);
     expect(child.view.owner).toBe(child);
   });
 });

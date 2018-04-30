@@ -14,12 +14,12 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
+import * as THREE from 'three';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
 import RCTVideoPlayer from '../Utils/RCTVideoPlayer';
 import {RCTBindedResource} from '../Utils/RCTBindedResource';
-import * as OVRUI from 'ovrui';
-import * as THREE from 'three';
+import RCTBaseView from './BaseView';
 
 const COMMAND_SEEK_TO = 1;
 const COMMAND_PLAY = 2;
@@ -31,7 +31,7 @@ export default class RCTVideo extends RCTBaseView {
    */
   constructor(guiSys, rnctx) {
     super();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this._localResource = new RCTBindedResource(rnctx.RCTResourceManager);
     this._videoModule = rnctx.VideoModule;
     this._rnctx = rnctx;
@@ -78,7 +78,11 @@ export default class RCTVideo extends RCTBaseView {
       }
     };
     this.player.onEmitEvent = (eventType, args) => {
-      this._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [this.getTag(), eventType, args]);
+      this._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+        this.getTag(),
+        eventType,
+        args,
+      ]);
     };
 
     // Load/unload video when the source property changes.
@@ -140,7 +144,7 @@ export default class RCTVideo extends RCTBaseView {
         set: value => {
           this.view.setImageColor(value);
         },
-      }: Object)
+      }: Object),
     );
   }
 

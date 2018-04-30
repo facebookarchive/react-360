@@ -9,13 +9,13 @@
  * @flow
  */
 
-import RCTBaseMesh from './BaseMesh';
 import {createModelInstance} from '../Loaders/ModelLoaderRegistry';
 import merge from '../Utils/merge';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {MeshInstance} from '../Loaders/ModelLoaderRegistry';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseMesh from './BaseMesh';
 
 export default class RCTModel extends RCTBaseMesh {
   instance: MeshInstance | null;
@@ -29,7 +29,7 @@ export default class RCTModel extends RCTBaseMesh {
       'source',
       ({
         set: this._setSource.bind(this),
-      }: Object)
+      }: Object),
     );
   }
 
@@ -43,7 +43,12 @@ export default class RCTModel extends RCTBaseMesh {
         this.instance && this.instance.dispose();
       }
     }
-    this.instance = createModelInstance(value, this.view, this._litMaterial, this._unlitMaterial);
+    this.instance = createModelInstance(
+      value,
+      this.view,
+      this._litMaterial,
+      this._unlitMaterial,
+    );
     this.instance && this.instance.setLit(this._lit);
   }
 

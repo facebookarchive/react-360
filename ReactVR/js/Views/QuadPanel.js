@@ -12,11 +12,11 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
+import UIView from '../OVRUI/UIView/UIView';
+import merge from '../Utils/merge';
 import * as Yoga from '../Utils/Yoga.bundle';
+import RCTBaseView from './BaseView';
 
 export default class RCTQuadPanel extends RCTBaseView {
   /**
@@ -49,7 +49,7 @@ export default class RCTQuadPanel extends RCTBaseView {
     this.plane.subScene = this.subScene;
     this.plane.subSceneCamera = this.camera;
     this.plane.scale.z = -1;
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.add(this.plane);
 
     this.subScene.scale.y = -1;
@@ -78,10 +78,17 @@ export default class RCTQuadPanel extends RCTBaseView {
         // as our angle is small and dealing with px height rather than angles a proportion of an arc
         // is used
         const halfWidth =
-          this.props._layerDistance * (Math.PI * value.width / this.props._layerDensity);
+          this.props._layerDistance *
+          (Math.PI * value.width / this.props._layerDensity);
         const halfHeight =
-          this.props._layerDistance * (Math.PI * value.height / this.props._layerDensity);
-        this.plane.geometry = new THREE.PlaneGeometry(halfWidth * 2, halfHeight * 2, 1, 1);
+          this.props._layerDistance *
+          (Math.PI * value.height / this.props._layerDensity);
+        this.plane.geometry = new THREE.PlaneGeometry(
+          halfWidth * 2,
+          halfHeight * 2,
+          1,
+          1,
+        );
         this.plane.needsUpdate = true;
         this._createRTT();
       },
@@ -91,11 +98,15 @@ export default class RCTQuadPanel extends RCTBaseView {
   _createRTT() {
     if (this.props._layerWidth > 0 && this.props._layerHeight > 0) {
       if (!this.rtt) {
-        this.rtt = new THREE.WebGLRenderTarget(this.props._layerWidth, this.props._layerHeight, {
-          minFilter: THREE.LinearFilter,
-          magFilter: THREE.LinearFilter,
-          format: THREE.RGBAFormat,
-        });
+        this.rtt = new THREE.WebGLRenderTarget(
+          this.props._layerWidth,
+          this.props._layerHeight,
+          {
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.LinearFilter,
+            format: THREE.RGBAFormat,
+          },
+        );
       } else {
         this.rtt.setSize(this.props._layerWidth, this.props._layerHeight);
       }
@@ -107,7 +118,7 @@ export default class RCTQuadPanel extends RCTBaseView {
         0,
         this.props._layerHeight,
         -1000,
-        1000
+        1000,
       );
       this.camera.setViewOffset(
         this.props._layerWidth,
@@ -115,11 +126,15 @@ export default class RCTQuadPanel extends RCTBaseView {
         0,
         0,
         this.props._layerWidth,
-        this.props._layerHeight
+        this.props._layerHeight,
       );
       this.plane.subSceneCamera = this.camera;
       this.guiSys.unregisterOffscreenRender(this.offscreenUID);
-      this.offscreenUID = this.guiSys.registerOffscreenRender(this.subScene, this.camera, this.rtt);
+      this.offscreenUID = this.guiSys.registerOffscreenRender(
+        this.subScene,
+        this.camera,
+        this.rtt,
+      );
     }
   }
 

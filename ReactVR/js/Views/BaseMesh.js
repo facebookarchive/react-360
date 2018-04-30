@@ -9,19 +9,22 @@
  * @flow
  */
 
-import RCTBaseView from './BaseView';
-
+import * as THREE from 'three';
+import type {Geometry, Texture, Material, ShaderMaterial} from 'three';
+import UIView from '../OVRUI/UIView/UIView';
 import extractURL from '../Utils/extractURL';
 import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
-import * as THREE from 'three';
 import * as Yoga from '../Utils/Yoga.bundle';
 
-import type {GuiSys} from 'ovrui';
-import type {Geometry, Texture, Material, ShaderMaterial} from 'three';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseView from './BaseView';
 
-type ResourceSpecifier = void | null | string | {uri: string, repeat?: Array<number>};
+type ResourceSpecifier =
+  | void
+  | null
+  | string
+  | {repeat?: Array<number>, uri: string};
 
 export default class RCTBaseMesh extends RCTBaseView {
   _color: ?number;
@@ -59,7 +62,7 @@ export default class RCTBaseMesh extends RCTBaseView {
     this._rnctx = rnctx;
 
     this.mesh = null;
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
 
     Object.defineProperty(
       this.style,
@@ -79,7 +82,7 @@ export default class RCTBaseMesh extends RCTBaseView {
             this._unlitMaterial.transparent = value < 1;
           }
         },
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
@@ -91,7 +94,7 @@ export default class RCTBaseMesh extends RCTBaseView {
           }
           this.view.setPointerEvents(value);
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -99,7 +102,7 @@ export default class RCTBaseMesh extends RCTBaseView {
       'lit',
       ({
         set: this._setLit.bind(this),
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -107,7 +110,7 @@ export default class RCTBaseMesh extends RCTBaseView {
       'wireframe',
       ({
         set: this._setWireframe.bind(this),
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -115,14 +118,14 @@ export default class RCTBaseMesh extends RCTBaseView {
       'materialParameters',
       ({
         set: this._setMaterialParameters.bind(this),
-      }: Object)
+      }: Object),
     );
     Object.defineProperty(
       this.props,
       'texture',
       ({
         set: this._setTexture.bind(this),
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -130,7 +133,7 @@ export default class RCTBaseMesh extends RCTBaseView {
       'color',
       ({
         set: this._setColor.bind(this),
-      }: Object)
+      }: Object),
     );
   }
 
@@ -166,7 +169,9 @@ export default class RCTBaseMesh extends RCTBaseView {
     }
     const url = extractURL(value);
     if (!url) {
-      throw new Error('Invalid value for "texture" property: ' + JSON.stringify(value));
+      throw new Error(
+        `Invalid value for "texture" property: ${JSON.stringify(value)}`,
+      );
     }
     const repeat = typeof value === 'object' ? value.repeat : null;
     this._loadingURL = url;
@@ -205,7 +210,7 @@ export default class RCTBaseMesh extends RCTBaseView {
           manager.removeReference(url);
           this._loadingURL = null;
           console.error(err);
-        }
+        },
       )
       .catch(err => {
         console.error(err);
@@ -216,7 +221,9 @@ export default class RCTBaseMesh extends RCTBaseView {
     this._lit = flag;
     const mat = this._shader
       ? this._shaderMaterial
-      : flag ? this._litMaterial : this._unlitMaterial;
+      : flag
+        ? this._litMaterial
+        : this._unlitMaterial;
     if (this.mesh) {
       this.mesh.material = mat;
     }
@@ -232,7 +239,9 @@ export default class RCTBaseMesh extends RCTBaseView {
     if (!this.mesh) {
       const mat = this._shader
         ? this._shaderMaterial
-        : this._lit ? this._litMaterial : this._unlitMaterial;
+        : this._lit
+          ? this._litMaterial
+          : this._unlitMaterial;
       this.mesh = new THREE.Mesh(geometry, mat);
       this.view.add(this.mesh);
     } else {
@@ -297,7 +306,9 @@ export default class RCTBaseMesh extends RCTBaseView {
       this._unlitMaterial.setValues(parameters);
       this._shader = false;
       if (this.mesh) {
-        this.mesh.material = this._lit ? this._litMaterial : this._unlitMaterial;
+        this.mesh.material = this._lit
+          ? this._litMaterial
+          : this._unlitMaterial;
       }
     }
   }
@@ -305,7 +316,8 @@ export default class RCTBaseMesh extends RCTBaseView {
   presentLayout() {
     super.presentLayout();
     if (this.mesh && this.mesh.geometry) {
-      this.mesh.geometry.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+      this.mesh.geometry.visible =
+        this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
     }
   }
 

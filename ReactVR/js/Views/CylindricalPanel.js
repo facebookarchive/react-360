@@ -14,26 +14,27 @@
  * @extends RCTBaseView
  */
 
-import * as OVRUI from 'ovrui';
 import Surface, {SurfaceShape} from '../Compositor/Surface';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
 import * as Yoga from '../Utils/Yoga.bundle';
 import RCTBaseView from './BaseView';
 
 export default class RCTCylindricalPanel extends RCTBaseView {
-  guiSys: OVRUI.GuiSys;
+  guiSys: GuiSys;
   offscreenUID: ?number;
   surface: Surface;
 
   /**
    * constructor: allocates the required resources and sets defaults
    */
-  constructor(guiSys: OVRUI.GuiSys) {
+  constructor(guiSys: GuiSys) {
     super();
 
     this.surface = new Surface(0, 0, SurfaceShape.Cylinder);
     this.guiSys = guiSys;
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.add(this.surface._mesh);
 
     Object.defineProperty(

@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const TextureLoads = {};
 
 const MockTextureLoader = function() {};
@@ -64,14 +62,6 @@ jest.mock('three', () => {
     RepeatWrapping: 1000,
   };
 });
-
-jest.mock(
-  'ovrui',
-  () => ({
-    UIView: jest.fn(),
-  }),
-  {virtual: true}
-);
 
 jest
   .dontMock('../BaseMesh')

@@ -56,7 +56,7 @@ export default class Compositor {
       60,
       frame.clientWidth / frame.clientHeight,
       0.1,
-      1000,
+      2000,
     );
     this._renderer = new THREE.WebGLRenderer({
       antialias: true,

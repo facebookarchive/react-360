@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const MockUIView = jest.fn(() => ({
   setHitSlop: jest.fn(),
   setBackgroundColor: jest.fn(),
@@ -24,14 +22,6 @@ jest
   .dontMock('../BaseView')
   .dontMock('../../Utils/merge')
   .dontMock('../../Utils/Yoga.bundle')
-  .mock(
-    'ovrui',
-    () => ({
-      UIView: MockUIView,
-      SDFFONT_MARKER_COLOR: '\x00',
-    }),
-    {virtual: true}
-  )
   .mock('ovr-audio', () => ({}), {virtual: true})
   .mock(
     'three',
@@ -57,7 +47,7 @@ jest
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
     }),
-    {virtual: true}
+    {virtual: true},
   );
 const Text = require('../Text').default;
 
@@ -94,7 +84,9 @@ describe('RCTText', () => {
     t.addChild(0, line1);
     t.addChild(1, line2);
     expect(t.textChildren).toEqual([line1, line2]);
-    expect(t.getText(0xff336699)).toBe('\x00\x33\x66\x99\xffLine one\x00\x33\x66\x99\xffLine two');
+    expect(t.getText(0xff336699)).toBe(
+      '\x00\x33\x66\x99\xffLine one\x00\x33\x66\x99\xffLine two',
+    );
 
     const c = new Text();
     c.style.color = 0xffaabbcc;
@@ -104,7 +96,7 @@ describe('RCTText', () => {
     // TODO: This should probably happen automatically
     t._textDirty = true;
     expect(t.getText(0xff336699)).toBe(
-      '\x00\x33\x66\x99\xffLine one\x00\xaa\xbb\xcc\xffNested text\x00\x33\x66\x99\xffLine two'
+      '\x00\x33\x66\x99\xffLine one\x00\xaa\xbb\xcc\xffNested text\x00\x33\x66\x99\xffLine two',
     );
   });
 });

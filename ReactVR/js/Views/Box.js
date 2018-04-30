@@ -9,12 +9,12 @@
  * @flow
  */
 
-import RCTBaseMesh from './BaseMesh';
 import {BoxBufferGeometry} from 'three';
 import merge from '../Utils/merge';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseMesh from './BaseMesh';
 
 export default class RCTBox extends RCTBaseMesh {
   _dimWidth: number;
@@ -38,7 +38,7 @@ export default class RCTBox extends RCTBaseMesh {
           this._dimWidth = width;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -49,7 +49,7 @@ export default class RCTBox extends RCTBaseMesh {
           this._dimHeight = height;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -60,7 +60,7 @@ export default class RCTBox extends RCTBaseMesh {
           this._dimDepth = depth;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     (this: any)._generateGeometry = this._generateGeometry.bind(this);
@@ -74,7 +74,11 @@ export default class RCTBox extends RCTBaseMesh {
   }
 
   _generateGeometry() {
-    const geometry = new BoxBufferGeometry(this._dimWidth, this._dimHeight, this._dimDepth);
+    const geometry = new BoxBufferGeometry(
+      this._dimWidth,
+      this._dimHeight,
+      this._dimDepth,
+    );
     this._setGeometry(geometry);
   }
 

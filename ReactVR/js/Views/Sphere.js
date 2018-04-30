@@ -9,23 +9,31 @@
  * @flow
  */
 
-import RCTBaseMesh from './BaseMesh';
 import * as THREE from 'three';
 import merge from '../Utils/merge';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseMesh from './BaseMesh';
 
 const SphereGeometryCache = {};
 
-function createSphereGeometry(radius: number, heightSegments: number, widthSegments: number) {
+function createSphereGeometry(
+  radius: number,
+  heightSegments: number,
+  widthSegments: number,
+) {
   const key = `${radius}:${heightSegments}:${widthSegments}`;
   const cache = SphereGeometryCache[key];
   if (cache) {
     cache.count++;
     return cache.geom;
   }
-  const geometry = new THREE.SphereBufferGeometry(radius, widthSegments, heightSegments);
+  const geometry = new THREE.SphereBufferGeometry(
+    radius,
+    widthSegments,
+    heightSegments,
+  );
 
   SphereGeometryCache[key] = {
     geom: geometry,
@@ -89,7 +97,7 @@ export default class RCTSphere extends RCTBaseMesh {
           this._radius = radius;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -100,7 +108,7 @@ export default class RCTSphere extends RCTBaseMesh {
           this._heightSegments = segments;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -111,7 +119,7 @@ export default class RCTSphere extends RCTBaseMesh {
           this._widthSegments = segments;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     (this: any)._generateGeometry = this._generateGeometry.bind(this);
@@ -125,7 +133,11 @@ export default class RCTSphere extends RCTBaseMesh {
   }
 
   _generateGeometry() {
-    const geometry = createSphereGeometry(this._radius, this._widthSegments, this._heightSegments);
+    const geometry = createSphereGeometry(
+      this._radius,
+      this._widthSegments,
+      this._heightSegments,
+    );
     this._setGeometry(geometry);
     const sphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), this._radius);
     this.mesh.raycast = sphereRayCast.bind(this.mesh, sphere);

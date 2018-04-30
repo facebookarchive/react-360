@@ -20,12 +20,12 @@
 
 import StereoBasicTextureMaterial from '../Compositor/Environment/StereoBasicTextureMaterial';
 import RCTBaseView from './BaseView';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
 import StereoOffsetRepeats from '../Utils/StereoOffsetRepeats';
 import {HPanoBufferGeometry} from '../Utils/HPano';
 import {CubePanoBufferGeometry} from '../Utils/CubePano';
 import {RCTBindedResource} from '../Utils/RCTBindedResource';
-import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
 import * as Yoga from '../Utils/Yoga.bundle';
 
@@ -116,7 +116,7 @@ export default class RCTPano extends RCTBaseView {
     this._globe.raycast = panoRayCast.bind(this._globe);
     this._globe.rotation.y = -Math.PI / 2;
 
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     // set zOffset to be the radius of the sphere. This helps prevent the pano's
     // transparency from affecting other views as a result of rendering order.
     this.view.zOffset = 1000;

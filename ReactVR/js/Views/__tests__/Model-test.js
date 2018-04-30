@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const MockUIView = jest.fn(() => ({
   add: jest.fn(),
   remove: jest.fn(),
@@ -40,13 +38,6 @@ jest
     fetchAndCacheMTL: loadMTLMock,
     removeMTLReference: removeMTLReferenceMock,
   }))
-  .mock(
-    'ovrui',
-    () => ({
-      UIView: MockUIView,
-    }),
-    {virtual: true}
-  )
   .mock('ovr-audio', () => ({}), {virtual: true})
   .mock(
     'three',
@@ -72,7 +63,7 @@ jest
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
     }),
-    {virtual: true}
+    {virtual: true},
   );
 
 const Model = require('../Model').default;

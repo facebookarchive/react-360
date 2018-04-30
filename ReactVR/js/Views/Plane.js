@@ -9,12 +9,12 @@
  * @flow
  */
 
-import RCTBaseMesh from './BaseMesh';
 import {PlaneBufferGeometry} from 'three';
 import merge from '../Utils/merge';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
+import RCTBaseMesh from './BaseMesh';
 
 export default class RCTPlane extends RCTBaseMesh {
   _dimWidth: number;
@@ -36,7 +36,7 @@ export default class RCTPlane extends RCTBaseMesh {
           this._dimWidth = width;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     Object.defineProperty(
@@ -47,7 +47,7 @@ export default class RCTPlane extends RCTBaseMesh {
           this._dimHeight = height;
           this._needsUpdate = true;
         },
-      }: Object)
+      }: Object),
     );
 
     (this: any)._generateGeometry = this._generateGeometry.bind(this);

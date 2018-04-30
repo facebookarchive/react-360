@@ -9,7 +9,6 @@
  * @flow
  */
 
-import {GuiSys} from 'ovrui';
 import * as THREE from 'three';
 import Location from '../Compositor/Location';
 import Surface from '../Compositor/Surface';
@@ -19,6 +18,7 @@ import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
 import type {CustomView} from '../Modules/UIManager';
+import GuiSys from '../OVRUI/UIView/GuiSys';
 import {ReactNativeContext} from '../ReactNativeContext';
 
 type LocationNode = {

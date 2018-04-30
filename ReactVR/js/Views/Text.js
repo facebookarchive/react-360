@@ -18,11 +18,12 @@
 /* eslint-disable */
 
 import RCTBaseView from './BaseView';
+import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
+import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 import * as Yoga from '../Utils/Yoga.bundle';
 
-import type {GuiSys} from 'ovrui';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 
 // Mappings from react definitions to OVRUI
 const ALIGN_MAP = {
@@ -68,7 +69,7 @@ export default class RCTText extends RCTBaseView {
    */
   constructor(guiSys: GuiSys, rnctx: any, inSurfaceContext: boolean) {
     super();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.clippingEnabled = true;
     this.guiSys = guiSys;
     this.isTextNode = true;
@@ -255,7 +256,7 @@ export default class RCTText extends RCTBaseView {
       ) {
         let wordWrapped;
         if (widthMeasureMode !== Yoga.MEASURE_MODE_UNDEFINED) {
-          wordWrapped = OVRUI.wrapLines(
+          wordWrapped = SDFFont.wrapLines(
             this.guiSys.font,
             text,
             this._fontSize,
@@ -266,7 +267,7 @@ export default class RCTText extends RCTBaseView {
         } else {
           wordWrapped = text;
         }
-        const dim = OVRUI.measureText(this.guiSys.font, wordWrapped, this._fontSize);
+        const dim = SDFFont.measureText(this.guiSys.font, wordWrapped, this._fontSize);
         if (widthMeasureMode !== Yoga.MEASURE_MODE_EXACTLY) {
           width = dim.maxWidth;
         }
@@ -315,7 +316,7 @@ export default class RCTText extends RCTBaseView {
       const child = this.textChildren[i];
       if (child.isRawText && child.props.text && child.props.text.length) {
         allText +=
-          String.fromCharCode(OVRUI.SDFFONT_MARKER_COLOR) +
+          String.fromCharCode(SDFFont.SDFFONT_MARKER_COLOR) +
           String.fromCharCode((textColor >> 16) & 0xff) + // red
           String.fromCharCode((textColor >> 8) & 0xff) + // green
           String.fromCharCode((textColor >> 0) & 0xff) + // blue
@@ -345,7 +346,7 @@ export default class RCTText extends RCTBaseView {
       this.YGNode.getComputedWidth() !== this.previousWidth ||
       this.YGNode.getComputedHeight() !== this.previousHeight
     ) {
-      const wordWrapped = OVRUI.wrapLines(
+      const wordWrapped = SDFFont.wrapLines(
         this.guiSys.font,
         this.getText(this.style._textColor || 0xffffffff),
         this._fontSize,

@@ -13,10 +13,10 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
 import * as THREE from 'three';
-import * as OVRUI from 'ovrui';
+import UIView from '../OVRUI/UIView/UIView';
+import merge from '../Utils/merge';
+import RCTBaseView from './BaseView';
 
 export default class RCTPrefetch extends RCTBaseView {
   /**
@@ -25,7 +25,7 @@ export default class RCTPrefetch extends RCTBaseView {
   constructor(guiSys, rnctx) {
     super();
 
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
 
     Object.defineProperty(this.props, 'source', {
       set: value => {
@@ -56,7 +56,7 @@ export default class RCTPrefetch extends RCTBaseView {
       // Cubemap, check proper format
       if (uri.length !== 6 || !uri[0].uri) {
         console.warn(
-          'Prefetch expected cubemap source in format [{uri: http..}, {uri: http..}, ... ]'
+          'Prefetch expected cubemap source in format [{uri: http..}, {uri: http..}, ... ]',
         );
         return;
       }
@@ -65,13 +65,23 @@ export default class RCTPrefetch extends RCTBaseView {
 
       const loader = new THREE.CubeTextureLoader();
       loader.setCrossOrigin('Access-Control-Allow-Origin');
-      loader.load(urls, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
+      loader.load(
+        urls,
+        texture => RCTPrefetch.addToCache(uri, texture),
+        () => {},
+        () => {},
+      );
     } else {
       // Panorama
       const url = RCTPrefetch.getUri(uri);
       const loader = new THREE.TextureLoader();
       loader.setCrossOrigin('Access-Control-Allow-Origin');
-      loader.load(url, texture => RCTPrefetch.addToCache(uri, texture), () => {}, () => {});
+      loader.load(
+        url,
+        texture => RCTPrefetch.addToCache(uri, texture),
+        () => {},
+        () => {},
+      );
     }
   }
 
@@ -117,7 +127,10 @@ export default class RCTPrefetch extends RCTBaseView {
    * isCached
    */
   static isCached(uri) {
-    return RCTPrefetch.cache && RCTPrefetch.cache.hasOwnProperty(RCTPrefetch.uriKey(uri));
+    return (
+      RCTPrefetch.cache &&
+      RCTPrefetch.cache.hasOwnProperty(RCTPrefetch.uriKey(uri))
+    );
   }
 
   /**
@@ -126,7 +139,9 @@ export default class RCTPrefetch extends RCTBaseView {
   static isCachedTexture(texture) {
     if (texture.__prefetchKey) {
       if (RCTPrefetch.cache && RCTPrefetch.cache[texture.__prefetchKey]) {
-        return RCTPrefetch.cache[texture.__prefetchKey].texture.id === texture.id;
+        return (
+          RCTPrefetch.cache[texture.__prefetchKey].texture.id === texture.id
+        );
       }
     }
     return false;

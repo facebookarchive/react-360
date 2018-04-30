@@ -21,7 +21,8 @@ import isPositive from '../Utils/isPositive';
 import * as Yoga from '../Utils/Yoga.bundle';
 import UIManager from '../Modules/UIManager';
 
-import type {UIView, GuiSys} from 'ovrui';
+import type UIView from '../OVRUI/UIView/UIView';
+import type GuiSys from '../OVRUI/UIView/GuiSys';
 
 const INTERACTION_CALLBACKS = [
   'onEnter',

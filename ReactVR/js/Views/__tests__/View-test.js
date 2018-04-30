@@ -7,8 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
 const MockUIView = jest.fn(() => ({
   setResizeMode: jest.fn(),
   setInset: jest.fn(),
@@ -56,13 +54,6 @@ jest
   .dontMock('../../Utils/merge')
   .dontMock('../../Utils/isPositive')
   .dontMock('../../Utils/Yoga.bundle')
-  .mock(
-    'ovrui',
-    () => ({
-      UIView: MockUIView,
-    }),
-    {virtual: true}
-  )
   .mock('ovr-audio', () => ({}), {virtual: true})
   .mock(
     'three',
@@ -88,7 +79,7 @@ jest
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
     }),
-    {virtual: true}
+    {virtual: true},
   );
 const View = require('../View').default;
 const Yoga = require('../../Utils/Yoga.bundle');
@@ -236,7 +227,9 @@ describe('RCTView', () => {
     expect(v.YGNode.setBorder.mock.calls[4][1]).toEqual(Yoga.UNDEFINED);
 
     expect(v.YGNode.setPositionType.mock.calls.length).toBe(1);
-    expect(v.YGNode.setPositionType.mock.calls[0][0]).toEqual(Yoga.POSITION_TYPE_RELATIVE);
+    expect(v.YGNode.setPositionType.mock.calls[0][0]).toEqual(
+      Yoga.POSITION_TYPE_RELATIVE,
+    );
     expect(v.YGNode.setAlignContent.mock.calls.length).toBe(1);
     expect(v.YGNode.setAlignContent.mock.calls[0][0]).toEqual(Yoga.ALIGN_AUTO);
     expect(v.YGNode.setAlignItems.mock.calls.length).toBe(1);
@@ -258,9 +251,13 @@ describe('RCTView', () => {
     expect(v.YGNode.setFlexShrink.mock.calls[0][0]).toEqual(Yoga.UNDEFINED);
 
     expect(v.YGNode.setJustifyContent.mock.calls.length).toBe(1);
-    expect(v.YGNode.setJustifyContent.mock.calls[0][0]).toEqual(Yoga.JUSTIFY_FLEX_START);
+    expect(v.YGNode.setJustifyContent.mock.calls[0][0]).toEqual(
+      Yoga.JUSTIFY_FLEX_START,
+    );
     expect(v.YGNode.setOverflow.mock.calls.length).toBe(1);
-    expect(v.YGNode.setOverflow.mock.calls[0][0]).toEqual(Yoga.OVERFLOW_VISIBLE);
+    expect(v.YGNode.setOverflow.mock.calls[0][0]).toEqual(
+      Yoga.OVERFLOW_VISIBLE,
+    );
     expect(v.YGNode.setDisplay.mock.calls.length).toBe(1);
     expect(v.YGNode.setDisplay.mock.calls[0][0]).toEqual(Yoga.DISPLAY_FLEX);
     expect(v.YGNode.setWidth.mock.calls.length).toBe(1);

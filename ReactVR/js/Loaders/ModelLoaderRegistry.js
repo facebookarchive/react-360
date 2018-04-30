@@ -10,7 +10,7 @@
  */
 
 import * as THREE from 'three';
-import type {UIView} from 'ovrui';
+import type UIView from '../OVRUI/UIView/UIView';
 import ObjModelLoader from '../Loaders/ObjModelLoader';
 import GLTF2ModelLoader from '../Loaders/GLTF2ModelLoader';
 
@@ -38,15 +38,15 @@ export interface MeshInstance {
 
 export interface ModelLoader {
   // returns true if the loader can create an instance from this definition
-  canLoad(definition: any): boolean,
+  canLoad(definition: any): boolean;
 
   // create the instance
   createInstance(
     definition: any,
     parent: UIView,
     litMaterial: THREE.Material,
-    unlitMaterial: THREE.Material
-  ): MeshInstance | null,
+    unlitMaterial: THREE.Material,
+  ): MeshInstance | null;
 }
 
 const modelLoaders: Array<ModelLoader> = [];
@@ -59,7 +59,7 @@ export function createModelInstance(
   modelDefinition: any,
   parent: UIView,
   litMaterial: THREE.Material,
-  unlitMaterial: THREE.Material
+  unlitMaterial: THREE.Material,
 ): MeshInstance | null {
   if (!modelLoaders) {
     return null;
@@ -70,7 +70,7 @@ export function createModelInstance(
         modelDefinition,
         parent,
         litMaterial,
-        unlitMaterial
+        unlitMaterial,
       );
     }
   }

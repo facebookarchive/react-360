@@ -25,14 +25,14 @@
  * Order of rendering for objects at the same computed depth is based on pre-traversal order
  */
 
-import THREE from '../ThreeShim';
+import * as THREE from 'three';
 import {loadFont} from '../SDFFont/SDFFont';
-import {GuiSysEventType, GuiSysEvent, UIViewEventType, UIViewEvent} from './GuiSysEvent';
-import GamepadEventInput from '../Inputs/GamepadEventInput';
-import KeyboardEventInput from '../Inputs/KeyboardEventInput';
-import MouseEventInput from '../Inputs/MouseEventInput';
-import TouchEventInput from '../Inputs/TouchEventInput';
-import MouseRayCaster from '../Inputs/MouseRayCaster';
+import {
+  GuiSysEventType,
+  GuiSysEvent,
+  UIViewEventType,
+  UIViewEvent,
+} from './GuiSysEvent';
 
 import {setParams} from './UIViewUtil';
 
@@ -64,7 +64,10 @@ function applyUpdates(node, currentOpacity, updateContext, index, clipRect) {
   // within each ground each node is rendered in pre-order
   if (node.renderGroup) {
     // calculate the distance from the camera to origin to node origin
-    let dist = matrixDistance(node.matrixWorld, updateContext.camera.matrixWorld);
+    let dist = matrixDistance(
+      node.matrixWorld,
+      updateContext.camera.matrixWorld,
+    );
     dist += node.zOffset || 0;
     index = updateContext.renderOrder;
     // UIViews always draw back to front due the potential of transparency within the background
@@ -73,7 +76,8 @@ function applyUpdates(node, currentOpacity, updateContext, index, clipRect) {
     }
     // shift up the by 9 give 512 additional levels for each descretized depth
     updateContext.distances[index] =
-      Math.floor(dist * RENDERSORT_DISTANCE_MULTIPLIER) << RENDERSORT_DISTANCE_SHIFT;
+      Math.floor(dist * RENDERSORT_DISTANCE_MULTIPLIER) <<
+      RENDERSORT_DISTANCE_SHIFT;
   }
 
   updateContext.renderOrder++;
@@ -97,7 +101,13 @@ function applyUpdates(node, currentOpacity, updateContext, index, clipRect) {
     node.textClip[3] = clipRect[3];
   }
   for (const i in node.children) {
-    applyUpdates(node.children[i], currentOpacity, updateContext, index, clipRect);
+    applyUpdates(
+      node.children[i],
+      currentOpacity,
+      updateContext,
+      index,
+      clipRect,
+    );
   }
 }
 
@@ -180,7 +190,7 @@ export default class GuiSys {
     }
 
     if (!params.raycasters) {
-      params.raycasters = [new MouseRayCaster()];
+      params.raycasters = [];
     }
 
     // Override default values. Can also call setter methods directly.
@@ -192,22 +202,18 @@ export default class GuiSys {
     // Event dispatcher to dispatch guisys events
     this.eventDispatcher = new THREE.EventDispatcher();
 
-    const touchEventInput = new TouchEventInput();
-    touchEventInput.setImmediateListener(event => this._onTouchImmediate(event));
-    this._inputEventSources = [
-      new KeyboardEventInput(),
-      new MouseEventInput(),
-      touchEventInput,
-      new GamepadEventInput(),
-    ];
+    this._inputEventSources = [];
 
     // Register to events.
-    window.addEventListener('vrdisplaypresentchange', this._onPresentChange.bind(this));
+    window.addEventListener(
+      'vrdisplaypresentchange',
+      this._onPresentChange.bind(this),
+    );
   }
 
   /**
-  * Add a Three.js object as a child of the guiRoot obejct
-  */
+   * Add a Three.js object as a child of the guiRoot obejct
+   */
   add(child, container) {
     if (container) {
       container.add(child);
@@ -217,9 +223,9 @@ export default class GuiSys {
   }
 
   /**
-  * Remove a Three.js object as a child of the guiRoot object
-  * It is the job of the caller to handle deallocation of the object
-  */
+   * Remove a Three.js object as a child of the guiRoot object
+   * It is the job of the caller to handle deallocation of the object
+   */
   remove(child) {
     if (child.parent) {
       child.parent.remove(child);
@@ -227,9 +233,9 @@ export default class GuiSys {
   }
 
   /**
-  * request for a function to be run on the following frame of the GuiSys
-  * first argument for the function is Date.now() as is dependable across browsers
-  */
+   * request for a function to be run on the following frame of the GuiSys
+   * first argument for the function is Date.now() as is dependable across browsers
+   */
   requestFrameFunction(func) {
     const uid = frameUpdateUID++;
     this._requestFrames[uid] = func;
@@ -237,8 +243,8 @@ export default class GuiSys {
   }
 
   /**
-  * cancel for the function associated with the uid
-  */
+   * cancel for the function associated with the uid
+   */
   cancelFrameFunction(uid) {
     delete this._requestFrames[uid];
   }
@@ -248,7 +254,8 @@ export default class GuiSys {
       camera: camera,
       renderOrder: 0,
       distances: [
-        Math.floor(camera.far * RENDERSORT_DISTANCE_MULTIPLIER) << RENDERSORT_DISTANCE_SHIFT,
+        Math.floor(camera.far * RENDERSORT_DISTANCE_MULTIPLIER) <<
+          RENDERSORT_DISTANCE_SHIFT,
       ],
       distancesNode: [null],
     };
@@ -262,8 +269,8 @@ export default class GuiSys {
   }
 
   /**
-  * Updates the reorder and propagates the Opacity through the view hierarchy
-  */
+   * Updates the reorder and propagates the Opacity through the view hierarchy
+   */
   frameRenderUpdates(camera) {
     const curTime = Date.now();
     const currentRequests = this._requestFrames;
@@ -300,11 +307,11 @@ export default class GuiSys {
   }
 
   /**
-  * `frameInputEvents` must be called on a requestAnimationFrame event based
-  * as this will handle the interactions of the browser devices and
-  * headset gaze with the UI elements. Events are created and distributed
-  * to any listeners
-  */
+   * `frameInputEvents` must be called on a requestAnimationFrame event based
+   * as this will handle the interactions of the browser devices and
+   * headset gaze with the UI elements. Events are created and distributed
+   * to any listeners
+   */
   frameInputEvents(camera, renderer) {
     if (this._raycasters) {
       let caster = null;
@@ -333,7 +340,7 @@ export default class GuiSys {
         direction,
         maxLength,
         caster ? caster.getType() : null,
-        caster ? caster.drawsCursor() : null
+        caster ? caster.drawsCursor() : null,
       );
     }
 
@@ -343,7 +350,15 @@ export default class GuiSys {
     this._updateMouseCursorStyle(renderTarget);
   }
 
-  _processRayData(worldPosition, worldQuat, localPosition, localDirection, maxLength, source, drawsCursor) {
+  _processRayData(
+    worldPosition,
+    worldQuat,
+    localPosition,
+    localDirection,
+    maxLength,
+    source,
+    drawsCursor,
+  ) {
     if (localPosition && localDirection) {
       // initialize preallocated data components from Three.js objects or raw arrays
       if (worldPosition instanceof THREE.Vector3) {
@@ -354,14 +369,19 @@ export default class GuiSys {
       if (worldQuat instanceof THREE.Quaternion) {
         rayCameraQuat.copy(worldQuat);
       } else {
-        rayCameraQuat.set(worldQuat[0], worldQuat[1], worldQuat[2], worldQuat[3]);
+        rayCameraQuat.set(
+          worldQuat[0],
+          worldQuat[1],
+          worldQuat[2],
+          worldQuat[3],
+        );
       }
       let firstHit = null;
       let firstAlmostHit = null;
       raycaster.ray.origin.set(
         rayCameraPos.x + localPosition[0],
         rayCameraPos.y + localPosition[1],
-        rayCameraPos.z + localPosition[2]
+        rayCameraPos.z + localPosition[2],
       );
       raycaster.ray.direction.fromArray(localDirection);
       raycaster.ray.direction.normalize();
@@ -381,7 +401,7 @@ export default class GuiSys {
           raycaster.ray.origin.set(
             scene._rttWidth * hit.uv.x,
             scene._rttHeight * (1 - hit.uv.y),
-            0.1
+            0.1,
           );
           raycaster.ray.direction.set(0, 0, -1);
           const subHits = [];
@@ -436,7 +456,7 @@ export default class GuiSys {
       );
     } else {
       this.setLastHit(null, null);
-      this.setCursorProperties(null, null, false)
+      this.setCursorProperties(null, null, false);
     }
   }
 
@@ -452,10 +472,10 @@ export default class GuiSys {
   }
 
   /**
-  * `frame` is a helper to call through to frameRenderUpdates and frameInputEvents
-  * in the correct order to update GuiSys
-  * the calls can be made seperately as required
-  */
+   * `frame` is a helper to call through to frameRenderUpdates and frameInputEvents
+   * in the correct order to update GuiSys
+   * the calls can be made seperately as required
+   */
   frame(camera, renderer) {
     this.frameRenderUpdates(camera);
     this.frameInputEvents(camera, renderer);
@@ -463,9 +483,9 @@ export default class GuiSys {
   }
 
   /**
-  * updates the last hit object and the hierarchy of views
-  * creates inetraction events that are then distributed to listeners of GuiSys
-  */
+   * updates the last hit object and the hierarchy of views
+   * creates inetraction events that are then distributed to listeners of GuiSys
+   */
   updateLastHit(hit, source) {
     const hitCache = [];
     const hitImmediateListeners = [];
@@ -516,7 +536,7 @@ export default class GuiSys {
           currentHit: currentHit,
           lastSource: this._cursor.source,
           currentSource: source,
-        })
+        }),
       );
       this._cursor.lastHit = currentHit;
       this._cursor.source = source;
@@ -526,10 +546,14 @@ export default class GuiSys {
     for (const id in this._cursor.lastHitCache) {
       if (!hitCache[id]) {
         this.eventDispatcher.dispatchEvent(
-          new UIViewEvent(this._cursor.lastHitCache[id], UIViewEventType.FOCUS_LOST, {
-            target: this._cursor.lastHit,
-            source: this._cursor.source,
-          })
+          new UIViewEvent(
+            this._cursor.lastHitCache[id],
+            UIViewEventType.FOCUS_LOST,
+            {
+              target: this._cursor.lastHit,
+              source: this._cursor.source,
+            },
+          ),
         );
       }
     }
@@ -540,7 +564,7 @@ export default class GuiSys {
           new UIViewEvent(hitCache[id], UIViewEventType.FOCUS_GAINED, {
             target: this._cursor.lastHit,
             source: this._cursor.source,
-          })
+          }),
         );
       }
     }
@@ -569,22 +593,28 @@ export default class GuiSys {
     // The cursor is placed at fixed distance from camera, unless cursorAutoDepth
     // is enabled and cursor is over a UI object, then we put the cursor at same
     // distance as that object (i.e. intersectDistance).
-    const cursorZ = this.cursorAutoDepth && this._cursor.lastHit !== null
-      ? this._cursor.intersectDistance
-      : this.cursorFixedDistance;
+    const cursorZ =
+      this.cursorAutoDepth && this._cursor.lastHit !== null
+        ? this._cursor.intersectDistance
+        : this.cursorFixedDistance;
 
     const lastOrigin = this._cursor.rayOrigin;
     const lastDirection = this._cursor.rayDirection;
     // Update cursor based on global transform of camera. Leave matrixAutoUpdate
     // enabled, since we modify cursorMesh.scale when cursorAutoDepth is used.
-    if (this.cursorMesh && this.cursorVisibility !== 'hidden' && lastOrigin && lastDirection) {
+    if (
+      this.cursorMesh &&
+      this.cursorVisibility !== 'hidden' &&
+      lastOrigin &&
+      lastDirection
+    ) {
       const cameraToCursorX = lastOrigin[0] + lastDirection[0] * cursorZ;
       const cameraToCursorY = lastOrigin[1] + lastDirection[1] * cursorZ;
       const cameraToCursorZ = lastOrigin[2] + lastDirection[2] * cursorZ;
       this.cursorMesh.position.set(
         camera.position.x + cameraToCursorX,
         camera.position.y + cameraToCursorY,
-        camera.position.z + cameraToCursorZ
+        camera.position.z + cameraToCursorZ,
       );
       this.cursorMesh.rotation.copy(camera.getWorldRotation());
 
@@ -594,7 +624,7 @@ export default class GuiSys {
         const scale = Math.sqrt(
           cameraToCursorX * cameraToCursorX +
             cameraToCursorY * cameraToCursorY +
-            cameraToCursorZ * cameraToCursorZ
+            cameraToCursorZ * cameraToCursorZ,
         );
         this.cursorMesh.scale.set(scale, scale, scale);
       }
@@ -607,10 +637,12 @@ export default class GuiSys {
         // Show cursor if it intersects an interactable view (lastHit), or is
         // 'close' to one (almostHit). Boundaries used by raycaster for lastHit
         // and almostHit are set per-view with hitSlop and cursorVisibilitySlop.
-        autoVisible = this._cursor.lastHit !== null && this._cursor.lastHit.isInteractable;
+        autoVisible =
+          this._cursor.lastHit !== null && this._cursor.lastHit.isInteractable;
         if (!autoVisible) {
           autoVisible =
-            this._cursor.lastAlmostHit !== null && this._cursor.lastAlmostHit.isInteractable;
+            this._cursor.lastAlmostHit !== null &&
+            this._cursor.lastAlmostHit.isInteractable;
         }
       }
       // Always hide gaze cursor when mouse cursor is detected.
@@ -652,7 +684,7 @@ export default class GuiSys {
     // scale to 25mm (~1 inches)
     const defaultCursor = new THREE.Mesh(
       new THREE.PlaneGeometry(DEFAULT_CURSOR_WIDTH, DEFAULT_CURSOR_WIDTH),
-      material
+      material,
     );
     return defaultCursor;
   }
@@ -663,8 +695,8 @@ export default class GuiSys {
       : this.mouseCursorInactiveStyle;
     if (renderTarget && renderTarget.style) {
       renderTarget.style.cursor = cursorStyle;
-      renderTarget.style.cursor = '-webkit-' + cursorStyle;
-      renderTarget.style.cursor = '-moz-' + cursorStyle;
+      renderTarget.style.cursor = `-webkit-${cursorStyle}`;
+      renderTarget.style.cursor = `-moz-${cursorStyle}`;
     }
   }
 
@@ -695,7 +727,7 @@ export default class GuiSys {
           target: this._cursor.lastHit,
           source: this._cursor.source,
           inputEvent: collected[i],
-        })
+        }),
       );
     }
   }
@@ -733,41 +765,41 @@ export default class GuiSys {
   }
 
   /**
-  * Customize the mouse cursor style when mouse cursor is inactive
-  */
+   * Customize the mouse cursor style when mouse cursor is inactive
+   */
   setMouseCursorInactiveStyle(style) {
     this.mouseCursorInactiveStyle = style;
   }
 
   /**
-  * Customize the mouse cursor style when mouse cursor is active
-  */
+   * Customize the mouse cursor style when mouse cursor is active
+   */
   setMouseCursorActiveStyle(style) {
     this.mouseCursorActiveStyle = style;
   }
 
   /**
-  * Sets if the cursor display mode
-  */
+   * Sets if the cursor display mode
+   */
   setCursorVisibility(visibility) {
     const modes = ['visible', 'hidden', 'auto'];
     if (!modes.includes(visibility)) {
-      console.warn('Unknown cursorVisibility: ' + visibility + ' expected', modes);
+      console.warn(`Unknown cursorVisibility: ${visibility} expected`, modes);
       return;
     }
     this.cursorVisibility = visibility;
   }
 
   /**
-  * An autodepth cursor will change distance based on where the interaction occurs
-  */
+   * An autodepth cursor will change distance based on where the interaction occurs
+   */
   setCursorAutoDepth(flag) {
     this.cursorAutoDepth = flag;
   }
 
   /**
-  * manual setting of distance of the cursor from the camera
-  */
+   * manual setting of distance of the cursor from the camera
+   */
   setCursorFixedDistance(distance: number) {
     this.cursorFixedDistance = distance;
   }
@@ -777,7 +809,9 @@ export default class GuiSys {
    */
   setRaycasters(raycasters) {
     if (!Array.isArray(raycasters)) {
-      throw new Error('GuiSys raycasters must be an array of RayCaster objects');
+      throw new Error(
+        'GuiSys raycasters must be an array of RayCaster objects',
+      );
     }
     this._raycasters = raycasters;
   }

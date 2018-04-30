@@ -14,10 +14,10 @@
  * @extends RCTBaseView
  */
 
-import RCTBaseView from './BaseView';
-import merge from '../Utils/merge';
-import * as OVRUI from 'ovrui';
 import * as THREE from 'three';
+import UIView from '../OVRUI/UIView/UIView';
+import merge from '../Utils/merge';
+import RCTBaseView from './BaseView';
 
 export default class RCTSpotLight extends RCTBaseView {
   /**
@@ -26,7 +26,7 @@ export default class RCTSpotLight extends RCTBaseView {
   constructor(guiSys) {
     super();
     const light = new THREE.SpotLight();
-    this.view = new OVRUI.UIView(guiSys);
+    this.view = new UIView(guiSys);
     this.view.add(light);
 
     // In "physically correct" mode, the product of color * intensity is
