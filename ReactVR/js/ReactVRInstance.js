@@ -31,6 +31,7 @@ import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import type ReactExecutor from './Executor/ReactExecutor';
 import AudioModule from './Modules/AudioModule';
+import EnvironmentModule from './Modules/EnvironmentModule';
 import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
@@ -144,6 +145,7 @@ export default class ReactVRInstance {
       customViews: options.customViews || [],
       executor: options.executor,
       nativeModules: [
+        new EnvironmentModule(this.compositor.getEnvironment()),
         ctx => {
           const audio = new AudioModule(ctx);
           this._audioModule = audio;

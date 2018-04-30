@@ -11,14 +11,13 @@
 
 import * as THREE from 'three';
 import type ResourceManager from '../../Utils/ResourceManager';
+import type {VideoStereoFormat} from '../Video/Types';
 import type VideoPlayerManager from '../Video/VideoPlayerManager';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
 import type {TextureMetadata} from './Types';
 
-export type PanoFormat = 'MONO' | 'TOP_BOTTOM' | 'LEFT_RIGHT';
-
 export type PanoOptions = {
-  format?: PanoFormat,
+  format?: VideoStereoFormat,
   transition?: number,
 };
 

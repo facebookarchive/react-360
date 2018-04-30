@@ -100,6 +100,10 @@ export default class Compositor {
     return this._videoPlayers;
   }
 
+  getEnvironment(): Environment {
+    return this._environment;
+  }
+
   getCursorVisibility(): string {
     return this._cursorVisibility;
   }
