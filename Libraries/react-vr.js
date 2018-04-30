@@ -5,7 +5,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
  */
+
+/* eslint-disable import/no-commonjs */
 
 // Entry point for the react-vr npm module
 
@@ -95,9 +99,16 @@ const ReactVR = {
     return require('VrSoundEffects');
   },
 
+  get Environment() {
+    return require('Environment');
+  },
+
   // React VR-specific utilities
   get asset() {
     return require('asset');
+  },
+  get staticAssetURL() {
+    return require('staticAssetURL').default;
   },
   get texture() {
     return require('texture');

@@ -59,11 +59,11 @@ export default class Environment {
     this._resourceManager = rm;
     this._videoPlayers = videoPlayers;
     // Objects for panorama management
-    this._panoGeomSphere = new THREE.SphereGeometry(1000, 50, 50);
+    this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
     this._panoGeomHemisphere = new THREE.SphereGeometry(
       1000,
-      50,
-      50,
+      16,
+      16,
       0,
       Math.PI,
     );
