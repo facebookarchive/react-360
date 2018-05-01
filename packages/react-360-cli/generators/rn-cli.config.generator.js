@@ -33,7 +33,7 @@ var config = {
   },
 
   getProvidesModuleNodeModules() {
-    return ['react-native', 'react-vr'];
+    return ['react-native', 'react-360'];
   },
 };
 

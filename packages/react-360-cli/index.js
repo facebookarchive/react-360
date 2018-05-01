@@ -26,11 +26,11 @@ const CURRENT_VERSION = require('./package.json').version;
 
 function printUsageAndExit() {
   console.log(
-    `React VR Command Line Interface
+    `React 360 Command Line Interface
 Version ${CURRENT_VERSION}
 
 Usage:
-  react-vr init ${chalk.gray('[project name]')}\tCreate a new React VR application with the specified name
+  react-360 init ${chalk.gray('[project name]')}\tCreate a new React 360 application with the specified name
 `
   );
   process.exit(0);
@@ -52,9 +52,9 @@ getLatestVersion().then(version => {
     );
     console.log('You can upgrade your CLI with:');
     if (getPackager() === 'yarn') {
-      console.log(chalk.green('  yarn global upgrade react-vr-cli'));
+      console.log(chalk.green('  yarn global upgrade react-360-cli'));
     } else {
-      console.log(chalk.green('  npm update -g react-vr-cli'));
+      console.log(chalk.green('  npm update -g react-360-cli'));
     }
   }
   if (args.length === 0 || args[0] === '--help') {
@@ -80,7 +80,7 @@ getLatestVersion().then(version => {
 
     const dest = path.join(process.cwd(), rawName);
 
-    console.log('Creating new React VR project...');
+    console.log('Creating new React 360 project...');
     try {
       const stat = fs.statSync(dest);
       if (stat) {
@@ -148,8 +148,8 @@ getLatestVersion().then(version => {
         console.log(
           '  Run ' + chalk.green('`npm start`') + ' to initialize the development server'
         );
-        console.log('  From there, browse to ' + chalk.green('http://localhost:8081/vr/'));
-        console.log('  Open ' + chalk.green('`index.vr.js`') + ' to begin editing your app.');
+        console.log('  From there, browse to ' + chalk.green('http://localhost:8081/index.html'));
+        console.log('  Open ' + chalk.green('`index.js`') + ' to begin editing your app.');
       })
       .catch(err => {
         console.error(err);

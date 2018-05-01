@@ -16,19 +16,18 @@ module.exports = config => ({
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node -e \\"console.log('open browser at http://localhost:8081/vr/\\\\n\\\\n');\\" && node node_modules/react-native/local-cli/cli.js start",
-    "bundle": "node node_modules/react-vr/scripts/bundle.js",
-    "open": "node -e \\"require('xopen')('http://localhost:8081/vr/')\\"",
+    "start": "node -e \\"console.log('open browser at http://localhost:8081/index.html\\\\n\\\\n');\\" && node node_modules/react-native/local-cli/cli.js start",
+    "bundle": "node node_modules/react-360/scripts/bundle.js",
+    "open": "node -e \\"require('xopen')('http://localhost:8081/index.html')\\"",
     "devtools": "react-devtools",
     "test": "jest"
   },
   "dependencies": {
-    "ovrui": "~2.0.0",
     "react": "16.0.0",
-    "react-native": "~0.48.0",
+    "react-native": "~0.49.5",
     "three": "^0.87.0",
-    "react-vr": "~2.0.0",
-    "react-vr-web": "~2.0.0"
+    "react-360": "~1.0.0",
+    "react-360-web": "~1.0.0"
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",
@@ -39,7 +38,7 @@ module.exports = config => ({
     "xopen": "1.0.0"
   },
   "jest": {
-    "preset": "react-vr"
+    "preset": "react-360"
   }
 }`,
 });

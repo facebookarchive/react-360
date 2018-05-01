@@ -33,7 +33,7 @@ function getLatestVersion() {
       }
       const chunks = [];
       https
-        .get(registry + 'react-vr-cli/latest', res => {
+        .get(registry + 'react-360-cli/latest', res => {
           const statusCode = res.statusCode;
           if (statusCode !== 200) {
             resolve(null);
