@@ -106,7 +106,7 @@ class GLTF2MeshInstance {
     // loadList[this.url] = [onLoad];
 
     // $FlowFixMe
-    const loader = new THREE.GLTF2Loader();
+    const loader = new THREE.GLTFLoader();
     loader.load(
       this.url,
       gltf => {

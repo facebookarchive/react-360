@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {Animated, View} from 'react-360';
-import Model from 'Model';
+import Entity from 'Entity';
 import AmbientLight from 'AmbientLight';
 import PointLight from 'PointLight';
 import {connect} from './Store';
 
-const AnimatedModel = Animated.createAnimatedComponent(Model);
+const AnimatedEntity = Animated.createAnimatedComponent(Entity);
 
 /**
  * Renders the actual model in 3D space, rotating it a full 360 degrees to show
@@ -34,10 +34,9 @@ class ModelView extends React.Component {
           intensity={0.4}
           style={{transform: [{translate: [0, 4, -1]}]}}
         />
-        <AnimatedModel
-          lit={true}
+        <AnimatedEntity
           style={{transform: [{rotateY: this.rotation}]}}
-          source={{obj: source.root.url, mtl: source.resources[0].url}}
+          source={{gltf2: source.root.url}}
         />
       </View>
     );
