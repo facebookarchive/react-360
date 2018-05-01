@@ -54,7 +54,7 @@ export default class RCTPrefetch extends RCTBaseView {
 
     if (Array.isArray(uri)) {
       // Cubemap, check proper format
-      if (uri.length !== 6 || !uri[0].uri) {
+      if ((uri.length !== 6 && uri.length !== 12) || !uri[0].uri) {
         console.warn(
           'Prefetch expected cubemap source in format [{uri: http..}, {uri: http..}, ... ]',
         );
@@ -92,7 +92,7 @@ export default class RCTPrefetch extends RCTBaseView {
   static uriKey(uri) {
     if (Array.isArray(uri)) {
       // Cubemap, check proper format
-      if (uri.length === 6) {
+      if (uri.length === 6 || uri.length === 12) {
         const urls = uri.map(RCTPrefetch.getUri);
         return urls.join(',');
       } else {
