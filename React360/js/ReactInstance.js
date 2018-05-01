@@ -53,7 +53,7 @@ type AnimationFrameData =
       vr: false,
     };
 
-export type ReactVROptions = {
+export type React360Options = {
   assetRoot?: string,
   customOverlay?: OverlayInterface,
   customViews?: Array<CustomView>,
@@ -63,10 +63,10 @@ export type ReactVROptions = {
 };
 
 /**
- * New top-level class for the panel-first design of React VR aligned with
+ * New top-level class for the panel-first design of React 360 aligned with
  * native platform capabilities.
  */
-export default class ReactVRInstance {
+export default class ReactInstance {
   _audioModule: ?AudioModule;
   _cameraPosition: Vec3;
   _cameraQuat: Quaternion;
@@ -89,13 +89,13 @@ export default class ReactVRInstance {
   vrState: VRState;
 
   /**
-   * Create a new instance of a React VR app, given a path to the React VR JS
+   * Create a new instance of a React 360 app, given a path to the React 360 JS
    * bundle and a DOM component to mount within.
    */
   constructor(
     bundle: string,
     parent: HTMLElement,
-    options: ReactVROptions = {},
+    options: React360Options = {},
   ) {
     (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);

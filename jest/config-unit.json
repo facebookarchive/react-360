@@ -15,7 +15,7 @@
     "/scripts/",
     "/website/",
     "/EndToEnd/",
-    "/react-vr-cli/"
+    "/react-360-cli/"
   ],
   "modulePathIgnorePatterns": [
     "<rootDir>/docs/",

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, StyleSheet, Text, View, VrButton} from 'react-vr';
+import {Image, StyleSheet, Text, View, VrButton} from 'react-360';
 import {connect, setCurrent} from './Store';
 
 class PostButton extends React.Component {

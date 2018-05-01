@@ -27,4 +27,4 @@ For more info, see the ["Pull Requests"][4] section of our "Contributing" guidel
 [1]: https://medium.com/@martinkonicek/what-is-a-test-plan-8bfc840ec171#.y9lcuqqi9
 [2]: https://code.facebook.com/cla
 [3]: http://circleci.com/gh/facebook/react-native
-[4]: https://github.com/facebook/react-vr/blob/master/CONTRIBUTING.md#pull-requests
+[4]: https://github.com/facebook/react-360/blob/master/CONTRIBUTING.md#pull-requests

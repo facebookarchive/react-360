@@ -7,7 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @flow
- * @providesModule ReactVRApp
  */
 
 import bundleFromLocation from './js/bundleFromLocation';
@@ -15,7 +14,7 @@ import createRootView from './js/createRootView';
 import Location from './js/Compositor/Location';
 import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
-import ReactVRInstance from './js/ReactVRInstance';
+import ReactInstance from './js/ReactInstance';
 import Surface from './js/Compositor/Surface';
 import {
   BasicVideoPlayer,
@@ -31,7 +30,7 @@ export {Location};
 export {Module};
 export {RCTBaseView};
 export {ReactNativeContext};
-export {ReactVRInstance};
+export {ReactInstance};
 export {Surface};
 export {BasicVideoPlayer};
 export {addCustomizedVideoPlayer};

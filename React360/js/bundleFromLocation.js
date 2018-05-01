@@ -19,13 +19,13 @@ export default function bundleFromLocation(root: string): string {
     const absoluteURL = new URL(root);
     return absoluteURL.toString();
   } catch (error) {
-    //location is not an absolute URL, generate one from the root
+    // location is not an absolute URL, generate one from the root
     if (!path.endsWith('/')) {
       // Trim filename
       path = path.substr(0, path.lastIndexOf('/'));
     } else {
       path = path.substr(0, path.length - 1);
     }
-    return location.protocol + '//' + location.host + path + '/' + root;
+    return `${location.protocol}//${location.host}${path}/${root}`;
   }
 }

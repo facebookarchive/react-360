@@ -15,23 +15,6 @@ const path = require('path');
 
 const installDeps = require('./install-deps');
 
-function prepare() {
-  return new Promise((resolve, reject) => {
-    // Build OVRUI
-    const npm = child_process.spawn('npm', ['run', 'build'], {
-      stdio: 'inherit',
-      cwd: PACKAGES.ovrui,
-      shell: true,
-    });
-    npm.on('close', code => {
-      if (code !== 0) {
-        reject(code);
-      }
-      resolve();
-    });
-  });
-}
-
 function buildPackage(name, dir) {
   console.log(`  Packaging \x1b[32m'${name}'\x1b[0m`);
   return new Promise((resolve, reject) => {
@@ -80,9 +63,8 @@ function ensureDirectory(dir) {
 }
 
 const PACKAGES = {
-  ovrui: path.resolve(__dirname, '..', 'OVRUI'),
-  'react-vr': path.resolve(__dirname, '..'),
-  'react-vr-web': path.resolve(__dirname, '..', 'ReactVR'),
+  'react-360': path.resolve(__dirname, '..'),
+  'react-360-web': path.resolve(__dirname, '..', 'React360'),
 };
 
 const rev = child_process.execSync('git rev-parse HEAD').toString().trim().substr(0, 8);
@@ -91,9 +73,6 @@ installDeps()
   .then(() => {
     console.log(`\x1b[34;1mBuilding packages at git rev ${rev}...\x1b[0m`);
     ensureDirectory(DEST);
-    return prepare();
-  })
-  .then(() => {
     return Promise.all(
       Object.keys(PACKAGES).map(p =>
         buildPackage(p, PACKAGES[p]).then(src => relocatePackage(p, src, DEST, rev))

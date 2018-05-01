@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Animated, View} from 'react-vr';
+import {Animated, View} from 'react-360';
 import Model from 'Model';
 import AmbientLight from 'AmbientLight';
 import PointLight from 'PointLight';

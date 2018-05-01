@@ -6,7 +6,7 @@ import {
   Text,
   View,
   VrButton,
-} from 'react-vr';
+} from 'react-360';
 
 class Background extends React.Component {
   constructor(props) {

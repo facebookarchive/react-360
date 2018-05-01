@@ -1,15 +1,15 @@
 {
   "private": true,
-  "name": "react-vr",
-  "version": "2.0.0",
-  "description": "A framework for building VR applications with React",
+  "name": "react-360",
+  "version": "1.0.0",
+  "description": "A framework for building interactive 360 experiences with React",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/react-vr.git"
+    "url": "https://github.com/facebook/react-360.git"
   },
-  "bugs": "https://github.com/facebook/react-vr/issues",
-  "main": "Libraries/react-vr.js",
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "main": "Libraries/react-360.js",
   "files": [
     "jest/setup.js",
     "jest-preset.json",
@@ -43,7 +43,7 @@
     "react": "~16.0.0",
     "react-native": "0.49.5",
     "three": "^0.87.0",
-    "three-gltf2-loader": "~1.1.0"
+    "three-gltf2-loader": "~1.2.0"
   },
   "scripts": {
     "flow": "flow",

@@ -11,9 +11,9 @@
 
 /* eslint-disable import/no-commonjs */
 
-// Entry point for the react-vr npm module
+// Entry point for the react-360 npm module
 
-const ReactVR = {
+const React360 = {
   // React Native overrides
   get View() {
     return require('View');
@@ -132,4 +132,4 @@ const ReactVR = {
   },
 };
 
-module.exports = ReactVR;
+module.exports = React360;

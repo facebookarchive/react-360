@@ -1,21 +1,21 @@
-import {ReactVRInstance} from 'react-vr-web';
+import {ReactInstance} from 'react-360-web';
 
 function init(bundle, parent, options = {}) {
-  const vr = new ReactVRInstance(bundle, parent, {
+  const r360 = new ReactInstance(bundle, parent, {
     fullScreen: true,
     ...options,
   });
 
-  vr.renderToSurface(
-    vr.createRoot('SlideshowSample', {
+  r360.renderToSurface(
+    r360.createRoot('SlideshowSample', {
       photos: [
         {uri: './static_assets/360_world.jpg', title: '360 World', format: '2D'},
         // Add your own 180 / 360 photos to this array,
         // with an associated title and format
       ],
     }),
-    vr.getDefaultSurface(),
+    r360.getDefaultSurface(),
   );
 }
 
-window.ReactVR = {init};
+window.React360 = {init};

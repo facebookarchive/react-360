@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "react-360-web",
+  "version": "1.0.0",
+  "description": "A framework for building interactive 360 experiences with React",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git"
+  },
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "main": "React360.js",
+  "files": [
+    "js",
+    "LICENSE",
+    "PATENTS",
+    "React360.js",
+    "README.md"
+  ],
+  "dependencies": {
+    "three-gltf2-loader": "~1.2.0"
+  }
+}
