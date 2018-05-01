@@ -67,6 +67,7 @@ export type React360Options = {
  * native platform capabilities.
  */
 export default class ReactInstance {
+  _assetRoot: string;
   _audioModule: ?AudioModule;
   _cameraPosition: Vec3;
   _cameraQuat: Quaternion;
@@ -140,6 +141,7 @@ export default class ReactInstance {
     if (!assetRoot.endsWith('/')) {
       assetRoot += '/';
     }
+    this._assetRoot = assetRoot;
     const runtimeOptions = {
       assetRoot: assetRoot,
       customViews: options.customViews || [],
@@ -440,5 +442,13 @@ export default class ReactInstance {
     this._eventLayer.style.width = `${width}px`;
     this._eventLayer.style.height = `${height}px`;
     this.compositor.resizeCanvas(width, height);
+  }
+
+  /**
+   * Transforms the local path of a static asset to include the current static
+   * asset directory.
+   */
+  getAssetURL(localPath: string): string {
+    return this._assetRoot + localPath;
   }
 }
