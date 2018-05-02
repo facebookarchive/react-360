@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://facebook.github.io/react-360/blog</id>
+    <title>React 360 Blog</title>
+    <updated>2018-05-02T06:00:00Z</updated>
+    <generator>Feed for Node.js</generator>
+    <link rel="alternate" href="https://facebook.github.io/react-360/blog"/>
+    <subtitle>The best place to stay up-to-date with the latest React 360 news and events.</subtitle>
+    <logo>https://facebook.github.io/react-360/img/logo.svg</logo>
+    <rights>Copyright © 2018 Facebook Inc.</rights>
+    <entry>
+        <title type="html"><![CDATA[React 360 Replaces React VR for Streamlined Development Focus]]></title>
+        <id>https://facebook.github.io/react-360/blog/2018/05/02/blog-post.html</id>
+        <link href="https://facebook.github.io/react-360/blog/2018/05/02/blog-post.html">
+        </link>
+        <updated>2018-05-02T06:00:00Z</updated>
+        <summary type="html"><![CDATA[<p>When we <a href="https://developer.oculus.com/blog/building-virtual-reality-experiences-on-the-web-with-react-vr/">released React VR in April of 2017</a>, our goal was to create a web-based framework that would enable developers to easily add interactivity to i</p>
+]]></summary>
+        <author>
+            <name>Andrew Imm</name>
+            <uri>http://twitter.com/immediatedelay</uri>
+        </author>
+    </entry>
+</feed>

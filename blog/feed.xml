@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>React 360 Blog</title>
+        <link>https://facebook.github.io/react-360/blog</link>
+        <description>The best place to stay up-to-date with the latest React 360 news and events.</description>
+        <lastBuildDate>Wed, 02 May 2018 06:00:00 GMT</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Feed for Node.js</generator>
+        <image>
+            <title>React 360 Blog</title>
+            <url>https://facebook.github.io/react-360/img/logo.svg</url>
+            <link>https://facebook.github.io/react-360/blog</link>
+        </image>
+        <copyright>Copyright © 2018 Facebook Inc.</copyright>
+        <item>
+            <title><![CDATA[React 360 Replaces React VR for Streamlined Development Focus]]></title>
+            <link>https://facebook.github.io/react-360/blog/2018/05/02/blog-post.html</link>
+            <guid>https://facebook.github.io/react-360/blog/2018/05/02/blog-post.html</guid>
+            <pubDate>Wed, 02 May 2018 06:00:00 GMT</pubDate>
+            <description><![CDATA[<p>When we <a href="https://developer.oculus.com/blog/building-virtual-reality-experiences-on-the-web-with-react-vr/">released React VR in April of 2017</a>, our goal was to create a web-based framework that would enable developers to easily add interactivity to i</p>
+]]></description>
+        </item>
+    </channel>
+</rss>
