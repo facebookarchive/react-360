@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, VrButton} from 'react-vr';
+import {StyleSheet, Text, View, VrButton} from 'react-360';
 import {connect} from './Store';
 
 /**

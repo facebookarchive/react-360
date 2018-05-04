@@ -19,7 +19,7 @@ import type {ViewProps} from 'ViewPropTypes';
 
 type EntitySource =
   | {
-      uri: string,
+      gltf2: string,
     }
   | {
       obj: string | number,

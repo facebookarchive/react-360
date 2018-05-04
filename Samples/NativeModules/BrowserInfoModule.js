@@ -1,6 +1,6 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-import {Module} from 'react-vr-web';
+import {Module} from 'react-360-web';
 
 /**
  * Demonstration of a custom Native Module, used to send browser information

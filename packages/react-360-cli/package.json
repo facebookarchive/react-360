@@ -1,0 +1,30 @@
+{
+  "name": "react-360-cli",
+  "version": "0.1.0",
+  "description": "The React 360 CLI for project setup",
+  "license": "BSD-3-Clause",
+  "engines": {
+    "node": ">=6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git"
+  },
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "files": [
+    "static_assets/",
+    "src/",
+    "generators/",
+    "index.js",
+    "LICENSE",
+    "PATENTS",
+    "package.json",
+    "README.md"
+  ],
+  "bin": {
+    "react-360": "index.js"
+  },
+  "dependencies": {
+    "chalk": "^1.1.3"
+  }
+}

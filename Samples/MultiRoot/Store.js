@@ -26,7 +26,7 @@ export function initialize(apiKey) {
   // Fetch the top 5 posts from Google Poly
   const options = {
     curated: true,
-    format: 'OBJ',
+    format: 'GLTF2',
     key: apiKey,
     pageSize: 5,
   };
@@ -38,7 +38,7 @@ export function initialize(apiKey) {
     .then(body => {
       const entries = body.assets.map(asset => {
         const objSource = asset.formats.filter(
-          format => format.formatType === 'OBJ'
+          format => format.formatType === 'GLTF2'
         )[0];
         return {
           id: asset.name,

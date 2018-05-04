@@ -1,6 +1,6 @@
-# Contributing to React VR
+# Contributing to React 360
 
-React VR is actively being developed by Oculus and Facebook, and is used to power a growing number of internal and external applications. We've put together this document to help make the public contribution process clearer and answer any questions you may have.
+React 360 is actively being developed by Oculus and Facebook, and is used to power a growing number of internal and external applications. We've put together this document to help make the public contribution process clearer and answer any questions you may have.
 
 ## Code of Conduct
 

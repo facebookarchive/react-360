@@ -1,7 +1,7 @@
-import {ReactVRInstance, Location, Surface} from 'react-vr-web';
+import {ReactInstance, Location, Surface} from 'react-360-web';
 
 function init(bundle, parent, options = {}) {
-  const vr = new ReactVRInstance(bundle, parent, {
+  const r360 = new ReactInstance(bundle, parent, {
     fullScreen: true,
     ...options,
   });
@@ -12,20 +12,20 @@ function init(bundle, parent, options = {}) {
   leftPanel.setAngle(-0.6, 0);
   const rightPanel = new Surface(300, 600, Surface.SurfaceShape.Flat);
   rightPanel.setAngle(0.6, 0);
-  vr.renderToSurface(
-    vr.createRoot('TopPosts'),
+  r360.renderToSurface(
+    r360.createRoot('TopPosts'),
     leftPanel,
   );
-  vr.renderToSurface(
-    vr.createRoot('CurrentPost'),
+  r360.renderToSurface(
+    r360.createRoot('CurrentPost'),
     rightPanel,
   );
-  vr.renderToLocation(
-    vr.createRoot('ModelView'),
+  r360.renderToLocation(
+    r360.createRoot('ModelView'),
     new Location([0, -2, -10]),
   );
 
-  vr.compositor.setBackground('./static_assets/360_world.jpg');
+  r360.compositor.setBackground('./static_assets/360_world.jpg');
 }
 
-window.ReactVR = {init};
+window.React360 = {init};

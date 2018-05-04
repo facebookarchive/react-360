@@ -1,8 +1,8 @@
-import {ReactVRInstance} from 'react-vr-web';
+import {ReactInstance} from 'react-360-web';
 import BrowserInfoModule from './BrowserInfoModule';
 
 function init(bundle, parent, options = {}) {
-  const vr = new ReactVRInstance(bundle, parent, {
+  const r360 = new ReactInstance(bundle, parent, {
     // Add custom options here
     fullScreen: true,
     nativeModules: [
@@ -11,12 +11,12 @@ function init(bundle, parent, options = {}) {
     ...options,
   });
 
-  vr.renderToSurface(
-    vr.createRoot('NativeModulesSample', {}),
-    vr.getDefaultSurface(),
+  r360.renderToSurface(
+    r360.createRoot('NativeModulesSample', {}),
+    r360.getDefaultSurface(),
   );
 
-  vr.compositor.setBackground('./static_assets/360_world.jpg');
+  r360.compositor.setBackground('./static_assets/360_world.jpg');
 }
 
-window.ReactVR = {init};
+window.React360 = {init};

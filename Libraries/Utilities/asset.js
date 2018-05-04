@@ -10,24 +10,16 @@
  * @flow
  */
 
+/* eslint-disable import/no-commonjs */
+
+import staticAssetURL from './staticAssetURL';
+
 export type AssetSource = {uri: string};
 
-import {NativeModules} from 'react-native';
-
-const {assetRoot} = NativeModules.ExternalAssets;
-
 function asset(localPath: string, sourceExtra: Object = {}): AssetSource {
-  let uri = localPath;
-  if (assetRoot) {
-    if (localPath.startsWith('/')) {
-      uri = assetRoot + localPath.substr(1);
-    } else {
-      uri = assetRoot + localPath;
-    }
-  }
   return {
     ...sourceExtra,
-    uri: uri,
+    uri: staticAssetURL(localPath),
   };
 }
 

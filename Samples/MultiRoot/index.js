@@ -1,4 +1,4 @@
-import {AppRegistry} from 'react-vr';
+import {AppRegistry} from 'react-360';
 import TopPosts from './TopPosts';
 import CurrentPost from './CurrentPost';
 import ModelView from './ModelView';
