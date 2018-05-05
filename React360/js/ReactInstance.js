@@ -146,6 +146,7 @@ export default class ReactInstance {
       assetRoot: assetRoot,
       customViews: options.customViews || [],
       executor: options.executor,
+      font: options.font,
       nativeModules: [
         new EnvironmentModule(this.compositor.getEnvironment()),
         ctx => {

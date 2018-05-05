@@ -23,6 +23,7 @@ import {
 } from './js/Video/OVRVideo';
 
 import {ReactNativeContext} from './js/ReactNativeContext';
+import {addFontFallback, loadFont} from './js/OVRUI/SDFFont/SDFFont'
 
 export {bundleFromLocation};
 export {createRootView};
@@ -35,3 +36,5 @@ export {Surface};
 export {BasicVideoPlayer};
 export {addCustomizedVideoPlayer};
 export {getSupportedFormats};
+export {addFontFallback};
+export {loadFont};
