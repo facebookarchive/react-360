@@ -50,6 +50,7 @@ function intersectObject(
     intersectObject(children[i], ray, intersects);
   }
 }
+const surfaceHits = [];
 
 const DEVTOOLS_FLAG = /\bdevtools\b/;
 const SURFACE_DEPTH = 4; // 4 meters
@@ -212,28 +213,37 @@ export default class Runtime {
         hitSurface = true;
         const distanceToSubscene = hit.distance;
         const scene = hit.object.subScene;
-        raycaster.ray.origin.set(
-          scene._rttWidth * hit.uv.x,
-          scene._rttHeight * (1 - hit.uv.y),
-          0.1,
-        );
-        raycaster.ray.direction.set(0, 0, -1);
-        const subHits = [];
-        intersectObject(scene, raycaster, subHits);
-        if (subHits.length === 0) {
-          continue;
+        const x = hit.uv.x * scene._rttWidth;
+        const y = (1 - hit.uv.y) * scene._rttHeight;
+        const surfaceHit = this.surfaceRaycast(scene, x, y);
+        if (surfaceHit) {
+          hit = surfaceHit;
+          hit.distance = distanceToSubscene;
         }
-        hit = subHits[subHits.length - 1];
-        hit.distance = distanceToSubscene;
       }
       if (!firstHit && !hit.isAlmostHit) {
         firstHit = hit;
       }
     }
-    this._cursorIntersectsSurface = hitSurface;
-    if (firstHit) {
-      this.guiSys.updateLastHit(firstHit.object, ray.type);
-      this.guiSys._cursor.intersectDistance = firstHit.distance;
+    this.setIntersection(firstHit, ray, hitSurface);
+  }
+
+  surfaceRaycast(scene: THREE.Scene, x: number, y: number) {
+    raycaster.ray.origin.set(x, y, 0.1);
+    raycaster.ray.direction.set(0, 0, -1);
+    surfaceHits.length = 0;
+    intersectObject(scene, raycaster, surfaceHits);
+    if (surfaceHits.length === 0) {
+      return null;
+    }
+    return surfaceHits[surfaceHits.length - 1];
+  }
+
+  setIntersection(hit: ?Object, ray: Ray, onSurface?: boolean) {
+    this._cursorIntersectsSurface = !!onSurface;
+    if (hit) {
+      this.guiSys.updateLastHit(hit.object, ray.type);
+      this.guiSys._cursor.intersectDistance = hit.distance;
     } else {
       this.guiSys.updateLastHit(null, ray.type);
     }
@@ -242,6 +252,20 @@ export default class Runtime {
       ray.direction.slice(),
       ray.drawsCursor,
     );
+  }
+
+  set2DRays(rays: Array<Ray>, surface: Surface) {
+    if (rays.length < 1) {
+      this.guiSys.updateLastHit(null, '');
+      return;
+    }
+    const ray = rays[0];
+    const hit = this.surfaceRaycast(
+      surface.getScene(),
+      ray.origin[0],
+      ray.origin[1],
+    );
+    this.setIntersection(hit, ray, true);
   }
 
   isMouseCursorActive(): boolean {

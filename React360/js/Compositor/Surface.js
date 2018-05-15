@@ -175,6 +175,14 @@ export default class Surface {
     this._mesh.visible = visible;
   }
 
+  getWidth(): number {
+    return this._width;
+  }
+
+  getHeight(): number {
+    return this._height;
+  }
+
   getScene(): THREE.Scene {
     return this._subScene;
   }

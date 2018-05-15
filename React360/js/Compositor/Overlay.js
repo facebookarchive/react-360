@@ -84,8 +84,10 @@ const VR_BUTTON_LABEL_STYLES = {
 };
 
 export interface OverlayInterface {
+  hide(): void;
   setCameraRotation(quat: Quaternion): void;
   setVRButtonState(visible: boolean, text: string, handler: ?Handler): void;
+  show(): void;
 }
 
 export default class Overlay implements OverlayInterface {
@@ -176,5 +178,13 @@ export default class Overlay implements OverlayInterface {
     const compassAngle =
       (projectX > 0 ? 1 : -1) * Math.acos(-1 * projectZ / projectMag);
     (this._compass: any).style.transform = `rotate(${compassAngle}rad)`;
+  }
+
+  hide() {
+    this._wrapper.style.display = 'none';
+  }
+
+  show() {
+    this._wrapper.style.display = 'block';
   }
 }
