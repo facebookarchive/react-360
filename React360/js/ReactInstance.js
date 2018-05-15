@@ -65,6 +65,7 @@ export type React360Options = {
   customOverlay?: OverlayInterface,
   customViews?: Array<CustomView>,
   executor?: ReactExecutor,
+  frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
@@ -84,6 +85,7 @@ export default class ReactInstance {
   _events: Array<InputEvent>;
   _focused2DSurface: null | Surface;
   _frameData: ?VRFrameData;
+  _frameHook: ?(number) => mixed;
   _lastFrameTime: number;
   _looping: boolean;
   _needsResize: boolean;
@@ -126,6 +128,7 @@ export default class ReactInstance {
     this._nextFrame = null;
     this._lastFrameTime = 0;
     this._focused2DSurface = null;
+    this._frameHook = options.frame;
 
     if (options.fullScreen) {
       parent.style.position = 'fixed';
@@ -314,6 +317,9 @@ export default class ReactInstance {
       const audioModule = this._audioModule;
       audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
       audioModule.frame(delta);
+    }
+    if (this._frameHook) {
+      this._frameHook(frameStart);
     }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
@@ -528,5 +534,21 @@ export default class ReactInstance {
    */
   getAssetURL(localPath: string): string {
     return this._assetRoot + localPath;
+  }
+
+  /**
+   * Get the current camera position as a 3-dimensional vector. Changing the
+   * values of this array can have unexpected effects.
+   */
+  getCameraPosition(): Vec3 {
+    return this._cameraPosition;
+  }
+
+  /**
+   * Get the current camera rotation as a quaternion. Changing the values of
+   * this array can have unexpected effects.
+   */
+  getCameraQuaternion(): Quaternion {
+    return this._cameraQuat;
   }
 }
