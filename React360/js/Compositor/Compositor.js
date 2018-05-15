@@ -198,6 +198,10 @@ export default class Compositor {
     this._renderer.render(this._scene, this._camera);
   }
 
+  renderSurface(surface: Surface) {
+    this._renderer.render(surface.getScene(), surface.getCamera());
+  }
+
   renderVR(display: VRDisplay, frameData: VRFrameData) {
     const preserveAutoUpdate = this._scene.autoUpdate;
     if (preserveAutoUpdate) {

@@ -53,11 +53,19 @@ type AnimationFrameData =
       vr: false,
     };
 
+// Store appearance data that can be pushed onto a stack and re-accessed later
+type AppearanceState = {
+  height: number,
+  surface: null | Surface,
+  width: number,
+};
+
 export type React360Options = {
   assetRoot?: string,
   customOverlay?: OverlayInterface,
   customViews?: Array<CustomView>,
   executor?: ReactExecutor,
+  frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
@@ -67,6 +75,7 @@ export type React360Options = {
  * native platform capabilities.
  */
 export default class ReactInstance {
+  _appearanceStateStack: Array<AppearanceState>;
   _assetRoot: string;
   _audioModule: ?AudioModule;
   _cameraPosition: Vec3;
@@ -74,7 +83,9 @@ export default class ReactInstance {
   _defaultLocation: Location;
   _eventLayer: HTMLElement;
   _events: Array<InputEvent>;
+  _focused2DSurface: null | Surface;
   _frameData: ?VRFrameData;
+  _frameHook: ?(number) => mixed;
   _lastFrameTime: number;
   _looping: boolean;
   _needsResize: boolean;
@@ -102,6 +113,7 @@ export default class ReactInstance {
     (this: any).frame = this.frame.bind(this);
     (this: any)._onResize = this._onResize.bind(this);
 
+    this._appearanceStateStack = [];
     this._cameraPosition = [0, 0, 0];
     this._cameraQuat = [0, 0, 0, 1];
     this._events = [];
@@ -115,6 +127,8 @@ export default class ReactInstance {
     this._looping = false;
     this._nextFrame = null;
     this._lastFrameTime = 0;
+    this._focused2DSurface = null;
+    this._frameHook = options.frame;
 
     if (options.fullScreen) {
       parent.style.position = 'fixed';
@@ -243,7 +257,15 @@ export default class ReactInstance {
     // properly computed
     const display = this.vrState.getCurrentDisplay();
     const frameData = this._frameData;
-    if (display && display.isPresenting && frameData) {
+    if (this._focused2DSurface) {
+      this._cameraPosition[0] = 0;
+      this._cameraPosition[1] = 0;
+      this._cameraPosition[2] = 0;
+      this._cameraQuat[0] = 0;
+      this._cameraQuat[1] = 0;
+      this._cameraQuat[2] = 0;
+      this._cameraQuat[3] = 1;
+    } else if (display && display.isPresenting && frameData) {
       display.getFrameData(frameData);
       // Fill camera properties from frameData
       const pose = frameData.pose;
@@ -280,7 +302,11 @@ export default class ReactInstance {
     }
     // Update runtime
     // Compute intersections
-    this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
+    if (this._focused2DSurface) {
+      this.runtime.set2DRays(this._rays, this._focused2DSurface);
+    } else {
+      this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
+    }
     this.runtime.queueEvents(this._events);
     // Update each view
     this.runtime.frame(
@@ -291,6 +317,9 @@ export default class ReactInstance {
       const audioModule = this._audioModule;
       audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
       audioModule.frame(delta);
+    }
+    if (this._frameHook) {
+      this._frameHook(frameStart);
     }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
@@ -319,6 +348,20 @@ export default class ReactInstance {
           this._nextFrame = {
             vr: true,
             id: display.requestAnimationFrame(this.frame),
+          };
+        }
+      }
+    } else if (this._focused2DSurface) {
+      this.compositor.renderSurface(this._focused2DSurface);
+      if (this._looping) {
+        if (this._nextFrame) {
+          const nextFrame: any = this._nextFrame;
+          nextFrame.vr = false;
+          nextFrame.id = requestAnimationFrame(this.frame);
+        } else {
+          this._nextFrame = {
+            vr: false,
+            id: requestAnimationFrame(this.frame),
           };
         }
       }
@@ -381,6 +424,47 @@ export default class ReactInstance {
       this.start();
     }
     return this.runtime.createRootView(root.name, root.initialProps, location);
+  }
+
+  /**
+   * Switch to 3D rendering to rendering the contents of a specific surface
+   * directly to the canvas. This may be useful for debugging or certain
+   * out-of-VR use cases.
+   */
+  focusSurface(name?: string) {
+    const surface = name
+      ? this.compositor.getSurface(name)
+      : this.compositor.getDefaultSurface();
+    if (!surface) {
+      throw new Error(
+        `Cannot focus Surface ${name || ''}, it is not registered`,
+      );
+    }
+    const canvas = this.compositor.getCanvas();
+    this._appearanceStateStack.push({
+      height: canvas.clientHeight,
+      surface: this._focused2DSurface,
+      width: canvas.clientWidth,
+    });
+    this._focused2DSurface = surface;
+    this.resize(surface.getWidth(), surface.getHeight());
+    this.overlay.hide();
+  }
+
+  /**
+   * Return from focusing on a specific surface, to rendering the previous
+   * surface or 3D scene.
+   */
+  releaseSurface() {
+    const lastAppearanceState = this._appearanceStateStack.pop();
+    if (lastAppearanceState) {
+      this._focused2DSurface = lastAppearanceState.surface;
+      this.resize(lastAppearanceState.width, lastAppearanceState.height);
+    }
+    if (!lastAppearanceState || !lastAppearanceState.surface) {
+      this._focused2DSurface = null;
+      this.overlay.show();
+    }
   }
 
   /**
@@ -450,5 +534,21 @@ export default class ReactInstance {
    */
   getAssetURL(localPath: string): string {
     return this._assetRoot + localPath;
+  }
+
+  /**
+   * Get the current camera position as a 3-dimensional vector. Changing the
+   * values of this array can have unexpected effects.
+   */
+  getCameraPosition(): Vec3 {
+    return this._cameraPosition;
+  }
+
+  /**
+   * Get the current camera rotation as a quaternion. Changing the values of
+   * this array can have unexpected effects.
+   */
+  getCameraQuaternion(): Quaternion {
+    return this._cameraQuat;
   }
 }

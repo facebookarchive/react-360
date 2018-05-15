@@ -15,7 +15,7 @@
 import * as THREE from 'three';
 import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 import RCTBaseView from './BaseView';
 
 export default class RCTQuadPanel extends RCTBaseView {
@@ -152,7 +152,7 @@ export default class RCTQuadPanel extends RCTBaseView {
 
   presentLayout() {
     super.presentLayout();
-    this.plane.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+    this.plane.visible = this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE;
   }
 
   dispose() {

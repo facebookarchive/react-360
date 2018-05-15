@@ -14,7 +14,7 @@ import type {Geometry, Texture, Material, ShaderMaterial} from 'three';
 import UIView from '../OVRUI/UIView/UIView';
 import extractURL from '../Utils/extractURL';
 import merge from '../Utils/merge';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
@@ -317,7 +317,7 @@ export default class RCTBaseMesh extends RCTBaseView {
     super.presentLayout();
     if (this.mesh && this.mesh.geometry) {
       this.mesh.geometry.visible =
-        this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+        this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE;
     }
   }
 

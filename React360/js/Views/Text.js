@@ -21,7 +21,7 @@ import RCTBaseView from './BaseView';
 import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
 import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 
@@ -251,11 +251,11 @@ export default class RCTText extends RCTBaseView {
     const text = this.getText(this.style._textColor || 0xffffffff);
     if (text) {
       if (
-        widthMeasureMode !== Yoga.MEASURE_MODE_EXACTLY ||
-        heightMeasureMode !== Yoga.MEASURE_MODE_EXACTLY
+        widthMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY ||
+        heightMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY
       ) {
         let wordWrapped;
-        if (widthMeasureMode !== Yoga.MEASURE_MODE_UNDEFINED) {
+        if (widthMeasureMode !== Flexbox.MEASURE_MODE_UNDEFINED) {
           wordWrapped = SDFFont.wrapLines(
             this.guiSys.font,
             text,
@@ -268,10 +268,10 @@ export default class RCTText extends RCTBaseView {
           wordWrapped = text;
         }
         const dim = SDFFont.measureText(this.guiSys.font, wordWrapped, this._fontSize);
-        if (widthMeasureMode !== Yoga.MEASURE_MODE_EXACTLY) {
+        if (widthMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY) {
           width = dim.maxWidth;
         }
-        if (heightMeasureMode !== Yoga.MEASURE_MODE_EXACTLY) {
+        if (heightMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY) {
           height = dim.maxHeight;
         }
         // as we can vary between spaces this is a reasonable way to determine a snapping value
@@ -338,7 +338,7 @@ export default class RCTText extends RCTBaseView {
    */
   presentLayout() {
     super.presentLayout();
-    const val = this.YGNode.getBorder(Yoga.Left);
+    const val = this.YGNode.getBorder(Flexbox.EDGE_LEFT);
     this.view.setBorderWidth(Number.isNaN(val) ? 0 : val);
     if (
       this._textDirty ||

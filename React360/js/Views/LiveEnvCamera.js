@@ -17,7 +17,7 @@
 import * as THREE from 'three';
 import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 import RCTBaseView from './BaseView';
 
 // display texture always infront of the camera
@@ -137,7 +137,7 @@ export default class RCTLiveEnvCamera extends RCTBaseView {
 
   presentLayout() {
     super.presentLayout();
-    this._globe.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+    this._globe.visible = this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE;
   }
 
   /**

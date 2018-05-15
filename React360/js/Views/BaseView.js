@@ -18,7 +18,7 @@
 /* eslint-disable */
 
 import isPositive from '../Utils/isPositive';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 import UIManager from '../Modules/UIManager';
 
 import type UIView from '../OVRUI/UIView/UIView';
@@ -50,48 +50,48 @@ const IS_MOUSE_INTERACTION_CALLBACKS = {
 };
 
 const MAP_CSS_WRAP = {
-  nowrap: Yoga.WRAP_NO_WRAP,
-  wrap: Yoga.WRAP_WRAP,
+  nowrap: Flexbox.WRAP_NO_WRAP,
+  wrap: Flexbox.WRAP_WRAP,
 };
 
 const MAP_CSS_FLEX_DIRECTION = {
-  column: Yoga.FLEX_DIRECTION_COLUMN,
-  'column-reverse': Yoga.FLEX_DIRECTION_COLUMN_REVERSE,
-  row: Yoga.FLEX_DIRECTION_ROW,
-  'row-reverse': Yoga.FLEX_DIRECTION_ROW_REVERSE,
+  column: Flexbox.FLEX_DIRECTION_COLUMN,
+  'column-reverse': Flexbox.FLEX_DIRECTION_COLUMN_REVERSE,
+  row: Flexbox.FLEX_DIRECTION_ROW,
+  'row-reverse': Flexbox.FLEX_DIRECTION_ROW_REVERSE,
 };
 
 const MAP_CSS_JUSTIFY = {
-  'flex-start': Yoga.JUSTIFY_FLEX_START,
-  center: Yoga.JUSTIFY_CENTER,
-  'flex-end': Yoga.JUSTIFY_FLEX_END,
-  'space-between': Yoga.JUSTIFY_SPACE_BETWEEN,
-  'space-around': Yoga.JUSTIFY_SPACE_AROUND,
+  'flex-start': Flexbox.JUSTIFY_FLEX_START,
+  center: Flexbox.JUSTIFY_CENTER,
+  'flex-end': Flexbox.JUSTIFY_FLEX_END,
+  'space-between': Flexbox.JUSTIFY_SPACE_BETWEEN,
+  'space-around': Flexbox.JUSTIFY_SPACE_AROUND,
 };
 
 const MAP_CSS_ALIGN = {
-  auto: Yoga.ALIGN_AUTO,
-  'flex-start': Yoga.ALIGN_FLEX_START,
-  center: Yoga.ALIGN_CENTER,
-  'flex-end': Yoga.ALIGN_FLEX_END,
-  stretch: Yoga.ALIGN_STRETCH,
-  baseline: Yoga.ALIGN_BASELINE,
+  auto: Flexbox.ALIGN_AUTO,
+  'flex-start': Flexbox.ALIGN_FLEX_START,
+  center: Flexbox.ALIGN_CENTER,
+  'flex-end': Flexbox.ALIGN_FLEX_END,
+  stretch: Flexbox.ALIGN_STRETCH,
+  baseline: Flexbox.ALIGN_BASELINE,
 };
 
 const MAP_CSS_POSITION = {
-  relative: Yoga.POSITION_TYPE_RELATIVE,
-  absolute: Yoga.POSITION_TYPE_ABSOLUTE,
+  relative: Flexbox.POSITION_TYPE_RELATIVE,
+  absolute: Flexbox.POSITION_TYPE_ABSOLUTE,
 };
 
 const MAP_CSS_OVERFLOW = {
-  visible: Yoga.OVERFLOW_VISIBLE,
-  hidden: Yoga.OVERFLOW_HIDDEN,
-  scroll: Yoga.OVERFLOW_SCROLL,
+  visible: Flexbox.OVERFLOW_VISIBLE,
+  hidden: Flexbox.OVERFLOW_HIDDEN,
+  scroll: Flexbox.OVERFLOW_SCROLL,
 };
 
 const MAP_CSS_DISPLAY = {
-  flex: Yoga.DISPLAY_FLEX,
-  none: Yoga.DISPLAY_NONE,
+  flex: Flexbox.DISPLAY_FLEX,
+  none: Flexbox.DISPLAY_NONE,
 };
 
 // Use negative command id so the command id will
@@ -138,7 +138,7 @@ export default class RCTBaseView {
     this._borderBottomRightRadius = null;
     this._borderRadiusDirty = false;
     this._transformDirty = true;
-    this.YGNode = Yoga.Node.create();
+    this.YGNode = Flexbox.Node.create();
     /* $FlowFixMe */
     this.UIManager = null;
     this.tag = 0;
@@ -414,7 +414,7 @@ export default class RCTBaseView {
    */
   dispose(): void {
     RCTBaseView.disposeThreeJSObject(this.view);
-    Yoga.Node.destroy(this.YGNode);
+    Flexbox.Node.destroy(this.YGNode);
     this.view = null;
   }
 
@@ -435,235 +435,235 @@ export default class RCTBaseView {
 
   _left(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPositionPercent(Yoga.EDGE_LEFT, parseFloat(value));
+      this.YGNode.setPositionPercent(Flexbox.EDGE_LEFT, parseFloat(value));
     } else {
-      this.YGNode.setPosition(Yoga.EDGE_LEFT, value);
+      this.YGNode.setPosition(Flexbox.EDGE_LEFT, value);
     }
   }
 
   _top(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPositionPercent(Yoga.EDGE_TOP, parseFloat(value));
+      this.YGNode.setPositionPercent(Flexbox.EDGE_TOP, parseFloat(value));
     } else {
-      this.YGNode.setPosition(Yoga.EDGE_TOP, value);
+      this.YGNode.setPosition(Flexbox.EDGE_TOP, value);
     }
   }
 
   _right(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPositionPercent(Yoga.EDGE_RIGHT, parseFloat(value));
+      this.YGNode.setPositionPercent(Flexbox.EDGE_RIGHT, parseFloat(value));
     } else {
-      this.YGNode.setPosition(Yoga.EDGE_RIGHT, value);
+      this.YGNode.setPosition(Flexbox.EDGE_RIGHT, value);
     }
   }
 
   _bottom(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPositionPercent(Yoga.EDGE_BOTTOM, parseFloat(value));
+      this.YGNode.setPositionPercent(Flexbox.EDGE_BOTTOM, parseFloat(value));
     } else {
-      this.YGNode.setPosition(Yoga.EDGE_BOTTOM, value);
+      this.YGNode.setPosition(Flexbox.EDGE_BOTTOM, value);
     }
   }
 
   _margin(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_ALL, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_ALL, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_ALL, value);
+      this.YGNode.setMargin(Flexbox.EDGE_ALL, value);
     }
   }
 
   _marginVertical(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_VERTICAL, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_VERTICAL, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_VERTICAL, value);
+      this.YGNode.setMargin(Flexbox.EDGE_VERTICAL, value);
     }
   }
 
   _marginHorizontal(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_HORIZONTAL, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_HORIZONTAL, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_HORIZONTAL, value);
+      this.YGNode.setMargin(Flexbox.EDGE_HORIZONTAL, value);
     }
   }
 
   _marginTop(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_TOP, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_TOP, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_TOP, value);
+      this.YGNode.setMargin(Flexbox.EDGE_TOP, value);
     }
   }
 
   _marginBottom(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_BOTTOM, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_BOTTOM, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_BOTTOM, value);
+      this.YGNode.setMargin(Flexbox.EDGE_BOTTOM, value);
     }
   }
 
   _marginLeft(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_LEFT, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_LEFT, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_LEFT, value);
+      this.YGNode.setMargin(Flexbox.EDGE_LEFT, value);
     }
   }
 
   _marginRight(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setMarginPercent(Yoga.EDGE_RIGHT, parseFloat(value));
+      this.YGNode.setMarginPercent(Flexbox.EDGE_RIGHT, parseFloat(value));
     } else {
-      this.YGNode.setMargin(Yoga.EDGE_RIGHT, value);
+      this.YGNode.setMargin(Flexbox.EDGE_RIGHT, value);
     }
   }
 
   _padding(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_ALL, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_ALL, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_ALL, value);
+      this.YGNode.setPadding(Flexbox.EDGE_ALL, value);
     }
   }
 
   _paddingVertical(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_VERTICAL, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_VERTICAL, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_VERTICAL, value);
+      this.YGNode.setPadding(Flexbox.EDGE_VERTICAL, value);
     }
   }
 
   _paddingHorizontal(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_HORIZONTAL, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_HORIZONTAL, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_HORIZONTAL, value);
+      this.YGNode.setPadding(Flexbox.EDGE_HORIZONTAL, value);
     }
   }
 
   _paddingTop(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_TOP, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_TOP, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_TOP, value);
+      this.YGNode.setPadding(Flexbox.EDGE_TOP, value);
     }
   }
 
   _paddingBottom(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_BOTTOM, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_BOTTOM, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_BOTTOM, value);
+      this.YGNode.setPadding(Flexbox.EDGE_BOTTOM, value);
     }
   }
 
   _paddingLeft(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_LEFT, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_LEFT, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_LEFT, value);
+      this.YGNode.setPadding(Flexbox.EDGE_LEFT, value);
     }
   }
 
   _paddingRight(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
-      this.YGNode.setPaddingPercent(Yoga.EDGE_RIGHT, parseFloat(value));
+      this.YGNode.setPaddingPercent(Flexbox.EDGE_RIGHT, parseFloat(value));
     } else {
-      this.YGNode.setPadding(Yoga.EDGE_RIGHT, value);
+      this.YGNode.setPadding(Flexbox.EDGE_RIGHT, value);
     }
   }
 
   _borderWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
-    this.YGNode.setBorder(Yoga.EDGE_ALL, value);
+    this.YGNode.setBorder(Flexbox.EDGE_ALL, value);
   }
 
   _borderTopWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
-    this.YGNode.setBorder(Yoga.EDGE_TOP, value);
+    this.YGNode.setBorder(Flexbox.EDGE_TOP, value);
   }
 
   _borderRightWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
-    this.YGNode.setBorder(Yoga.EDGE_RIGHT, value);
+    this.YGNode.setBorder(Flexbox.EDGE_RIGHT, value);
   }
 
   _borderBottomWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
-    this.YGNode.setBorder(Yoga.EDGE_BOTTOM, value);
+    this.YGNode.setBorder(Flexbox.EDGE_BOTTOM, value);
   }
 
   _borderLeftWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
-    this.YGNode.setBorder(Yoga.EDGE_LEFT, value);
+    this.YGNode.setBorder(Flexbox.EDGE_LEFT, value);
   }
 
   _position(value: any): void {
@@ -683,36 +683,36 @@ export default class RCTBaseView {
   }
 
   _flexDirection(value: any): void {
-    this.YGNode.setFlexDirection(value !== null ? MAP_CSS_FLEX_DIRECTION[value] : Yoga.UNDEFINED);
+    this.YGNode.setFlexDirection(value !== null ? MAP_CSS_FLEX_DIRECTION[value] : Flexbox.UNDEFINED);
   }
 
   _flexWrap(value: any): void {
-    this.YGNode.setFlexWrap(value !== null ? MAP_CSS_WRAP[value] : Yoga.UNDEFINED);
+    this.YGNode.setFlexWrap(value !== null ? MAP_CSS_WRAP[value] : Flexbox.UNDEFINED);
   }
 
   _justifyContent(value: any): void {
-    this.YGNode.setJustifyContent(value !== null ? MAP_CSS_JUSTIFY[value] : 0);
+    this.YGNode.setJustifyContent(value !== null ? MAP_CSS_JUSTIFY[value] : Flexbox.JUSTIFY_FLEX_START);
   }
 
   _overflow(value: any): void {
-    this.view.clippingEnabled = value === Yoga.OVERFLOW_HIDDEN;
-    this.YGNode.setOverflow(value !== null ? MAP_CSS_OVERFLOW[value] : 0);
+    this.view.clippingEnabled = value === Flexbox.OVERFLOW_HIDDEN;
+    this.YGNode.setOverflow(value !== null ? MAP_CSS_OVERFLOW[value] : Flexbox.OVERFLOW_VISIBLE);
   }
 
   _display(value: any): void {
-    this.YGNode.setDisplay(value !== null ? MAP_CSS_DISPLAY[value] : 0);
+    this.YGNode.setDisplay(value !== null ? MAP_CSS_DISPLAY[value] : Flexbox.DISPLAY_FLEX);
   }
 
   _flex(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     this.YGNode.setFlex(value);
   }
 
   _flexBasis(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setFlexBasisPercent(parseFloat(value));
@@ -723,21 +723,21 @@ export default class RCTBaseView {
 
   _flexGrow(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     this.YGNode.setFlexGrow(value);
   }
 
   _flexShrink(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     this.YGNode.setFlexShrink(value);
   }
 
   _width(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setWidthPercent(parseFloat(value));
@@ -748,7 +748,7 @@ export default class RCTBaseView {
 
   _height(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setHeightPercent(parseFloat(value));
@@ -759,7 +759,7 @@ export default class RCTBaseView {
 
   _minWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setMinWidthPercent(parseFloat(value));
@@ -770,7 +770,7 @@ export default class RCTBaseView {
 
   _minHeight(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setMinHeightPercent(parseFloat(value));
@@ -781,7 +781,7 @@ export default class RCTBaseView {
 
   _maxWidth(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setMaxWidthPercent(parseFloat(value));
@@ -792,7 +792,7 @@ export default class RCTBaseView {
 
   _maxHeight(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     if (_isPercent(value)) {
       this.YGNode.setMaxHeightPercent(parseFloat(value));
@@ -803,14 +803,14 @@ export default class RCTBaseView {
 
   _aspectRatio(value: any): void {
     if (value === null) {
-      value = Yoga.UNDEFINED;
+      value = Flexbox.UNDEFINED;
     }
     this.YGNode.setAspectRatio(value);
   }
 
   _getBorderValue(edge: any): number {
     const value = this.YGNode.getBorder(edge);
-    const allValue = this.YGNode.getBorder(Yoga.EDGE_ALL);
+    const allValue = this.YGNode.getBorder(Flexbox.EDGE_ALL);
     return Number.isNaN(value) ? (Number.isNaN(allValue) ? 0 : allValue) : value;
   }
 
@@ -856,12 +856,12 @@ export default class RCTBaseView {
           },
         ]);
       }
-      this.view.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+      this.view.visible = this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE;
       this.view.setBorderWidth([
-        this._getBorderValue(Yoga.EDGE_LEFT),
-        this._getBorderValue(Yoga.EDGE_TOP),
-        this._getBorderValue(Yoga.EDGE_RIGHT),
-        this._getBorderValue(Yoga.EDGE_BOTTOM),
+        this._getBorderValue(Flexbox.EDGE_LEFT),
+        this._getBorderValue(Flexbox.EDGE_TOP),
+        this._getBorderValue(Flexbox.EDGE_RIGHT),
+        this._getBorderValue(Flexbox.EDGE_BOTTOM),
       ]);
       this.view.setFrame &&
         this.view.setFrame(x + left, -(y + top), width, height, this.UIManager._layoutAnimation);

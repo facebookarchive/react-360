@@ -4531,9 +4531,9 @@ text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
-three-gltf2-loader@~1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/three-gltf2-loader/-/three-gltf2-loader-1.1.0.tgz#c610810b8124f1d56e1cad48b6955c3f46296660"
+three-gltf2-loader@~1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/three-gltf2-loader/-/three-gltf2-loader-1.2.0.tgz#1fffae0659b1490034e6d055c7aabc439ab5de21"
 
 three@^0.87.0:
   version "0.87.1"
