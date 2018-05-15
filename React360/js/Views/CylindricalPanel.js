@@ -18,7 +18,7 @@ import Surface, {SurfaceShape} from '../Compositor/Surface';
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 import RCTBaseView from './BaseView';
 
 export default class RCTCylindricalPanel extends RCTBaseView {
@@ -81,7 +81,7 @@ export default class RCTCylindricalPanel extends RCTBaseView {
 
   presentLayout() {
     super.presentLayout();
-    this.surface.setVisibility(this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE);
+    this.surface.setVisibility(this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE);
   }
 
   dispose() {

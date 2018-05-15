@@ -27,7 +27,7 @@ import {HPanoBufferGeometry} from '../Utils/HPano';
 import {CubePanoBufferGeometry} from '../Utils/CubePano';
 import {RCTBindedResource} from '../Utils/RCTBindedResource';
 import * as THREE from 'three';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 
 import Prefetch from './Prefetch';
 
@@ -322,7 +322,7 @@ export default class RCTPano extends RCTBaseView {
 
   presentLayout() {
     super.presentLayout();
-    this._globe.visible = this.YGNode.getDisplay() !== Yoga.DISPLAY_NONE;
+    this._globe.visible = this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE;
   }
 
   /**

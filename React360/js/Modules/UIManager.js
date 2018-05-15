@@ -37,7 +37,7 @@ import RCTPrefetch from '../Views/Prefetch';
 import Module from './Module';
 import * as THREE from 'three';
 import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
-import * as Yoga from '../Utils/Yoga.bundle';
+import * as Flexbox from '../Utils/FlexboxImplementation';
 
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';
@@ -611,9 +611,9 @@ export default class UIManager extends Module {
       const rootView = this._rootViews[tag];
       // use css-layout flex box to apply new flow
       rootView.YGNode.calculateLayout(
-        Yoga.UNDEFINED,
-        Yoga.UNDEFINED,
-        Yoga.DIRECTION_LTR,
+        Flexbox.UNDEFINED,
+        Flexbox.UNDEFINED,
+        Flexbox.DIRECTION_LTR,
       );
       // present the layout to the view implementations from root to child
       this.presentLayout(rootView);
