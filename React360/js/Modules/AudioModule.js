@@ -25,6 +25,15 @@ import Module from './Module';
 const FORWARD = [0, 0, -1];
 const UP = [0, 1, 0];
 
+const ContextConstructor = window.AudioContext || window.webkitAudioContext;
+
+function decodeAudioData(ctx, compressed) {
+  // Safari doesn't support the Promise-style API yet
+  return new Promise((resolve, reject) => {
+    ctx.decodeAudioData(compressed, buffer => resolve(buffer), err => reject(err));
+  });
+}
+
 export default class AudioModule extends Module {
   _audioCtx: AudioContext;
   _audioData: {[uri: string]: AudioBuffer};
@@ -36,7 +45,7 @@ export default class AudioModule extends Module {
 
   constructor(rnctx: ReactNativeContext) {
     super('AudioModule');
-    this._audioCtx = new AudioContext();
+    this._audioCtx = new ContextConstructor();
     this._audioData = {};
     this._handles = {};
     this._loaders = {};
@@ -56,7 +65,7 @@ export default class AudioModule extends Module {
     }
     const loader = fetch(uri)
       .then(response => response.arrayBuffer())
-      .then(compressed => this._audioCtx.decodeAudioData(compressed))
+      .then(compressed => decodeAudioData(this._audioCtx, compressed))
       .then(buffer => {
         this._audioData[uri] = buffer;
         delete this._loaders[uri];

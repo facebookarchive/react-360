@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "react-360-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A framework for building interactive 360 experiences with React",
   "license": "BSD-3-Clause",
   "repository": {
