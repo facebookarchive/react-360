@@ -27,7 +27,7 @@ import {
   Text,
   View,
   VrButton,
-} from 'react-vr';
+} from 'react-360';
 
 // Extract our custom native module
 const BrowserInfo = NativeModules.BrowserInfo;

@@ -12,7 +12,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {StyleSheet} from 'react-vr';
+import {StyleSheet} from 'react-360';
 
 const styles = StyleSheet.create({
   board: {

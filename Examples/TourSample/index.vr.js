@@ -16,7 +16,7 @@
 'use strict';
 
 import React from 'react';
-import {AppRegistry, asset, Image, Pano, Text, Sound, View} from 'react-vr';
+import {AppRegistry, asset, Image, Pano, Text, Sound, View} from 'react-360';
 
 import InfoButton from './InfoButton';
 import NavButton from './NavButton';

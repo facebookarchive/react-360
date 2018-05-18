@@ -15,7 +15,7 @@
 'use strict';
 
 import React from 'react';
-import {Animated, Image, Text, View, VrButton} from 'react-vr';
+import {Animated, Image, Text, View, VrButton} from 'react-360';
 
 import LoadingSpinner from './LoadingSpinner';
 

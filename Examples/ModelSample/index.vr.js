@@ -23,7 +23,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, asset, Model, Pano, PointLight, Text, View} from 'react-vr';
+import {AppRegistry, asset, Model, Pano, PointLight, Text, View} from 'react-360';
 
 class ModelSample extends React.Component {
   constructor() {

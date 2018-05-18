@@ -15,7 +15,7 @@
 'use strict';
 
 import React from 'react';
-import {Animated, asset, Image, View} from 'react-vr';
+import {Animated, asset, Image, View} from 'react-360';
 
 // Import from React Native.
 const Easing = require('Easing');

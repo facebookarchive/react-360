@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, asset, NativeModules, Pano, StyleSheet, Text, View} from 'react-vr';
+import {AppRegistry, asset, NativeModules, Pano, StyleSheet, Text, View} from 'react-360';
 
 const RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 

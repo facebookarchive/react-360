@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import {Animated, AppRegistry, Box, texture, View} from 'react-vr';
+import {Animated, AppRegistry, Box, texture, View} from 'react-360';
 
 const AnimatedBox = Animated.createAnimatedComponent(Box);
 

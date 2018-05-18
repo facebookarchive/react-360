@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import {Text, View} from 'react-vr';
+import {Text, View} from 'react-360';
 import {connect} from 'react-redux';
 import styles from './styles';
 
