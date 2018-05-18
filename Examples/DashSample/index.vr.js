@@ -15,7 +15,7 @@
 'use strict';
 
 import React from 'react';
-import {AppRegistry, asset, Pano, View, Video, VideoControl, MediaPlayerState} from 'react-vr';
+import {AppRegistry, asset, Pano, View, Video, VideoControl, MediaPlayerState} from 'react-360';
 
 /**
  * DashSample displays a flat 2d video, along with a video control component.

@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import {Text, View} from 'react-vr';
+import {Text, View} from 'react-360';
 
 /**
  * Simple component designed to be mounted directly to the camera

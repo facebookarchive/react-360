@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, Text, View} from 'react-vr';
+import {AppRegistry, Text, View} from 'react-360';
 import HUD from './HUD.react';
 
 /**

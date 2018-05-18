@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import {AppRegistry, asset, Pano, Text, Image, View} from 'react-vr';
+import {AppRegistry, asset, Pano, Text, Image, View} from 'react-360';
 const VrButton = require('VrButton');
 
 import CylindricalPanel from 'CylindricalPanel';

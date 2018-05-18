@@ -12,7 +12,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import React from 'react';
-import {Text, View} from 'react-vr';
+import {Text, View} from 'react-360';
 
 const TextboxVr = props => {
   return (

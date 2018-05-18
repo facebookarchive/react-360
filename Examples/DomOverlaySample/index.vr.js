@@ -22,7 +22,7 @@ import {
   View,
   VrButton,
   VrHeadModel,
-} from 'react-vr';
+} from 'react-360';
 
 import TextboxVr from './TextboxVr';
 
