@@ -15,7 +15,7 @@
 'use strict';
 
 import React from 'react';
-import {asset, Image, MediaPlayerState, Text, Video, VideoControl, View} from 'react-vr';
+import {asset, Image, MediaPlayerState, Text, Video, VideoControl, View} from 'react-360';
 
 /**
  * Tooltip encapsulates the different tooltip types used with the InfoButton

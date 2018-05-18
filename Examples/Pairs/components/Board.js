@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import {Text, View, VrButton} from 'react-vr';
+import {Text, View, VrButton} from 'react-360';
 import {connect} from 'react-redux';
 import styles from './styles';
 import {initialState} from '../reducers/board';

@@ -13,8 +13,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, View} from 'react-vr';
-import {NativeModules} from 'react-vr';
+import {AppRegistry, View, NativeModules} from 'react-360';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import uuid from 'uuid';

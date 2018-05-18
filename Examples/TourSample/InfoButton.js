@@ -15,7 +15,7 @@
 'use strict';
 
 import React from 'react';
-import {Animated, Image, View, VrButton} from 'react-vr';
+import {Animated, Image, View, VrButton} from 'react-360';
 
 import Tooltip from './Tooltip';
 
