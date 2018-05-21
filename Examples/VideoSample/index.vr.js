@@ -31,7 +31,7 @@ import {
   Video,
   VideoControl,
   MediaPlayerState,
-} from 'react-vr';
+} from 'react-360';
 
 /**
  * VideoSample created a MediaPlayerState and hook it with video and video control.
