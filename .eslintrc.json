@@ -30,6 +30,7 @@
     "__fbBatchedBridgeConfig": false,
     "AnimationFrameID": false,
     "Class": false,
+    "IteratorResult": false,
     "SceneGraphNode": false,
     "VRDisplay": false,
     "VRFrameData": false

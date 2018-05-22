@@ -60,6 +60,8 @@ jest.mock('three', () => {
     Ray: jest.fn(() => ({})),
     Sphere: jest.fn(() => ({})),
     RepeatWrapping: 1000,
+    Object3D: jest.fn(() => ({})),
+    Color: jest.fn(() => ({})),
   };
 });
 

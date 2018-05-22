@@ -48,10 +48,8 @@
   "scripts": {
     "flow": "flow",
     "lint": "eslint Libraries/ OVRUI/src/ ReactVR/ react-vr-cli/",
-    "pretest": "cross-env BABEL_DISABLE_CACHE=1 node jest/prepareE2E.js",
     "prettier": "node node_modules/.bin/prettier --print-width 100 --single-quote --no-bracket-spacing --jsx-bracket-same-line --trailing-comma es5 --write \"{Libraries,OVRUI/src,react-vr-cli,ReactVR}/**/!(*.bundle).js\"",
-    "test": "jest --config jest/config-all.json",
-    "test-unit": "jest --config jest/config-unit.json"
+    "test": "jest --config jest/config-unit.json"
   },
   "dependencies": {
     "create-react-class": "^15.6.0",

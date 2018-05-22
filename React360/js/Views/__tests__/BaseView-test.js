@@ -37,9 +37,12 @@ jest
       TextureLoader: jest.fn(() => ({})),
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
+      Object3D: jest.fn(() => ({})),
+      Color: jest.fn(() => ({})),
     }),
     {virtual: true},
   )
+  .dontMock('../../Utils/FlexboxImplementation')
   .dontMock('../../Utils/Yoga.bundle');
 
 const BaseView = require('../BaseView').default;
