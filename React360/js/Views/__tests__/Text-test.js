@@ -21,8 +21,9 @@ jest
   .dontMock('../Text')
   .dontMock('../BaseView')
   .dontMock('../../Utils/merge')
+  .dontMock('../../Utils/FlexboxImplementation')
   .dontMock('../../Utils/Yoga.bundle')
-  .mock('ovr-audio', () => ({}), {virtual: true})
+  .mock('../../OVRUI/UIView/UIView', () => MockUIView)
   .mock(
     'three',
     () => ({
@@ -46,6 +47,8 @@ jest
       TextureLoader: jest.fn(() => ({})),
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
+      Object3D: jest.fn(() => ({})),
+      Color: jest.fn(() => ({})),
     }),
     {virtual: true},
   );

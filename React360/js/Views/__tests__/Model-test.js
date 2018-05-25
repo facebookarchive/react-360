@@ -38,7 +38,7 @@ jest
     fetchAndCacheMTL: loadMTLMock,
     removeMTLReference: removeMTLReferenceMock,
   }))
-  .mock('ovr-audio', () => ({}), {virtual: true})
+  .mock('../../OVRUI/UIView/UIView', () => MockUIView)
   .mock(
     'three',
     () => ({
@@ -62,6 +62,8 @@ jest
       TextureLoader: MockTextureLoader,
       ClampToEdgeWrapping: 'ClampToEdgeWrapping',
       LinearFilter: 'LinearFilter',
+      Object3D: jest.fn(() => ({})),
+      Color: jest.fn(() => ({})),
     }),
     {virtual: true},
   );
