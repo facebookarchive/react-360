@@ -43,6 +43,7 @@ export type VideoPlayOptions = {
   rotation?: VideoRotation,
   stereo?: VideoStereoFormat,
   volume?: number,
+  loop?:  boolean,
 };
 
 export type VideoOptions = VideoPlayOptions & {

@@ -36,6 +36,9 @@ export default class VideoModule extends Module {
     if (params.volume !== undefined) {
       player.setVolume(params.volume);
     }
+    if (params.loop !==  undefined) {
+      player.setLoop(params.loop);
+    }
   }
 
   createPlayer(handle: string) {
