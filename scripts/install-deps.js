@@ -11,7 +11,7 @@
 
 const child_process = require('child_process');
 const path = require('path');
-const getPackager = require('../react-vr-cli/src/getPackager');
+const getPackager = require('../packages/react-360-cli/src/getPackager');
 
 /**
  * Script to install development dependencies for users building the codebase
@@ -19,9 +19,8 @@ const getPackager = require('../react-vr-cli/src/getPackager');
  */
 function installDeps() {
   const paths = {
-    ovrui: path.resolve(__dirname, '..', 'OVRUI'),
-    'react-vr': path.resolve(__dirname, '..'),
-    'react-vr-web': path.resolve(__dirname, '..', 'ReactVR'),
+    'react-360': path.resolve(__dirname, '..'),
+    'react-360-web': path.resolve(__dirname, '..', 'React360'),
   };
   console.log('Determining packager...');
   const packager = getPackager();

@@ -23,9 +23,8 @@ What needs to be done to address this issue? Ideally, provide a pull request wit
 
 ### Additional Information
 
-* 'react-vr' package version: [FILL THIS OUT: get this by running `npm list react-vr`]
-* 'react-vr-web' package version: [FILL THIS OUT: get this by running `npm list react-vr-web`]
+* 'react-360' package version: [FILL THIS OUT: get this by running `npm list react-360`]
+* 'react-360-web' package version: [FILL THIS OUT: get this by running `npm list react-360-web`]
 * Operating System: [FILL THIS OUT: MacOS, Linux, or Windows?]
-* Graphics Card: [FILL THIS OUT: NVIDA, ATI, Intel? Which Driver?]
 * Browser: [FILL THIS OUT: Oculus Browser, Chrome, Edge, Safari? Which version?]
 * VR Device: [FILL THIS OUT: In or Out of VR? Headset? ]

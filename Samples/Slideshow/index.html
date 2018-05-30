@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Slideshow Sample</title>
+    <style>body { margin: 0; }</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="./client.bundle?platform=vr"></script>
+    <script>
+      React360.init(
+        'index.bundle?platform=vr&dev=true',
+        document.getElementById('container')
+      );
+    </script>
+  </body>
+</html>

@@ -13,10 +13,10 @@ dependencies:
   override:
     - node scripts/install-deps.js
     - pushd website && npm install && popd
-    - pushd react-vr-cli && npm install && popd
+    - pushd react-360-cli && npm install && popd
   cache_directories:
     - "website/node_modules"
-    - "react-vr-cli/node_modules"
+    - "react-360-cli/node_modules"
     - "node_modules"
 
 test:
@@ -30,10 +30,6 @@ test:
 
 deployment:
   website:
-    tag: /release-.*/
+    tag: /.*-stable/
     commands:
-      # generate docs website
-      - git config --global user.email "reactjs-bot@users.noreply.github.com"
-      - git config --global user.name "Website Deployment Script"
-      - echo "machine github.com login reactjs-bot password $GITHUB_TOKEN" > ~/.netrc
-      - cd website && GIT_USER=reactjs-bot npm run gh-pages
+      - echo "Stable release tag, deploying docs"

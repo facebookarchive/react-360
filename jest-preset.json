@@ -4,7 +4,7 @@
     "platforms": ["vr"],
     "providesModuleNodeModules": [
       "react-native",
-      "react-vr"
+      "react-360"
     ]
   },
   "moduleNameMapper": {
@@ -16,10 +16,10 @@
     "<rootDir>/node_modules/react-native/packager/"
   ],
   "transformIgnorePatterns": [
-    "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|react-vr)"
+    "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|react-360)"
   ],
   "setupFiles": [
     "<rootDir>/node_modules/react-native/jest/setup.js",
-    "<rootDir>/node_modules/react-vr/jest/setup.js"
+    "<rootDir>/node_modules/react-360/jest/setup.js"
   ]
 }

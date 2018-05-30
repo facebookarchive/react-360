@@ -14,7 +14,7 @@
     "/node_modules/",
     "/scripts/",
     "/website/",
-    "/react-vr-cli/",
+    "/react-360-cli/",
     ".res.js"
   ],
   "modulePathIgnorePatterns": [

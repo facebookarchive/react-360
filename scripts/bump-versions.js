@@ -40,15 +40,14 @@ if (!version.match(versionExpr)) {
   console.log('\x1b[31;1mVersion must be in the form `MAJOR.MINOR.PATCH`\x1b[0m');
 }
 const packages = {
-  'react-vr': path.resolve(__dirname, '..', 'package.json'),
-  'react-vr-web': path.resolve(__dirname, '..', 'ReactVR', 'package.json'),
-  ovrui: path.resolve(__dirname, '..', 'OVRUI', 'package.json'),
-  'react-vr-cli': path.resolve(__dirname, '..', 'react-vr-cli', 'package.json'),
+  'react-360': path.resolve(__dirname, '..', 'package.json'),
+  'react-360-web': path.resolve(__dirname, '..', 'React360', 'package.json'),
+  'react-360-cli': path.resolve(__dirname, '..', 'react-360-cli', 'package.json'),
 };
 const cliGenerator = path.resolve(
   __dirname,
   '..',
-  'react-vr-cli',
+  'react-360-cli',
   'generators',
   'package.json.generator.js'
 );
@@ -56,24 +55,21 @@ const currentVersion = require('../package.json').version;
 console.log(
   `Current version is \x1b[34;1m${currentVersion}\x1b[0m, updating packages to \x1b[34;1m${version}\x1b[0m`
 );
-const cliVersionPieces = require('../react-vr-cli/package.json').version
+const cliVersionPieces = require('../react-360-cli/package.json').version
   .split('.')
   .map(s => parseInt(s, 10));
 cliVersionPieces[2]++; // increment patch version of CLI package
 
-console.log('Updating OVRUI...');
-updateVersion(packages.ovrui, version);
-console.log('Updating react-vr...');
-updateVersion(packages['react-vr'], version);
-console.log('Updating react-vr-web...');
-updateVersion(packages['react-vr-web'], version, {ovrui: '~' + version});
+console.log('Updating react-360...');
+updateVersion(packages['react-360'], version);
+console.log('Updating react-360-web...');
+updateVersion(packages['react-360-web'], version);
 console.log('Updating new project generator...');
 updateVersion(cliGenerator, '0.0.1', {
-  ovrui: '~' + version,
-  'react-vr': '~' + version,
-  'react-vr-web': '~' + version,
+  'react-360': '~' + version,
+  'react-360-web': '~' + version,
 });
-console.log('Updating react-vr-cli...');
-updateVersion(packages['react-vr-cli'], cliVersionPieces.join('.'));
+console.log('Updating react-360-cli...');
+updateVersion(packages['react-360-cli'], cliVersionPieces.join('.'));
 
 console.log(`All packages updated to \x1b[34;1m${version}\x1b[0m`);
