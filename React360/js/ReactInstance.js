@@ -70,6 +70,8 @@ export type React360Options = {
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
+const DEFAULT_SURFACE_DEPTH = 4;
+
 /**
  * New top-level class for the panel-first design of React 360 aligned with
  * native platform capabilities.
@@ -323,11 +325,10 @@ export default class ReactInstance {
     }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
-    if (
-      cursorVis === 'visible' ||
-      (cursorVis === 'auto' && this.runtime.isCursorActive())
-    ) {
+    if (cursorVis !== 'hidden' && this.runtime.isCursorActive()) {
       this.compositor.updateCursor(this._rays, this.runtime.getCursorDepth());
+    } else if (cursorVis === 'visible') {
+      this.compositor.updateCursor(this._rays, DEFAULT_SURFACE_DEPTH);
     } else {
       this.compositor.updateCursor(null, 0);
     }
