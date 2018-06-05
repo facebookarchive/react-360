@@ -53,6 +53,7 @@ function intersectObject(
 const surfaceHits = [];
 
 const DEVTOOLS_FLAG = /\bdevtools\b/;
+const HOTRELOAD_FLAG = /\bhotreload\b/;
 const SURFACE_DEPTH = 4; // 4 meters
 
 /**
@@ -76,6 +77,8 @@ export default class Runtime {
     this._rootLocations = [];
     this._cursorIntersectsSurface = false;
     let enableDevTools = false;
+    let bundleURL = bundle;
+    let enableHotReload = false;
     if (__DEV__) {
       if (DEVTOOLS_FLAG.test(location.search)) {
         enableDevTools = true;
@@ -89,6 +92,14 @@ export default class Runtime {
           /* eslint-enable no-console */
         }
       }
+      if (HOTRELOAD_FLAG.test(location.search)) {
+        enableHotReload = true;
+        if (bundleURL.indexOf('?') > -1) {
+          bundleURL += '&hot=true';
+        } else {
+          bundleURL += '?hot=true';
+        }
+      }
     }
     this.executor =
       options.executor ||
@@ -99,6 +110,7 @@ export default class Runtime {
     this.context = new ReactNativeContext(this.guiSys, this.executor, {
       assetRoot: options.assetRoot,
       customViews: options.customViews || [],
+      enableHotReload,
     });
     const modules = options.nativeModules;
     if (modules) {
@@ -112,7 +124,7 @@ export default class Runtime {
         }
       }
     }
-    this.context.init(bundle);
+    this.context.init(bundleURL);
   }
 
   createRootView(name: string, initialProps: Object, dest: Location | Surface) {
