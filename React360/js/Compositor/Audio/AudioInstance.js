@@ -21,6 +21,7 @@ export default class AudioInstance {
   _node: ?AudioNode;
   _position: ?Vec3;
   _source: string;
+  _stopped: boolean;
   _transition: number;
   _volume: number;
 
@@ -30,6 +31,7 @@ export default class AudioInstance {
     this._loop = !!options.loop;
     this._muted = !!options.muted;
     this._position = options.position;
+    this._stopped = false;
     this._transition = 0;
     this._volume = options.volume !== undefined ? options.volume : 1.0;
 
@@ -71,6 +73,7 @@ export default class AudioInstance {
   }
 
   stop() {
+    this._stopped = true;
     if (this._node) {
       this._node.stop();
     }
@@ -98,6 +101,9 @@ export default class AudioInstance {
   }
 
   setNode(node: AudioNode) {
+    if (this._stopped) {
+      return;
+    }
     this._node = node;
     if (this._autoPlay) {
       this.play();
