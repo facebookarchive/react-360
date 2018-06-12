@@ -83,7 +83,7 @@ It is also possible to generate your own font set textures using the fontue tool
 The base command line for the EFIGS font is:
 
 ```
-OculusSans-Medium.otf efigs\efigs -co -0.01 -ts 1.0 -hpad 128 -vpad 128 -sdf 256 1024 1024 -cf data\strings\values\strings.xml -cf data\strings\values-de\strings.xml -cf data\strings\values-en-rGB\strings.xml -cf data\strings\values-es\strings.xml -cf data\strings\values-es-rES\strings.xml -cf data\strings\values-fr\strings.xml -cf data\strings\values-it\strings.xml -cf data\EFIGS_extended.txt
+OculusSans-Medium.otf efigs/efigs -co -0.01 -ts 1.0 -hpad 128 -vpad 128 -sdf 256 -1 -1 -ur 0x0010 0x00ff -ur 0x0370 0x03FF -ur 0x0100 0x017F -ur 0x0180 0x024F
 ```
 
 Further characters can be added using additional `-cf` entries.

@@ -70,9 +70,9 @@ provided examples of raycasters that work with 3DOF or 6DOF controllers.
 Custom raycasters need to implement three methods: `getType`, `getRayOrigin`, and
 `getRayDirection`.
 
-`getType` returns a unique string identifier for the
+`getType()` returns a unique string identifier for the
 raycaster, so that React applications can provide special handling for specific
-cursors. These two methods are called each frame to compose the ray
+cursors. The next two methods are called each frame to compose the ray
 and calculate intersections.
 
 `getRayOrigin()` returns a 3-element array

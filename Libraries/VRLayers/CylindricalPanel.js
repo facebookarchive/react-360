@@ -28,7 +28,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * drawing the child components to an offscreen buffer of the specified
  * width and height.
  *
- * By default, the cylinder placed at the center position of the scene so that the viewer is
+ * By default, the cylinder is placed at the center position of the scene so that the viewer is
  * encapsulated by it.
  *
  * ```
@@ -44,7 +44,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * ```
  *
  * The width and height of the cylinder must be specified, and the width must also correspond to
- * the arc that the cylinder covers. The default Density is 4680px, which has been empirically
+ * the arc that the cylinder covers. The default density is 4680px, which has been empirically
  * defined to match a 1px unit on panel space to 1px on the eye. That is, the defaults allow transferring
  * pixel units from 2D to also work in VR.
  *
@@ -58,7 +58,7 @@ const requireNativeComponent = require('requireNativeComponent');
  * a 1px element on the panel remain square. For example, a 100px by 100px <image> with a 100px by 100px source
  * bitmap would also look square when drawn to the cylinder.
  *
- * Child components can determine if they are within a Panel by using the `isOnLayer` context
+ * Child components can determine if they are within a Panel by using the `isOnLayer` context.
  *
  */
 const CylindricalPanel = createReactClass({

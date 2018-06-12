@@ -59,12 +59,3 @@ return (
   </Image>
 );
 ```
-
-## Border Radius Styles
-
-Please note that the following corner specific, border radius style properties are currently ignored by the image component:
-
-* `borderTopLeftRadius`
-* `borderTopRightRadius`
-* `borderBottomLeftRadius`
-* `borderBottomRightRadius`

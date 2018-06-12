@@ -28,7 +28,7 @@ const requireNativeComponent = require('requireNativeComponent');
 const resolveAssetSource = require('resolveAssetSource');
 
 /**
- * A react component for displaying different types of images.
+ * A React component for displaying different types of images.
  *
  * Example usage:
  *

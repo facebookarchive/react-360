@@ -34,7 +34,10 @@ const resolveAssetSource = require('resolveAssetSource');
  *
  * Example Usage:
  * ```
- * <Video style={{width: 3.0, height:2.0}} source={{uri: 'assets/my-video.webm'}} />
+ * <Video 
+ *   style={{width: 3.0, height:2.0}} 
+ *   source={{uri: 'assets/my-video.webm'}}
+ * />
  * ```
  *
  * For an example of using with [VideoControl](docs/videocontrol.html),
