@@ -35,7 +35,7 @@ component. It has the same properties as `onEnter` events.
 
 This event fires as the cursor moves across a View. The position of the
 cursor is passed as the `offset` property of the event: a two-unit array
-array representing the x and y coordinates of the cursor relative to the view.
+representing the x and y coordinates of the cursor relative to the view.
 These values are unitless numbers ranging from 0.0 to 1.0, where `[0, 0]`
 represents the top-left corner of a View, `[0.5, 0.5]` represents the center of
 the view, and `[1.0, 1.0]` represents the bottom-right corner. Using unitless
