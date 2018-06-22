@@ -1,0 +1,12 @@
+{
+  "docs": {
+    "Getting Started": ["setup", "explore-code"],
+    "Concepts": ["what-is", "runtime", "photos-and-videos", "surfaces", "objects", "layout", "audio", "input", "native-modules", "from-react-vr"],
+    "Publishing": ["publish", "static-assets", "integrate"],
+    "Components": ["view", "text", "image", "entity", "vr-button"],
+    "APIs": ["animated", "async-storage", "controller-info", "environment"]
+  },
+  "examples": {
+    "Examples": ["example-slideshow", "example-multisurface", "example-native-modules"]
+  }
+}

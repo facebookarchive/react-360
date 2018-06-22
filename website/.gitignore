@@ -1,6 +1,0 @@
-build
-node_modules
-src/react-vr/docs
-core/metadata-blog.js
-core/metadata.js
-server/metadata-blog.json
