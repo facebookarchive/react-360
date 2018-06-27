@@ -60,6 +60,9 @@ void main() {
   float dist = distance(v_position, v_center) - v_edge;
   #ifdef IMAGE
   vec4 sample = texture2D(u_texture, v_uv);
+  if (v_uv.x < 0. || v_uv.y < 0. || v_uv.x > 1. || v_uv.y > 1.) {
+    sample = vec4(0., 0., 0., 0.);
+  }
   #else
   vec4 sample = u_bgcolor;
   #endif
@@ -104,7 +107,6 @@ export const BG_RESIZE = {
   center: 'center',
   contain: 'contain',
   cover: 'cover',
-  repeat: 'repeat',
   stretch: 'stretch',
 };
 
@@ -113,10 +115,9 @@ export const BG_RESIZE = {
  */
 export default class GLView {
   _bgColor: number;
-  _bgHeight: number;
   _bgResize: $Values<BG_RESIZE>;
-  _bgTexture: ?THREE.Texture;
-  _bgWidth: number;
+  _bgTextureHeight: number;
+  _bgTextureWidth: number;
   _borderColor: number;
   _borderWidth: number;
   _geometry: THREE.BufferGeometry;
@@ -145,8 +146,8 @@ export default class GLView {
     this._opacity = 1.0;
     this._geometryDirty = true;
 
-    this._bgHeight = 0;
-    this._bgWidth = 0;
+    this._bgTextureHeight = 0;
+    this._bgTextureWidth = 0;
     this._bgTexture = null;
     this._bgResize = 'stretch';
 
@@ -192,94 +193,136 @@ export default class GLView {
   }
 
   createGeometry() {
-    const tl = this._radiusTL;
-    const tr = this._radiusTR;
-    const br = this._radiusBR;
-    const bl = this._radiusBL;
     const width = this._width;
     const height = this._height;
+    const half = Math.min(width, height) / 2;
+
+    const tl = Math.min(this._radiusTL, half);
+    const tr = Math.min(this._radiusTR, half);
+    const br = Math.min(this._radiusBR, half);
+    const bl = Math.min(this._radiusBL, half);
     const hasCorners = tl > 0 || tr > 0 || bl > 0 || br > 0;
 
-    const half = Math.min(width, height) / 2;
+    // There are 8 unique values for each UV axis, determined by the resize mode
+    const texX = [
+      0,
+      tl / width,
+      bl / width,
+      half / width,
+      (width - half) / width,
+      (width - tr) / width,
+      (width - br) / width,
+      1.0,
+    ];
+    const texY = [
+      1.0,
+      (height - tl) / height,
+      (height - tr) / height,
+      (height - half) / height,
+      half / height,
+      bl / height,
+      br / height,
+      0,
+    ];
+    if (this._bgTextureHeight > 0 && this._bgTextureWidth > 0) {
+      let scaleX = 1.0;
+      let scaleY = 1.0;
+      const bgRatio = this._bgTextureWidth / this._bgTextureHeight;
+      const frameRatio = width / height;
+      if (this._bgResize === 'cover') {
+        scaleX = Math.min(frameRatio / bgRatio, 1.0);
+        scaleY = Math.min(bgRatio / frameRatio, 1.0);
+      } else if (this._bgResize === 'contain') {
+        scaleX = Math.max(frameRatio / bgRatio, 1.0);
+        scaleY = Math.max(bgRatio / frameRatio, 1.0);
+      } else if (this._bgResize === 'center') {
+        scaleX = width / this._bgTextureWidth;
+        scaleY = height / this._bgTextureHeight;
+      }
+      for (let i = 0; i < texX.length; i++) {
+        texX[i] = (texX[i] - 0.5) * scaleX + 0.5;
+        texY[i] = (texY[i] - 0.5) * scaleY + 0.5;
+      }
+    }
 
     // Packed array containing 2D position, and SDF origin and distance
     // prettier-ignore
     const position = hasCorners ? [
       // top hexagon
-      tl, 0, tl, half, half, tl / width, 1.0,
-      width - tr, 0, width - tr, half, half, (width - tr) / width, 1.0,
-      tl, tl, tl, half, half, tl / width, (height - tl) / height,
-      width - tr, tr, width - tr, half, half, (width - tr) / width, (height - tr) / height,
-      half, half, half, half, half, half / width, (height - half) / height,
-      width - half, half, width - half, half, half, (width - half) / width, (height - half) / height,
+      tl, 0, tl, half, half, texX[1], texY[0],
+      width - tr, 0, width - tr, half, half, texX[5], texY[0],
+      tl, tl, tl, half, half, texX[1], texY[1],
+      width - tr, tr, width - tr, half, half, texX[5], texY[2],
+      half, half, half, half, half, texX[3], texY[3],
+      width - half, half, width - half, half, half, texX[4], texY[3],
 
       // left hexagon
-      0, height - bl, half, height - bl, half, 0, bl / height,
-      0, tl, half, tl, half, 0, (height - tl) / height,
-      bl, height - bl, half, height - bl, half, bl / width, bl / height,
-      tl, tl, half, tl, half, tl / width, (height - tl) / height,
-      half, height - half, half, height - half, half, half / width, half / height,
-      half, half, half, half, half, half / width, (height - half) / height,
+      0, height - bl, half, height - bl, half, texX[0], texY[5],
+      0, tl, half, tl, half, texX[0], texY[1],
+      bl, height - bl, half, height - bl, half, texX[2], texY[5],
+      tl, tl, half, tl, half, texX[1], texY[1],
+      half, height - half, half, height - half, half, texX[3], texY[4],
+      half, half, half, half, half, texX[3], texY[3],
 
       // bottom hexagon
-      width - br, height, width - br, height - half, half, (width - br) / width, 0,
-      bl, height, bl, height - half, half, bl / width, 0,
-      width - br, height - br, width - br, height - half, half, (width - br) / width, br / height,
-      bl, height - bl, bl, height - half, half, bl / width, bl / height,
-      width - half, height - half, width - half, height - half, half, (width - half) / width, half / height,
-      half, height - half, half, height - half, half, half / width, half / height,
+      width - br, height, width - br, height - half, half, texX[6], texY[7],
+      bl, height, bl, height - half, half, texX[2], texY[7],
+      width - br, height - br, width - br, height - half, half, texX[6], texY[6],
+      bl, height - bl, bl, height - half, half, texX[2], texY[5],
+      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
+      half, height - half, half, height - half, half, texX[3], texY[4],
 
       // right hexagon
-      width, tr, width - half, tr, half, 1.0, (height - tr) / height,
-      width, height - br, width - half, height - br, half, 1.0, br / height,
-      width - tr, tr, width - half, tr, half, (width - tr) / width, (height - tr) / height,
-      width - br, height - br, width - half, height - br, half, (width - br) / width, br / height,
-      width - half, half, width - half, half, half, (width - half) / width, (height - half) / height,
-      width - half, height - half, width - half, height - half, half, (width - half) / width, half / height,
+      width, tr, width - half, tr, half, texX[7], texY[2],
+      width, height - br, width - half, height - br, half, texX[7], texY[6],
+      width - tr, tr, width - half, tr, half, texX[5], texY[2],
+      width - br, height - br, width - half, height - br, half, texX[6], texY[6],
+      width - half, half, width - half, half, half, texX[4], texY[3],
+      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
 
       // top-left radius
-      0, 0, tl, tl, tl, 0, 1.0,
-      tl, 0, tl, tl, tl, tl / width, 1.0,
-      0, tl, tl, tl, tl, 0, (height - tl) / height,
-      tl, tl, tl, tl, tl, tl / width, (height - tl) / height,
+      0, 0, tl, tl, tl, texX[0], texY[0],
+      tl, 0, tl, tl, tl, texX[1], texY[0],
+      0, tl, tl, tl, tl, texX[0], texY[1],
+      tl, tl, tl, tl, tl, texX[1], texY[1],
 
       // top-right radius
-      width - tr, 0, width - tr, tr, tr, (width - tr) / width, 1.0,
-      width, 0, width - tr, tr, tr, 1.0, 1.0,
-      width - tr, tr, width - tr, tr, tr, (width - tr) / width, (height - tr) / height,
-      width, tr, width - tr, tr, tr, 1.0, (height - tr) / height,
+      width - tr, 0, width - tr, tr, tr, texX[5], texY[0],
+      width, 0, width - tr, tr, tr, texX[7], texY[0],
+      width - tr, tr, width - tr, tr, tr, texX[5], texY[2],
+      width, tr, width - tr, tr, tr, texX[7], texY[2],
 
       // bottom-left radius
-      0, height - bl, bl, height - bl, bl, 0, bl / height,
-      bl, height - bl, bl, height - bl, bl, bl / width, bl / height,
-      0, height, bl, height - bl, bl, 0, 0,
-      bl, height, bl, height - bl, bl, bl / width, 0,
+      0, height - bl, bl, height - bl, bl, texX[0], texY[5],
+      bl, height - bl, bl, height - bl, bl, texX[2], texY[5],
+      0, height, bl, height - bl, bl, texX[0], texY[7],
+      bl, height, bl, height - bl, bl, texX[2], texY[7],
 
       // bottom-right radius
-      width - br, height - br, width - br, height - br, br, (width - br) / width, br / height,
-      width, height - br, width - br, height - br, br, 1.0, br / height,
-      width - br, height, width - br, height - br, br, (width - br) / width, 0,
-      width, height, width - br, height - br, br, 1.0, 0,
+      width - br, height - br, width - br, height - br, br, texX[6], texY[6],
+      width, height - br, width - br, height - br, br, texX[7], texY[6],
+      width - br, height, width - br, height - br, br, texX[6], texY[7],
+      width, height, width - br, height - br, br, texX[7], texY[7],
     ] : [
-      0, 0, 0, half, half, 0, 1.0,
-      width, 0, width, half, half, 1.0, 1.0,
-      half, half, half, half, half, half / width, (height - half) / height,
-      width - half, half, width - half, half, half, (width - half) / width, (height - half) / height,
+      0, 0, 0, half, half, texX[0], texY[0],
+      width, 0, width, half, half, texX[7], texY[0],
+      half, half, half, half, half, texX[3], texY[3],
+      width - half, half, width - half, half, half, texX[4], texY[3],
 
-      0, height, half, height, half, 0, 0,
-      0, 0, half, 0, half, 0, 1.0,
-      half, height - half, half, height - half, half, half / width, half / height,
-      half, half, half, half, half, half / width, (height - half) / height,
+      0, height, half, height, half, texX[0], texY[7],
+      0, 0, half, 0, half, texX[0], texY[0],
+      half, height - half, half, height - half, half, texX[3], texY[4],
+      half, half, half, half, half, texX[3], texY[3],
 
-      width, height, width, height - half, half, 1.0, 0,
-      0, height, 0, height - half, half, 0, 0,
-      width - half, height - half, width - half, height - half, half, (width - half) / width, half / height,
-      half, height - half, half, height - half, half, half / width, half / height,
+      width, height, width, height - half, half, texX[7], texY[7],
+      0, height, 0, height - half, half, texX[0], texY[7],
+      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
+      half, height - half, half, height - half, half, texX[3], texY[4],
 
-      width, 0, width - half, 0, half, 1.0, 1.0,
-      width, height, width - half, height, half, 1.0, 0,
-      width - half, half, width - half, half, half, (width - half) / width, (height - half) / height,
-      width - half, height - half, width - half, height - half, half, (width - half) / width, half / height,
+      width, 0, width - half, 0, half, texX[7], texY[0],
+      width, height, width - half, height, half, texX[7], texY[7],
+      width - half, half, width - half, half, half, texX[4], texY[3],
+      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
     ];
 
     // prettier-ignore
@@ -355,8 +398,12 @@ export default class GLView {
     if (tex) {
       this._material = ImageMaterial.clone();
       this._material.uniforms.u_texture.value = tex;
+      this._bgTextureWidth = tex.image.naturalWidth;
+      this._bgTextureHeight = tex.image.naturalHeight;
     } else {
       this._material = ViewMaterial.clone();
+      this._bgTextureWidth = 0;
+      this._bgTextureHeight = 0;
     }
     this.setBackgroundColor(this._bgColor);
     this.setBorderColor(this._borderColor);
@@ -364,6 +411,17 @@ export default class GLView {
     this.setOpacity(this._opacity);
     this._node.material = this._material;
     oldMaterial.dispose();
+  }
+
+  setBackgroundResizeMode(mode: $Values<BG_RESIZE>) {
+    if (!(mode in BG_RESIZE)) {
+      throw new Error(`Invalid bg resize mode: ${mode}`);
+    }
+    this._bgResize = mode;
+    if (this._bgTextureHeight > 0 && this._bgTextureWidth > 0) {
+      this._geometryDirty = true;
+      this.update();
+    }
   }
 
   setBorderColor(color: number) {
