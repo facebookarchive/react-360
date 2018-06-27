@@ -40,7 +40,7 @@ declare module 'three' {
     addAttribute(name: string, attr: BufferAttribute): void;
     addGroup(start: number, length: number, index: number): void;
     computeVertexNormals(): void;
-    setIndex(attr: BufferAttribute): void;
+    setIndex(attr: BufferAttribute | Array<number>): void;
   }
 
   declare class CylinderGeometry extends Geometry {
@@ -131,6 +131,14 @@ declare module 'three' {
   declare class Group extends Object3D {
     constructor(): Group;
     dispose(): void;
+  }
+
+  declare class InterleavedBuffer {
+    constructor(Float32Array, number): InterleavedBuffer;
+  }
+
+  declare class InterleavedBufferAttribute {
+    constructor(InterleavedBuffer, number, number, boolean?): InterleavedBufferAttribute;
   }
 
   declare class Material {
