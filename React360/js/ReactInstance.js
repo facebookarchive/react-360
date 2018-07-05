@@ -193,6 +193,9 @@ export default class ReactInstance {
         this.overlay.setVRButtonState(false, 'No Headset', null);
       }
     });
+    this.vrState.onExit(() => {
+      this._needsResize = true;
+    });
 
     this.controls.addCameraController(
       new DeviceOrientationCameraController(this._eventLayer),
@@ -213,6 +216,10 @@ export default class ReactInstance {
   }
 
   _onResize() {
+    const display = this.vrState.getCurrentDisplay();
+    if (display && display.isPresenting) {
+      return;
+    }
     this._needsResize = true;
   }
 
