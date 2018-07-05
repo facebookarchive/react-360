@@ -31,16 +31,24 @@ declare module 'three' {
   }
 
   declare class BufferAttribute {
+    array: $TypedArray;
+    needsUpdate: boolean;
+
     constructor(): BufferAttribute;
     constructor($TypedArray, number): BufferAttribute;
   }
 
   declare class BufferGeometry extends Geometry {
+    drawRange: {start: number, count: number};
+    index: BufferAttribute;
+    needsUpdate: boolean;
+
     constructor(): BufferGeometry;
     addAttribute(name: string, attr: BufferAttribute): void;
     addGroup(start: number, length: number, index: number): void;
     computeVertexNormals(): void;
     setIndex(attr: BufferAttribute | Array<number>): void;
+    setDrawRange(number, number): void;
   }
 
   declare class CylinderGeometry extends Geometry {
@@ -134,11 +142,13 @@ declare module 'three' {
   }
 
   declare class InterleavedBuffer {
+    array: $TypedArray;
+    needsUpdate: boolean;
     constructor(Float32Array, number): InterleavedBuffer;
   }
 
-  declare class InterleavedBufferAttribute {
-    constructor(InterleavedBuffer, number, number, boolean?): InterleavedBufferAttribute;
+  declare class InterleavedBufferAttribute extends BufferAttribute {
+    constructor(InterleavedBuffer, number, number, boolean): InterleavedBufferAttribute;
   }
 
   declare class Material {
@@ -155,6 +165,7 @@ declare module 'three' {
     wireframe: boolean;
     vertexColors: number;
 
+    clone(): this;
     dispose(): void;
     setValues(any): void;
   }
@@ -274,7 +285,7 @@ declare module 'three' {
     needsUpdate: boolean;
     repeat: Vector2;
 
-    constructor(HTMLCanvasElement | HTMLVideoElement | Image): this;
+    constructor(src?: HTMLCanvasElement | HTMLVideoElement | Image): this;
 
     dispose(): void;
   }

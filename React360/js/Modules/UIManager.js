@@ -14,6 +14,7 @@
 import RCTBox from '../Views/Box';
 import RCTCylinder from '../Views/Cylinder';
 import RCTPlane from '../Views/Plane';
+import ShadowView from '../Views/ShadowView';
 import RCTSphere from '../Views/Sphere';
 import RCTImage from '../Views/Image';
 import RCTView from '../Views/View';
@@ -33,6 +34,11 @@ import RCTSpotLight from '../Views/SpotLight';
 import RCTCylindricalPanel from '../Views/CylindricalPanel';
 import RCTQuadPanel from '../Views/QuadPanel';
 import RCTPrefetch from '../Views/Prefetch';
+
+import ViewGL from '../Views/ViewGL';
+import ImageGL from '../Views/ImageGL';
+import ShadowViewWebGL from '../Views/ShadowViewWebGL';
+import type {Dispatcher} from '../Views/ShadowView';
 
 import Module from './Module';
 import * as THREE from 'three';
@@ -96,9 +102,10 @@ export default class UIManager extends Module {
   };
   _views: {[tag: string]: RCTBaseView};
   _viewTypes: {[tag: string]: string};
-  _viewCreator: {[name: string]: (...any) => RCTBaseView};
+  _viewCreator: {[name: string]: (...any) => any};
   _rootViews: {[tag: string]: RCTBaseView};
   _viewsOfType: {[name: string]: {[tag: string]: RCTBaseView}};
+  _viewDispatchers: {[name: string]: {[props: string]: (...any) => void}};
   _layoutAnimation: any;
   _lastFrameStart: number;
 
@@ -109,6 +116,7 @@ export default class UIManager extends Module {
     rnctx: ReactNativeContext,
     guiSys: GuiSys,
     customViews: Array<CustomView> = [],
+    flags: {[key: string]: boolean} = {},
   ) {
     super('UIManager');
     this._rnctx = rnctx;
@@ -154,15 +162,21 @@ export default class UIManager extends Module {
     this._viewCreator = {};
     this._rootViews = {};
     this._viewsOfType = {};
+    this._viewDispatchers = {};
     this._layoutAnimation = null;
-    this.registerViewType('RCTView', RCTView.describe(), () => {
-      return new RCTView(guiSys);
-    });
+    if (flags.useNewViews) {
+      this.registerGLViewType('RCTView', (dispatch: Dispatcher) => ViewGL.registerBindings(dispatch), () => new ViewGL(this));
+      this.registerGLViewType('RCTImageView', (dispatch: Dispatcher) => ImageGL.registerBindings(dispatch), () => new ImageGL(this));
+    } else {
+      this.registerViewType('RCTView', RCTView.describe(), () => {
+        return new RCTView(guiSys);
+      });
+      this.registerViewType('RCTImageView', RCTImage.describe(), () => {
+        return new RCTImage(guiSys, rnctx);
+      });
+    }
     this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), () => {
       return new RCTLiveEnvCamera(guiSys);
-    });
-    this.registerViewType('RCTImageView', RCTImage.describe(), () => {
-      return new RCTImage(guiSys, rnctx);
     });
     this.registerViewType('Pano', RCTPano.describe(), () => {
       return new RCTPano(guiSys, rnctx);
@@ -415,6 +429,19 @@ export default class UIManager extends Module {
     this._viewsOfType[name] = {};
   }
 
+  registerGLViewType(name: string, registerBindings: Dispatcher => void, viewCreator: (...any) => ShadowViewWebGL<any>) {
+    const dispatch = {};
+    registerBindings(dispatch);
+    this._viewDispatchers[name] = dispatch;
+    const NativeProps = {};
+    for (const key in dispatch) {
+      NativeProps[key] = true;
+    }
+    (this: any)[name] = {NativeProps};
+    this._viewCreator[name] = viewCreator;
+    this._viewsOfType[name] = {};
+  }
+
   /**
    * applies the attributes in the attr object to the view
    * @param tag - react tag id
@@ -423,31 +450,46 @@ export default class UIManager extends Module {
    */
   updateView(tag: number, type: string, attr: Attributes) {
     const view = this._views[String(tag)];
-    let forceLayout = false;
-    for (const a in attr) {
-      // use the declaration of the NativeProps to determine if this
-      // attribute is a style type or property
-      if ((this: any)[type] && (this: any)[type].NativeProps[a]) {
-        view.props[a] = attr[a];
-      } else {
-        /* $FlowFixMe */
-        if (typeof view[`_${a}`] === 'function') {
-          /* $FlowFixMe */
-          view[`_${a}`](attr[a]);
+    if (view instanceof ShadowView) {
+      const dispatchers = this._viewDispatchers[type];
+      for (const a in attr) {
+        const dispatcher = dispatchers[a];
+        if (dispatcher) {
+          dispatcher.call(view, attr[a]);
         } else {
-          view.style[a] = attr[a];
+          const styleSetter = (view: any)[`__setStyle_${a}`];
+          if (typeof styleSetter === 'function') {
+            styleSetter.call(view, attr[a]);
+          }
         }
-        // check attribute is not in black list before forcing layout
-        forceLayout = forceLayout || !STYLES_THAT_DONT_ALTER_LAYOUT[a];
       }
-    }
-    // force a layout if any layout styles are applied
-    if (forceLayout) {
-      view.makeDirty();
-    }
-    // call update of view if required
-    if (typeof view.updateView === 'function') {
-      view.updateView();
+    } else {
+      let forceLayout = false;
+      for (const a in attr) {
+        // use the declaration of the NativeProps to determine if this
+        // attribute is a style type or property
+        if ((this: any)[type] && (this: any)[type].NativeProps[a]) {
+          view.props[a] = attr[a];
+        } else {
+          /* $FlowFixMe */
+          if (typeof view[`_${a}`] === 'function') {
+            /* $FlowFixMe */
+            view[`_${a}`](attr[a]);
+          } else {
+            view.style[a] = attr[a];
+          }
+          // check attribute is not in black list before forcing layout
+          forceLayout = forceLayout || !STYLES_THAT_DONT_ALTER_LAYOUT[a];
+        }
+      }
+      // force a layout if any layout styles are applied
+      if (forceLayout) {
+        view.makeDirty();
+      }
+      // call update of view if required
+      if (typeof view.updateView === 'function') {
+        view.updateView();
+      }
     }
   }
 
@@ -490,7 +532,11 @@ export default class UIManager extends Module {
       view.inSurfaceContext = true;
     }
     this._rootViews[String(tag)] = view;
-    this._guiSys.add(view.view, container);
+    if (view instanceof ShadowViewWebGL) {
+      this._guiSys.add(view.view.getNode(), container);
+    } else {
+      this._guiSys.add(view.view, container);
+    }
   }
 
   /**

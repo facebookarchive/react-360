@@ -10,25 +10,9 @@
  */
 
 import * as Flexbox from '../Utils/FlexboxImplementation';
+import type {Transform} from '../Runtime/Renderer/Types';
 
-export type Transform = [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-];
+export type Dispatcher = {[prop: string]: (any) => mixed};
 
 const MAP_CSS_ALIGN = {
   auto: Flexbox.ALIGN_AUTO,
@@ -76,38 +60,42 @@ const MAP_CSS_WRAP = {
 };
 
 export default class ShadowView {
-  _children: Array<ShadowView>;
-  _tag: number;
   _transform: Transform;
   _transformDirty: boolean;
+  children: Array<ShadowView>;
+  parent: ?ShadowView;
   rootTag: number;
-  style: {[prop: string]: any};
+  tag: number;
   YGNode: any;
 
   constructor() {
-    this._children = [];
+    this.children = [];
+    this.parent = null;
     this.rootTag = 0;
-    this.style = {};
-    this._tag = 0;
+    this.tag = 0;
     this._transformDirty = false;
     this.YGNode = Flexbox.Node.create();
   }
 
   addChild(index: number, child: ShadowView) {
-    this._children.splice(index, 0, child);
+    this.children.splice(index, 0, child);
     this.YGNode.insertChild(child.YGNode, index);
   }
 
+  setParent(parent: ?ShadowView) {
+    this.parent = parent;
+  }
+
   getChild(index: number): ?ShadowView {
-    return this._children[index];
+    return this.children[index];
   }
 
   getChildCount(): number {
-    return this._children.length;
+    return this.children.length;
   }
 
   getChildTag(index: number): number {
-    const child = this._children[index];
+    const child = this.children[index];
     if (!child) {
       return -1;
     }
@@ -115,16 +103,24 @@ export default class ShadowView {
   }
 
   getIndexOf(child: ShadowView): number {
-    return this._children.indexOf(child);
+    return this.children.indexOf(child);
   }
 
   getTag(): number {
-    return this._tag;
+    return this.tag;
+  }
+
+  getParent(): ?ShadowView {
+    return this.parent;
   }
 
   removeChild(index: number) {
     this.YGNode.removeChild(this.YGNode.getChild(index));
-    this._children.splice(index, 1);
+    this.children.splice(index, 1);
+  }
+
+  makeDirty() {
+    // No-op, for compatibility
   }
 
   _setBorderWidth(edge, value) {
@@ -433,5 +429,9 @@ export default class ShadowView {
     } else {
       this.YGNode.setWidth(value);
     }
+  }
+
+  static registerBindings(dispatch: Dispatcher) {
+    // No-op
   }
 }

@@ -33,6 +33,7 @@ export type RuntimeOptions = {
   customViews?: Array<CustomView>,
   executor?: ReactExecutor,
   nativeModules?: Array<Module | NativeModuleInitializer>,
+  useNewViews?: boolean,
 };
 
 const raycaster = new THREE.Raycaster();
@@ -111,6 +112,7 @@ export default class Runtime {
       assetRoot: options.assetRoot,
       customViews: options.customViews || [],
       enableHotReload,
+      useNewViews: options.useNewViews,
     });
     const modules = options.nativeModules;
     if (modules) {

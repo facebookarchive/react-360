@@ -68,6 +68,7 @@ export type React360Options = {
   frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
+  useNewViews?: boolean,
 };
 
 const DEFAULT_SURFACE_DEPTH = 4;
@@ -178,6 +179,7 @@ export default class ReactInstance {
         },
         ...(options.nativeModules || []),
       ],
+      useNewViews: options.useNewViews,
     };
     this.runtime = new Runtime(
       this.scene,

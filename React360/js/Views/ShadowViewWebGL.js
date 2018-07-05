@@ -9,29 +9,52 @@
  * @flow
  */
 
-import GLView from '../Runtime/Renderer/GLView';
-import ShadowView from './ShadowView';
+import type {GLViewCompatible} from '../Runtime/Renderer/GLView';
+import ShadowView, {type Dispatcher} from './ShadowView';
 import type UIManager from '../Modules/UIManager';
 import * as Flexbox from '../Utils/FlexboxImplementation';
 
-export default class ShadowViewWebGL extends ShadowView {
+const Z_INDEX_INCREMENT = 0.001;
+
+export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderRadiusAll: ?number;
   _borderRadiusDirty: boolean;
   _borderTopLeftRadius: ?number;
   _borderTopRightRadius: ?number;
   _borderBottomRightRadius: ?number;
   _borderBottomLeftRadius: ?number;
+  _hasOnLayout: boolean;
   _layoutOrigin: [number, number];
-  view: GLView;
+  view: T;
   UIManager: UIManager;
 
-  constructor(uiManager: UIManager) {
+  constructor(uiManager: UIManager, viewCreator: () => T) {
     super();
 
     this.UIManager = uiManager;
     this._borderRadiusDirty = false;
+    this._hasOnLayout = false;
     this._layoutOrigin = [0, 0];
-    this.view = new GLView();
+    this.view = viewCreator();
+  }
+
+  addChild(index: number, child: ShadowView) {
+    super.addChild(index, child);
+    if (child instanceof ShadowViewWebGL) {
+      this.view.getNode().add(child.view.getNode());
+    } else {
+      this.view.getNode().add((child: any).view);
+    }
+  }
+
+  removeChild(index: number) {
+    const child = this.children[index];
+    if (child instanceof ShadowViewWebGL) {
+      this.view.getNode().remove(child.view.getNode());
+    } else {
+      this.view.getNode().remove((child: any).view);
+    }
+    super.removeChild(index);
   }
 
   presentLayout() {
@@ -45,6 +68,19 @@ export default class ShadowViewWebGL extends ShadowView {
       const x = -this._layoutOrigin[0] * width;
       const y = -this._layoutOrigin[1] * height;
 
+      if (this._hasOnLayout) {
+        this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
+          this.getTag(),
+          'topLayout',
+          {
+            x: x + left,
+            y: y + top,
+            width: width,
+            height: height,
+          },
+        ]);
+      }
+
       this.view.setVisible(this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE);
       this.view.setBorderWidth(
         this._getBorderValue(Flexbox.EDGE_TOP),
@@ -56,6 +92,8 @@ export default class ShadowViewWebGL extends ShadowView {
     }
 
     if (this._transformDirty) {
+      this.view.setLocalTransform(this._transform);
+      this._transformDirty = false;
     }
 
     if (this._borderRadiusDirty) {
@@ -81,6 +119,14 @@ export default class ShadowViewWebGL extends ShadowView {
     }
 
     this.view.update();
+  }
+
+  frame() {
+
+  }
+
+  setOnLayout(value: any) {
+    this._hasOnLayout = !!value;
   }
 
   _getBorderValue(edge: number): number {
@@ -159,5 +205,17 @@ export default class ShadowViewWebGL extends ShadowView {
       opacity = 0;
     }
     this.view.setOpacity(opacity);
+  }
+
+  __setStyle_zIndex(z: ?number) {
+    if (z == null) {
+      z = 0;
+    }
+    this.view.setZOffset(z * Z_INDEX_INCREMENT);
+  }
+
+  static registerBindings(dispatch: Dispatcher) {
+    super.registerBindings(dispatch);
+    dispatch.onLayout = this.prototype.setOnLayout;
   }
 }

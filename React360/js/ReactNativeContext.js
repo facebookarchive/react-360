@@ -53,6 +53,7 @@ export type ContextOptions = {
   customViews?: Array<CustomView>,
   enableHotReload?: boolean,
   isLowLatency?: boolean,
+  useNewViews?: boolean,
 };
 
 const ROOT_VIEW_INCREMENT = 10;
@@ -169,7 +170,8 @@ export class ReactNativeContext {
     this.lastLocalIntersect = null;
     this.lastSource = null;
 
-    this.UIManager = new UIManager(this, guiSys, options.customViews);
+    const flags = options.useNewViews ? {useNewViews: true} : undefined;
+    this.UIManager = new UIManager(this, guiSys, options.customViews, flags);
     this.Timing = new Timing(this);
     this.RCTResourceManager = new RCTResourceManager();
     this.RCTInputControls = new RCTInputControls(this, guiSys);
