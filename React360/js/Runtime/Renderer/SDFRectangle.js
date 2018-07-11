@@ -18,6 +18,8 @@ varying vec2 v_position;
 varying vec2 v_center;
 varying float v_edge;
 
+uniform mat4 u_transform;
+
 #ifdef IMAGE
 attribute vec2 a_uv;
 varying vec2 v_uv;
@@ -31,7 +33,7 @@ void main() {
   v_uv = a_uv;
   #endif
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(a_position * vec2(1, -1), 0, 1.0);
+  gl_Position = projectionMatrix * u_transform * vec4(a_position * vec2(1, -1), 0, 1.0);
 }
 `;
 

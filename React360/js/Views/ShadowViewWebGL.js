@@ -42,6 +42,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     super.addChild(index, child);
     if (child instanceof ShadowViewWebGL) {
       this.view.getNode().add(child.view.getNode());
+      child.view.setParentTransform(this.view.getWorldTransform());
     } else {
       this.view.getNode().add((child: any).view);
     }
@@ -58,6 +59,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   }
 
   presentLayout() {
+    let childrenNeedUpdate = false;
     if (this.YGNode.getHasNewLayout()) {
       this.YGNode.setHasNewLayout(false);
 
@@ -89,10 +91,12 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
         this._getBorderValue(Flexbox.EDGE_LEFT),
       );
       this.view.setFrame(x + left, -(y + top), width, height);
+      childrenNeedUpdate = true;
     }
 
     if (this._transformDirty) {
       this.view.setLocalTransform(this._transform);
+      childrenNeedUpdate = true;
       this._transformDirty = false;
     }
 
@@ -119,6 +123,16 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
 
     this.view.update();
+    if (childrenNeedUpdate) {
+      for (const c of this.children) {
+        if (c instanceof ShadowViewWebGL) {
+          c.view.setParentTransform(this.view.getWorldTransform());
+          const width = this.view.getWidth();
+          const height = this.view.getHeight();
+          c.view.setOffset(-width / 2, -height / 2);
+        }
+      }
+    }
   }
 
   frame() {

@@ -22,6 +22,9 @@ const ImageMaterial = new THREE.ShaderMaterial({
     u_bordercolor: {
       value: new THREE.Vector4(0.0, 0.0, 0.0, 1.0),
     },
+    u_transform: {
+      value: new THREE.Matrix4(),
+    },
     u_opacity: {value: 1.0},
     u_texture: {value: new THREE.Texture()},
   },
@@ -112,85 +115,87 @@ export default class GLTexturedView extends GLView {
         texY[i] = (texY[i] - 0.5) * scaleY + 0.5;
       }
     }
-
+    // Use half of width, half of height, to center geometry around (0, 0)
+    const hw = width / 2;
+    const hh = height / 2;
     // Packed array containing 2D position, SDF origin and distance, and UV coordinates
     // prettier-ignore
     return hasCorners ? [
       // top hexagon
-      tl, 0, tl, half, half, texX[1], texY[0],
-      width - tr, 0, width - tr, half, half, texX[5], texY[0],
-      tl, tl, tl, half, half, texX[1], texY[1],
-      width - tr, tr, width - tr, half, half, texX[5], texY[2],
-      half, half, half, half, half, texX[3], texY[3],
-      width - half, half, width - half, half, half, texX[4], texY[3],
+      tl - hw, hh, tl - hw, hh - half, half, texX[1], texY[0],
+      hw - tr, hh, hw - tr, hh - half, half, texX[5], texY[0],
+      tl - hw, hh - tl, tl - hw, hh - half, half, texX[1], texY[1],
+      hw - tr, hh - tr, hw - tr, hh - half, half, texX[5], texY[2],
+      half - hw, hh - half, half - hw, hh - half, half, texX[3], texY[3],
+      hw - half, hh - half, hw - half, hh - half, half, texX[4], texY[3],
 
       // left hexagon
-      0, height - bl, half, height - bl, half, texX[0], texY[5],
-      0, tl, half, tl, half, texX[0], texY[1],
-      bl, height - bl, half, height - bl, half, texX[2], texY[5],
-      tl, tl, half, tl, half, texX[1], texY[1],
-      half, height - half, half, height - half, half, texX[3], texY[4],
-      half, half, half, half, half, texX[3], texY[3],
+      -hw, bl - hh, half - hw, bl - hh, half, texX[0], texY[5],
+      -hw, hh - tl, half - hw, hh - tl, half, texX[0], texY[1],
+      bl - hw, bl - hh, half - hw, bl - hh, half, texX[2], texY[5],
+      tl - hw, hh - tl, half - hw, hh - tl, half, texX[1], texY[1],
+      half - hw, half - hh, half - hw, half - hh, half, texX[3], texY[4],
+      half - hw, hh - half, half - hw, hh - half, half, texX[3], texY[3],
 
       // bottom hexagon
-      width - br, height, width - br, height - half, half, texX[6], texY[7],
-      bl, height, bl, height - half, half, texX[2], texY[7],
-      width - br, height - br, width - br, height - half, half, texX[6], texY[6],
-      bl, height - bl, bl, height - half, half, texX[2], texY[5],
-      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
-      half, height - half, half, height - half, half, texX[3], texY[4],
+      hw - br, -hh, hw - br, half - hh, half, texX[6], texY[7],
+      bl - hw, -hh, bl - hw, half - hh, half, texX[2], texY[7],
+      hw - br, br - hh, hw - br, half - hh, half, texX[6], texY[6],
+      bl - hw, bl - hh, bl - hw, half - hh, half, texX[2], texY[5],
+      hw - half, half - hh, hw - half, half - hh, half, texX[4], texY[4],
+      half - hw, half - hh, half - hw, half - hh, half, texX[3], texY[4],
 
       // right hexagon
-      width, tr, width - half, tr, half, texX[7], texY[2],
-      width, height - br, width - half, height - br, half, texX[7], texY[6],
-      width - tr, tr, width - half, tr, half, texX[5], texY[2],
-      width - br, height - br, width - half, height - br, half, texX[6], texY[6],
-      width - half, half, width - half, half, half, texX[4], texY[3],
-      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
+      hw, hh - tr, hw - half, hh - tr, half, texX[7], texY[2],
+      hw, br - hh, hw - half, br - hh, half, texX[7], texY[6],
+      hw - tr, hh - tr, hw - half, hh - tr, half, texX[5], texY[2],
+      hw - br, br - hh, hw - half, br - hh, half, texX[6], texY[6],
+      hw - half, hh - half, hw - half, hh - half, half, texX[4], texY[3],
+      hw - half, half - hh, hw - half, half - hh, half, texX[4], texY[4],
 
       // top-left radius
-      0, 0, tl, tl, tl, texX[0], texY[0],
-      tl, 0, tl, tl, tl, texX[1], texY[0],
-      0, tl, tl, tl, tl, texX[0], texY[1],
-      tl, tl, tl, tl, tl, texX[1], texY[1],
+      -hw, hh, tl - hw, hh - tl, tl, texX[0], texY[0],
+      tl - hw, hh, tl - hw, hh - tl, tl, texX[1], texY[0],
+      -hw, hh - tl, tl - hw, hh - tl, tl, texX[0], texY[1],
+      tl - hw, hh - tl, tl - hw, hh - tl, tl, texX[1], texY[1],
 
       // top-right radius
-      width - tr, 0, width - tr, tr, tr, texX[5], texY[0],
-      width, 0, width - tr, tr, tr, texX[7], texY[0],
-      width - tr, tr, width - tr, tr, tr, texX[5], texY[2],
-      width, tr, width - tr, tr, tr, texX[7], texY[2],
+      hw - tr, hh, hw - tr, hh - tr, tr, texX[5], texY[0],
+      hw, hh, hw - tr, hh - tr, tr, texX[7], texY[0],
+      hw - tr, hh - tr, hw - tr, hh - tr, tr, texX[5], texY[2],
+      hw, hh - tr, hw - tr, hh - tr, tr, texX[7], texY[2],
 
       // bottom-left radius
-      0, height - bl, bl, height - bl, bl, texX[0], texY[5],
-      bl, height - bl, bl, height - bl, bl, texX[2], texY[5],
-      0, height, bl, height - bl, bl, texX[0], texY[7],
-      bl, height, bl, height - bl, bl, texX[2], texY[7],
+      -hw, bl - hh, bl - hw, bl - hh, bl, texX[0], texY[5],
+      bl - hw, bl - hh, bl - hw, bl - hh, bl, texX[2], texY[5],
+      -hw, -hh, bl - hw, bl - hh, bl, texX[0], texY[7],
+      bl - hw, -hh, bl - hw, bl - hh, bl, texX[2], texY[7],
 
       // bottom-right radius
-      width - br, height - br, width - br, height - br, br, texX[6], texY[6],
-      width, height - br, width - br, height - br, br, texX[7], texY[6],
-      width - br, height, width - br, height - br, br, texX[6], texY[7],
-      width, height, width - br, height - br, br, texX[7], texY[7],
+      hw - br, br - hh, hw - br, br - hh, br, texX[6], texY[6],
+      hw, br - hh, hw - br, br - hh, br, texX[7], texY[6],
+      hw - br, -hh, hw - br, br - hh, br, texX[6], texY[7],
+      hw, -hh, hw - br, br - hh, br, texX[7], texY[7],
     ] : [
-      0, 0, 0, half, half, texX[0], texY[0],
-      width, 0, width, half, half, texX[7], texY[0],
-      half, half, half, half, half, texX[3], texY[3],
-      width - half, half, width - half, half, half, texX[4], texY[3],
+      -hw, hh, -hw, hh - half, half, texX[0], texY[0],
+      hw, hh, hw, hh - half, half, texX[7], texY[0],
+      half - hw, hh - half, half - hw, hh - half, half, texX[3], texY[3],
+      hw - half, hh - half, hw - half, hh - half, half, texX[4], texY[3],
 
-      0, height, half, height, half, texX[0], texY[7],
-      0, 0, half, 0, half, texX[0], texY[0],
-      half, height - half, half, height - half, half, texX[3], texY[4],
-      half, half, half, half, half, texX[3], texY[3],
+      -hw, -hh, half - hw, -hh, half, texX[0], texY[7],
+      -hw, hh, half - hw, hh, half, texX[0], texY[0],
+      half - hw, half - hh, half - hw, half - hh, half, texX[3], texY[4],
+      half - hw, hh - half, half - hw, hh - half, half, texX[3], texY[3],
 
-      width, height, width, height - half, half, texX[7], texY[7],
-      0, height, 0, height - half, half, texX[0], texY[7],
-      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
-      half, height - half, half, height - half, half, texX[3], texY[4],
+      hw, -hh, hw, half - hh, half, texX[7], texY[7],
+      -hw, -hh, -hw, half - hh, half, texX[0], texY[7],
+      hw - half, half - hh, hw - half, half - hh, half, texX[4], texY[4],
+      half - hw, half - hh, half - hw, half - hh, half, texX[3], texY[4],
 
-      width, 0, width - half, 0, half, texX[7], texY[0],
-      width, height, width - half, height, half, texX[7], texY[7],
-      width - half, half, width - half, half, half, texX[4], texY[3],
-      width - half, height - half, width - half, height - half, half, texX[4], texY[4],
+      hw, hh, hw - half, hh, half, texX[7], texY[0],
+      hw, -hh, hw - half, -hh, half, texX[7], texY[7],
+      hw - half, hh - half, hw - half, hh - half, half, texX[4], texY[3],
+      hw - half, half - hh, hw - half, half - hh, half, texX[4], texY[4],
     ];
   }
 

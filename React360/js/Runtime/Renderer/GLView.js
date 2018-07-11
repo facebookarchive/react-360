@@ -12,12 +12,16 @@
 /* eslint-disable no-bitwise */
 
 import * as THREE from 'three';
+import {matrixMultiply4} from '../../Utils/Math';
 import {VERT_SHADER, FRAG_SHADER} from './SDFRectangle';
 
 import type {Transform} from './Types';
 
 export interface GLViewCompatible {
+  getHeight(): number;
   getNode(): THREE.Mesh;
+  getWidth(): number;
+  getWorldTransform(): Transform;
   setBackgroundColor(number): void;
   setBorderColor(number): void;
   setBorderRadius(number, number, number, number): void;
@@ -38,6 +42,9 @@ const ViewMaterial = new THREE.ShaderMaterial({
     },
     u_bordercolor: {
       value: new THREE.Vector4(0.0, 0.0, 0.0, 1.0),
+    },
+    u_transform: {
+      value: new THREE.Matrix4(),
     },
     u_opacity: {value: 1.0},
   },
@@ -61,7 +68,10 @@ export default class GLView {
   _localTransform: Transform;
   _material: THREE.ShaderMaterial;
   _node: THREE.Mesh;
+  _offsetX: number;
+  _offsetY: number;
   _opacity: number;
+  _parentTransform: Transform;
   _positionBuffer: THREE.InterleavedBuffer;
   _radiusBL: number;
   _radiusBR: number;
@@ -69,6 +79,7 @@ export default class GLView {
   _radiusTR: number;
   _transformDirty: boolean;
   _width: number;
+  _worldTransform: Transform;
   _x: number;
   _y: number;
   _zOffset: number;
@@ -86,7 +97,11 @@ export default class GLView {
     this._opacity = 1.0;
     this._layoutOriginX = 0;
     this._layoutOriginY = 0;
+    this._offsetX = 0;
+    this._offsetY = 0;
     this._localTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    this._parentTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    this._worldTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     this._x = 0;
     this._y = 0;
     this._zOffset = 0;
@@ -148,84 +163,91 @@ export default class GLView {
     bl: number,
     hasCorners: boolean,
   ): Array<number> {
+    // Use half of width, half of height, to center geometry around (0, 0)
+    const hw = width / 2;
+    const hh = height / 2;
     // Packed array containing 2D position, and SDF origin and distance
     // prettier-ignore
     return hasCorners ? [
       // top hexagon
-      tl, 0, tl, half, half,
-      width - tr, 0, width - tr, half, half,
-      tl, tl, tl, half, half,
-      width - tr, tr, width - tr, half, half,
-      half, half, half, half, half,
-      width - half, half, width - half, half, half,
+      tl - hw, hh, tl - hw, hh - half, half,
+      hw - tr, hh, hw - tr, hh - half, half,
+      tl - hw, hh - tl, tl - hw, hh - half, half,
+      hw - tr, hh - tr, hw - tr, hh - half, half,
+      half - hw, hh - half, half - hw, hh - half, half,
+      hw - half, hh - half, hw - half, hh - half, half,
 
       // left hexagon
-      0, height - bl, half, height - bl, half,
-      0, tl, half, tl, half,
-      bl, height - bl, half, height - bl, half,
-      tl, tl, half, tl, half,
-      half, height - half, half, height - half, half,
-      half, half, half, half, half,
+      -hw, bl - hh, half - hw, bl - hh, half,
+      -hw, hh - tl, half - hw, hh - tl, half,
+      bl - hw, bl - hh, half - hw, bl - hh, half,
+      tl - hw, hh - tl, half - hw, hh - tl, half,
+      half - hw, half - hh, half - hw, half - hh, half,
+      half - hw, hh - half, half - hw, hh - half, half,
 
       // bottom hexagon
-      width - br, height, width - br, height - half, half,
-      bl, height, bl, height - half, half,
-      width - br, height - br, width - br, height - half, half,
-      bl, height - bl, bl, height - half, half,
-      width - half, height - half, width - half, height - half, half,
-      half, height - half, half, height - half, half,
+      hw - br, -hh, hw - br, half - hh, half,
+      bl - hw, -hh, bl - hw, half - hh, half,
+      hw - br, br - hh, hw - br, half - hh, half,
+      bl - hw, bl - hh, bl - hw, half - hh, half,
+      hw - half, half - hh, hw - half, half - hh, half,
+      half - hw, half - hh, half - hw, half - hh, half,
 
       // right hexagon
-      width, tr, width - half, tr, half,
-      width, height - br, width - half, height - br, half,
-      width - tr, tr, width - half, tr, half,
-      width - br, height - br, width - half, height - br, half,
-      width - half, half, width - half, half, half,
-      width - half, height - half, width - half, height - half, half,
+      hw, hh - tr, hw - half, hh - tr, half,
+      hw, br - hh, hw - half, br - hh, half,
+      hw - tr, hh - tr, hw - half, hh - tr, half,
+      hw - br, br - hh, hw - half, br - hh, half,
+      hw - half, hh - half, hw - half, hh - half, half,
+      hw - half, half - hh, hw - half, half - hh, half,
 
       // top-left radius
-      0, 0, tl, tl, tl,
-      tl, 0, tl, tl, tl,
-      0, tl, tl, tl, tl,
-      tl, tl, tl, tl, tl,
+      -hw, hh, tl - hw, hh - tl, tl,
+      tl - hw, hh, tl - hw, hh - tl, tl,
+      -hw, hh - tl, tl - hw, hh - tl, tl,
+      tl - hw, hh - tl, tl - hw, hh - tl, tl,
 
       // top-right radius
-      width - tr, 0, width - tr, tr, tr,
-      width, 0, width - tr, tr, tr,
-      width - tr, tr, width - tr, tr, tr,
-      width, tr, width - tr, tr, tr,
+      hw - tr, hh, hw - tr, hh - tr, tr,
+      hw, hh, hw - tr, hh - tr, tr,
+      hw - tr, hh - tr, hw - tr, hh - tr, tr,
+      hw, hh - tr, hw - tr, hh - tr, tr,
 
       // bottom-left radius
-      0, height - bl, bl, height - bl, bl,
-      bl, height - bl, bl, height - bl, bl,
-      0, height, bl, height - bl, bl,
-      bl, height, bl, height - bl, bl,
+      -hw, bl - hh, bl - hw, bl - hh, bl,
+      bl - hw, bl - hh, bl - hw, bl - hh, bl,
+      -hw, -hh, bl - hw, bl - hh, bl,
+      bl - hw, -hh, bl - hw, bl - hh, bl,
 
       // bottom-right radius
-      width - br, height - br, width - br, height - br, br,
-      width, height - br, width - br, height - br, br,
-      width - br, height, width - br, height - br, br,
-      width, height, width - br, height - br, br,
+      hw - br, br - hh, hw - br, br - hh, br,
+      hw, br - hh, hw - br, br - hh, br,
+      hw - br, -hh, hw - br, br - hh, br,
+      hw, -hh, hw - br, br - hh, br,
     ] : [
-      0, 0, 0, half, half,
-      width, 0, width, half, half,
-      half, half, half, half, half,
-      width - half, half, width - half, half, half,
+      // Top tetrahedron
+      -hw, hh, -hw, hh - half, half,
+      hw, hh, hw, hh - half, half,
+      half - hw, hh - half, half - hw, hh - half, half,
+      hw - half, hh - half, hw - half, hh - half, half,
 
-      0, height, half, height, half,
-      0, 0, half, 0, half,
-      half, height - half, half, height - half, half,
-      half, half, half, half, half,
+      // Left tetrahedron
+      -hw, -hh, half - hw, -hh, half,
+      -hw, hh, half - hw, hh, half,
+      half - hw, half - hh, half - hw, half - hh, half,
+      half - hw, hh - half, half - hw, hh - half, half,
 
-      width, height, width, height - half, half,
-      0, height, 0, height - half, half,
-      width - half, height - half, width - half, height - half, half,
-      half, height - half, half, height - half, half,
+      // Bottom tetrahedron
+      hw, -hh, hw, half - hh, half,
+      -hw, -hh, -hw, half - hh, half,
+      hw - half, half - hh, hw - half, half - hh, half,
+      half - hw, half - hh, half - hw, half - hh, half,
 
-      width, 0, width - half, 0, half,
-      width, height, width - half, height, half,
-      width - half, half, width - half, half, half,
-      width - half, height - half, width - half, height - half, half,
+      // Right tetrahedron
+      hw, hh, hw - half, hh, half,
+      hw, -hh, hw - half, -hh, half,
+      hw - half, hh - half, hw - half, hh - half, half,
+      hw - half, half - hh, hw - half, half - hh, half,
     ];
   }
 
@@ -312,6 +334,18 @@ export default class GLView {
     return this._node;
   }
 
+  getWidth() {
+    return this._width;
+  }
+
+  getHeight() {
+    return this._height;
+  }
+
+  getWorldTransform(): Transform {
+    return ((this._worldTransform.slice(): any): Transform);
+  }
+
   setBackgroundColor(color: number) {
     this._bgColor = color;
     this._material.uniforms.u_bgcolor.value.set(
@@ -364,6 +398,22 @@ export default class GLView {
     this.update();
   }
 
+  /**
+   * Adds an additional offset unrelated to the local transform.
+   * This is used to position a child view relative to its parent's top-left
+   * corner, even though the parent's transforms are relative to its centerpoint
+   */
+  setOffset(x: number, y: number) {
+    this._offsetX = x;
+    this._offsetY = y;
+  }
+
+  setParentTransform(transform: Transform) {
+    this._parentTransform = (transform.slice(): any);
+    this._transformDirty = true;
+    this.update();
+  }
+
   setOpacity(opacity: number) {
     this._opacity = opacity;
     this._material.uniforms.u_opacity.value = opacity;
@@ -396,14 +446,17 @@ export default class GLView {
       this._geometryDirty = false;
     }
     if (this._transformDirty) {
-      const x = this._x;
-      const y = this._y;
+      const x = this._x + (this._offsetX || 0) + this._width / 2;
+      const y = -this._y + (this._offsetY || 0) + this._height / 2;
       const z = this._zOffset;
-      const transform = this._localTransform.slice();
-      transform[12] += x;
-      transform[13] += y;
-      transform[14] += z;
-      this._node.matrix.fromArray(transform);
+      for (let i = 0; i < 16; i++) {
+        (this._worldTransform: any)[i] = this._localTransform[i];
+      }
+      this._worldTransform[12] += x;
+      this._worldTransform[13] += y;
+      this._worldTransform[14] += z;
+      matrixMultiply4(this._worldTransform, this._parentTransform);
+      this._material.uniforms.u_transform.value.fromArray(this._worldTransform);
 
       this._transformDirty = false;
     }

@@ -9,7 +9,7 @@
  * @flow
  */
 
-import {type Quaternion, type Vec3} from '../Controls/Types';
+import {type Mat4, type Quaternion, type Vec3} from '../Controls/Types';
 
 export function rotateByQuaternion(v: Vec3, q: Quaternion) {
   // Optimized implementation of Hamiltonian product, similar to Unity's
@@ -126,4 +126,39 @@ export function setQuatFromZRotation(quat: Quaternion, z: number) {
   quat[1] = 0;
   quat[2] = Math.sin(half);
   quat[3] = Math.cos(half);
+}
+
+export function matrixMultiply4(a: Mat4, b: Mat4) {
+  let q = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
+  let r = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
+  let s = a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14];
+  let t = a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15];
+  a[0] = q;
+  a[1] = r;
+  a[2] = s;
+  a[3] = t;
+  q = a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12];
+  r = a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13];
+  s = a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14];
+  t = a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15];
+  a[4] = q;
+  a[5] = r;
+  a[6] = s;
+  a[7] = t;
+  q = a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12];
+  r = a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13];
+  s = a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14];
+  t = a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15];
+  a[8] = q;
+  a[9] = r;
+  a[10] = s;
+  a[11] = t;
+  q = a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12];
+  r = a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13];
+  s = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
+  t = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
+  a[12] = q;
+  a[13] = r;
+  a[14] = s;
+  a[15] = t;
 }
