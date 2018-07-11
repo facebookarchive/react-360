@@ -63,6 +63,7 @@ export default class GLView {
   _geometry: THREE.BufferGeometry;
   _geometryDirty: boolean;
   _height: number;
+  _intersectTest: [[number, number], [number, number], [number, number]];
   _layoutOriginX: number;
   _layoutOriginY: number;
   _localTransform: Transform;
@@ -99,6 +100,7 @@ export default class GLView {
     this._layoutOriginY = 0;
     this._offsetX = 0;
     this._offsetY = 0;
+    this._intersectTest = [[0, 0], [1, 0], [0, 1]];
     this._localTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     this._parentTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     this._worldTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
@@ -330,6 +332,34 @@ export default class GLView {
     };
   }
 
+  containsPoint(x: number, y: number): boolean {
+    const tlX = this._intersectTest[0][0];
+    const tlY = this._intersectTest[0][1];
+    const trX = this._intersectTest[1][0];
+    const trY = this._intersectTest[1][1];
+    const blX = this._intersectTest[2][0];
+    const blY = this._intersectTest[2][1];
+
+    const dx0 = trX - tlX;
+    const dy0 = trY - tlY;
+    const dx1 = blX - tlX;
+    const dy1 = blY - tlY;
+
+    if ((x - tlX) * dx0 + (y - tlY) * dy0 < 0) {
+      return false;
+    }
+    if ((x - trX) * dx0 + (y - trY) * dy0 > 0) {
+      return false;
+    }
+    if ((x - tlX) * dx1 + (y - tlY) * dy1 < 0) {
+      return false;
+    }
+    if ((x - blX) * dx1 + (y - blY) * dy1 > 0) {
+      return false;
+    }
+    return true;
+  }
+
   getNode() {
     return this._node;
   }
@@ -390,6 +420,12 @@ export default class GLView {
     this._width = width;
     this._height = height;
     this._geometryDirty = true;
+    this._intersectTest[0][0] = -width / 2;
+    this._intersectTest[0][1] = height / 2;
+    this._intersectTest[1][0] = width / 2;
+    this._intersectTest[1][1] = height / 2;
+    this._intersectTest[2][0] = -width / 2;
+    this._intersectTest[2][1] = -height / 2;
   }
 
   setLocalTransform(transform: Transform) {
@@ -458,6 +494,25 @@ export default class GLView {
       matrixMultiply4(this._worldTransform, this._parentTransform);
       this._material.uniforms.u_transform.value.fromArray(this._worldTransform);
 
+      this._intersectTest[0][0] = -this._width / 2;
+      this._intersectTest[0][1] = this._height / 2;
+      this._intersectTest[1][0] = this._width / 2;
+      this._intersectTest[1][1] = this._height / 2;
+      this._intersectTest[2][0] = -this._width / 2;
+      this._intersectTest[2][1] = -this._height / 2;
+      for (let i = 0; i < 3; i++) {
+        const point = this._intersectTest[i];
+        const px = point[0];
+        const py = point[1];
+        point[0] =
+          this._worldTransform[0] * px +
+          this._worldTransform[4] * py +
+          this._worldTransform[12];
+        point[1] =
+          this._worldTransform[1] * px +
+          this._worldTransform[5] * py +
+          this._worldTransform[13];
+      }
       this._transformDirty = false;
     }
   }
