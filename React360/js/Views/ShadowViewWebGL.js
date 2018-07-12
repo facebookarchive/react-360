@@ -25,6 +25,8 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderBottomLeftRadius: ?number;
   _hasOnLayout: boolean;
   _layoutOrigin: [number, number];
+  _zIndex: number;
+  renderOrder: number;
   view: T;
   UIManager: UIManager;
 
@@ -35,6 +37,8 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     this._borderRadiusDirty = false;
     this._hasOnLayout = false;
     this._layoutOrigin = [0, 0];
+    this._zIndex = 0;
+    this.renderOrder = 0;
     this.view = viewCreator();
   }
 
@@ -56,6 +60,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
       this.view.getNode().remove((child: any).view);
     }
     super.removeChild(index);
+  }
+
+  getZIndex(): number {
+    return this._zIndex;
   }
 
   presentLayout() {
@@ -225,6 +233,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     if (z == null) {
       z = 0;
     }
+    this._zIndex = z;
     this.view.setZOffset(z * Z_INDEX_INCREMENT);
   }
 

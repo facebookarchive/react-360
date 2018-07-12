@@ -80,6 +80,7 @@ export default class ShadowView {
   addChild(index: number, child: ShadowView) {
     this.children.splice(index, 0, child);
     this.YGNode.insertChild(child.YGNode, index);
+    child.setParent(this);
   }
 
   setParent(parent: ?ShadowView) {
@@ -115,8 +116,10 @@ export default class ShadowView {
   }
 
   removeChild(index: number) {
+    const child = this.children[index];
     this.YGNode.removeChild(this.YGNode.getChild(index));
     this.children.splice(index, 1);
+    child.setParent(null);
   }
 
   makeDirty() {
