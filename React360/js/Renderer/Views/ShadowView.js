@@ -9,8 +9,10 @@
  * @flow
  */
 
-import * as Flexbox from '../Utils/FlexboxImplementation';
-import type {Transform} from '../Runtime/Renderer/Types';
+/* eslint-disable camelcase, no-param-reassign */
+
+import * as Flexbox from '../FlexboxImplementation';
+import type {Transform} from '../RendererTypes';
 
 export type Dispatcher = {[prop: string]: (any) => mixed};
 
@@ -126,15 +128,15 @@ export default class ShadowView {
     // No-op, for compatibility
   }
 
-  _setBorderWidth(edge, value) {
-    if (value === null) {
+  _setBorderWidth(edge: number, value: string | number) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     this.YGNode.setBorder(edge, value);
   }
 
-  _setMargin(edge, value) {
-    if (value === null) {
+  _setMargin(edge: number, value: string | number) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -144,8 +146,8 @@ export default class ShadowView {
     }
   }
 
-  _setPadding(edge, value) {
-    if (value === null) {
+  _setPadding(edge: number, value: string | number) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -155,8 +157,8 @@ export default class ShadowView {
     }
   }
 
-  _setPosition(edge, value) {
-    if (value === null) {
+  _setPosition(edge: number, value: string | number) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -170,24 +172,24 @@ export default class ShadowView {
 
   __setStyle_alignContent(value: $Keys<typeof MAP_CSS_ALIGN>): void {
     this.YGNode.setAlignContent(
-      value !== null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
+      value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
     );
   }
 
   __setStyle_alignItems(value: $Keys<typeof MAP_CSS_ALIGN>): void {
     this.YGNode.setAlignItems(
-      value !== null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
+      value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
     );
   }
 
   __setStyle_alignSelf(value: $Keys<typeof MAP_CSS_ALIGN>): void {
     this.YGNode.setAlignSelf(
-      value !== null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
+      value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
     );
   }
 
   __setStyle_aspectRatio(value: ?number): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     this.YGNode.setAspectRatio(value);
@@ -195,6 +197,7 @@ export default class ShadowView {
 
   __setStyle_backgroundColor(value: any) {
     if (__DEV__) {
+      /* eslint-disable-next-line no-console */
       console.warn('setBackgroundColor is not implemented on this view');
     }
   }
@@ -225,19 +228,19 @@ export default class ShadowView {
 
   __setStyle_display(value: $Keys<typeof MAP_CSS_DISPLAY>): void {
     this.YGNode.setDisplay(
-      value !== null ? MAP_CSS_DISPLAY[value] : Flexbox.DISPLAY_FLEX,
+      value != null ? MAP_CSS_DISPLAY[value] : Flexbox.DISPLAY_FLEX,
     );
   }
 
   __setStyle_flex(value: ?number): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     this.YGNode.setFlex(value);
   }
 
   __setStyle_flexBasis(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -249,19 +252,19 @@ export default class ShadowView {
 
   __setStyle_flexDirection(value: $Keys<typeof MAP_CSS_FLEX_DIRECTION>): void {
     this.YGNode.setFlexDirection(
-      value !== null ? MAP_CSS_FLEX_DIRECTION[value] : Flexbox.UNDEFINED,
+      value != null ? MAP_CSS_FLEX_DIRECTION[value] : Flexbox.UNDEFINED,
     );
   }
 
   __setStyle_flexGrow(value: ?number): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     this.YGNode.setFlexGrow(value);
   }
 
   __setStyle_flexShrink(value: ?number): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     this.YGNode.setFlexShrink(value);
@@ -269,12 +272,12 @@ export default class ShadowView {
 
   __setStyle_flexWrap(value: $Keys<typeof MAP_CSS_WRAP>): void {
     this.YGNode.setFlexWrap(
-      value !== null ? MAP_CSS_WRAP[value] : Flexbox.UNDEFINED,
+      value != null ? MAP_CSS_WRAP[value] : Flexbox.UNDEFINED,
     );
   }
 
   __setStyle_height(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -286,7 +289,7 @@ export default class ShadowView {
 
   __setStyle_justifyContent(value: $Keys<typeof MAP_CSS_JUSTIFY>): void {
     this.YGNode.setJustifyContent(
-      value !== null ? MAP_CSS_JUSTIFY[value] : Flexbox.JUSTIFY_FLEX_START,
+      value != null ? MAP_CSS_JUSTIFY[value] : Flexbox.JUSTIFY_FLEX_START,
     );
   }
 
@@ -323,7 +326,7 @@ export default class ShadowView {
   }
 
   __setStyle_maxHeight(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -334,7 +337,7 @@ export default class ShadowView {
   }
 
   __setStyle_maxWidth(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -345,7 +348,7 @@ export default class ShadowView {
   }
 
   __setStyle_minHeight(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -356,7 +359,7 @@ export default class ShadowView {
   }
 
   __setStyle_minWidth(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {
@@ -368,7 +371,7 @@ export default class ShadowView {
 
   __setStyle_overflow(value: $Keys<typeof MAP_CSS_OVERFLOW>): void {
     this.YGNode.setOverflow(
-      value !== null ? MAP_CSS_OVERFLOW[value] : Flexbox.OVERFLOW_VISIBLE,
+      value != null ? MAP_CSS_OVERFLOW[value] : Flexbox.OVERFLOW_VISIBLE,
     );
   }
 
@@ -402,7 +405,7 @@ export default class ShadowView {
 
   __setStyle_position(value: string): void {
     this.YGNode.setPositionType(
-      value !== null ? MAP_CSS_POSITION[value] : Flexbox.POSITION_TYPE_RELATIVE,
+      value != null ? MAP_CSS_POSITION[value] : Flexbox.POSITION_TYPE_RELATIVE,
     );
   }
 
@@ -415,7 +418,7 @@ export default class ShadowView {
   }
 
   __setStyle_transform(value: Transform): void {
-    if (value === null) {
+    if (value == null) {
       this._transform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     } else {
       this._transform = value;
@@ -424,7 +427,7 @@ export default class ShadowView {
   }
 
   __setStyle_width(value: ?number | string): void {
-    if (value === null) {
+    if (value == null) {
       value = Flexbox.UNDEFINED;
     }
     if (typeof value === 'string') {

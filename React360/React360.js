@@ -12,7 +12,7 @@
 import bundleFromLocation from './js/bundleFromLocation';
 import createRootView from './js/createRootView';
 import Location from './js/Compositor/Location';
-import * as Math from './js/Utils/Math';
+import * as Math from './js/Renderer/Math';
 import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
 import ReactInstance from './js/ReactInstance';

@@ -14,7 +14,7 @@
 import RCTBox from '../Views/Box';
 import RCTCylinder from '../Views/Cylinder';
 import RCTPlane from '../Views/Plane';
-import ShadowView from '../Views/ShadowView';
+import ShadowView from '../Renderer/Views/ShadowView';
 import RCTSphere from '../Views/Sphere';
 import RCTImage from '../Views/Image';
 import RCTView from '../Views/View';
@@ -35,15 +35,15 @@ import RCTCylindricalPanel from '../Views/CylindricalPanel';
 import RCTQuadPanel from '../Views/QuadPanel';
 import RCTPrefetch from '../Views/Prefetch';
 
-import ViewGL from '../Views/ViewGL';
-import ImageGL from '../Views/ImageGL';
-import ShadowViewWebGL from '../Views/ShadowViewWebGL';
-import type {Dispatcher} from '../Views/ShadowView';
+import ViewGL from '../Renderer/Views/View';
+import ImageGL from '../Renderer/Views/Image';
+import ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
+import type {Dispatcher} from '../Renderer/Views/ShadowView';
 
 import Module from './Module';
 import * as THREE from 'three';
 import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
-import * as Flexbox from '../Utils/FlexboxImplementation';
+import * as Flexbox from '../Renderer/FlexboxImplementation';
 
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';

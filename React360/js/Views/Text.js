@@ -21,7 +21,7 @@ import RCTBaseView from './BaseView';
 import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
 import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as Flexbox from '../Utils/FlexboxImplementation';
+import * as Flexbox from '../Renderer/FlexboxImplementation';
 
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 

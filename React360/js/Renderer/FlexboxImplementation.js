@@ -9,8 +9,10 @@
  * @flow
  */
 
+/* eslint-disable import/no-commonjs */
+
 /**
  * Singular entry point for Flexbox implementation, so that the backing
  * library can be switched out as needed.
  */
-module.exports = require('./Yoga.bundle');
+module.exports = require('../Utils/Yoga.bundle');

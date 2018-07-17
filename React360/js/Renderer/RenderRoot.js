@@ -9,7 +9,7 @@
  * @flow
  */
 
-import type ShadowViewWebGL from '../Views/ShadowViewWebGL';
+import type ShadowViewWebGL from './Views/ShadowViewWebGL';
 
 export type StackingContext = {
   '0': Array<ShadowViewWebGL<*>>,
@@ -178,6 +178,9 @@ export default class RenderRoot {
     let hit = null;
     let maxRenderOrder = -1;
     for (const view of this.views) {
+      if (!view) {
+        continue;
+      }
       if (view.view.containsPoint(x, y)) {
         if (view.renderOrder > maxRenderOrder) {
           hit = view;

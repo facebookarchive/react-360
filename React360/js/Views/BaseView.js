@@ -18,7 +18,7 @@
 /* eslint-disable */
 
 import isPositive from '../Utils/isPositive';
-import * as Flexbox from '../Utils/FlexboxImplementation';
+import * as Flexbox from '../Renderer/FlexboxImplementation';
 import UIManager from '../Modules/UIManager';
 
 import type UIView from '../OVRUI/UIView/UIView';

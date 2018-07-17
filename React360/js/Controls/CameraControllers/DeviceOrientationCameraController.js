@@ -16,7 +16,7 @@ import {
   setQuatFromXRotation,
   setQuatFromYRotation,
   setQuatFromZRotation,
-} from '../../Utils/Math';
+} from '../../Renderer/Math';
 import {type Quaternion, type Vec3} from '../Types';
 import {type CameraController} from './Types';
 
@@ -117,7 +117,7 @@ export default class DeviceOrientationCameraController
     const alpha = event.alpha * DEG_TO_RAD;
     const beta = event.beta * DEG_TO_RAD;
     const gamma = event.gamma * DEG_TO_RAD;
-    if (this._offsetYawQuat === null) {
+    if (this._offsetYawQuat == null) {
       const alphaOffset = getScreenOrientation() - alpha;
       this._offsetYawQuat = [0, 0, 0, 1];
       this._offsetYaw = alphaOffset;
@@ -195,7 +195,7 @@ export default class DeviceOrientationCameraController
     const beta = this._beta;
     const gamma = this._gamma;
 
-    if (alpha === null || beta === null || gamma === null) {
+    if (alpha == null || beta == null || gamma == null) {
       // No device orientation event has been received yet
       return false;
     }

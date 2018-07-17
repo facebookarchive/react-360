@@ -10,9 +10,15 @@
  */
 
 // prettier-ignore
-export type Transform = [
+export type Mat4 = [
   number, number, number, number,
   number, number, number, number,
   number, number, number, number,
   number, number, number, number,
-]
+];
+
+export type Transform = Mat4;
+
+export type Quaternion = [number, number, number, number];
+
+export type Vec3 = [number, number, number];

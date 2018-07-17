@@ -9,7 +9,7 @@
  * @flow
  */
 
-import {rotateByQuaternion} from '../../Utils/Math';
+import {rotateByQuaternion} from '../../Renderer/Math';
 
 import {type Quaternion, type Vec3} from '../Types';
 import {type Raycaster} from './Types';
@@ -61,7 +61,7 @@ export default class ControllerRaycaster implements Raycaster {
   }
 
   _setGamepadIfValid(gamepad: ?Gamepad) {
-    if (!gamepad || this._gamepadID !== null) {
+    if (!gamepad || this._gamepadID != null) {
       return;
     }
     if (gamepad.pose) {

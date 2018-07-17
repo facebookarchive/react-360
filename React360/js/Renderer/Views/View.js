@@ -9,9 +9,9 @@
  * @flow
  */
 
+import GLView from '../Primitives/GLView';
+import type UIManager from '../../Modules/UIManager';
 import ShadowViewWebGL from './ShadowViewWebGL';
-import GLView from '../Runtime/Renderer/GLView';
-import type UIManager from '../Modules/UIManager';
 import type {Dispatcher} from './ShadowView';
 
 /**

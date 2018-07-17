@@ -36,7 +36,7 @@ import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
-import {rotateByQuaternion} from './Utils/Math';
+import {rotateByQuaternion} from './Renderer/Math';
 
 type Root = {
   initialProps: Object,

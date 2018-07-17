@@ -12,10 +12,9 @@
 /* eslint-disable no-bitwise */
 
 import * as THREE from 'three';
-import {matrixMultiply4} from '../../Utils/Math';
+import {matrixMultiply4} from '../Math';
+import type {Transform} from '../RendererTypes';
 import {VERT_SHADER, FRAG_SHADER} from './SDFRectangle';
-
-import type {Transform} from './Types';
 
 export interface GLViewCompatible {
   getHeight(): number;

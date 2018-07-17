@@ -9,12 +9,13 @@
  * @flow
  */
 
-import ShadowViewWebGL from './ShadowViewWebGL';
-import type {Dispatcher} from './ShadowView';
-import type UIManager from '../Modules/UIManager';
-import GLTexturedView, {type ResizeMode} from '../Runtime/Renderer/GLTexturedView';
+/* eslint-disable camelcase */
 
 import * as THREE from 'three';
+import type UIManager from '../../Modules/UIManager';
+import GLTexturedView, {type ResizeMode} from '../Primitives/GLTexturedView';
+import ShadowViewWebGL from './ShadowViewWebGL';
+import type {Dispatcher} from './ShadowView';
 
 export default class RCTImage extends ShadowViewWebGL<GLTexturedView> {
   constructor(uiManager: UIManager) {

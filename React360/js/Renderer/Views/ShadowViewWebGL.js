@@ -9,10 +9,12 @@
  * @flow
  */
 
-import type {GLViewCompatible} from '../Runtime/Renderer/GLView';
+/* eslint-disable camelcase, no-param-reassign */
+
+import type {GLViewCompatible} from '../Primitives/GLView';
+import type UIManager from '../../Modules/UIManager';
+import * as Flexbox from '../FlexboxImplementation';
 import ShadowView, {type Dispatcher} from './ShadowView';
-import type UIManager from '../Modules/UIManager';
-import * as Flexbox from '../Utils/FlexboxImplementation';
 
 const Z_INDEX_INCREMENT = 0.001;
 
@@ -114,16 +116,20 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
           ? this._borderRadiusAll
           : 0;
       this.view.setBorderRadius(
-        typeof this._borderTopLeftRadius === 'number' && this._borderTopLeftRadius > 0
+        typeof this._borderTopLeftRadius === 'number' &&
+        this._borderTopLeftRadius > 0
           ? this._borderTopLeftRadius
           : borderRadius,
-        typeof this._borderTopRightRadius === 'number' && this._borderTopRightRadius > 0
+        typeof this._borderTopRightRadius === 'number' &&
+        this._borderTopRightRadius > 0
           ? this._borderTopRightRadius
           : borderRadius,
-        typeof this._borderBottomRightRadius === 'number' && this._borderBottomRightRadius > 0
+        typeof this._borderBottomRightRadius === 'number' &&
+        this._borderBottomRightRadius > 0
           ? this._borderBottomRightRadius
           : borderRadius,
-        typeof this._borderBottomLeftRadius === 'number' && this._borderBottomLeftRadius > 0
+        typeof this._borderBottomLeftRadius === 'number' &&
+        this._borderBottomLeftRadius > 0
           ? this._borderBottomLeftRadius
           : borderRadius,
       );
@@ -143,9 +149,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
   }
 
-  frame() {
-
-  }
+  frame() {}
 
   setOnLayout(value: any) {
     this._hasOnLayout = !!value;

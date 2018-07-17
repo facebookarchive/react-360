@@ -9,7 +9,7 @@
  * @flow
  */
 
-import {type Mat4, type Quaternion, type Vec3} from '../Controls/Types';
+import {type Mat4, type Quaternion, type Vec3} from './RendererTypes';
 
 export function rotateByQuaternion(v: Vec3, q: Quaternion) {
   // Optimized implementation of Hamiltonian product, similar to Unity's

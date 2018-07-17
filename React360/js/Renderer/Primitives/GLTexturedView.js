@@ -33,7 +33,7 @@ const ImageMaterial = new THREE.ShaderMaterial({
   transparent: true,
 });
 
-export const BG_RESIZE = {
+const BG_RESIZE = {
   center: 'center',
   contain: 'contain',
   cover: 'cover',
