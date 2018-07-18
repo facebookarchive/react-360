@@ -29,7 +29,6 @@ export interface GLViewCompatible {
   setLocalTransform(Transform): void;
   setOpacity(number): void;
   setVisible(boolean): void;
-  setZOffset(number): void;
   update(): void;
 }
 
@@ -82,7 +81,6 @@ export default class GLView {
   _worldTransform: Transform;
   _x: number;
   _y: number;
-  _zOffset: number;
 
   constructor() {
     this._width = 1;
@@ -105,7 +103,6 @@ export default class GLView {
     this._worldTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     this._x = 0;
     this._y = 0;
-    this._zOffset = 0;
     this._geometryDirty = true;
     this._transformDirty = true;
 
@@ -151,7 +148,9 @@ export default class GLView {
   }
 
   createNewMaterial(): THREE.ShaderMaterial {
-    return ViewMaterial.clone();
+    const mat = ViewMaterial.clone();
+    mat.depthTest = false;
+    return mat;
   }
 
   createGeometryVertexArray(
@@ -459,10 +458,6 @@ export default class GLView {
     this._node.visible = visible;
   }
 
-  setZOffset(offset: number) {
-    this._zOffset = offset;
-  }
-
   update() {
     if (this._geometryDirty) {
       const {position, index} = this.createGeometry();
@@ -483,13 +478,11 @@ export default class GLView {
     if (this._transformDirty) {
       const x = this._x + (this._offsetX || 0) + this._width / 2;
       const y = -this._y + (this._offsetY || 0) + this._height / 2;
-      const z = this._zOffset;
       for (let i = 0; i < 16; i++) {
         (this._worldTransform: any)[i] = this._localTransform[i];
       }
       this._worldTransform[12] += x;
       this._worldTransform[13] += y;
-      this._worldTransform[14] += z;
       matrixMultiply4(this._worldTransform, this._parentTransform);
       this._material.uniforms.u_transform.value.fromArray(this._worldTransform);
 

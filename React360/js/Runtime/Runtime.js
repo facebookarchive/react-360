@@ -222,13 +222,10 @@ export default class Runtime {
       }
       const oldClearColor = renderer.getClearColor();
       const oldClearAlpha = renderer.getClearAlpha();
-      const oldSort = renderer.sortObjects;
       const oldClipping = renderer.localClippingEnabled;
       renderer.localClippingEnabled = true;
       renderer.setClearColor('#000', 0);
-      renderer.sortObjects = false;
       renderer.render(params.scene, params.camera, params.renderTarget, true);
-      renderer.sortObjects = oldSort;
       renderer.setClearColor(oldClearColor, oldClearAlpha);
       renderer.setRenderTarget(null);
       renderer.localClippingEnabled = oldClipping;

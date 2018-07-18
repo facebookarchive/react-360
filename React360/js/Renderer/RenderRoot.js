@@ -155,7 +155,9 @@ export default class RenderRoot {
       if (keys.length === 1 && keys[0] === 0) {
         const queue = context['0'];
         for (let i = 0; i < queue.length; i++) {
-          queue[i].renderOrder = order++;
+          const node = queue[i];
+          node.renderOrder = order++;
+          node.view.getNode().renderOrder = node.renderOrder;
         }
       } else {
         // For each non-zero z-index, push its nested stacking context onto the

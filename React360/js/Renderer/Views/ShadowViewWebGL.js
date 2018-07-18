@@ -15,8 +15,6 @@ import type {GLViewCompatible} from '../Primitives/GLView';
 import * as Flexbox from '../FlexboxImplementation';
 import ShadowView, {type Dispatcher} from './ShadowView';
 
-const Z_INDEX_INCREMENT = 0.001;
-
 type LayoutHook = (
   number,
   {height: number, width: number, x: number, y: number},
@@ -242,7 +240,6 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
       z = 0;
     }
     this._zIndex = z;
-    this.view.setZOffset(z * Z_INDEX_INCREMENT);
   }
 
   static registerBindings(dispatch: Dispatcher) {
