@@ -39,7 +39,7 @@ export type ModuleDescription = [
 
 export default class Module {
   name: string;
-  _functionMap: Array<() => any>;
+  __functionMap: Array<() => any>;
 
   /**
    * Constructs a Module with a map of unique identifiers to its publicly
@@ -52,7 +52,7 @@ export default class Module {
       name = name.substr(3);
     }
     this.name = name;
-    this._functionMap = [];
+    this.__functionMap = [];
   }
 
   /**
@@ -73,7 +73,7 @@ export default class Module {
    * this should not be a problem, but it may be a candidate for restructuring
    * in the future.
    */
-  _describe(): ModuleDescription {
+  __describe(): ModuleDescription {
     const constants = {};
     const functions = [];
     const promiseFunctions = [];
@@ -101,7 +101,7 @@ export default class Module {
       }
 
       // record the mapping from ID used by React to the real function
-      this._functionMap[methodID] = member;
+      this.__functionMap[methodID] = member;
       functions.push(name);
       methodID++;
     }
@@ -110,6 +110,13 @@ export default class Module {
     for (const attr in this) {
       const member = (this: any)[attr];
       if (attr[0] === '_' || typeof member === 'function') {
+        continue;
+      }
+      if (attr[0] === '$' && attr.indexOf('_') > -1) {
+        // Handle custom babel transform where private methods are renamed to:
+        //   $ClassName_methodName
+        // We only do the check on constants to avoid conflicting with promise-
+        // returning methods that also start with $
         continue;
       }
       constants[attr] = member;

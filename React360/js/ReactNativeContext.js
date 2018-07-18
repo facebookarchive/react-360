@@ -69,7 +69,7 @@ const ONMOVE_EPSILON = 0.0001;
 function describe(ctx: ReactNativeContext) {
   const remoteModuleConfig = [];
   for (const module of ctx.modules) {
-    const description = module._describe();
+    const description = module.__describe();
     if (__DEV__) {
       console.log(description);
     }
@@ -425,7 +425,7 @@ export class ReactNativeContext {
           const funcIndex = results[1];
           const params = results[2];
           for (let i = 0; i < moduleIndex.length; i++) {
-            this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
+            this.modules[moduleIndex[i]].__functionMap[funcIndex[i]].apply(
               this.modules[moduleIndex[i]],
               params[i],
             );
