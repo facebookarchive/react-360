@@ -107,7 +107,11 @@ export default class Runtime {
       new ReactExecutorWebWorker({
         enableDevTools,
       });
-    this.guiSys = new GuiSys(scene, {});
+    const font = options.font
+    const guiOptions =  {
+      font: font || {},
+    }
+    this.guiSys = new GuiSys(scene, guiOptions);
     this.context = new ReactNativeContext(this.guiSys, this.executor, {
       assetRoot: options.assetRoot,
       customViews: options.customViews || [],
