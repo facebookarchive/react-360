@@ -165,8 +165,8 @@ export default class UIManager extends Module {
     this._viewDispatchers = {};
     this._layoutAnimation = null;
     if (flags.useNewViews) {
-      this.registerGLViewType('RCTView', (dispatch: Dispatcher) => ViewGL.registerBindings(dispatch), () => new ViewGL(this));
-      this.registerGLViewType('RCTImageView', (dispatch: Dispatcher) => ImageGL.registerBindings(dispatch), () => new ImageGL(this));
+      this.registerGLViewType('RCTView', (dispatch: Dispatcher) => ViewGL.registerBindings(dispatch), () => new ViewGL());
+      this.registerGLViewType('RCTImageView', (dispatch: Dispatcher) => ImageGL.registerBindings(dispatch), () => new ImageGL());
     } else {
       this.registerViewType('RCTView', RCTView.describe(), () => {
         return new RCTView(guiSys);

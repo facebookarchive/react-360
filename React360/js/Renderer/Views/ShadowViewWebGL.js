@@ -12,11 +12,15 @@
 /* eslint-disable camelcase, no-param-reassign */
 
 import type {GLViewCompatible} from '../Primitives/GLView';
-import type UIManager from '../../Modules/UIManager';
 import * as Flexbox from '../FlexboxImplementation';
 import ShadowView, {type Dispatcher} from './ShadowView';
 
 const Z_INDEX_INCREMENT = 0.001;
+
+type LayoutHook = (
+  number,
+  {height: number, width: number, x: number, y: number},
+) => mixed;
 
 export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderRadiusAll: ?number;
@@ -27,15 +31,14 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderBottomLeftRadius: ?number;
   _hasOnLayout: boolean;
   _layoutOrigin: [number, number];
+  _onLayoutHook: ?LayoutHook;
   _zIndex: number;
   renderOrder: number;
   view: T;
-  UIManager: UIManager;
 
-  constructor(uiManager: UIManager, viewCreator: () => T) {
+  constructor(viewCreator: () => T) {
     super();
 
-    this.UIManager = uiManager;
     this._borderRadiusDirty = false;
     this._hasOnLayout = false;
     this._layoutOrigin = [0, 0];
@@ -80,17 +83,14 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
       const x = -this._layoutOrigin[0] * width;
       const y = -this._layoutOrigin[1] * height;
 
-      if (this._hasOnLayout) {
-        this.UIManager._rnctx.callFunction('RCTEventEmitter', 'receiveEvent', [
-          this.getTag(),
-          'topLayout',
-          {
-            x: x + left,
-            y: y + top,
-            width: width,
-            height: height,
-          },
-        ]);
+      const layoutHook = this._onLayoutHook;
+      if (this._hasOnLayout && layoutHook) {
+        layoutHook(this.getTag(), {
+          x: x + left,
+          y: y + top,
+          width: width,
+          height: height,
+        });
       }
 
       this.view.setVisible(this.YGNode.getDisplay() !== Flexbox.DISPLAY_NONE);
@@ -153,6 +153,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
 
   setOnLayout(value: any) {
     this._hasOnLayout = !!value;
+  }
+
+  setOnLayoutHook(hook: ?LayoutHook) {
+    this._onLayoutHook = hook;
   }
 
   _getBorderValue(edge: number): number {

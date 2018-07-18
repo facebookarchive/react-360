@@ -79,6 +79,10 @@ export default class ShadowView {
     this.YGNode = Flexbox.Node.create();
   }
 
+  dispose() {
+    Flexbox.Node.destroy(this.YGNode);
+  }
+
   addChild(index: number, child: ShadowView) {
     this.children.splice(index, 0, child);
     this.YGNode.insertChild(child.YGNode, index);

@@ -18,12 +18,21 @@ import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
 import type {CustomView} from '../Modules/UIManager';
+import RenderRoot from '../Renderer/RenderRoot';
+import type ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
 import GuiSys from '../OVRUI/UIView/GuiSys';
 import {ReactNativeContext} from '../ReactNativeContext';
+import ReactContext from './ReactContext';
 
 type LocationNode = {
   location: Location,
   node: THREE.Object3D,
+};
+
+type SurfaceNode = {
+  camera: THREE.Camera,
+  renderTarget: THREE.WebGLRenderTarget,
+  scene: THREE.Scene,
 };
 
 export type NativeModuleInitializer = ReactNativeContext => Module;
@@ -65,8 +74,12 @@ const SURFACE_DEPTH = 4; // 4 meters
 export default class Runtime {
   _cursorIntersectsSurface: boolean;
   _initialized: boolean;
+  _lastHit: ?ShadowViewWebGL<any>;
+  _offscreenRenderUID: number;
+  _renderRoots: Array<RenderRoot>; // maps root view tag to RenderRoot instance
   _rootLocations: Array<LocationNode>;
-  context: ReactNativeContext;
+  _rootSurfaces: {[id: string]: SurfaceNode};
+  context: ReactContext | ReactNativeContext;
   executor: ReactExecutor;
   guiSys: GuiSys;
 
@@ -75,8 +88,12 @@ export default class Runtime {
     bundle: string,
     options: RuntimeOptions = {},
   ) {
+    this._renderRoots = [];
     this._rootLocations = [];
+    this._rootSurfaces = {};
     this._cursorIntersectsSurface = false;
+    this._lastHit = null;
+    this._offscreenRenderUID = 0;
     let enableDevTools = false;
     let bundleURL = bundle;
     let enableHotReload = false;
@@ -107,20 +124,27 @@ export default class Runtime {
       new ReactExecutorWebWorker({
         enableDevTools,
       });
-    this.guiSys = new GuiSys(scene, {});
-    this.context = new ReactNativeContext(this.guiSys, this.executor, {
-      assetRoot: options.assetRoot,
-      customViews: options.customViews || [],
-      enableHotReload,
-      useNewViews: options.useNewViews,
-    });
+
+    if (options.useNewViews) {
+      this.context = new ReactContext(this.executor, {
+        assetRoot: options.assetRoot,
+      });
+    } else {
+      this.guiSys = new GuiSys(scene, {});
+      this.context = new ReactNativeContext(this.guiSys, this.executor, {
+        assetRoot: options.assetRoot,
+        customViews: options.customViews || [],
+        enableHotReload,
+        useNewViews: options.useNewViews,
+      });
+    }
     const modules = options.nativeModules;
     if (modules) {
       for (let i = 0; i < modules.length; i++) {
         const m = modules[i];
         if (typeof m === 'function') {
           // module initializer
-          this.context.registerModule(m(this.context));
+          this.context.registerModule(m((this.context: any)));
         } else {
           this.context.registerModule(m);
         }
@@ -131,12 +155,30 @@ export default class Runtime {
 
   createRootView(name: string, initialProps: Object, dest: Location | Surface) {
     if (dest instanceof Surface) {
+      const context = this.context;
+      if (context instanceof ReactContext) {
+        const root = new RenderRoot();
+        const tag = this.context.createRootView(name, root, initialProps);
+        this._renderRoots[tag] = root;
+        const scene = dest.getScene();
+        if (root.rootView) {
+          scene.add(root.rootView.view.getNode());
+        }
+        const uid = this._offscreenRenderUID++;
+        this._rootSurfaces[uid] = {
+          scene: scene,
+          camera: dest.getCamera(),
+          renderTarget: dest.getRenderTarget(),
+        };
+        return tag;
+      }
+      // legacy ReactNativeContext
       this.guiSys.registerOffscreenRender(
         dest.getScene(),
         dest.getCamera(),
         dest.getRenderTarget(),
       );
-      const tag = this.context.createRootView(
+      const tag = context.createRootView(
         name,
         initialProps,
         dest.getScene(),
@@ -159,15 +201,22 @@ export default class Runtime {
   }
 
   frame(camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
-    this.guiSys.frameRenderUpdates(camera);
-    this.context.frame(camera);
+    const context = this.context;
+    let offscreen = {};
+    if (context instanceof ReactContext) {
+      offscreen = this._rootSurfaces;
+      context.frame();
+    } else {
+      this.guiSys.frameRenderUpdates(camera);
+      offscreen = this.guiSys.getOffscreenRenders();
+      context.frame(camera);
+    }
 
-    const offscreen = this.guiSys.getOffscreenRenders();
     for (const item in offscreen) {
-      if (!offscreen.hasOwnProperty(item)) {
+      const params = offscreen[item];
+      if (!params) {
         continue;
       }
-      const params = offscreen[item];
       const oldClearColor = renderer.getClearColor();
       const oldClearAlpha = renderer.getClearAlpha();
       const oldSort = renderer.sortObjects;
@@ -209,12 +258,17 @@ export default class Runtime {
 
   setRays(rays: Array<Ray>, cameraPosition: Vec3, cameraQuat: Quaternion) {
     if (rays.length < 1) {
-      this.guiSys.updateLastHit(null, '');
+      if (this.guiSys) {
+        this.guiSys.updateLastHit(null, '');
+      }
+      this._lastHit = null;
       return;
     }
     // TODO: Support multiple raycasters
     const ray = rays[0];
-
+    if (!this.guiSys) {
+      return;
+    }
     // This will get replaced with the trig-based raycaster for surfaces
     let firstHit = null;
     raycaster.ray.origin.fromArray(ray.origin);
@@ -225,10 +279,16 @@ export default class Runtime {
       let hit = hits[i];
       if (hit.uv && hit.object && hit.object.subScene) {
         hitSurface = true;
+        const surface = hit.object.owner;
         const distanceToSubscene = hit.distance;
         const scene = hit.object.subScene;
         const x = hit.uv.x * scene._rttWidth;
         const y = (1 - hit.uv.y) * scene._rttHeight;
+        if (surface && this._renderRoots[surface.rootTag]) {
+          const surfaceHit = this._renderRoots[surface.rootTag].hitTest(x, y);
+          this.setHitTarget(surfaceHit);
+          return;
+        }
         const surfaceHit = this.surfaceRaycast(scene, x, y);
         if (surfaceHit) {
           hit = surfaceHit;
@@ -240,6 +300,9 @@ export default class Runtime {
       }
     }
     this.setIntersection(firstHit, ray, hitSurface);
+    if (!hitSurface) {
+      this.setHitTarget(null);
+    }
   }
 
   surfaceRaycast(scene: THREE.Scene, x: number, y: number) {
@@ -268,6 +331,20 @@ export default class Runtime {
     );
   }
 
+  setHitTarget(view: ?ShadowViewWebGL<any>) {
+    if (view === this._lastHit) {
+      return;
+    }
+    // fire hit changed
+    if (this._lastHit) {
+      // Fire focus lost event
+    }
+    if (view) {
+      // Fire focus gained event
+    }
+    this._lastHit = view;
+  }
+
   set2DRays(rays: Array<Ray>, surface: Surface) {
     if (rays.length < 1) {
       this.guiSys.updateLastHit(null, '');
@@ -283,6 +360,9 @@ export default class Runtime {
   }
 
   isMouseCursorActive(): boolean {
+    if (!this.guiSys) {
+      return false;
+    }
     return this.guiSys.mouseCursorActive;
   }
 
@@ -290,7 +370,9 @@ export default class Runtime {
     if (this._cursorIntersectsSurface) {
       return true;
     }
-
+    if (!this.guiSys) {
+      return false;
+    }
     const lastHit = this.guiSys._cursor.lastHit;
     const lastAlmostHit = this.guiSys._cursor.lastAlmostHit;
     let active = lastHit && lastHit.isInteractable;

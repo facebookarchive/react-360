@@ -10,7 +10,6 @@
  */
 
 import GLView from '../Primitives/GLView';
-import type UIManager from '../../Modules/UIManager';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import type {Dispatcher} from './ShadowView';
 
@@ -18,8 +17,8 @@ import type {Dispatcher} from './ShadowView';
  * Implementation of View backed by the new GLView
  */
 export default class RCTView extends ShadowViewWebGL<GLView> {
-  constructor(uiManager: UIManager) {
-    super(uiManager, () => new GLView());
+  constructor() {
+    super(() => new GLView());
   }
 
   setCursorVisibilitySlop(slop: number) {

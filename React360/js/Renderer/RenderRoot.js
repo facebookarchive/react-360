@@ -170,6 +170,8 @@ export default class RenderRoot {
         }
       }
     }
+
+    this._renderOrderDirty = false;
   }
 
   hitTest(x: number, y: number): ?ShadowViewWebGL<*> {
