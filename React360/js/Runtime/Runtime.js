@@ -79,6 +79,7 @@ export default class Runtime {
   _renderRoots: Array<RenderRoot>; // maps root view tag to RenderRoot instance
   _rootLocations: Array<LocationNode>;
   _rootSurfaces: {[id: string]: SurfaceNode};
+  _scene: THREE.Scene;
   context: ReactContext | ReactNativeContext;
   executor: ReactExecutor;
   guiSys: GuiSys;
@@ -91,6 +92,7 @@ export default class Runtime {
     this._renderRoots = [];
     this._rootLocations = [];
     this._rootSurfaces = {};
+    this._scene = scene;
     this._cursorIntersectsSurface = false;
     this._lastHit = null;
     this._offscreenRenderUID = 0;
@@ -165,11 +167,12 @@ export default class Runtime {
           scene.add(root.rootView.view.getNode());
         }
         const uid = this._offscreenRenderUID++;
-        this._rootSurfaces[uid] = {
+        this._rootSurfaces[String(uid)] = {
           scene: scene,
           camera: dest.getCamera(),
           renderTarget: dest.getRenderTarget(),
         };
+        dest.rootTag = tag;
         return tag;
       }
       // legacy ReactNativeContext
@@ -248,11 +251,25 @@ export default class Runtime {
   }
 
   queueEvents(events: Array<InputEvent>) {
-    for (let i = 0; i < events.length; i++) {
-      this.guiSys.eventDispatcher.dispatchEvent({
-        type: 'InputChannelEvent',
-        args: events[i],
-      });
+    if (this.guiSys) {
+      for (let i = 0; i < events.length; i++) {
+        this.guiSys.eventDispatcher.dispatchEvent({
+          type: 'InputChannelEvent',
+          args: events[i],
+        });
+      }
+    } else if (this._lastHit) {
+      for (let i = 0; i < events.length; i++) {
+        this.context.callFunction('RCTEventEmitter', 'receiveEvent', [
+          this._lastHit.tag,
+          'topInput',
+          {
+            inputEvent: events[i],
+            target: this._lastHit.tag,
+            source: this._lastHit.tag,
+          },
+        ]);
+      }
     }
   }
 
@@ -266,14 +283,13 @@ export default class Runtime {
     }
     // TODO: Support multiple raycasters
     const ray = rays[0];
-    if (!this.guiSys) {
-      return;
-    }
+    const root = this.guiSys ? this.guiSys.root : this._scene;
+
     // This will get replaced with the trig-based raycaster for surfaces
     let firstHit = null;
     raycaster.ray.origin.fromArray(ray.origin);
     raycaster.ray.direction.fromArray(ray.direction);
-    const hits = raycaster.intersectObject(this.guiSys.root, true);
+    const hits = raycaster.intersectObject(root, true);
     let hitSurface = false;
     for (let i = 0; i < hits.length; i++) {
       let hit = hits[i];
@@ -318,6 +334,9 @@ export default class Runtime {
 
   setIntersection(hit: ?Object, ray: Ray, onSurface?: boolean) {
     this._cursorIntersectsSurface = !!onSurface;
+    if (!this.guiSys) {
+      return;
+    }
     if (hit) {
       this.guiSys.updateLastHit(hit.object, ray.type);
       this.guiSys._cursor.intersectDistance = hit.distance;
@@ -335,12 +354,18 @@ export default class Runtime {
     if (view === this._lastHit) {
       return;
     }
+    const context = this.context;
+    if (!(context instanceof ReactContext)) {
+      return;
+    }
     // fire hit changed
     if (this._lastHit) {
       // Fire focus lost event
+      context.enqueueOnExit(this._lastHit);
     }
     if (view) {
       // Fire focus gained event
+      context.enqueueOnEnter(view);
     }
     this._lastHit = view;
   }

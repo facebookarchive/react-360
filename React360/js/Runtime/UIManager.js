@@ -54,6 +54,41 @@ export default class UIManager extends Module {
     this._viewTypeCreators = {};
     this._viewDispatchers = {};
 
+    this.customDirectEventTypes = {
+      topLayout: {registrationName: 'onLayout'},
+      topLoadStart: {registrationName: 'onLoadStart'},
+      topLoad: {registrationName: 'onLoad'},
+      topLoadEnd: {registrationName: 'onLoadEnd'},
+      topEnter: {registrationName: 'onEnter'},
+      topExit: {registrationName: 'onExit'},
+      topMove: {registrationName: 'onMove'},
+      // Media Events
+      topDurationChange: {registrationName: 'onDurationChange'},
+      topEnded: {registrationName: 'onEnded'},
+      topTimeUpdate: {registrationName: 'onTimeUpdate'},
+      topPlayStatusChange: {registrationName: 'onPlayStatusChange'},
+    };
+    this.customBubblingEventTypes = {
+      topChange: {
+        phasedRegistrationNames: {
+          bubbled: 'onChange',
+          captured: 'onChangeCapture',
+        },
+      },
+      topInput: {
+        phasedRegistrationNames: {
+          bubbled: 'onInput',
+          captured: 'onInputCapture',
+        },
+      },
+      topHeadPose: {
+        phasedRegistrationNames: {
+          bubbled: 'onHeadPose',
+          captured: 'onHeadPoseCapture',
+        },
+      },
+    };
+
     this.registerViewType(
       'RCTView',
       View.registerBindings.bind(View),
