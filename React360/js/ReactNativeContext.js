@@ -53,6 +53,7 @@ export type ContextOptions = {
   customViews?: Array<CustomView>,
   enableHotReload?: boolean,
   isLowLatency?: boolean,
+  useNewViews?: boolean,
 };
 
 const ROOT_VIEW_INCREMENT = 10;
@@ -68,7 +69,7 @@ const ONMOVE_EPSILON = 0.0001;
 function describe(ctx: ReactNativeContext) {
   const remoteModuleConfig = [];
   for (const module of ctx.modules) {
-    const description = module._describe();
+    const description = module.__describe();
     if (__DEV__) {
       console.log(description);
     }
@@ -169,7 +170,8 @@ export class ReactNativeContext {
     this.lastLocalIntersect = null;
     this.lastSource = null;
 
-    this.UIManager = new UIManager(this, guiSys, options.customViews);
+    const flags = options.useNewViews ? {useNewViews: true} : undefined;
+    this.UIManager = new UIManager(this, guiSys, options.customViews, flags);
     this.Timing = new Timing(this);
     this.RCTResourceManager = new RCTResourceManager();
     this.RCTInputControls = new RCTInputControls(this, guiSys);
@@ -423,7 +425,7 @@ export class ReactNativeContext {
           const funcIndex = results[1];
           const params = results[2];
           for (let i = 0; i < moduleIndex.length; i++) {
-            this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
+            this.modules[moduleIndex[i]].__functionMap[funcIndex[i]].apply(
               this.modules[moduleIndex[i]],
               params[i],
             );

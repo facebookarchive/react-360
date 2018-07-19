@@ -36,7 +36,7 @@ import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
-import {rotateByQuaternion} from './Utils/Math';
+import {rotateByQuaternion} from './Renderer/Math';
 
 type Root = {
   initialProps: Object,
@@ -68,7 +68,10 @@ export type React360Options = {
   frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
+  useNewViews?: boolean,
 };
+
+const DEFAULT_SURFACE_DEPTH = 4;
 
 /**
  * New top-level class for the panel-first design of React 360 aligned with
@@ -176,6 +179,7 @@ export default class ReactInstance {
         },
         ...(options.nativeModules || []),
       ],
+      useNewViews: options.useNewViews,
     };
     this.runtime = new Runtime(
       this.scene,
@@ -190,6 +194,9 @@ export default class ReactInstance {
       } else {
         this.overlay.setVRButtonState(false, 'No Headset', null);
       }
+    });
+    this.vrState.onExit(() => {
+      this._needsResize = true;
     });
 
     this.controls.addCameraController(
@@ -211,6 +218,10 @@ export default class ReactInstance {
   }
 
   _onResize() {
+    const display = this.vrState.getCurrentDisplay();
+    if (display && display.isPresenting) {
+      return;
+    }
     this._needsResize = true;
   }
 
@@ -323,11 +334,10 @@ export default class ReactInstance {
     }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
-    if (
-      cursorVis === 'visible' ||
-      (cursorVis === 'auto' && this.runtime.isCursorActive())
-    ) {
+    if (cursorVis !== 'hidden' && this.runtime.isCursorActive()) {
       this.compositor.updateCursor(this._rays, this.runtime.getCursorDepth());
+    } else if (cursorVis === 'visible') {
+      this.compositor.updateCursor(this._rays, DEFAULT_SURFACE_DEPTH);
     } else {
       this.compositor.updateCursor(null, 0);
     }

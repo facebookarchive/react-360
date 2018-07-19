@@ -27,7 +27,7 @@ import {HPanoBufferGeometry} from '../Utils/HPano';
 import {CubePanoBufferGeometry} from '../Utils/CubePano';
 import {RCTBindedResource} from '../Utils/RCTBindedResource';
 import * as THREE from 'three';
-import * as Flexbox from '../Utils/FlexboxImplementation';
+import * as Flexbox from '../Renderer/FlexboxImplementation';
 
 import Prefetch from './Prefetch';
 

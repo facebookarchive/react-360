@@ -25,6 +25,7 @@
   ],
 
   "globals": {
+    "$Keys": false,
     "__DEV__": true,
     "__dirname": false,
     "__fbBatchedBridgeConfig": false,

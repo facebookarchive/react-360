@@ -9,6 +9,9 @@
  * @providesModule processTransform
  * @flow
  */
+
+/* eslint-disable */
+
 'use strict';
 
 const MatrixMath = require('MatrixMath');
@@ -68,6 +71,9 @@ function processTransform(transform: Object): Object {
         break;
       case 'scaleY':
         _multiplyTransform(result, MatrixMath.reuseScaleYCommand, [value]);
+        break;
+      case 'scaleZ':
+        _multiplyTransform(result, MatrixMath.reuseScaleZCommand, [value]);
         break;
       case 'scale3d':
         _multiplyTransform(result, MatrixMath.reuseScale3dCommand, [value[0], value[1], value[2]]);

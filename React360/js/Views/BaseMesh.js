@@ -14,7 +14,7 @@ import type {Geometry, Texture, Material, ShaderMaterial} from 'three';
 import UIView from '../OVRUI/UIView/UIView';
 import extractURL from '../Utils/extractURL';
 import merge from '../Utils/merge';
-import * as Flexbox from '../Utils/FlexboxImplementation';
+import * as Flexbox from '../Renderer/FlexboxImplementation';
 
 import type GuiSys from '../OVRUI/UIView/GuiSys';
 import type {ReactNativeContext} from '../ReactNativeContext';

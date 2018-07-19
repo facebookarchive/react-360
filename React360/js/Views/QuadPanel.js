@@ -15,7 +15,7 @@
 import * as THREE from 'three';
 import UIView from '../OVRUI/UIView/UIView';
 import merge from '../Utils/merge';
-import * as Flexbox from '../Utils/FlexboxImplementation';
+import * as Flexbox from '../Renderer/FlexboxImplementation';
 import RCTBaseView from './BaseView';
 
 export default class RCTQuadPanel extends RCTBaseView {

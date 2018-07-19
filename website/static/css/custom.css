@@ -1,0 +1,77 @@
+/* your custom css */
+
+.splash_sections {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.splash_image img {
+  height: 300px;
+}
+
+.splash_description h3 {
+  font-size: 24px;
+  margin: 10px 0;
+}
+
+.splash_description h4 {
+  font-size: 18px;
+}
+
+.projectTitle {
+  margin-bottom: 40px;
+}
+
+#mount_example {
+  display: block;
+  height: 600px;
+  width: 800px;
+  margin: 0 auto;
+}
+
+p a, article a {
+  color: #0880fa;
+}
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+}
+
+@media only screen and (min-width: 1024px) {
+}
+
+@media only screen and (max-width: 1023px) {
+  .splash_sections {
+    flex-direction: column-reverse;
+  }
+
+  .splash_image {
+    margin-bottom: 30px;
+  }
+
+  #mount_example {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+}
+
+@media only screen and (min-width: 1500px) {
+}
+
+pre code {
+  border-left-color: #0880fa;
+}
+
+.hljs.bash {
+  background-color: #0a2556;
+  color: #fcfcff;
+}
+.hljs.bash .hljs-built_in {
+  color: #72bf27;
+}
+.hljs.bash .hljs-string {
+  color: #f77070;
+}

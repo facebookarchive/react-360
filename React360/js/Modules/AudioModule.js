@@ -19,7 +19,7 @@ import type {
 } from '../Compositor/Audio/Types';
 import type {Quaternion, Vec3} from '../Controls/Types';
 import type {ReactNativeContext} from '../ReactNativeContext';
-import {rotateByQuaternion} from '../Utils/Math';
+import {rotateByQuaternion} from '../Renderer/Math';
 import Module from './Module';
 
 const FORWARD = [0, 0, -1];

@@ -45,6 +45,7 @@ const DEFAULT_RADIUS = 4;
  * React surface to be dynamically reshaped depending on the contents. Calling
  */
 export default class Surface {
+  rootTag: number;
   _density: number;
   _height: number;
   _pitch: number;
@@ -72,6 +73,7 @@ export default class Surface {
     this._shape = shape;
     this._yaw = 0;
     this._pitch = 0;
+    this.rootTag = -1;
 
     this._material = new THREE.MeshBasicMaterial({
       wireframe: false,
@@ -103,6 +105,7 @@ export default class Surface {
     this._mesh = new THREE.Mesh(this._geometry, this._material);
     (this._mesh: any).subScene = this._subScene;
     (this._mesh: any).subSceneCamera = this._camera;
+    (this._mesh: any).owner = this;
     this._mesh.scale.z = -1;
     this.resize(width, height);
   }
