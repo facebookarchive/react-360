@@ -23,8 +23,8 @@ export default class PlatformConstants extends Module {
     super('PlatformConstants');
     this.reactNativeVersion = {
       major: 0,
-      minor: 49,
-      patch: 5,
+      minor: 55,
+      patch: 4,
       prerelease: null,
     };
   }

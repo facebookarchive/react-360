@@ -23,8 +23,8 @@ module.exports = config => ({
     "test": "jest"
   },
   "dependencies": {
-    "react": "16.0.0",
-    "react-native": "~0.49.5",
+    "react": "16.3.2",
+    "react-native": "~0.55.4",
     "three": "^0.87.0",
     "react-360": "~1.0.0",
     "react-360-web": "~1.0.0"

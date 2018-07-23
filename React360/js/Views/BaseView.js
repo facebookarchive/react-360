@@ -951,6 +951,40 @@ export default class RCTBaseView {
       Commands: {
         setImmediateOnTouchEnd: COMMAND_SET_IMMEDIATE_ON_TOUCH_END,
       },
+      bubblingEventTypes: {
+        topChange: {
+          phasedRegistrationNames: {
+            bubbled: 'onChange',
+            captured: 'onChangeCapture',
+          },
+        },
+        topInput: {
+          phasedRegistrationNames: {
+            bubbled: 'onInput',
+            captured: 'onInputCapture',
+          },
+        },
+        topHeadPose: {
+          phasedRegistrationNames: {
+            bubbled: 'onHeadPose',
+            captured: 'onHeadPoseCapture',
+          },
+        },
+      },
+      directEventTypes: {
+        topLayout: {registrationName: 'onLayout'},
+        topLoadStart: {registrationName: 'onLoadStart'},
+        topLoad: {registrationName: 'onLoad'},
+        topLoadEnd: {registrationName: 'onLoadEnd'},
+        topEnter: {registrationName: 'onEnter'},
+        topExit: {registrationName: 'onExit'},
+        topMove: {registrationName: 'onMove'},
+        // Media Events
+        topDurationChange: {registrationName: 'onDurationChange'},
+        topEnded: {registrationName: 'onEnded'},
+        topTimeUpdate: {registrationName: 'onTimeUpdate'},
+        topPlayStatusChange: {registrationName: 'onPlayStatusChange'},
+      },
     };
   }
 }
