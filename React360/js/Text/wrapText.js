@@ -10,12 +10,7 @@
  */
 
 import BreakIterator from './BreakIterator';
-import type {TextDimensions, TextImplementation} from './Types';
-
-type TextLine = {
-  dimensions: TextDimensions,
-  text: string,
-};
+import type {TextLine, TextImplementation, TextRenderInfo} from './TextTypes';
 
 const LINE_BREAK = /[\r\n]+$/;
 
@@ -26,115 +21,82 @@ export default function wrapText(
   text: string,
   fitToWidth: void | number,
   options: Object = {},
-): Array<TextLine> {
-  const lines = [];
+): TextRenderInfo {
+  const lines: Array<TextLine> = [];
   // Todo: expose configurable locale once the underlying API has better support
   const iter = new BreakIterator('en', text, options);
   let cursor = 0;
   const forceBreak = typeof fitToWidth === 'number';
   const forceWidth = typeof fitToWidth === 'number' ? fitToWidth : 9999;
-  let lineDims = {
-    glyphMetrics: [],
+  let line: TextLine = {
+    glyphs: [],
     maxAscend: 0,
     maxDescend: 0,
     width: 0,
   };
-  let lineText = '';
   for (const breakpoint of iter) {
     const chunk = text.slice(cursor, breakpoint);
-    const rawDimensions = impl.measure(font, size, chunk);
-    if (forceBreak && lineDims.width + rawDimensions.width > forceWidth) {
+    const run = impl.extractGlyphs(font, size, chunk);
+    if (forceBreak && line.width + run.totalWidth > forceWidth) {
       // Test trimming whitespace
       const trimmed = chunk.trimRight();
       const dLen = chunk.length - trimmed.length;
-      let glyphs = rawDimensions.glyphMetrics;
-      let width = rawDimensions.width;
+      let glyphs = run.glyphs;
+      let width = run.totalWidth;
       if (dLen > 0) {
         glyphs = glyphs.slice(0, glyphs.length - dLen);
         width = 0;
         for (let i = 0; i < glyphs.length; i++) {
-          width += glyphs[i].width;
+          width += glyphs[i].metrics.width;
         }
       }
-      if (lineDims.width + width > forceWidth) {
+      if (line.width + width > forceWidth) {
         // If it still overruns the width after trimming,
         // push the original to the next line
-        if (lineDims.width > 0) {
-          lines.push({
-            dimensions: lineDims,
-            text: lineText,
-          });
-          lineDims = {
-            glyphMetrics: rawDimensions.glyphMetrics,
-            maxAscend: rawDimensions.maxAscend,
-            maxDescend: rawDimensions.maxDescend,
-            width: rawDimensions.width,
+        if (line.width > 0) {
+          lines.push(line);
+          line = {
+            glyphs: run.glyphs.slice(),
+            maxAscend: run.maxAscend,
+            maxDescend: run.maxDescend,
+            width: run.totalWidth,
           };
-          lineText = chunk;
         }
       } else {
         // Trimming whitespace makes it fit
-        lineDims.glyphMetrics = lineDims.glyphMetrics.concat(glyphs);
-        lineDims.maxAscend = Math.max(
-          lineDims.maxAscend,
-          rawDimensions.maxAscend,
-        );
-        lineDims.maxDescend = Math.max(
-          lineDims.maxDescend,
-          rawDimensions.maxDescend,
-        );
-        lineDims.width += width;
-        lineText += trimmed;
+        line.glyphs = line.glyphs.concat(glyphs);
+        line.maxAscend = Math.max(line.maxAscend, run.maxAscend);
+        line.maxDescend = Math.max(line.maxDescend, run.maxDescend);
+        line.width += width;
       }
     } else if (chunk.match(LINE_BREAK)) {
-      lineDims.glyphMetrics = lineDims.glyphMetrics.concat(
-        rawDimensions.glyphMetrics,
-      );
-      lineDims.maxAscend = Math.max(
-        lineDims.maxAscend,
-        rawDimensions.maxAscend,
-      );
-      lineDims.maxDescend = Math.max(
-        lineDims.maxDescend,
-        rawDimensions.maxDescend,
-      );
-      lineDims.width += rawDimensions.width;
-      lineText += chunk.replace(LINE_BREAK, '');
+      line.glyphs = line.glyphs.concat(run.glyphs);
+      line.maxAscend = Math.max(line.maxAscend, run.maxAscend);
+      line.maxDescend = Math.max(line.maxDescend, run.maxDescend);
+      line.width += run.totalWidth;
 
-      lines.push({
-        dimensions: lineDims,
-        text: lineText,
-      });
-      lineDims = {
-        glyphMetrics: [],
+      lines.push(line);
+      line = {
+        glyphs: [],
         maxAscend: 0,
         maxDescend: 0,
         width: 0,
       };
-      lineText = '';
     } else {
-      lineDims.glyphMetrics = lineDims.glyphMetrics.concat(
-        rawDimensions.glyphMetrics,
-      );
-      lineDims.maxAscend = Math.max(
-        lineDims.maxAscend,
-        rawDimensions.maxAscend,
-      );
-      lineDims.maxDescend = Math.max(
-        lineDims.maxDescend,
-        rawDimensions.maxDescend,
-      );
-      lineDims.width += rawDimensions.width;
-      lineText += chunk;
+      line.glyphs = line.glyphs.concat(run.glyphs);
+      line.maxAscend = Math.max(line.maxAscend, run.maxAscend);
+      line.maxDescend = Math.max(line.maxDescend, run.maxDescend);
+      line.width += run.totalWidth;
     }
     cursor = breakpoint;
   }
-  if (lineDims.width > 0) {
-    lines.push({
-      dimensions: lineDims,
-      text: lineText,
-    });
+  if (line.width > 0) {
+    lines.push(line);
   }
 
-  return lines;
+  return {
+    font,
+    lines,
+    size,
+  };
 }
