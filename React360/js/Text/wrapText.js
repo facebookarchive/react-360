@@ -34,9 +34,13 @@ export default function wrapText(
     maxDescend: 0,
     width: 0,
   };
+  let lastColor = undefined;
   for (const breakpoint of iter) {
     const chunk = text.slice(cursor, breakpoint);
-    const run = impl.extractGlyphs(font, size, chunk);
+    const run = impl.extractGlyphs(font, size, chunk, lastColor);
+    if (run.glyphs.length > 0) {
+      lastColor = run.glyphs[run.glyphs.length - 1].color;
+    }
     if (forceBreak && line.width + run.totalWidth > forceWidth) {
       // Test trimming whitespace
       const trimmed = chunk.trimRight();

@@ -14,6 +14,7 @@ import {
   DEFAULT_FONT_TEXTURE,
   DEFAULT_FONT_JSON,
 } from '../../OVRUI/SDFFont/DefaultFont';
+import SDFFontGeometry from './SDFFontGeometry';
 import {VERT_SHADER, FRAG_SHADER} from './SDFTextShaders';
 import * as THREE from 'three';
 
@@ -43,9 +44,11 @@ const SDFTextMaterial = new THREE.ShaderMaterial({
   extensions: {derivatives: true},
   transparent: true,
 });
+SDFTextMaterial.premultipliedAlpha = true;
+SDFTextMaterial.depthWrite = false;
 
 export default class SDFTextImplementation implements TextImplementation {
-  _atlases: Array<{image: Image, texture: THREE.Texture}>;
+  _atlases: Array<{image: Image, texture: THREE.Texture | Promise<THREE.Texture>}>;
   _fonts: Array<SDFFont>;
 
   constructor() {
@@ -70,6 +73,10 @@ export default class SDFTextImplementation implements TextImplementation {
       }),
     };
     image.src = DEFAULT_FONT_TEXTURE;
+  }
+
+  createText(text: string, options?: Object) {
+    return new SDFFontGeometry(this, text, options);
   }
 
   loadFont(dataPath: string, texPath: string): Promise<void> {

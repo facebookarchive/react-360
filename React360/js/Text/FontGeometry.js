@@ -18,8 +18,11 @@ export const Align = {
 };
 
 export interface FontGeometry {
+  getHeight(): number;
   getNode(): any;
+  getWidth(): number;
   setAlign(align: string): void;
+  setMaxWidth(width: void | number): void;
   setSize(size: number): void;
   setText(text: string): void;
   setWeight(weight: number): void;

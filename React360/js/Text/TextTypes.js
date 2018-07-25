@@ -9,6 +9,8 @@
  * @flow
  */
 
+import type {FontGeometry} from './FontGeometry';
+
 export type Glyph = {
   attributes: {[key: string]: any}, // Any per-glyph values needed to render, like atlas offset
   code: string, // Codepoint to display, may be multiple 'chars' in UTF-8
@@ -19,7 +21,6 @@ export type Glyph = {
 export type GlyphMetrics = {
   ascend: number,
   descend: number,
-  lineHeight: number,
   width: number,
 };
 
@@ -44,5 +45,6 @@ export type TextRenderInfo = {
 };
 
 export interface TextImplementation {
-  extractGlyphs(font: string, size: number, text: string): GlyphRun;
+  extractGlyphs(font: string, size: number, text: string, color?: number): GlyphRun;
+  createText(text: string, options?: Object): FontGeometry;
 }

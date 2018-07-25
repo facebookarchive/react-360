@@ -12,11 +12,20 @@
 import {Align, type FontGeometry} from '../FontGeometry';
 import wrapText from '../wrapText';
 import type SDFTextImplementation from './SDFTextImplementation';
+import type {TextRenderInfo} from '../TextTypes';
 import * as THREE from 'three';
 
 export default class SDFFontGeometry implements FontGeometry {
   _align: string;
+  _center: number;
+  _geometry: THREE.BufferGeometry;
+  _geometryDirty: boolean;
   _impl: SDFTextImplementation;
+  _info: TextRenderInfo;
+  _infoDirty: boolean;
+  _material: THREE.Material;
+  _maxWidth: void | number;
+  _node: THREE.Mesh;
   _size: number;
   _text: string;
 
@@ -26,12 +35,13 @@ export default class SDFFontGeometry implements FontGeometry {
     this._text = text;
     this.setWeight(options.weight || 400);
     this._align = options.align || Align.auto;
+    this._maxWidth = undefined;
 
     this._info = wrapText(this._impl, '', this._size, this._text);
     this._geometry = new THREE.BufferGeometry();
     const {buffer, index, material} = this._impl.createBufferGeometry(
       this._info,
-      this._sdfCenter,
+      this._center,
     );
     const floatArray = new Float32Array(buffer);
     const uintArray = new Uint8Array(buffer);
@@ -63,13 +73,21 @@ export default class SDFFontGeometry implements FontGeometry {
     this._geometryDirty = true;
   }
 
+  setMaxWidth(width: number | void) {
+    if (this._maxWidth !== width) {
+      this._infoDirty = true;
+    }
+    this._maxWidth = width;
+  }
+
   setSize(size: number) {
     this._size = Math.max(1, size);
     this._infoDirty = true;
   }
 
   setWeight(weight: number) {
-    this._sdfCenter = 0.54 - weight / 10000.0;
+    this._center = 0.54 - weight / 10000.0;
+    this._geometryDirty = true;
   }
 
   setText(text: string) {
@@ -81,13 +99,35 @@ export default class SDFFontGeometry implements FontGeometry {
     return this._node;
   }
 
+  getWidth() {
+    const lines = this._info.lines;
+    let width = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const lineWidth = lines[i].width;
+      if (lineWidth > width) {
+        width = lineWidth;
+      }
+    }
+    return width;
+  }
+
+  getHeight() {
+    const lines = this._info.lines;
+    let height = 0;
+    for (let i = 0; i < lines.length; i++) {
+      height += lines[i].maxAscend;
+      height += lines[i].maxDescend;
+    }
+    return height;
+  }
+
   update() {
     if (this._infoDirty) {
-      this._info = wrapText(this._impl, '', this._size, this._text);
+      this._info = wrapText(this._impl, '', this._size, this._text, this._maxWidth);
       this._geometryDirty = true;
     }
     if (this._geometryDirty) {
-      const {buffer, index, material} = this._impl.createBufferGeometry(
+      const {buffer, index} = this._impl.createBufferGeometry(
         this._info,
         this._center,
       );

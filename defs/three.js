@@ -32,6 +32,7 @@ declare module 'three' {
 
   declare class BufferAttribute {
     array: $TypedArray;
+    data: any;
     needsUpdate: boolean;
 
     constructor(): BufferAttribute;
@@ -39,6 +40,7 @@ declare module 'three' {
   }
 
   declare class BufferGeometry extends Geometry {
+    attributes: {[name: string]: BufferAttribute};
     drawRange: {start: number, count: number};
     index: BufferAttribute;
     needsUpdate: boolean;
@@ -144,7 +146,7 @@ declare module 'three' {
   declare class InterleavedBuffer {
     array: $TypedArray;
     needsUpdate: boolean;
-    constructor(Float32Array, number): InterleavedBuffer;
+    constructor($TypedArray, number): InterleavedBuffer;
   }
 
   declare class InterleavedBufferAttribute extends BufferAttribute {
@@ -276,6 +278,7 @@ declare module 'three' {
   }
 
   declare class Texture {
+    flipY: boolean;
     generateMipmaps: boolean;
     image: Image | HTMLCanvasElement;
     wrapS: number;

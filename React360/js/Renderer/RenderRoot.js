@@ -156,8 +156,8 @@ export default class RenderRoot {
         const queue = context['0'];
         for (let i = 0; i < queue.length; i++) {
           const node = queue[i];
-          node.renderOrder = order++;
-          node.view.getNode().renderOrder = node.renderOrder;
+          node.setRenderOrder(order++);
+          node.view.getNode().renderOrder = node.getRenderOrder();
         }
       } else {
         // For each non-zero z-index, push its nested stacking context onto the
@@ -186,9 +186,10 @@ export default class RenderRoot {
         continue;
       }
       if (view.view.containsPoint(x, y)) {
-        if (view.renderOrder > maxRenderOrder) {
+        const renderOrder = view.getRenderOrder();
+        if (renderOrder > maxRenderOrder) {
           hit = view;
-          maxRenderOrder = view.renderOrder;
+          maxRenderOrder = renderOrder;
         }
       }
     }

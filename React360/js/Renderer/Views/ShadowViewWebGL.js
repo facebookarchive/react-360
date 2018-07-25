@@ -31,7 +31,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _layoutOrigin: [number, number];
   _onLayoutHook: ?LayoutHook;
   _zIndex: number;
-  renderOrder: number;
+  _renderOrder: number;
   view: T;
 
   constructor(viewCreator: () => T) {
@@ -41,7 +41,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     this._hasOnLayout = false;
     this._layoutOrigin = [0, 0];
     this._zIndex = 0;
-    this.renderOrder = 0;
+    this._renderOrder = 0;
     this.view = viewCreator();
   }
 
@@ -67,6 +67,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
 
   getZIndex(): number {
     return this._zIndex;
+  }
+
+  getRenderOrder(): number {
+    return this._renderOrder;
   }
 
   presentLayout() {
@@ -155,6 +159,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
 
   setOnLayoutHook(hook: ?LayoutHook) {
     this._onLayoutHook = hook;
+  }
+
+  setRenderOrder(order: number) {
+    this._renderOrder = order;
   }
 
   _getBorderValue(edge: number): number {

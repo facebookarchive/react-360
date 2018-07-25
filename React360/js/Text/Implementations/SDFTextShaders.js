@@ -39,8 +39,8 @@ varying float v_center;
 uniform sampler2D u_texture;
 
 void main() {
-  float ds = 2. / 255.;
-  float dd = fwidth(v_uv.x) * 255. * 16. * ds;
+  float ds = 2.;
+  float dd = fwidth(v_uv.x) * 16. * ds;
 
   float distance = texture2D(u_texture, v_uv).r;
   float colorMin = v_center - dd;
