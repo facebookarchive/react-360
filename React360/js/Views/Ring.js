@@ -19,20 +19,26 @@ import RCTBaseMesh from './BaseMesh';
 const RingGeometryCache = {};
 
 function createRingGeometry(
-  radius: number,
-  heightSegments: number,
-  widthSegments: number,
+  innerRadius: number,
+  outerRadius: number,
+  thetaSegments: number,
+  phiSegments: number,
+  thetaStart: number,
+  thetaLength: number,
 ) {
-  const key = `${radius}:${heightSegments}:${widthSegments}`;
+  const key = `${innerRadius}:${outerRadius}:${thetaSegments}:${phiSegments}:${thetaStart}:${thetaLength}`;
   const cache = RingGeometryCache[key];
   if (cache) {
     cache.count++;
     return cache.geom;
   }
   const geometry = new THREE.RingBufferGeometry(
-    radius,
-    widthSegments,
-    heightSegments,
+    innerRadius,
+    outerRadius,
+    thetaSegments,
+    phiSegments,
+    thetaStart,
+    thetaLength,
   );
 
   RingGeometryCache[key] = {
@@ -44,25 +50,31 @@ function createRingGeometry(
 }
 
 export default class RCTRing extends RCTBaseMesh {
-  _radius: number;
-  _heightSegments: number;
-  _widthSegments: number;
+  _innerRadius: number,
+  _outerRadius: number,
+  _thetaSegments: number,
+  _phiSegments: number,
+  _thetaStart: number,
+  _thetaLength: number,
   _needsUpdate: boolean;
 
   constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
     super(guiSys, rnctx);
 
-    this._radius = 0.5;
-    this._heightSegments = 6;
-    this._widthSegments = 8;
+    this._innerRadius = 0.5;
+    this._outerRadius = 1;
+    this._thetaSegments = 8;
+    this._phiSegments = 1;
+    this._thetaStart = 0;
+    this._thetaLength = Math.PI * 2;
     this._needsUpdate = false;
 
     Object.defineProperty(
       this.props,
-      'radius',
+      'innerRadius',
       ({
-        set: radius => {
-          this._radius = radius;
+        set: innerRadius => {
+          this._innerRadius = innerRadius;
           this._needsUpdate = true;
         },
       }: Object),
@@ -70,10 +82,10 @@ export default class RCTRing extends RCTBaseMesh {
 
     Object.defineProperty(
       this.props,
-      'heightSegments',
+      'outerRadius',
       ({
-        set: segments => {
-          this._heightSegments = segments;
+        set: outerRadius => {
+          this._outerRadius = outerRadius;
           this._needsUpdate = true;
         },
       }: Object),
@@ -81,10 +93,43 @@ export default class RCTRing extends RCTBaseMesh {
 
     Object.defineProperty(
       this.props,
-      'widthSegments',
+      'thetaSegments',
       ({
-        set: segments => {
-          this._widthSegments = segments;
+        set: thetaSegments => {
+          this._thetaSegments = thetaSegments;
+          this._needsUpdate = true;
+        },
+      }: Object),
+    );
+
+    Object.defineProperty(
+      this.props,
+      'phiSegments',
+      ({
+        set: phiSegments => {
+          this._phiSegments = phiSegments;
+          this._needsUpdate = true;
+        },
+      }: Object),
+    );
+
+    Object.defineProperty(
+      this.props,
+      'thetaStart',
+      ({
+        set: thetaStart => {
+          this._thetaStart = thetaStart;
+          this._needsUpdate = true;
+        },
+      }: Object),
+    );
+
+    Object.defineProperty(
+      this.props,
+      'thetaLength',
+      ({
+        set: thetaLength => {
+          this._thetaLength = thetaLength;
           this._needsUpdate = true;
         },
       }: Object),
@@ -102,21 +147,26 @@ export default class RCTRing extends RCTBaseMesh {
 
   _generateGeometry() {
     const geometry = createRingGeometry(
-      this._radius,
-      this._widthSegments,
-      this._heightSegments,
+      this._innerRadius,
+      this._outerRadius,
+      this._thetaSegments,
+      this._phiSegments,
+      this._thetaStart,
+      this._thetaLength,
     );
     this._setGeometry(geometry);
-    const sphere = new THREE.Ring(new THREE.Vector3(0, 0, 0), this._radius);
   }
 
   static describe() {
     return merge(super.describe(), {
       // register the properties sent from react to runtime
       NativeProps: {
-        radius: 'number',
-        widthSegments: 'number',
-        heightSegments: 'number',
+        innerRadius: 'number',
+        outerRadius: 'number',
+        thetaSegments: 'number',
+        phiSegments: 'number',
+        thetaStart: 'number',
+        thetaLength: 'number',
       },
     });
   }
