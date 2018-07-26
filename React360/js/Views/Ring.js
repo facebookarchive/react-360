@@ -50,12 +50,12 @@ function createRingGeometry(
 }
 
 export default class RCTRing extends RCTBaseMesh {
-  _innerRadius: number,
-  _outerRadius: number,
-  _thetaSegments: number,
-  _phiSegments: number,
-  _thetaStart: number,
-  _thetaLength: number,
+  _innerRadius: number;
+  _outerRadius: number;
+  _thetaSegments: number;
+  _phiSegments: number;
+  _thetaStart: number;
+  _thetaLength: number;
   _needsUpdate: boolean;
 
   constructor(guiSys: GuiSys, rnctx: ReactNativeContext) {
