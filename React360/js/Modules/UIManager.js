@@ -16,6 +16,7 @@ import RCTCylinder from '../Views/Cylinder';
 import RCTPlane from '../Views/Plane';
 import ShadowView from '../Renderer/Views/ShadowView';
 import RCTSphere from '../Views/Sphere';
+import RCTRing from '../Views/Ring';
 import RCTImage from '../Views/Image';
 import RCTView from '../Views/View';
 import RCTPano from '../Views/Pano';
@@ -239,6 +240,9 @@ export default class UIManager extends Module {
     });
     this.registerViewType('Sphere', RCTSphere.describe(), () => {
       return new RCTSphere(guiSys, rnctx);
+    });
+    this.registerViewType('Ring', RCTRing.describe(), () => {
+      return new RCTRing(guiSys, rnctx);
     });
     this.registerViewType('Prefetch', RCTPrefetch.describe(), () => {
       return new RCTPrefetch(guiSys);
