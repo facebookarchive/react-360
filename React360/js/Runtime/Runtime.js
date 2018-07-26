@@ -18,11 +18,10 @@ import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
 import type {CustomView} from '../Modules/UIManager';
-import RenderRoot from '../Renderer/RenderRoot';
-import type ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
 import GuiSys from '../OVRUI/UIView/GuiSys';
 import {ReactNativeContext} from '../ReactNativeContext';
 import ReactContext from './ReactContext';
+import SurfaceRuntime from './SurfaceRuntime';
 
 type LocationNode = {
   location: Location,
@@ -74,22 +73,21 @@ const SURFACE_DEPTH = 4; // 4 meters
 export default class Runtime {
   _cursorIntersectsSurface: boolean;
   _initialized: boolean;
-  _lastHit: ?ShadowViewWebGL<any>;
+  _lastHit: ?number;
   _offscreenRenderUID: number;
-  _renderRoots: Array<RenderRoot>; // maps root view tag to RenderRoot instance
   _rootLocations: Array<LocationNode>;
   _rootSurfaces: {[id: string]: SurfaceNode};
   _scene: THREE.Scene;
   context: ReactContext | ReactNativeContext;
   executor: ReactExecutor;
   guiSys: GuiSys;
+  surfaceRuntime: SurfaceRuntime;
 
   constructor(
     scene: THREE.Scene,
     bundle: string,
     options: RuntimeOptions = {},
   ) {
-    this._renderRoots = [];
     this._rootLocations = [];
     this._rootSurfaces = {};
     this._scene = scene;
@@ -131,6 +129,7 @@ export default class Runtime {
       this.context = new ReactContext(this.executor, {
         assetRoot: options.assetRoot,
       });
+      this.surfaceRuntime = new SurfaceRuntime(this.context);
     } else {
       this.guiSys = new GuiSys(scene, {});
       this.context = new ReactNativeContext(this.guiSys, this.executor, {
@@ -159,16 +158,14 @@ export default class Runtime {
     if (dest instanceof Surface) {
       const context = this.context;
       if (context instanceof ReactContext) {
-        const root = new RenderRoot();
-        const tag = this.context.createRootView(name, root, initialProps);
-        this._renderRoots[tag] = root;
-        const scene = dest.getScene();
-        if (root.rootView) {
-          scene.add(root.rootView.view.getNode());
-        }
+        const tag = this.surfaceRuntime.createRootView(
+          name,
+          initialProps,
+          dest.getScene(),
+        );
         const uid = this._offscreenRenderUID++;
         this._rootSurfaces[String(uid)] = {
-          scene: scene,
+          scene: dest.getScene(),
           camera: dest.getCamera(),
           renderTarget: dest.getRenderTarget(),
         };
@@ -255,15 +252,15 @@ export default class Runtime {
           args: events[i],
         });
       }
-    } else if (this._lastHit) {
+    } else if (this._lastHit != null) {
       for (let i = 0; i < events.length; i++) {
         this.context.callFunction('RCTEventEmitter', 'receiveEvent', [
-          this._lastHit.tag,
+          this._lastHit,
           'topInput',
           {
             inputEvent: events[i],
-            target: this._lastHit.tag,
-            source: this._lastHit.tag,
+            target: this._lastHit,
+            source: this._lastHit,
           },
         ]);
       }
@@ -297,8 +294,12 @@ export default class Runtime {
         const scene = hit.object.subScene;
         const x = hit.uv.x * scene._rttWidth;
         const y = (1 - hit.uv.y) * scene._rttHeight;
-        if (surface && this._renderRoots[surface.rootTag]) {
-          const surfaceHit = this._renderRoots[surface.rootTag].hitTest(x, y);
+        if (surface && this.surfaceRuntime) {
+          const surfaceHit = this.surfaceRuntime.getHitTag(
+            surface.rootTag,
+            x,
+            y,
+          );
           this.setHitTarget(surfaceHit);
           return;
         }
@@ -347,8 +348,8 @@ export default class Runtime {
     );
   }
 
-  setHitTarget(view: ?ShadowViewWebGL<any>) {
-    if (view === this._lastHit) {
+  setHitTarget(tag: ?number) {
+    if (tag === this._lastHit) {
       return;
     }
     const context = this.context;
@@ -360,11 +361,11 @@ export default class Runtime {
       // Fire focus lost event
       context.enqueueOnExit(this._lastHit);
     }
-    if (view) {
+    if (tag != null) {
       // Fire focus gained event
-      context.enqueueOnEnter(view);
+      context.enqueueOnEnter(tag);
     }
-    this._lastHit = view;
+    this._lastHit = tag;
   }
 
   set2DRays(rays: Array<Ray>, surface: Surface) {

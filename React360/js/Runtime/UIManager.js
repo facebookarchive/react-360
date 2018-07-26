@@ -12,15 +12,19 @@
 import * as Flexbox from '../Renderer/FlexboxImplementation';
 import Image from '../Renderer/Views/Image';
 import type RenderRoot from '../Renderer/RenderRoot';
+import RawText from '../Renderer/Views/RawText';
 import type ShadowView, {Dispatcher} from '../Renderer/Views/ShadowView';
-import type ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
+import ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
+import Text from '../Renderer/Views/Text';
 import View from '../Renderer/Views/View';
 
 import Module from '../Modules/Module';
+import SDFTextImplementation from '../Text/Implementations/SDFTextImplementation';
+import type {TextImplementation} from '../Text/TextTypes';
 import type ReactContext from './ReactContext';
 
 type Attributes = {[attr: string]: any};
-type ViewCreator = (...any) => ShadowViewWebGL<any>;
+type ViewCreator = (...any) => any;
 
 const ROOT_TAG_INCREMENT = 10;
 
@@ -38,6 +42,7 @@ export default class UIManager extends Module {
   _nextRootTag: number;
   _renderRoots: Array<RenderRoot>;
   _rootViews: Array<ShadowViewWebGL<any>>;
+  _textImplementation: TextImplementation;
   _views: Array<ShadowViewWebGL<any>>;
   _viewTypes: Array<string>;
   _viewTypeCreators: {[t: string]: ViewCreator};
@@ -54,7 +59,9 @@ export default class UIManager extends Module {
     this._viewTypeCreators = {};
     this._viewDispatchers = {};
 
-    this.customDirectEventTypes = {
+    this._textImplementation = new SDFTextImplementation();
+
+    (this: any).customDirectEventTypes = {
       topLayout: {registrationName: 'onLayout'},
       topLoadStart: {registrationName: 'onLoadStart'},
       topLoad: {registrationName: 'onLoad'},
@@ -68,7 +75,7 @@ export default class UIManager extends Module {
       topTimeUpdate: {registrationName: 'onTimeUpdate'},
       topPlayStatusChange: {registrationName: 'onPlayStatusChange'},
     };
-    this.customBubblingEventTypes = {
+    (this: any).customBubblingEventTypes = {
       topChange: {
         phasedRegistrationNames: {
           bubbled: 'onChange',
@@ -99,6 +106,16 @@ export default class UIManager extends Module {
       Image.registerBindings.bind(Image),
       () => new Image(),
     );
+    this.registerViewType(
+      'RCTText',
+      Text.registerBindings.bind(Text),
+      () => new Text(this._textImplementation),
+    );
+    this.registerViewType(
+      'RCTRawText',
+      RawText.registerBindings.bind(RawText),
+      () => new RawText(),
+    );
   }
 
   registerViewType(
@@ -124,7 +141,9 @@ export default class UIManager extends Module {
     this._viewTypes[tag] = type;
     newView.tag = tag;
     newView.rootTag = rootTag;
-    this._renderRoots[rootTag].addView(newView);
+    if (newView instanceof ShadowViewWebGL) {
+      this._renderRoots[rootTag].addView(newView);
+    }
 
     this.updateView(tag, type, attr);
     return newView;

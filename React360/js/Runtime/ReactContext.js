@@ -121,19 +121,19 @@ export default class ReactContext {
     this.TextureManager.registerLocalTextureSource(name, source, options);
   }
 
-  enqueueOnEnter(view: ShadowViewWebGL<any>) {
+  enqueueOnEnter(tag: number) {
     this.callFunction('RCTEventEmitter', 'receiveEvent', [
-      view.tag,
+      tag,
       'topEnter',
-      {target: view.tag},
+      {target: tag},
     ]);
   }
 
-  enqueueOnExit(view: ShadowViewWebGL<any>) {
+  enqueueOnExit(tag: number) {
     this.callFunction('RCTEventEmitter', 'receiveEvent', [
-      view.tag,
+      tag,
       'topExit',
-      {target: view.tag},
+      {target: tag},
     ]);
   }
 }

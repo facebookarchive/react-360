@@ -16,24 +16,29 @@ jest.dontMock('../BreakIterator').dontMock('../wrapText');
 const wrapText = require('../wrapText').default;
 
 const monospaceTextImpl = {
-  measure(font, size, text) {
-    const glyphMetrics = [];
+  extractGlyphs(font, size, text) {
+    const glyphs = [];
     for (const glyph of text) {
       if (glyph.match(/[\r\n]/)) {
         continue;
       }
-      glyphMetrics.push({
-        ascend: 18,
-        descend: 0,
-        lineHeight: 24,
-        width: 14,
+      glyphs.push({
+        code: glyph,
+        attributes: {},
+        color: 0xffffffff,
+        metrics: {
+          ascend: 18,
+          descend: 0,
+          lineHeight: 24,
+          width: 14,
+        },
       });
     }
     return {
-      glyphMetrics,
+      glyphs,
       maxAscend: 18,
       maxDescend: 0,
-      width: 14 * glyphMetrics.length,
+      totalWidth: 14 * glyphs.length,
     };
   },
 };
@@ -44,10 +49,10 @@ describe('wrapText', () => {
     const wrapped = wrapText(monospaceTextImpl, '', 20, text, undefined, {
       forcePolyfill: true,
     });
-    expect(wrapped.length).toBe(1);
-    expect(wrapped[0].text).toBe(text);
-    expect(wrapped[0].dimensions.width).toBe(text.length * 14);
-    expect(wrapped[0].dimensions.glyphMetrics.length).toBe(text.length);
+    const lines = wrapped.lines;
+    expect(lines.length).toBe(1);
+    expect(lines[0].width).toBe(text.length * 14);
+    expect(lines[0].glyphs.map(g => g.code)).toEqual([...text]);
   });
 
   it('works with unicode', () => {
@@ -55,10 +60,11 @@ describe('wrapText', () => {
     const wrapped = wrapText(monospaceTextImpl, '', 20, text, undefined, {
       forcePolyfill: true,
     });
-    expect(wrapped.length).toBe(1);
-    expect(wrapped[0].text).toBe(text);
-    expect(wrapped[0].dimensions.width).toBe(13 * 14);
-    expect(wrapped[0].dimensions.glyphMetrics.length).toBe(13);
+    const lines = wrapped.lines;
+    expect(lines.length).toBe(1);
+    expect(lines[0].width).toBe(13 * 14);
+    expect(lines[0].glyphs.length).toBe(13);
+    expect(lines[0].glyphs.map(g => g.code)).toEqual([...text]);
   });
 
   it('wraps text when width is limited', () => {
@@ -66,11 +72,12 @@ describe('wrapText', () => {
     const wrapped = wrapText(monospaceTextImpl, '', 20, text, 18 * 14, {
       forcePolyfill: true,
     });
-    expect(wrapped.length).toBe(2);
-    expect(wrapped[0].text).toBe('Long sentence for ');
-    expect(wrapped[0].dimensions.width).toBe(18 * 14);
-    expect(wrapped[1].text).toBe('multiple lines');
-    expect(wrapped[1].dimensions.width).toBe(14 * 14);
+    const lines = wrapped.lines;
+    expect(lines.length).toBe(2);
+    expect(lines[0].glyphs.map(g => g.code)).toEqual([...'Long sentence for ']);
+    expect(lines[0].width).toBe(18 * 14);
+    expect(lines[1].glyphs.map(g => g.code)).toEqual([...'multiple lines']);
+    expect(lines[1].width).toBe(14 * 14);
   });
 
   it('forces a wrap on a newline', () => {
@@ -78,9 +85,10 @@ describe('wrapText', () => {
     const wrapped = wrapText(monospaceTextImpl, '', 20, text, undefined, {
       forcePolyfill: true,
     });
-    expect(wrapped.length).toBe(2);
-    expect(wrapped[0].text).toBe('Multi-line text');
-    expect(wrapped[1].text).toBe('  should be split');
+    const lines = wrapped.lines;
+    expect(lines.length).toBe(2);
+    expect(lines[0].glyphs.map(g => g.code)).toEqual([...'Multi-line text']);
+    expect(lines[1].glyphs.map(g => g.code)).toEqual([...'  should be split']);
   });
 
   it('forces multiple newlines', () => {
@@ -88,10 +96,11 @@ describe('wrapText', () => {
     const wrapped = wrapText(monospaceTextImpl, '', 20, text, undefined, {
       forcePolyfill: true,
     });
-    expect(wrapped.length).toBe(4);
-    expect(wrapped[0].text).toBe('Multi-line text');
-    expect(wrapped[1].text).toBe('');
-    expect(wrapped[2].text).toBe('');
-    expect(wrapped[3].text).toBe('  should be split');
+    const lines = wrapped.lines;
+    expect(lines.length).toBe(4);
+    expect(lines[0].glyphs.map(g => g.code)).toEqual([...'Multi-line text']);
+    expect(lines[1].glyphs).toEqual([]);
+    expect(lines[2].glyphs).toEqual([]);
+    expect(lines[3].glyphs.map(g => g.code)).toEqual([...'  should be split']);
   });
 });

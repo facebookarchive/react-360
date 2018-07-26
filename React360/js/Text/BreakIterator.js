@@ -32,9 +32,9 @@ export default class BreakIterator {
     this._pos = 0;
   }
 
-  @@iterator(): Iterator<number> {
-    return this;
-  }
+  // Flow-only iterator annotation
+  /* eslint-disable-next-line */
+  /*:: @@iterator(): Iterator<number> { return this; } */
   // $FlowFixMe - Computed properties not supported
   [Symbol.iterator]() {
     return this;
