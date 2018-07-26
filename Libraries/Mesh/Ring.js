@@ -24,9 +24,12 @@ const resolveAssetSource = require('resolveAssetSource');
  *
  * ```
  * <Ring
- *   radius={0.5}
- *   widthSegments={20}
- *   heightSegments={12}
+ *   innerRadius={0.5}
+ *   outerRadius={1}
+ *   thetaSegments={8}
+ *   phiSegments={1}
+ *   thetaStart={0}
+ *   thetaLength={Math.PI * 2}
  * />
  * ```
  *
@@ -82,38 +85,58 @@ const Ring = createReactClass({
     wireframe: PropTypes.bool,
 
     /**
-     * The radius in meters of the sphere
+     * The inner radius in meters of the ring. Default is 0.5
      */
-    radius: PropTypes.number,
+    innerRadius: PropTypes.number,
 
     /**
-     * The number of segments around the sphere. Large corresponds to a smoother sphere but
-     * is slower to render
+     * The outer radius in meters of the ring. Default is 1
      */
-    widthSegments: PropTypes.number,
+    outerRadius: PropTypes.number,
 
     /**
-     * The number of segments between the poles of the sphere. Large corresponds to a smoother
-     * sphere but is slower to render
+     * The number of segments. A higher number means the ring will be more round. Minimum is 3. Default is 8. 
      */
-    heightSegments: PropTypes.number,
+    thetaSegments: PropTypes.number,
+
+    /**
+     * The phi segments. Minimum is 1. Default is 1.
+     */
+    phiSegments: PropTypes.number,
+
+    /**
+     * Starting angle. Default is 0. 
+     */
+    thetaStart: PropTypes.number,
+    
+    /**
+     * Central angle. Default is Math.PI * 2.
+     */
+    thetaLength: PropTypes.number,
+
   },
 
   viewConfig: {
     uiViewClassName: 'Ring',
     validAttributes: {
       ...ReactNativeViewAttributes.RCTView,
-      radius: true,
-      widthSegments: true,
-      heightSegments: true,
+      innerRadius: true,
+      outerRadius: true,
+      thetaSegments: true,
+      phiSegments: true,
+      thetaStart: true,
+      thetaLength: true,
     },
   },
 
   getDefaultProps() {
     return {
-      radius: 0.5,
-      widthSegments: 8,
-      heightSegments: 6,
+      innerRadius: 0.5,
+      outerRadius: 1,
+      thetaSegments: 8,
+      phiSegments: 1,
+      thetaStart: 0,
+      thetaLength: Math.PI * 2,
     };
   },
 
