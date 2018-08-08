@@ -76,8 +76,8 @@ export default class MousePanCameraController implements CameraController {
     const deltaY = e.clientY - this._lastMouseY;
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
-    this._deltaPitch += (deltaX / width) * this._verticalFov * aspect;
-    this._deltaYaw += (deltaY / height) * this._verticalFov;
+    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
+    this._deltaYaw += deltaY / height * this._verticalFov;
     this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
   }
 
@@ -107,8 +107,8 @@ export default class MousePanCameraController implements CameraController {
     const deltaY = y - this._lastTouchY;
     this._lastTouchX = x;
     this._lastTouchY = y;
-    this._deltaPitch += (deltaX / width) * this._verticalFov * aspect;
-    this._deltaYaw += (deltaY / height) * this._verticalFov;
+    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
+    this._deltaYaw += deltaY / height * this._verticalFov;
     this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
   }
 

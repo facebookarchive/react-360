@@ -56,7 +56,7 @@ export default class ReactContext {
   createRootView(
     module: string,
     renderRoot: RenderRoot,
-    props: {[prop: string]: any} = {}
+    props: {[prop: string]: any} = {},
   ): number {
     const tag = this.UIManager.createRootTag();
     this.executor.call('AppRegistry', 'runApplication', [
@@ -89,7 +89,7 @@ export default class ReactContext {
           for (let i = 0; i < moduleIndex.length; i++) {
             this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
               this.modules[moduleIndex[i]],
-              params[i]
+              params[i],
             );
           }
         }
@@ -113,15 +113,27 @@ export default class ReactContext {
     this.modules.push(module);
   }
 
-  registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
+  registerTextureSource(
+    name: string,
+    source: Element,
+    options: {[key: string]: any} = {},
+  ) {
     this.TextureManager.registerLocalTextureSource(name, source, options);
   }
 
   enqueueOnEnter(tag: number) {
-    this.callFunction('RCTEventEmitter', 'receiveEvent', [tag, 'topEnter', {target: tag}]);
+    this.callFunction('RCTEventEmitter', 'receiveEvent', [
+      tag,
+      'topEnter',
+      {target: tag},
+    ]);
   }
 
   enqueueOnExit(tag: number) {
-    this.callFunction('RCTEventEmitter', 'receiveEvent', [tag, 'topExit', {target: tag}]);
+    this.callFunction('RCTEventEmitter', 'receiveEvent', [
+      tag,
+      'topExit',
+      {target: tag},
+    ]);
   }
 }

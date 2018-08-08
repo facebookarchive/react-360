@@ -97,7 +97,8 @@ class ModelSample extends React.Component {
             position: 'absolute',
             transform: [{translate: [0, -2.5, -7]}],
             layoutOrigin: [0.5, 0.5],
-          }}>
+          }}
+        >
           Creature
         </Text>
       </View>

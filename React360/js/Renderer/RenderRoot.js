@@ -81,7 +81,11 @@ export default class RenderRoot {
     return this.views[tag];
   }
 
-  setChildAtIndex(parent: ShadowViewWebGL<*>, index: number, child: ShadowViewWebGL<*>): void {
+  setChildAtIndex(
+    parent: ShadowViewWebGL<*>,
+    index: number,
+    child: ShadowViewWebGL<*>,
+  ): void {
     parent.addChild(index, child);
     this._renderOrderDirty = true;
   }
@@ -109,7 +113,9 @@ export default class RenderRoot {
       return;
     }
     const topContext: StackingContext = {'0': []};
-    const stack: Array<[StackingContext, ShadowViewWebGL<*>]> = [[topContext, rootView]];
+    const stack: Array<[StackingContext, ShadowViewWebGL<*>]> = [
+      [topContext, rootView],
+    ];
     // DFS through the node tree
     while (stack.length > 0) {
       const [context, node] = stack.shift();

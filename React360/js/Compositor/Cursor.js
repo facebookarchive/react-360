@@ -28,7 +28,7 @@ export default class Cursor {
     });
     this._mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(CURSOR_MESH_SIZE, CURSOR_MESH_SIZE),
-      material
+      material,
     );
     this._mesh.position.set(0, 0, 0);
     this._mesh.raycast = function() {

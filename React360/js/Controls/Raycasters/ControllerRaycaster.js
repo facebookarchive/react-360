@@ -18,7 +18,9 @@ const TYPE = 'controller';
 
 // Fallback for browsers that don't support a getGamepads interface
 const getGamepads: () => Array<Gamepad> =
-  typeof navigator.getGamepads === 'function' ? navigator.getGamepads.bind(navigator) : () => [];
+  typeof navigator.getGamepads === 'function'
+    ? navigator.getGamepads.bind(navigator)
+    : () => [];
 
 const armModelVector = [0, 0, -1];
 function basicArmModel(origin: Vec3, orientation: Quaternion, hand: ?string) {

@@ -17,14 +17,15 @@ import {Text, View} from 'react-vr';
 import {connect} from 'react-redux';
 import styles from './styles';
 
-const renderScore = (key, score, local) => (
+const renderScore = (key, score, local) =>
   <View style={styles.square} key={key}>
-    <Text style={local ? styles.text : styles.grayText}>{score}</Text>
-  </View>
-);
+    <Text style={local ? styles.text : styles.grayText}>
+      {score}
+    </Text>
+  </View>;
 
 // TODO(jimp): fix layout to show all scores rather than first 4.
-const renderScores = ({scores, id}) => (
+const renderScores = ({scores, id}) =>
   <View style={styles.board}>
     <View style={styles.row}>
       {Object.keys(scores)
@@ -32,8 +33,7 @@ const renderScores = ({scores, id}) => (
         .slice(0, 4)
         .map((key, index) => renderScore(key, scores[key].length, key === id))}
     </View>
-  </View>
-);
+  </View>;
 
 const mapStateToProps = (state, ownProps) => ({
   scores: state.scores,
@@ -42,9 +42,6 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({});
 
-const Scores = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(renderScores);
+const Scores = connect(mapStateToProps, mapDispatchToProps)(renderScores);
 
 export default Scores;

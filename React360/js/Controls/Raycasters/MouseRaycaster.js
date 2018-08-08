@@ -38,7 +38,7 @@ export default class MouseRaycaster implements Raycaster {
     }
     const width = this._frame.clientWidth;
     const height = this._frame.clientHeight;
-    const x = (e.offsetX / width) * 2 - 1;
+    const x = e.offsetX / width * 2 - 1;
     const y = -(e.offsetY / height) * 2 + 1;
     this._lastX = x;
     this._lastY = y;
@@ -70,7 +70,7 @@ export default class MouseRaycaster implements Raycaster {
       return false;
     }
 
-    const fov = (this._fov * Math.PI) / 180;
+    const fov = this._fov * Math.PI / 180;
     const tan = Math.tan(fov / 2);
     const aspect = this._frame.clientWidth / this._frame.clientHeight;
     const x = aspect * tan * lastX;

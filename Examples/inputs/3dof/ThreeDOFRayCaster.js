@@ -71,12 +71,12 @@ export default class ThreeDOFRayCaster extends RayCaster {
       i++;
     }
 
-    window.addEventListener('gamepadconnected', e => {
+    window.addEventListener('gamepadconnected', (e) => {
       if (this._gamepadIndex < 0 && e.gamepad.pose) {
         this._setUpGamepad(e.gamepad);
       }
     });
-    window.addEventListener('gamepaddisconnected', e => {
+    window.addEventListener('gamepaddisconnected', (e) => {
       if (this._gamepadIndex === e.gamepad.index) {
         this._scene.remove(this._mesh);
         this._gamepadIndex = -1;
@@ -117,7 +117,7 @@ export default class ThreeDOFRayCaster extends RayCaster {
       new THREE.Vector3(-0.01, -0.01, 0),
       new THREE.Vector3(0.01, -0.01, 0),
       new THREE.Vector3(0.01, -0.01, -1),
-      new THREE.Vector3(-0.01, -0.01, -1)
+      new THREE.Vector3(-0.01, -0.01, -1),
     );
     beamGeom.faces.push(
       new THREE.Face3(0, 1, 3),
@@ -127,7 +127,7 @@ export default class ThreeDOFRayCaster extends RayCaster {
       new THREE.Face3(5, 4, 6),
       new THREE.Face3(4, 7, 6),
       new THREE.Face3(4, 0, 7),
-      new THREE.Face3(0, 3, 7)
+      new THREE.Face3(0, 3, 7),
     );
     const uvs = [
       new THREE.Vector2(0, 1),
@@ -145,7 +145,10 @@ export default class ThreeDOFRayCaster extends RayCaster {
     beamGeom.faceVertexUvs[0][7] = [uvs[1], uvs[2], uvs[3]];
     beamGeom.verticesNeedUpdate = true;
     beamGeom.elementsNeedUpdate = true;
-    const beam = new THREE.Mesh(beamGeom, createFadeMaterial());
+    const beam = new THREE.Mesh(
+      beamGeom,
+      createFadeMaterial()
+    );
 
     const wand = new THREE.Mesh(
       new THREE.CylinderGeometry(0.02, 0.03, 0.2, 16),
@@ -224,12 +227,7 @@ export default class ThreeDOFRayCaster extends RayCaster {
       // Rotate <0, 0, -1> by the controller pose quaternion
       this._vector.set(0, 0, -1);
       const orientation = gamepad.pose.orientation;
-      this._controllerQuaternion.set(
-        orientation[0],
-        orientation[1],
-        orientation[2],
-        orientation[3]
-      );
+      this._controllerQuaternion.set(orientation[0], orientation[1], orientation[2], orientation[3]);
       this._cameraQuaternion.copy(camera.quaternion);
       this._cameraQuaternion.inverse();
 

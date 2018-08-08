@@ -25,7 +25,7 @@ function init(bundle, parent, options) {
         count++;
         last = ms;
       } else {
-        const fps = (count * 1000) / sum;
+        const fps = count * 1000 / sum;
         sum = 0;
         count = 0;
         bars.push(fps);
@@ -39,7 +39,7 @@ function init(bundle, parent, options) {
         // draw fps bars
         cx.fillStyle = '#2255ff';
         for (let i = 0; i < bars.length; i++) {
-          const height = (bars[i] / 60) * 100;
+          const height = bars[i] / 60 * 100;
           cx.fillRect(8 * i, 256 - height, 8, height);
         }
         // draw fps rate

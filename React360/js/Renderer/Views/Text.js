@@ -50,8 +50,9 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     });
     this.view.getNode().add(this._text.getNode());
 
-    this.YGNode.setMeasureFunc((width, widthMeasureMode, height, heightMeasureMode) =>
-      this.measure(width, widthMeasureMode, height, heightMeasureMode)
+    this.YGNode.setMeasureFunc(
+      (width, widthMeasureMode, height, heightMeasureMode) =>
+        this.measure(width, widthMeasureMode, height, heightMeasureMode),
     );
   }
 
@@ -97,7 +98,12 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this._text.getNode().renderOrder = order;
   }
 
-  measure(width: number, widthMeasureMode: number, height: number, heightMeasureMode: number) {
+  measure(
+    width: number,
+    widthMeasureMode: number,
+    height: number,
+    heightMeasureMode: number,
+  ) {
     if (
       widthMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY ||
       heightMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY
@@ -171,7 +177,9 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
         offX, offY, 0, 1,
       ];
       matrixMultiply4(transform, this.view.getWorldTransform());
-      this._text.getNode().material.uniforms.u_transform.value.fromArray(transform);
+      this._text
+        .getNode()
+        .material.uniforms.u_transform.value.fromArray(transform);
     }
   }
 }

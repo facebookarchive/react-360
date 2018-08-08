@@ -24,7 +24,7 @@ export default class Runner {
         callback(null, fs.readFileSync(path.resolve('.', pathname.replace(/^\//, '')), 'utf8'));
       }
     };
-    this.loaded = new Promise(resolve => {
+    this.loaded = new Promise((resolve) => {
       this.dom = jsdom.env({
         html: html,
         url: 'http://localhost:8081/',
@@ -49,7 +49,7 @@ export default class Runner {
             w.cancelAnimationFrame = function(id) {
               clearTimeout(id);
             };
-          })(win);
+          }(win));
         },
         done: function(err, win) {
           resolve(win);

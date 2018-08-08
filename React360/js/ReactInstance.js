@@ -107,7 +107,11 @@ export default class ReactInstance {
    * Create a new instance of a React 360 app, given a path to the React 360 JS
    * bundle and a DOM component to mount within.
    */
-  constructor(bundle: string, parent: HTMLElement, options: React360Options = {}) {
+  constructor(
+    bundle: string,
+    parent: HTMLElement,
+    options: React360Options = {},
+  ) {
     (this: any).enterVR = this.enterVR.bind(this);
     (this: any).frame = this.frame.bind(this);
     (this: any)._onResize = this._onResize.bind(this);
@@ -167,7 +171,9 @@ export default class ReactInstance {
           return audio;
         },
         ctx => {
-          const video = new VideoModule(this.compositor.getVideoPlayerManager());
+          const video = new VideoModule(
+            this.compositor.getVideoPlayerManager(),
+          );
           this._videoModule = video;
           return video;
         },
@@ -175,7 +181,11 @@ export default class ReactInstance {
       ],
       useNewViews: options.useNewViews,
     };
-    this.runtime = new Runtime(this.scene, bundleFromLocation(bundle), runtimeOptions);
+    this.runtime = new Runtime(
+      this.scene,
+      bundleFromLocation(bundle),
+      runtimeOptions,
+    );
 
     this.vrState = new VRState();
     this.vrState.onDisplayChange(display => {
@@ -189,9 +199,15 @@ export default class ReactInstance {
       this._needsResize = true;
     });
 
-    this.controls.addCameraController(new DeviceOrientationCameraController(this._eventLayer));
-    this.controls.addCameraController(new MousePanCameraController(this._eventLayer));
-    this.controls.addCameraController(new ScrollPanCameraController(this._eventLayer));
+    this.controls.addCameraController(
+      new DeviceOrientationCameraController(this._eventLayer),
+    );
+    this.controls.addCameraController(
+      new MousePanCameraController(this._eventLayer),
+    );
+    this.controls.addCameraController(
+      new ScrollPanCameraController(this._eventLayer),
+    );
     this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
@@ -278,7 +294,10 @@ export default class ReactInstance {
         this._cameraQuat[3] = orientation[3];
       }
     } else {
-      this.controls.fillCameraProperties(this._cameraPosition, this._cameraQuat);
+      this.controls.fillCameraProperties(
+        this._cameraPosition,
+        this._cameraQuat,
+      );
     }
     if (this._rays.length > 0) {
       for (let i = 0; i < this._rays.length; i++) {
@@ -301,7 +320,10 @@ export default class ReactInstance {
     }
     this.runtime.queueEvents(this._events);
     // Update each view
-    this.runtime.frame(this.compositor.getCamera(), this.compositor.getRenderer());
+    this.runtime.frame(
+      this.compositor.getCamera(),
+      this.compositor.getRenderer(),
+    );
     if (this._audioModule) {
       const audioModule = this._audioModule;
       audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
@@ -420,9 +442,13 @@ export default class ReactInstance {
    * out-of-VR use cases.
    */
   focusSurface(name?: string) {
-    const surface = name ? this.compositor.getSurface(name) : this.compositor.getDefaultSurface();
+    const surface = name
+      ? this.compositor.getSurface(name)
+      : this.compositor.getDefaultSurface();
     if (!surface) {
-      throw new Error(`Cannot focus Surface ${name || ''}, it is not registered`);
+      throw new Error(
+        `Cannot focus Surface ${name || ''}, it is not registered`,
+      );
     }
     const canvas = this.compositor.getCanvas();
     this._appearanceStateStack.push({
@@ -501,7 +527,7 @@ export default class ReactInstance {
         this.compositor.resize(
           leftParams.renderWidth + rightParams.renderWidth,
           Math.min(leftParams.renderHeight, rightParams.renderHeight),
-          1
+          1,
         );
       });
   }

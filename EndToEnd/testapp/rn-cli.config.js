@@ -1,7 +1,7 @@
 'use strict';
 
-const path = require('path');
-const blacklist = require('metro-bundler/src/blacklist');
+var path = require('path');
+var blacklist = require('metro-bundler/src/blacklist');
 console.log(path.resolve('react-native'));
 
 /**
@@ -11,7 +11,7 @@ console.log(path.resolve('react-native'));
  * `rn-cli.config.js` on the root of your project with the functions you need
  * to tweak.
  */
-const config = {
+var config = {
   getProjectRoots() {
     return getRoots();
   },
@@ -26,7 +26,9 @@ const config = {
   },
 
   getAssetExts() {
-    return ['obj', 'mtl'];
+    return [
+      'obj', 'mtl',
+    ];
   },
 
   getPlatforms() {
@@ -38,12 +40,13 @@ const config = {
   },
 
   extraNodeModules: {
-    ovrui: path.resolve(__dirname, '..', '..', 'OVRUI', 'src', 'OVRUI.js'),
+    'ovrui':
+      path.resolve(__dirname, '..', '..', 'OVRUI', 'src', 'OVRUI.js'),
   },
 };
 
 function getRoots() {
-  const root = process.env.REACT_NATIVE_APP_ROOT;
+  var root = process.env.REACT_NATIVE_APP_ROOT;
   if (root) {
     return [path.resolve(root)];
   }

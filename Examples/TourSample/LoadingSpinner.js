@@ -25,7 +25,7 @@ const Easing = require('Easing');
  * which looks nice and prevents spinner from appearing when loading is quick.
  *
  * When using with CylinderLayer, set pixelsPerMeter to convert units, otherise
- * set translateZ to specify distance between camera and spinner.
+ * set translateZ to specify distance between camera and spinner. 
  */
 class LoadingSpinner extends React.Component {
   static defaultProps = {

@@ -56,7 +56,7 @@ export default class Compositor {
       60,
       frame.clientWidth / frame.clientHeight,
       0.1,
-      2000
+      2000,
     );
     this._renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -67,7 +67,10 @@ export default class Compositor {
     frame.appendChild(this._renderer.domElement);
     this._scene = scene;
 
-    this._environment = new Environment(this._resourceManager, this._videoPlayers);
+    this._environment = new Environment(
+      this._resourceManager,
+      this._videoPlayers,
+    );
     scene.add(this._environment.getPanoNode());
 
     this._surfaceRoot = new THREE.Object3D();
@@ -115,7 +118,7 @@ export default class Compositor {
   addSurface(name: string, surface: Surface) {
     if (this._surfaces[name]) {
       throw new Error(
-        `Cannot add Surface with tag '${name}', a Surface with that name already exists.`
+        `Cannot add Surface with tag '${name}', a Surface with that name already exists.`,
       );
     }
     this._surfaces[name] = surface;

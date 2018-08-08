@@ -28,7 +28,7 @@ const VrSoundEffects = require('VrSoundEffects');
  * Once selected, the button disappears and a loading spinner takes its place.
  *
  * When using with CylinderLayer, set pixelsPerMeter to convert units, otherise
- * set translateZ to specify distance between camera and button.
+ * set translateZ to specify distance between camera and button. 
  */
 class NavButton extends React.Component {
   static defaultProps = {
@@ -137,13 +137,13 @@ class NavButton extends React.Component {
             alignItems: 'center',
             backgroundColor: transparent,
             borderColor: this.state.hasFocus ? 'white' : transparent,
-            borderRadius: (this.props.outerWidth / 2) * PPM,
+            borderRadius: this.props.outerWidth / 2 * PPM,
             borderWidth: this._ringWidth,
             height: this.props.outerWidth * PPM,
             justifyContent: 'center',
             width: this.props.outerWidth * PPM,
           }}>
-          {!this.props.isLoading && (
+          {!this.props.isLoading &&
             <View>
               <Animated.View
                 style={{
@@ -152,7 +152,7 @@ class NavButton extends React.Component {
                   // width for a gaze-and-fill effect.
                   backgroundColor: transparent,
                   borderColor: this.state.hasFocus ? fillColor : transparent,
-                  borderRadius: (this.props.outerWidth / 2) * PPM,
+                  borderRadius: this.props.outerWidth / 2 * PPM,
                   borderWidth: this.state.borderWidthAnim,
                   height: this.props.outerWidth * PPM - this._ringWidth * 2,
                   position: 'absolute',
@@ -171,11 +171,10 @@ class NavButton extends React.Component {
                 }}
                 source={this.props.source}
               />
-            </View>
-          )}
+            </View>}
           {this.props.isLoading && <LoadingSpinner pixelsPerMeter={PPM} />}
         </View>
-        {this.state.hasFocus && (
+        {this.state.hasFocus &&
           <Text
             style={{
               backgroundColor: 'black',
@@ -183,15 +182,14 @@ class NavButton extends React.Component {
               fontSize: this.props.height * PPM * 0.7,
               height: this.props.height * PPM,
               marginLeft: 0.05 * PPM,
-              marginTop: ((this.props.outerWidth - this.props.innerWidth) / 2) * PPM,
+              marginTop: (this.props.outerWidth - this.props.innerWidth) / 2 * PPM,
               padding: 0.1 * this.props.pixelsPerMeter,
               left: this.props.outerWidth * this.props.pixelsPerMeter + 0.05 * PPM,
               textAlign: 'center',
               textAlignVertical: 'auto',
             }}>
             {this.props.textLabel}
-          </Text>
-        )}
+          </Text>}
       </VrButton>
     );
   }

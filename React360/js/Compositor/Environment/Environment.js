@@ -60,7 +60,13 @@ export default class Environment {
     this._videoPlayers = videoPlayers;
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
-    this._panoGeomHemisphere = new THREE.SphereGeometry(1000, 16, 16, 0, Math.PI);
+    this._panoGeomHemisphere = new THREE.SphereGeometry(
+      1000,
+      16,
+      16,
+      0,
+      Math.PI,
+    );
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#000000',
       side: THREE.DoubleSide,
@@ -165,7 +171,7 @@ export default class Environment {
   _setBackground(
     loader: ?Promise<TextureMetadata>,
     id: ?string,
-    transitionTime: ?number
+    transitionTime: ?number,
   ): Promise<void> {
     const oldID = this._panoSource;
     this._panoSource = id;
@@ -198,8 +204,12 @@ export default class Environment {
   }
 
   setVideoSource(handle: string, options: PanoOptions = {}) {
-    const player = this._videoPlayers ? this._videoPlayers.getPlayer(handle) : null;
-    const loader = player ? player.load().then(data => ({...data, src: handle})) : null;
+    const player = this._videoPlayers
+      ? this._videoPlayers.getPlayer(handle)
+      : null;
+    const loader = player
+      ? player.load().then(data => ({...data, src: handle}))
+      : null;
     return this._setBackground(loader, handle, options.transition);
   }
 

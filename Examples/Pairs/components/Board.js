@@ -25,7 +25,9 @@ const renderSquare = (value, rowIndex, columnIndex, state, onSquareClick) => (
     onClick={() => onSquareClick(rowIndex, columnIndex, value, state)}
     key={rowIndex + ':' + columnIndex}>
     <View style={styles.square}>
-      <Text style={styles.text}>{value > 0 ? value : ''}</Text>
+      <Text style={styles.text}>
+        {value > 0 ? value : ''}
+      </Text>
     </View>
   </VrButton>
 );
@@ -89,9 +91,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 });
 
-const Board = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(renderBoard);
+const Board = connect(mapStateToProps, mapDispatchToProps)(renderBoard);
 
 export default Board;

@@ -103,7 +103,7 @@ const genHide = genShow.then(showAction => {
 });
 
 const genScore = gen.posInt.then(n => {
-  const value = (n % ((width * height) / 2)) + 1;
+  const value = n % (width * height / 2) + 1;
   return gen.oneOf(clients).then(client => {
     return scoreSquare(client, value);
   });

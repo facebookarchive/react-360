@@ -16,14 +16,21 @@
 
 /**
  * VideoSample360 displays a 360 video pano, along with a video control component.
- *
- * The video can be controlled by the video control component. To do this, a
+ * 
+ * The video can be controlled by the video control component. To do this, a 
  * MediaPlayerState is created and hooked to video and video control component.
  * See [MediaPlayerState](docs/mediaplayerstate.html)
  */
 
 import React from 'react';
-import {asset, AppRegistry, View, VideoPano, VideoControl, MediaPlayerState} from 'react-vr';
+import {
+  asset,
+  AppRegistry,
+  View,
+  VideoPano,
+  VideoControl,
+  MediaPlayerState,
+} from 'react-vr';
 
 /**
  * VideoSample360 created a MediaPlayerState and hook it with video and video control.

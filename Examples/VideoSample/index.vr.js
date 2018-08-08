@@ -16,14 +16,22 @@
 
 /**
  * VideoSample displays a flat 2d video, along with a video control component.
- *
- * The video can be controlled by the video control component. To do this, a
+ * 
+ * The video can be controlled by the video control component. To do this, a 
  * MediaPlayerState is created and hooked to video and video control component.
  * See [MediaPlayerState](docs/mediaplayerstate.html)
  */
 
 import React from 'react';
-import {asset, AppRegistry, Pano, View, Video, VideoControl, MediaPlayerState} from 'react-vr';
+import {
+  asset,
+  AppRegistry,
+  Pano,
+  View,
+  Video,
+  VideoControl,
+  MediaPlayerState,
+} from 'react-vr';
 
 /**
  * VideoSample created a MediaPlayerState and hook it with video and video control.
@@ -49,7 +57,10 @@ class VideoSample extends React.Component {
           }}>
           <Video
             style={{height: 2.25, width: 4}}
-            source={[asset('video.mp4', {format: 'mp4'}), asset('video.webm', {format: 'webm'})]}
+            source={[
+              asset('video.mp4', {format: 'mp4'}),
+              asset('video.webm', {format: 'webm'}),
+            ]}
             playerState={this.state.playerState}
           />
           <VideoControl style={{height: 0.2, width: 4}} playerState={this.state.playerState} />

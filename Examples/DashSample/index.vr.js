@@ -24,8 +24,8 @@ import {AppRegistry, asset, Pano, View, Video, VideoControl, MediaPlayerState} f
  *
  * To run DashSample, you need to first run `npm install` in `/DashSample` to install
  * `dashjs` and download the assets.
- *
- * The video can be controlled by the video control component. To do this, a
+ * 
+ * The video can be controlled by the video control component. To do this, a 
  * MediaPlayerState is created and hooked to video and video control component.
  * See [MediaPlayerState](docs/mediaplayerstate.html)
  */

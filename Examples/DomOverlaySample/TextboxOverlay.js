@@ -27,13 +27,7 @@ const TextboxOverlay = props => {
           <ul>
             {props.links &&
               props.links.map((link, index) => {
-                return (
-                  <li>
-                    <a href={link.url} target="_blank">
-                      {link.text}
-                    </a>
-                  </li>
-                );
+                return <li><a href={link.url} target="_blank">{link.text}</a></li>;
               })}
           </ul>
         </div>

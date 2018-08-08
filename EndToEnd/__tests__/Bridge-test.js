@@ -38,7 +38,7 @@ const html = `
 describe('React Bridge', () => {
   it('exposes Native Modules', () => {
     const runner = new Runner(html, {});
-    return runner.loaded.then(window => {
+    return runner.loaded.then((window) => {
       const workerWindow = window.vr.rootView.context.bridge.getWorker().sandbox.window;
       expect(workerWindow.NativeModules).toBeTruthy();
       const vrConstants = workerWindow.NativeModules.ReactVRConstants;
@@ -48,7 +48,7 @@ describe('React Bridge', () => {
 
   it('constructs the scene', () => {
     const runner = new Runner(html, {});
-    return runner.loaded.then(window => {
+    return runner.loaded.then((window) => {
       const top = window.vr.scene.children[0].children[0];
       expect(top).toBeTruthy();
       expect(top.type).toBe('UIView');
