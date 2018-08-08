@@ -6,7 +6,7 @@ import dashjs from 'dashjs';
 
 const browserSupportedFormat = getSupportedFormats();
 const dashFormats = ['mp4', 'webm'];
-const dashSupportedFormats = dashFormats.filter((format) => {
+const dashSupportedFormats = dashFormats.filter(format => {
   return browserSupportedFormat.indexOf(format) > -1;
 });
 

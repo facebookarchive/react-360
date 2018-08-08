@@ -84,7 +84,7 @@ window.addEventListener('message', function(e) {
         cmd: 'moduleConfig',
         moduleConfig: {remoteModuleConfig: moduleDescription},
       },
-      ReactExecutor.replaceHiddenAttributes,
+      ReactExecutor.replaceHiddenAttributes
     );
     this._iframe.contentWindow.postMessage(msg, '*');
   }

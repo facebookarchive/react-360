@@ -61,7 +61,7 @@ export default class TouchRaycaster implements Raycaster {
       localY -= frame.offsetTop;
       frame = frame.parentNode;
     }
-    const x = localX / width * 2 - 1;
+    const x = (localX / width) * 2 - 1;
     const y = -(localY / height) * 2 + 1;
     this._lastX = x;
     this._lastY = y;
@@ -80,10 +80,7 @@ export default class TouchRaycaster implements Raycaster {
     }
     // Set a timeout before clearing the last position. This accounts for the
     // finger briefly leaving the screen.
-    this._touchReleaseTimeout = setTimeout(
-      this._resetLastReading,
-      TOUCH_RELEASE_DELAY,
-    );
+    this._touchReleaseTimeout = setTimeout(this._resetLastReading, TOUCH_RELEASE_DELAY);
   }
 
   _resetLastReading() {
@@ -117,7 +114,7 @@ export default class TouchRaycaster implements Raycaster {
       return false;
     }
 
-    const fov = this._fov * Math.PI / 180;
+    const fov = (this._fov * Math.PI) / 180;
     const tan = Math.tan(fov / 2);
     const aspect = this._frame.clientWidth / this._frame.clientHeight;
     const x = aspect * tan * lastX;

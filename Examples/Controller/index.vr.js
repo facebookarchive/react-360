@@ -34,12 +34,9 @@ class PressState extends React.Component {
           backgroundColor: this.state.hasFocus ? '#333333' : 'black',
         }}
         onEnter={() => this.setState({hasFocus: true})}
-        onExit={() => this.setState({hasFocus: false})}
-      >
+        onExit={() => this.setState({hasFocus: false})}>
         <View style={{width: 0.5, height: 0.1}}>
-          <Text style={{fontSize: 0.08, textAlign: 'center'}}>
-            {this.props.id}
-          </Text>
+          <Text style={{fontSize: 0.08, textAlign: 'center'}}>{this.props.id}</Text>
         </View>
         <View
           style={{
@@ -75,17 +72,14 @@ class SliderState extends React.Component {
           backgroundColor: this.state.hasFocus ? '#333333' : 'black',
         }}
         onEnter={() => this.setState({hasFocus: true})}
-        onExit={() => this.setState({hasFocus: false})}
-      >
+        onExit={() => this.setState({hasFocus: false})}>
         <View style={{width: 0.5, height: 0.1}}>
-          <Text style={{fontSize: 0.08, textAlign: 'center'}}>
-            {this.props.id}
-          </Text>
+          <Text style={{fontSize: 0.08, textAlign: 'center'}}>{this.props.id}</Text>
         </View>
         <View style={{width: 0.4, height: 0.1}}>
           <View
             style={{
-              width: 0.4 * (this.props.value + 1) / 2,
+              width: (0.4 * (this.props.value + 1)) / 2,
               height: 0.1,
               backgroundColor: 'yellow',
             }}
@@ -193,11 +187,12 @@ class ControllerDemo extends React.Component {
   }
 
   render() {
-    const controllers = this.state.controllers === null
-      ? <Text style={styles.waiting}>Waiting...</Text>
-      : <View style={styles.controllers}>
-          {ControllerList(this.state.controllers)}
-        </View>;
+    const controllers =
+      this.state.controllers === null ? (
+        <Text style={styles.waiting}>Waiting...</Text>
+      ) : (
+        <View style={styles.controllers}>{ControllerList(this.state.controllers)}</View>
+      );
     return (
       <View style={{layoutOrigin: [0.5, 0.5]}}>
         <Pano source={asset('chess-world.jpg')} />

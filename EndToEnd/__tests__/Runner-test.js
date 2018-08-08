@@ -19,23 +19,17 @@ process.chdir(__dirname);
 
 describe('End to End Test Runner', () => {
   it('loads injected contents', () => {
-    const runner = new Runner(
-      `<html><script src="./mocked.js"></script></html>`,
-      {
-        '/mocked.js': 'window.mockedLoaded = true;',
-      }
-    );
-    return runner.loaded.then((window) => {
+    const runner = new Runner('<html><script src="./mocked.js"></script></html>', {
+      '/mocked.js': 'window.mockedLoaded = true;',
+    });
+    return runner.loaded.then(window => {
       expect(window.mockedLoaded).toBe(true);
     });
   });
 
   it('loads contents from the filesystem', () => {
-    const runner = new Runner(
-      `<html><script src="./loadingtest.res.js"></script></html>`,
-      {}
-    );
-    return runner.loaded.then((window) => {
+    const runner = new Runner('<html><script src="./loadingtest.res.js"></script></html>', {});
+    return runner.loaded.then(window => {
       expect(window.loadedFile).toBe(true);
     });
   });
@@ -48,9 +42,9 @@ describe('End to End Test Runner', () => {
 window.worker = new Worker('worker.js');
 </script>
 </html>`,
-      {'worker.js': 'self.workerLoaded = true;'},
+      {'worker.js': 'self.workerLoaded = true;'}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.workerLoaded).toBe(true);
     });
   });
@@ -63,9 +57,9 @@ window.worker = new Worker('worker.js');
 window.worker = new Worker('loadingtest.res.js');
 </script>
 </html>`,
-      {},
+      {}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.loadedFile).toBe(true);
     });
   });
@@ -78,9 +72,9 @@ window.worker = new Worker('loadingtest.res.js');
 window.worker = new Worker('worker.js');
 </script>
 </html>`,
-      {'worker.js': 'importScripts("part2.js")', 'part2.js': 'self.part2loaded = true;'},
+      {'worker.js': 'importScripts("part2.js")', 'part2.js': 'self.part2loaded = true;'}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.part2loaded).toBe(true);
     });
   });
@@ -93,9 +87,9 @@ window.worker = new Worker('worker.js');
 window.worker = new Worker('worker.js');
 </script>
 </html>`,
-      {'worker.js': 'importScripts("loadingtest.res.js")'},
+      {'worker.js': 'importScripts("loadingtest.res.js")'}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.loadedFile).toBe(true);
     });
   });
@@ -109,9 +103,9 @@ var blob = new Blob(['self.blobLoaded = true;']);
 window.worker = new Worker(URL.createObjectURL(blob));
 </script>
 </html>`,
-      {},
+      {}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.blobLoaded).toBe(true);
     });
   });

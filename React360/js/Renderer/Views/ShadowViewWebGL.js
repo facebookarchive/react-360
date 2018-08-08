@@ -15,10 +15,7 @@ import type {GLViewCompatible} from '../Primitives/GLView';
 import * as Flexbox from '../FlexboxImplementation';
 import ShadowView, {type Dispatcher} from './ShadowView';
 
-type LayoutHook = (
-  number,
-  {height: number, width: number, x: number, y: number},
-) => mixed;
+type LayoutHook = (number, {height: number, width: number, x: number, y: number}) => mixed;
 
 export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderRadiusAll: ?number;
@@ -100,7 +97,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
         this._getBorderValue(Flexbox.EDGE_TOP),
         this._getBorderValue(Flexbox.EDGE_RIGHT),
         this._getBorderValue(Flexbox.EDGE_BOTTOM),
-        this._getBorderValue(Flexbox.EDGE_LEFT),
+        this._getBorderValue(Flexbox.EDGE_LEFT)
       );
       this.view.setFrame(x + left, -(y + top), width, height);
       childrenNeedUpdate = true;
@@ -118,22 +115,18 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
           ? this._borderRadiusAll
           : 0;
       this.view.setBorderRadius(
-        typeof this._borderTopLeftRadius === 'number' &&
-        this._borderTopLeftRadius > 0
+        typeof this._borderTopLeftRadius === 'number' && this._borderTopLeftRadius > 0
           ? this._borderTopLeftRadius
           : borderRadius,
-        typeof this._borderTopRightRadius === 'number' &&
-        this._borderTopRightRadius > 0
+        typeof this._borderTopRightRadius === 'number' && this._borderTopRightRadius > 0
           ? this._borderTopRightRadius
           : borderRadius,
-        typeof this._borderBottomRightRadius === 'number' &&
-        this._borderBottomRightRadius > 0
+        typeof this._borderBottomRightRadius === 'number' && this._borderBottomRightRadius > 0
           ? this._borderBottomRightRadius
           : borderRadius,
-        typeof this._borderBottomLeftRadius === 'number' &&
-        this._borderBottomLeftRadius > 0
+        typeof this._borderBottomLeftRadius === 'number' && this._borderBottomLeftRadius > 0
           ? this._borderBottomLeftRadius
-          : borderRadius,
+          : borderRadius
       );
       this._borderRadiusDirty = false;
     }
@@ -168,11 +161,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _getBorderValue(edge: number): number {
     const value = this.YGNode.getBorder(edge);
     const allValue = this.YGNode.getBorder(Flexbox.EDGE_ALL);
-    return Number.isNaN(value)
-      ? Number.isNaN(allValue)
-        ? 0
-        : allValue
-      : value;
+    return Number.isNaN(value) ? (Number.isNaN(allValue) ? 0 : allValue) : value;
   }
 
   /* style setters */

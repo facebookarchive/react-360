@@ -120,7 +120,7 @@ export default class GLView {
     }
     this._positionBuffer = new THREE.InterleavedBuffer(
       posArray,
-      (this.constructor: any).POSITION_STRIDE,
+      (this.constructor: any).POSITION_STRIDE
     );
     const indexArray = new Array(24 * 3); // Max size
     for (let i = 0; i < indexArray.length; i++) {
@@ -133,15 +133,15 @@ export default class GLView {
     this._geometry.setIndex(indexArray);
     this._geometry.addAttribute(
       'a_position',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 0, false),
+      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 0, false)
     );
     this._geometry.addAttribute(
       'a_center',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 2, false),
+      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 2, false)
     );
     this._geometry.addAttribute(
       'a_edge',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 1, 4, false),
+      new THREE.InterleavedBufferAttribute(this._positionBuffer, 1, 4, false)
     );
     this._node = new THREE.Mesh(this._geometry, this._material);
     this._node.matrixAutoUpdate = false;
@@ -161,7 +161,7 @@ export default class GLView {
     tr: number,
     br: number,
     bl: number,
-    hasCorners: boolean,
+    hasCorners: boolean
   ): Array<number> {
     // Use half of width, half of height, to center geometry around (0, 0)
     const hw = width / 2;
@@ -319,7 +319,7 @@ export default class GLView {
       tr,
       br,
       bl,
-      hasCorners,
+      hasCorners
     );
 
     const index = this.createGeometryIndexArray(hasCorners);
@@ -380,7 +380,7 @@ export default class GLView {
       ((color >> 16) & 0xff) / 255,
       ((color >> 8) & 0xff) / 255,
       (color & 0xff) / 255,
-      ((color >> 24) & 0xff) / 255,
+      ((color >> 24) & 0xff) / 255
     );
     this._material.needsUpdate = true;
   }
@@ -391,7 +391,7 @@ export default class GLView {
       ((color >> 16) & 0xff) / 255,
       ((color >> 8) & 0xff) / 255,
       (color & 0xff) / 255,
-      ((color >> 24) & 0xff) / 255,
+      ((color >> 24) & 0xff) / 255
     );
     this._material.needsUpdate = true;
   }
@@ -497,13 +497,9 @@ export default class GLView {
         const px = point[0];
         const py = point[1];
         point[0] =
-          this._worldTransform[0] * px +
-          this._worldTransform[4] * py +
-          this._worldTransform[12];
+          this._worldTransform[0] * px + this._worldTransform[4] * py + this._worldTransform[12];
         point[1] =
-          this._worldTransform[1] * px +
-          this._worldTransform[5] * py +
-          this._worldTransform[13];
+          this._worldTransform[1] * px + this._worldTransform[5] * py + this._worldTransform[13];
       }
       this._transformDirty = false;
     }

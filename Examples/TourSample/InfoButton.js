@@ -22,9 +22,9 @@ import Tooltip from './Tooltip';
 /**
  * On hover the InfoButton fades in a Tooltip component, and then fades it out
  * when the cursor leaves both the button and the Tooltip.
- * 
+ *
  * When using with CylinderLayer, set pixelsPerMeter to convert units, otherise
- * set translateZ to specify distance between camera and button. 
+ * set translateZ to specify distance between camera and button.
  */
 class InfoButton extends React.Component {
   static defaultProps = {

@@ -26,9 +26,9 @@ describe('End to End Web Worker', () => {
 window.worker = new Worker('worker.js');
 </script>
 </html>`,
-      {'worker.js': 'window.a = 1; self.b = 2;'},
+      {'worker.js': 'window.a = 1; self.b = 2;'}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.a).toBe(1);
       expect(window.worker.sandbox.b).toBe(2);
     });
@@ -43,9 +43,9 @@ window.worker = new Worker('worker.js');
 worker.postMessage('hello');
 </script>
 </html>`,
-      {'worker.js': 'onmessage = function(e) {data = e.data}'},
+      {'worker.js': 'onmessage = function(e) {data = e.data}'}
     );
-    return runner.loaded.then((window) => {
+    return runner.loaded.then(window => {
       expect(window.worker.sandbox.data).toBe('hello');
     });
   });
@@ -64,14 +64,16 @@ worker.onmessage = function(e) {
 worker.postMessage('ping');
 </script>
 </html>`,
-      {'worker.js': `
+      {
+        'worker.js': `
 self.onmessage = function(e) {
   if (e.data === 'ping') {
     self.postMessage('pong');
   }
-};`
-    });
-    return runner.loaded.then((window) => {
+};`,
+      }
+    );
+    return runner.loaded.then(window => {
       expect(window.pongReceived).toBe(true);
     });
   });

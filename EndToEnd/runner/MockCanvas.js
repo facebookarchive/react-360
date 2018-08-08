@@ -7,6 +7,4 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-export default class Canvas {
-  
-}
+export default class Canvas {}

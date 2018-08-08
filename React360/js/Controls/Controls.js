@@ -82,10 +82,7 @@ export default class Controls {
     for (let i = 0; i < this.raycasters.length; i++) {
       const caster = this.raycasters[i];
       const rayObject = this._rayObjects[i];
-      if (
-        caster.fillDirection(rayObject.direction) &&
-        caster.fillOrigin(rayObject.origin)
-      ) {
+      if (caster.fillDirection(rayObject.direction) && caster.fillOrigin(rayObject.origin)) {
         rayObject.type = caster.getType();
         rayObject.maxLength = caster.getMaxLength();
         rayObject.drawsCursor = caster.drawsCursor();

@@ -26,7 +26,7 @@ const shuffle = array => {
 };
 
 export const initialState = () => {
-  const maxValue = Math.ceil(width * height / 2);
+  const maxValue = Math.ceil((width * height) / 2);
   let values = [...Array(maxValue).keys()]; // [0...maxValue]
   values = values.map(value => -(value + 1)); // [1...-(maxValue + 1)]
   values.push(...values); // [1...-(maxvalue),1...-(maxValue)]

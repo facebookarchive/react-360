@@ -32,7 +32,7 @@ const MAX_TEXTURE_HEIGHT = 720;
 // pixels = degrees/360 * density, negative to rotate in expected direction.
 const degreesToPixels = degrees => -(degrees / 360) * MAX_TEXTURE_WIDTH;
 // PPM = 1/(2*PI*Radius) * density. Radius of cylinder is 3 meters.
-const PPM = 1 / (2 * Math.PI * 3) * MAX_TEXTURE_WIDTH;
+const PPM = (1 / (2 * Math.PI * 3)) * MAX_TEXTURE_WIDTH;
 
 /**
  * ReactVR component that allows a simple tour using linked 360 photos.
@@ -70,7 +70,8 @@ class TourSample extends React.Component {
       data: tourConfig,
       locationId: null,
       nextLocationId: tourConfig.firstPhotoId,
-      rotation: tourConfig.firstPhotoRotation +
+      rotation:
+        tourConfig.firstPhotoRotation +
         (tourConfig.photos[tourConfig.firstPhotoId].rotationOffset || 0),
     });
   }
@@ -92,14 +93,15 @@ class TourSample extends React.Component {
     return (
       <View>
         <View style={{transform: [{rotateY: rotation}]}}>
-          {ambient &&
+          {ambient && (
             <Sound
               // Background audio that plays throughout the tour.
               source={asset(ambient.uri)}
               autoPlay={true}
               loop={ambient.loop}
               volume={ambient.volume}
-            />}
+            />
+          )}
           <Pano
             // Place pano in world, and by using position absolute it does not
             // contribute to the layout of other views.
@@ -171,14 +173,15 @@ class TourSample extends React.Component {
                       />
                     );
                   })}
-                {locationId == null &&
+                {locationId == null && (
                   // Show a spinner while first pano is loading.
                   <LoadingSpinner
                     style={{layoutOrigin: [0.5, 0.5]}}
                     pixelsPerMeter={PPM}
                     // Undo the rotation so spinner is centered
                     translateX={degreesToPixels(rotation) * -1}
-                  />}
+                  />
+                )}
               </View>
             </View>
           </CylindricalPanel>

@@ -36,10 +36,7 @@ export default class VRState {
     window.addEventListener('vrdisplayconnect', this.onDisplayConnect);
     window.addEventListener('vrdisplaydisconnect', this.onDisplayDisconnect);
     // Listen for presentation changes to catch external triggers (like the back button)
-    window.addEventListener(
-      'vrdisplaypresentchange',
-      this.onDisplayPresentChange,
-    );
+    window.addEventListener('vrdisplaypresentchange', this.onDisplayPresentChange);
 
     if (typeof navigator.getVRDisplays === 'function') {
       navigator.getVRDisplays().then(displays => {
@@ -133,11 +130,7 @@ export default class VRState {
   }
 
   onDisplayPresentChange({display}: VRDisplayEvent) {
-    if (
-      this.vrDisplay &&
-      display &&
-      display.displayId === this.vrDisplay.displayId
-    ) {
+    if (this.vrDisplay && display && display.displayId === this.vrDisplay.displayId) {
       if (!display.isPresenting) {
         this._callExitCallbacks();
       }

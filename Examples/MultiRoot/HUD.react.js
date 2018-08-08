@@ -22,9 +22,7 @@ import {Text, View} from 'react-vr';
 export default class HUD extends React.Component {
   render() {
     return (
-      <View
-        style={{
-        }}>
+      <View style={{}}>
         <Text
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.3)',

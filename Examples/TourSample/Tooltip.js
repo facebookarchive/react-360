@@ -22,7 +22,7 @@ import {asset, Image, MediaPlayerState, Text, Video, VideoControl, View} from 'r
  * and renders either an image, image with text overlay, or text block.
  *
  * When using with CylinderLayer, set pixelsPerMeter to convert units, otherise
- * set translateZ to specify distance between camera and tooltip. 
+ * set translateZ to specify distance between camera and tooltip.
  */
 class Tooltip extends React.Component {
   static defaultProps = {
@@ -74,7 +74,7 @@ class ImageTooltip extends React.Component {
           width: tooltip.width * PPM,
         }}
         source={asset(tooltip.source)}>
-        {tooltip.attribution &&
+        {tooltip.attribution && (
           <Text
             style={{
               fontSize: fontSize.attrib,
@@ -83,7 +83,8 @@ class ImageTooltip extends React.Component {
               textAlignVertical: 'bottom',
             }}>
             {tooltip.attribution}
-          </Text>}
+          </Text>
+        )}
       </Image>
     );
   }
@@ -103,7 +104,7 @@ class PanelImageTooltip extends React.Component {
       title: 0.15 * PPM,
     };
     const margin = 0.05 * PPM;
-    const titleOpacity = 0.60;
+    const titleOpacity = 0.6;
 
     return (
       <View
@@ -118,8 +119,7 @@ class PanelImageTooltip extends React.Component {
             justifyContent: 'flex-end',
           }}
           source={asset(tooltip.source)}>
-
-          {tooltip.title &&
+          {tooltip.title && (
             <View>
               <View
                 style={{
@@ -143,7 +143,8 @@ class PanelImageTooltip extends React.Component {
                 }}>
                 {tooltip.title}
               </Text>
-            </View>}
+            </View>
+          )}
         </Image>
 
         <View
@@ -164,7 +165,7 @@ class PanelImageTooltip extends React.Component {
             }}>
             {tooltip.text}
           </Text>
-          {tooltip.attribution &&
+          {tooltip.attribution && (
             <Text
               style={{
                 fontSize: fontSize.attrib,
@@ -172,7 +173,8 @@ class PanelImageTooltip extends React.Component {
                 textAlign: 'right',
               }}>
               {tooltip.attribution}
-            </Text>}
+            </Text>
+          )}
         </View>
       </View>
     );
@@ -207,7 +209,7 @@ class TextBlockTooltip extends React.Component {
           }}>
           {tooltip.title}
         </Text>
-        {tooltip.title &&
+        {tooltip.title && (
           <View
             style={{
               // If we have a title, make thin line to separate title and text.
@@ -215,7 +217,8 @@ class TextBlockTooltip extends React.Component {
               height: 0.01 * PPM,
               width: tooltip.width * PPM,
             }}
-          />}
+          />
+        )}
         <Text
           style={{
             color: 'white',
@@ -224,7 +227,7 @@ class TextBlockTooltip extends React.Component {
           }}>
           {tooltip.text}
         </Text>
-        {tooltip.attribution &&
+        {tooltip.attribution && (
           <Text
             style={{
               fontSize: fontSize.attrib,
@@ -232,7 +235,8 @@ class TextBlockTooltip extends React.Component {
               textAlign: 'right',
             }}>
             {tooltip.attribution}
-          </Text>}
+          </Text>
+        )}
       </View>
     );
   }

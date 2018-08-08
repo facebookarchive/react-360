@@ -175,8 +175,7 @@ export default class Overlay implements OverlayInterface {
     const projectX = -2 * s * (x * z + y * w);
     const projectZ = -1 + 2 * s * (xx + yy);
     const projectMag = Math.sqrt(projectX * projectX + projectZ * projectZ);
-    const compassAngle =
-      (projectX > 0 ? 1 : -1) * Math.acos(-1 * projectZ / projectMag);
+    const compassAngle = (projectX > 0 ? 1 : -1) * Math.acos((-1 * projectZ) / projectMag);
     (this._compass: any).style.transform = `rotate(${compassAngle}rad)`;
   }
 

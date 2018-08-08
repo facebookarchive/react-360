@@ -153,11 +153,7 @@ export class ReactNativeContext {
    * @param guiSys - instance of OVRUI.guiSys
    * @param executor - Executor instance to run React code in
    */
-  constructor(
-    guiSys: GuiSys,
-    executor: ReactExecutor,
-    options: ContextOptions = {},
-  ) {
+  constructor(guiSys: GuiSys, executor: ReactExecutor, options: ContextOptions = {}) {
     this.modules = [];
     this.currentRootTag = 1;
     this.executor = executor;
@@ -206,14 +202,8 @@ export class ReactNativeContext {
     this.registerModule(this.GlyphTextures);
 
     // Register event listener to Guisys
-    guiSys.eventDispatcher.addEventListener(
-      'GuiSysEvent',
-      this._onGuiSysEvent.bind(this),
-    );
-    guiSys.eventDispatcher.addEventListener(
-      'UIViewEvent',
-      this._onUIViewEvent.bind(this),
-    );
+    guiSys.eventDispatcher.addEventListener('GuiSysEvent', this._onGuiSysEvent.bind(this));
+    guiSys.eventDispatcher.addEventListener('UIViewEvent', this._onUIViewEvent.bind(this));
   }
 
   /**
@@ -257,7 +247,7 @@ export class ReactNativeContext {
     module: string,
     props: {[prop: string]: any},
     container?: SceneGraphNode | Scene,
-    inSurfaceContext?: boolean,
+    inSurfaceContext?: boolean
   ) {
     const tag = this.currentRootTag;
     // TODO: Root tags should be sourced from UIManager instead, which
@@ -302,9 +292,7 @@ export class ReactNativeContext {
       }
       delete this._cameraParentFromTag[tag];
     }
-    this.executor.call('AppRegistry', 'unmountApplicationComponentAtRootTag', [
-      tag,
-    ]);
+    this.executor.call('AppRegistry', 'unmountApplicationComponentAtRootTag', [tag]);
   }
 
   /**
@@ -336,40 +324,28 @@ export class ReactNativeContext {
       case UIViewEventType.FOCUS_LOST:
         {
           const viewTag = event.view ? this.getHitTag(event.view) : undefined;
-          const targetTag = event.args.target
-            ? this.getHitTag(event.args.target)
-            : undefined;
+          const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
           const payload = {
             target: targetTag,
             source: event.args.source,
           };
           if (viewTag) {
             // Dispatch exit event
-            this.callFunction('RCTEventEmitter', 'receiveEvent', [
-              viewTag,
-              'topExit',
-              payload,
-            ]);
+            this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topExit', payload]);
           }
         }
         break;
       case UIViewEventType.FOCUS_GAINED:
         {
           const viewTag = event.view ? this.getHitTag(event.view) : undefined;
-          const targetTag = event.args.target
-            ? this.getHitTag(event.args.target)
-            : undefined;
+          const targetTag = event.args.target ? this.getHitTag(event.args.target) : undefined;
           const payload = {
             target: targetTag,
             source: event.args.source,
           };
           if (viewTag) {
             // Dispatch enter event
-            this.callFunction('RCTEventEmitter', 'receiveEvent', [
-              viewTag,
-              'topEnter',
-              payload,
-            ]);
+            this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topEnter', payload]);
           }
         }
         break;
@@ -388,11 +364,7 @@ export class ReactNativeContext {
     const frameStart = window.performance ? performance.now() : Date.now();
     this.Timing && this.Timing.frame(frameStart);
     // Send current cursor position if the currently-hit view is listening
-    if (
-      this.lastHit &&
-      this.lastHit.owner &&
-      this.lastHit.owner.receivesMoveEvent
-    ) {
+    if (this.lastHit && this.lastHit.owner && this.lastHit.owner.receivesMoveEvent) {
       const intersect = this.guiSys.getLastLocalIntersect();
       if (!intersect) {
         this.lastLocalIntersect = null;
@@ -406,11 +378,7 @@ export class ReactNativeContext {
         ) {
           const viewTag = this.getHitTag(this.lastHit);
           const payload = {offset: intersect};
-          this.callFunction('RCTEventEmitter', 'receiveEvent', [
-            viewTag,
-            'topMove',
-            payload,
-          ]);
+          this.callFunction('RCTEventEmitter', 'receiveEvent', [viewTag, 'topMove', payload]);
           this.lastLocalIntersect = intersect;
         }
       }
@@ -427,7 +395,7 @@ export class ReactNativeContext {
           for (let i = 0; i < moduleIndex.length; i++) {
             this.modules[moduleIndex[i]].__functionMap[funcIndex[i]].apply(
               this.modules[moduleIndex[i]],
-              params[i],
+              params[i]
             );
           }
         }
@@ -471,7 +439,7 @@ export class ReactNativeContext {
     if (camera.parent && camera.parent.uuid !== cameraParent.uuid) {
       console.warn(
         'Camera object already has a parent; ' +
-          "Use of 'transform' property on <Scene> will have no effect.",
+          "Use of 'transform' property on <Scene> will have no effect."
       );
       this._cameraParentFromTag[rootTag] = null;
       return;
@@ -542,11 +510,7 @@ export class ReactNativeContext {
     this.modules.push(module);
   }
 
-  registerTextureSource(
-    name: string,
-    source: Element,
-    options: {[key: string]: any} = {},
-  ) {
+  registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
     this.TextureManager.registerLocalTextureSource(name, source, options);
   }
 }

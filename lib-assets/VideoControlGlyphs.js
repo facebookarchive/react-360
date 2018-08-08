@@ -11,25 +11,14 @@ export const PLAY = {
   width: 128,
   height: 128,
   color: '#999999',
-  instructions: [
-    ['begin'],
-    ['move', 20, 11],
-    ['line', 108, 64],
-    ['line', 20, 117],
-    ['end'],
-  ],
+  instructions: [['begin'], ['move', 20, 11], ['line', 108, 64], ['line', 20, 117], ['end']],
 };
 
 export const PAUSE = {
   width: 128,
   height: 128,
   color: '#999999',
-  instructions: [
-    ['begin'],
-    ['rect', 24, 10, 24, 108],
-    ['rect', 80, 10, 24, 108],
-    ['end'],
-  ],
+  instructions: [['begin'], ['rect', 24, 10, 24, 108], ['rect', 80, 10, 24, 108], ['end']],
 };
 
 // MUTE and UNMUTE share the majority of their shape

@@ -43,7 +43,7 @@ const HOTRELOAD_FLAG = /\bhotreload\b/;
 export default function createRootView(
   guisys: GuiSys,
   name: string,
-  options: RootViewOptions = {},
+  options: RootViewOptions = {}
 ): RootView {
   if (!guisys) {
     throw new Error('ReactVR Root View must attach to an OVRUI GUI!');
@@ -63,7 +63,7 @@ export default function createRootView(
         console.log(
           'We detected that you have the React Devtools extension installed. ' +
             'Please note that at this time, React VR is only compatible with the ' +
-            'standalone Inspector (npm run devtools).',
+            'standalone Inspector (npm run devtools).'
         );
         /* eslint-enable no-console */
       }

@@ -34,8 +34,7 @@ type DeviceOrientationEvent = {
 };
 
 function getScreenOrientation(): number {
-  const orientation =
-    screen.orientation || screen.mozOrientation || screen.msOrientation || {};
+  const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation || {};
   const angle = orientation.angle || window.orientation || 0;
   return ((angle: any): number) * DEG_TO_RAD;
 }
@@ -55,8 +54,7 @@ function isSupported() {
  * Additionally, it listens to touches, and updates an orientation offset
  * based on those touches.
  */
-export default class DeviceOrientationCameraController
-  implements CameraController {
+export default class DeviceOrientationCameraController implements CameraController {
   _alpha: null | number;
   _beta: null | number;
   _dragging: boolean;
@@ -152,7 +150,7 @@ export default class DeviceOrientationCameraController
     const aspect = width / height;
     if (Math.abs(dx) >= Math.abs(dy)) {
       // Horizontal pan
-      this._offsetYaw += dx / width * this._verticalFov * aspect;
+      this._offsetYaw += (dx / width) * this._verticalFov * aspect;
       if (this._offsetYaw > TWO_PI) {
         this._offsetYaw -= TWO_PI;
       } else if (this._offsetYaw < 0) {
@@ -160,7 +158,7 @@ export default class DeviceOrientationCameraController
       }
     } else {
       // Vertical pan
-      this._offsetPitch += dy / height * this._verticalFov;
+      this._offsetPitch += (dy / height) * this._verticalFov;
       if (this._offsetPitch > HALF_PI) {
         this._offsetPitch = HALF_PI;
       } else if (this._offsetPitch < -HALF_PI) {

@@ -56,10 +56,7 @@ export default class AudioNode {
 
   setVolume(vol: number) {
     this._volume = vol;
-    this._gain.gain.setValueAtTime(
-      Math.max(0.00001, Math.min(1, vol)),
-      this._ctx.currentTime,
-    );
+    this._gain.gain.setValueAtTime(Math.max(0.00001, Math.min(1, vol)), this._ctx.currentTime);
   }
 
   getVolume(): number {

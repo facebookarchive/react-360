@@ -68,13 +68,7 @@ describe('RenderRoot', () => {
     //      0
     //   1     2
     //  3 4
-    const nodes = [
-      new MockView(),
-      new MockView(),
-      new MockView(),
-      new MockView(),
-      new MockView(),
-    ];
+    const nodes = [new MockView(), new MockView(), new MockView(), new MockView(), new MockView()];
     nodes[0].addChild(0, nodes[1]);
     nodes[0].addChild(1, nodes[2]);
     nodes[1].addChild(0, nodes[3]);
@@ -101,13 +95,7 @@ describe('RenderRoot', () => {
   });
 
   test('render order with z-index', () => {
-    const nodes = [
-      new MockView(),
-      new MockView(),
-      new MockView(),
-      new MockView(1),
-      new MockView(),
-    ];
+    const nodes = [new MockView(), new MockView(), new MockView(), new MockView(1), new MockView()];
     nodes[0].addChild(0, nodes[1]);
     nodes[0].addChild(1, nodes[2]);
     nodes[1].addChild(0, nodes[3]);

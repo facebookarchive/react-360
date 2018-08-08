@@ -49,7 +49,7 @@ ${ReactExecutor.BRIDGE_HANDLER_CODE}
         cmd: 'moduleConfig',
         moduleConfig: {remoteModuleConfig: moduleDescription},
       },
-      ReactExecutor.replaceHiddenAttributes,
+      ReactExecutor.replaceHiddenAttributes
     );
     this._worker.postMessage(msg);
   }

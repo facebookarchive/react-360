@@ -25,15 +25,18 @@ export default function(resourceLoader) {
 
       const importScripts = function(...scripts) {
         for (let i = 0; i < scripts.length; i++) {
-          resourceLoader({
-            url: {pathname: scripts[i]},
-            defaultFetch(cb) {},
-          }, function(err, code) {
-            vm.runInContext(code, sandbox);
-          });
+          resourceLoader(
+            {
+              url: {pathname: scripts[i]},
+              defaultFetch(cb) {},
+            },
+            function(err, code) {
+              vm.runInContext(code, sandbox);
+            }
+          );
         }
       };
-      const postMessage = (data) => {
+      const postMessage = data => {
         if (typeof this.onmessage === 'function') {
           this.onmessage({data});
         }
@@ -49,12 +52,15 @@ export default function(resourceLoader) {
         if (source.match(/^blob:/)) {
           src = _getObjectFromURL(source).__value;
         } else {
-          resourceLoader({
-            url: {pathname: source},
-            defaultFetch(cb) {},
-          }, function(err, code) {
-            vm.runInContext(code, sandbox);
-          });
+          resourceLoader(
+            {
+              url: {pathname: source},
+              defaultFetch(cb) {},
+            },
+            function(err, code) {
+              vm.runInContext(code, sandbox);
+            }
+          );
         }
       }
 
@@ -69,8 +75,6 @@ export default function(resourceLoader) {
       }
     }
 
-    terminate() {
-
-    }
-  }
+    terminate() {}
+  };
 }

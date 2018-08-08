@@ -23,12 +23,7 @@ const VIEW_VR_PATHS = [
 ];
 /* eslint-enable max-len */
 
-function createGlyph(
-  width: number,
-  height: number,
-  color: string,
-  paths: Array<string>,
-) {
+function createGlyph(width: number, height: number, color: string, paths: Array<string>) {
   if (!width) {
     throw new Error('No width specified!');
   }
@@ -52,18 +47,10 @@ function createGlyph(
   return svg;
 }
 
-export function createCompassGlyph(
-  width: number,
-  height: number,
-  color: string = '#ffffff',
-) {
+export function createCompassGlyph(width: number, height: number, color: string = '#ffffff') {
   return createGlyph(width, height, color, COMPASS_PATHS);
 }
 
-export function createViewInVrGlyph(
-  width: number,
-  height: number,
-  color: string = '#ffffff',
-) {
+export function createViewInVrGlyph(width: number, height: number, color: string = '#ffffff') {
   return createGlyph(width, height, color, VIEW_VR_PATHS);
 }

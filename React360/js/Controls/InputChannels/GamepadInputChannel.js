@@ -30,21 +30,9 @@ const getGamepads = (navigator.getGamepads
 const LONG_PRESS_TIME = 500;
 
 // Touch controller buttons: thumbstick, trigger, grip, A/X, B/Y
-const MAPPING_SHARED_TOUCH = [
-  undefined,
-  'confirm',
-  undefined,
-  'confirm',
-  'back',
-];
+const MAPPING_SHARED_TOUCH = [undefined, 'confirm', undefined, 'confirm', 'back'];
 // MS Mixed Reality controller buttons: thumbstick, trigger, grip, menu, trackpad
-const MAPPING_SHARED_MSMR = [
-  undefined,
-  'confirm',
-  undefined,
-  undefined,
-  'confirm',
-];
+const MAPPING_SHARED_MSMR = [undefined, 'confirm', undefined, undefined, 'confirm'];
 const WELL_KNOWN_MAPPINGS = {
   // Gear VR HMD Touchpad
   'Gear VR Touchpad': ['confirm'],
@@ -171,9 +159,7 @@ export default class GamepadInputChannel implements InputChannel {
             state.buttons[btn] = buttonState;
           }
           const pressed =
-            typeof buttons[btn] === 'object'
-              ? buttons[btn].pressed
-              : buttons[btn] === 1.0;
+            typeof buttons[btn] === 'object' ? buttons[btn].pressed : buttons[btn] === 1.0;
           if (buttonState.pressed !== pressed) {
             if (pressed) {
               buttonState.pressed = true;

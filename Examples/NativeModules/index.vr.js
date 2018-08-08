@@ -20,14 +20,7 @@
  */
 
 import React from 'react';
-import {
-  AppRegistry,
-  NativeModules,
-  StyleSheet,
-  Text,
-  View,
-  VrButton,
-} from 'react-vr';
+import {AppRegistry, NativeModules, StyleSheet, Text, View, VrButton} from 'react-vr';
 
 // Extract our custom native module
 const BrowserInfo = NativeModules.BrowserInfo;
@@ -64,15 +57,16 @@ class NativeModuleSample extends React.Component {
   getConfirmation() {
     // Display a confirmation dialog, and set the local state based upon
     // the end state of the returned Promise.
-    BrowserInfo
-      .getConfirmation('Resolve the Promise?')
-      .then(() => {
+    BrowserInfo.getConfirmation('Resolve the Promise?').then(
+      () => {
         // Resolved
         this.setState({lastConfirmation: true});
-      }, () => {
+      },
+      () => {
         // Rejected
         this.setState({lastConfirmation: false});
-      });
+      }
+    );
   }
 
   render() {
@@ -97,9 +91,7 @@ class NativeModuleSample extends React.Component {
           </View>
 
           <View style={styles.right}>
-            <VrButton
-              style={styles.button}
-              onClick={this.incrementTitle}>
+            <VrButton style={styles.button} onClick={this.incrementTitle}>
               <Text>Increment</Text>
             </VrButton>
           </View>
@@ -111,9 +103,7 @@ class NativeModuleSample extends React.Component {
           </View>
 
           <View style={styles.right}>
-            <VrButton
-              style={styles.button}
-              onClick={this.getConfirmation}>
+            <VrButton style={styles.button} onClick={this.getConfirmation}>
               <Text>Request</Text>
             </VrButton>
           </View>
@@ -126,15 +116,13 @@ class NativeModuleSample extends React.Component {
 
           <View style={styles.right}>
             <Text style={styles.value}>
-              {lastConfirmation === null ? 'None' : (lastConfirmation ? 'Resolved' : 'Rejected')}
+              {lastConfirmation === null ? 'None' : lastConfirmation ? 'Resolved' : 'Rejected'}
             </Text>
           </View>
         </View>
 
         <View style={styles.userAgent}>
-          <Text style={styles.userAgentString}>
-            {BrowserInfo.userAgent}
-          </Text>
+          <Text style={styles.userAgentString}>{BrowserInfo.userAgent}</Text>
         </View>
       </View>
     );

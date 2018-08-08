@@ -46,8 +46,8 @@ export default class ScrollPanCameraController implements CameraController {
     const aspect = width / height;
     const deltaX = e.deltaX;
     const deltaY = e.deltaY;
-    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
-    this._deltaYaw += deltaY / height * this._verticalFov;
+    this._deltaPitch += (deltaX / width) * this._verticalFov * aspect;
+    this._deltaYaw += (deltaY / height) * this._verticalFov;
     this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
     e.preventDefault();
   }

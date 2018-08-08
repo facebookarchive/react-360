@@ -20,8 +20,6 @@ export default class Bridge {
   }
 
   postMessage(msg: string | Object) {
-    throw new Error(
-      'Subclasses of Bridge should implement their own postMessage()',
-    );
+    throw new Error('Subclasses of Bridge should implement their own postMessage()');
   }
 }

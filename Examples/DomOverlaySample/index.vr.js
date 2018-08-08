@@ -28,7 +28,8 @@ import TextboxVr from './TextboxVr';
 
 const domTextboxContent = {
   header: 'This is a DOM Overlay!',
-  description: 'A dom overlay is a 2D window that takes over the 3D world, allowing for better interactivity and content consumption outside of VR. DOM Overlays are implemented as Native Modules, for more info on native modules, check the following links:',
+  description:
+    'A dom overlay is a 2D window that takes over the 3D world, allowing for better interactivity and content consumption outside of VR. DOM Overlays are implemented as Native Modules, for more info on native modules, check the following links:',
   links: [
     {
       text: 'Native Modules docs',

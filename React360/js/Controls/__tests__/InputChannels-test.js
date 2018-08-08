@@ -13,8 +13,7 @@
 
 jest.dontMock('../InputChannels/GamepadInputChannel');
 
-const GamepadInputChannel = require('../InputChannels/GamepadInputChannel')
-  .default;
+const GamepadInputChannel = require('../InputChannels/GamepadInputChannel').default;
 
 describe('GamepadInputChannel', () => {
   it('uses the standard mapping for standard gamepads', () => {
