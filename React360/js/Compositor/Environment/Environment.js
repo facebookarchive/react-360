@@ -159,6 +159,9 @@ export default class Environment {
       } else if (data.format === '3DBT') {
         this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere();
+      } else if(data.format === '3DLR'){ // 適当な実装
+        this._panoEyeOffsets = [[0,0,0.5,1],[0.5,0,1,1]];
+        this._setPanoGeometryToSphere();
       }
     }
     this._panoMaterial.needsUpdate = true;
