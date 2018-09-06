@@ -9,13 +9,13 @@
  * @flow
  */
 
-import {type Quaternion} from '../Controls/Types';
-import {createCompassGlyph, createViewInVrGlyph} from './Glyphs';
+import { type Quaternion } from '../Controls/Types';
+import { createCompassGlyph, createViewInVrGlyph } from './Glyphs';
 
 type Handler = () => mixed;
 
 // Apply a set of styles to a DOM node
-function setStyles(node: Element, styles: {[style: string]: any}) {
+function setStyles(node: Element, styles: { [style: string]: any }) {
   // Cast style, since Flow thinks SVG nodes are generic Elements
   const style: CSSStyleDeclaration = (node: any).style;
   for (const property in styles) {
@@ -66,7 +66,7 @@ const VR_BUTTON_STYLES = {
   bottom: '20px',
   color: '#ffffff',
   cursor: 'pointer',
-  display: 'none',
+  // display: 'none',
   fontFamily: 'Helvetica, Arial, sans-serif',
   fontSize: '16px',
   fontWeight: 'normal',
