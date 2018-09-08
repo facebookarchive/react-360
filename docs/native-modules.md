@@ -51,7 +51,7 @@ The simplest use case for Native Modules is to pass constant values from the mai
 class MyModule extends Module {
   constructor() {
     super('MyModule');
-    someConstant = 42;
+    this.someConstant = 42;
   }
 }
 ```
