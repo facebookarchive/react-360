@@ -24,13 +24,13 @@ export default class StereoBasicTextureMaterial extends THREE.ShaderMaterial {
     const uniforms = THREE.UniformsUtils.merge([
       new StereoTextureUniforms(),
       {
-        color: {value: DEFAULT_UNIFORM_COLOR, type: 'f'}, // The color of material
-        opacity: {value: 1.0, type: 'f'}, // The opacity of material
-        useUV: {value: 1.0, type: 'f'}, // The opacity of material
-        map: {value: null, type: 't'}, // The color map of material
-        envMap: {value: null, type: 't'}, // The environment map of material
-        arcOffset: {value: 0, type: 'f'}, // Horizontal angle offset of the map
-        arcLengthReciprocal: {value: 1 / Math.PI / 2, type: 'f'}, // Horizontal arc length of the surface
+        color: { value: DEFAULT_UNIFORM_COLOR, type: 'f' }, // The color of material
+        opacity: { value: 1.0, type: 'f' }, // The opacity of material
+        useUV: { value: 1.0, type: 'f' }, // The opacity of material
+        map: { value: null, type: 't' }, // The color map of material
+        envMap: { value: null, type: 't' }, // The environment map of material
+        arcOffset: { value: 0, type: 'f' }, // Horizontal angle offset of the map
+        arcLengthReciprocal: { value: 1 / Math.PI / 2, type: 'f' }, // Horizontal arc length of the surface
       },
     ]);
 

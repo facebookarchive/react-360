@@ -36,7 +36,7 @@ import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type { CustomView } from './Modules/UIManager';
 import Runtime, { type NativeModuleInitializer } from './Runtime/Runtime';
-import { rotateByQuaternion } from './Utils/Math';
+import { rotateByQuaternion } from './Renderer/Math';
 
 type Root = {
   initialProps: Object,
@@ -181,7 +181,7 @@ export default class ReactInstance {
     };
     this.runtime = new Runtime(
       this.scene,
-      bundleFromLocation(bundle),
+      bundle ? bundleFromLocation(bundle) : '',
       runtimeOptions,
     );
     const glRenderer = this.compositor.getRenderer();

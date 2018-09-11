@@ -1,14 +1,13 @@
 {
-  "private": true,
   "name": "react-360-web",
   "version": "1.0.1",
   "description": "A framework for building interactive 360 experiences with React",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/react-360.git"
+    "url": "https://github.com/vcamvr/react-360.git"
   },
-  "bugs": "https://github.com/facebook/react-360/issues",
+  "bugs": "https://github.com/vcamvr/react-360/issues",
   "main": "React360.js",
   "files": [
     "js",
