@@ -120,7 +120,7 @@ export default class MousePanCameraController implements CameraController {
 
   _autoMove() {
     if (this.initMove === 1) {
-      this._deltaPitch -= 0.0004;
+      this._deltaPitch -= DEFAULT_Y_ROTATION_DELATA;
     }
   }
 

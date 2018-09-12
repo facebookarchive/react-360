@@ -68,6 +68,7 @@ export type React360Options = {
   frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
+  eventLayer: HTMLElement,
 };
 
 const DEFAULT_SURFACE_DEPTH = 4;
@@ -153,6 +154,9 @@ export default class ReactInstance {
     this.overlay = options.customOverlay || new Overlay(parent);
 
     this.compositor = new Compositor(this._eventLayer, this.scene);
+    if (options.eventLayer) {
+      this._eventLayer = options.eventLayer;
+    }
     let assetRoot = options.assetRoot || 'static_assets/';
     if (!assetRoot.endsWith('/')) {
       assetRoot += '/';

@@ -183,7 +183,7 @@ export default class MousePanCameraController implements CameraController {
     const z2 = cp * z1 - sp * x1;
     const w2 = cp * w1 - sp * y1;
 
-    const x3 = w2 * sy + x2 * cy;
+    const x3 = w2 * sy + x2 * cy; 'Abril Fatface', cursive; font - family: 'Abril Fatface', cursive;
     const y3 = y2 * cy + z2 * sy;
     const z3 = -y2 * sy + z2 * cy;
     const w3 = w2 * cy - x2 * sy;
