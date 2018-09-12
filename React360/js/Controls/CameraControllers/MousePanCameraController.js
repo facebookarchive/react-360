@@ -9,11 +9,12 @@
  * @flow
  */
 
-import {type Quaternion, type Vec3} from '../Types';
-import {type CameraController} from './Types';
+import { type Quaternion, type Vec3 } from '../Types';
+import { type CameraController } from './Types';
 
 const DEFAULT_FOV = Math.PI / 6;
 const HALF_PI = Math.PI / 2;
+const DEFAULT_Y_ROTATION_DELATA = 0.0004;
 
 export default class MousePanCameraController implements CameraController {
   _deltaYaw: number;
@@ -63,6 +64,7 @@ export default class MousePanCameraController implements CameraController {
     this._draggingMouse = true;
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
+    this.pauseInitMove();
   }
 
   _onMouseMove(e: MouseEvent) {
@@ -116,6 +118,28 @@ export default class MousePanCameraController implements CameraController {
     this._draggingTouch = false;
   }
 
+  _autoMove() {
+    if (this.initMove === 1) {
+      this._deltaPitch -= 0.0004;
+    }
+  }
+
+  startInitMove() {
+    if (this.initMove === undefined || this.initMove > -1) {
+      this.initMove = 1;
+    }
+  }
+
+  pauseInitMove() {
+    if (this.initMove > -1) {
+      this.initMove = 0;
+    }
+  }
+
+  stopInitMove() {
+    this.initMove = -1;
+  }
+
   enable() {
     this._enabled = true;
     this._draggingMouse = false;
@@ -132,6 +156,7 @@ export default class MousePanCameraController implements CameraController {
     if (!this._enabled) {
       return false;
     }
+    this._autoMove();
 
     if (this._deltaPitch === 0 && this._deltaYaw === 0) {
       return false;
