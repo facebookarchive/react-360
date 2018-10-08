@@ -36,7 +36,7 @@ r360.renderToLocation(
 );
 ```
 
-Your elements will be laid out relative to this location, and use a meter-based measurment system. The default location is at (0, 0, 0), which is the default location of the camera. Laying out content around this position allows you to lay out elements around the user, but you can also positions objects relative to other origins.
+Your elements will be laid out relative to this location, and use a meter-based measurement system. The default location is at (0, 0, 0), which is the default location of the camera. Laying out content around this position allows you to lay out elements around the user, but you can also positions objects relative to other origins.
 
 ### Creating Locations
 
