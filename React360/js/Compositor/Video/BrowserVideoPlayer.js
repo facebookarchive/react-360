@@ -131,13 +131,13 @@ export default class BrowserVideoPlayer implements VideoPlayer {
   }
 
   play() {
-    this._element.play();
     this._playing = true;
+    return this._element.play();
   }
 
   pause() {
-    this._element.pause();
     this._playing = false;
+    return this._element.pause();
   }
 
   seekTo(position: number) {

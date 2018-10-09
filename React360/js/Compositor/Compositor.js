@@ -60,6 +60,7 @@ export default class Compositor {
     );
     this._renderer = new THREE.WebGLRenderer({
       antialias: true,
+      preserveDrawingBuffer: true,
     });
     this._canvas = this._renderer.domElement;
     this._renderer.setPixelRatio(window.devicePixelRatio);

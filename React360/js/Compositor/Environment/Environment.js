@@ -210,7 +210,7 @@ export default class Environment {
     const modelViewMatrix = new THREE.Matrix4();
     modelViewMatrix.multiplyMatrices(camera.matrixWorldInverse, this._panoMesh.matrixWorld);
     projScreenMatrix.multiplyMatrices(camera.projectionMatrix, modelViewMatrix);
-    this._panoMesh.geometry.update(this.maxDepth, projScreenMatrix);
+    this._panoMesh.geometry.update(projScreenMatrix);
     this._panoMesh.material = this._panoMesh.geometry.material;
   }
 
@@ -225,7 +225,7 @@ export default class Environment {
       this._hpanoGeomSphere = new HPanoBufferGeometry(1000, this.maxDepth, src.tile);
       this._panoMesh.onUpdate = this.globeOnUpdate.bind(this);
       this._setHPanoGeometryToSphere();
-      return;
+      return Promise.resolve();
     }
     const loader = src ? this._loadImage(src, options) : null;
     return this._setBackground(loader, src, options.transition);
