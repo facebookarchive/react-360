@@ -10,7 +10,7 @@ Within the context of 2D surfaces, React 360 uses a layout technique called Flex
 
 ## Layout in 3D Space
 
-When mounting to a [Location](/react-360/docs/objects.html#locations) instead of a Surface, React 360 switches to a three-dimensional, meter based coordinate system. This is typical of 3D modeling programs and game engines – once you switch to placing objects into physical space, you need to use a phyically-based measurement system.
+When mounting to a [Location](/react-360/docs/objects.html#locations) instead of a Surface, React 360 switches to a three-dimensional, meter based coordinate system. This is typical of 3D modeling programs and game engines – once you switch to placing objects into physical space, you need to use a physically-based measurement system.
 
 In this coordinate system, there are three axes: the x axis points towards the right of the user, the y axis points upwards, and the z axis points behind the user. Placement of 3D objects is done through the `transform` style attribute, which takes an array of transformations that are applied to the object. You can translate and rotate an object in 3D space with the following options:
 

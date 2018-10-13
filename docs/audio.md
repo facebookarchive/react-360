@@ -87,7 +87,7 @@ Once an audio instance has been created, its configuration and playback can be c
 
 ### Positional Audio
 
-Audio created with `is3d` set to true can be positioned in the virtual world. As the user moves and rotates in your scene, the audio will appear as though it is playing from a specific location in space. You can set this location with the `position` attribute available when calling `setParams` or `play`. This attribute is a three-element array specifing the absolute x, y, and z coordinates of the sound.
+Audio created with `is3d` set to true can be positioned in the virtual world. As the user moves and rotates in your scene, the audio will appear as though it is playing from a specific location in space. You can set this location with the `position` attribute available when calling `setParams` or `play`. This attribute is a three-element array specifying the absolute x, y, and z coordinates of the sound.
 
 ```js
 import {asset, NativeModules} from 'react-360';
