@@ -64,6 +64,7 @@ export type React360Options = {
   assetRoot?: string,
   customOverlay?: OverlayInterface,
   customViews?: Array<CustomView>,
+  orientation: Array<Number>,
   executor?: ReactExecutor,
   frame?: number => mixed,
   fullScreen?: boolean,
@@ -118,7 +119,15 @@ export default class ReactInstance {
 
     this._appearanceStateStack = [];
     this._cameraPosition = [0, 0, 0];
-    this._cameraQuat = [0, 0, 0, 1];
+    if (options.orientation) {
+      const orientation = options.orientation;
+      const newEuler = new THREE.Euler(...orientation);
+      const quat = new THREE.Quaternion();
+      quat.setFromEuler(newEuler);
+      this._cameraQuat = [quat.x, quat.y, quat.z, quat.w];
+    } else {
+      this._cameraQuat = [0, 0, 0, 1];
+    }
     this._events = [];
     this._needsResize = false;
     this._parent = parent;
@@ -153,7 +162,7 @@ export default class ReactInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
-    this.compositor = new Compositor(this._eventLayer, this.scene);
+    this.compositor = new Compositor(this._eventLayer, this.scene, options);
     if (options.eventLayer) {
       this._eventLayer = options.eventLayer;
     }

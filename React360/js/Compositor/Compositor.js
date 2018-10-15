@@ -43,7 +43,7 @@ export default class Compositor {
   _resourceManager: ResourceManager<Image>;
   _videoPlayers: VideoPlayerManager;
 
-  constructor(frame: HTMLElement, scene: THREE.Scene) {
+  constructor(frame: HTMLElement, scene: THREE.Scene, options: object) {
     this._frame = frame;
     this._cursorVisibility = 'auto';
     this._isMouseCursorActive = false;
@@ -71,7 +71,7 @@ export default class Compositor {
     this._environment = new Environment(
       this._resourceManager,
       this._videoPlayers,
-      this._camera
+      options
     );
     const panoNode = this._environment.getPanoNode();
     scene.add(panoNode);
@@ -88,7 +88,7 @@ export default class Compositor {
   }
 
   setBackground(src: string, options: PanoOptions = {}): Promise<void> {
-    return this._environment.setSource(src, options);;
+    return this._environment.setSource(src, options);
   }
 
   setBackgroundVideo(handle: string, options: PanoOptions = {}): Promise<void> {

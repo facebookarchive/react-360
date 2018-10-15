@@ -56,18 +56,29 @@ export default class Environment {
   _resourceManager: ?ResourceManager<Image>;
   _videoPlayers: ?VideoPlayerManager;
 
-  constructor(rm: ?ResourceManager<Image>, videoPlayers: ?VideoPlayerManager) {
+  constructor(rm: ?ResourceManager<Image>, videoPlayers: ?VideoPlayerManager, options: object) {
     this._resourceManager = rm;
     this._videoPlayers = videoPlayers;
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
-    this._panoGeomHemisphere = new THREE.SphereGeometry(
-      1000,
-      16,
-      16,
-      0,
-      Math.PI,
-    );
+    if (options.uv) {
+      const {phiLength} = options.uv;
+      this._panoGeomHemisphere = new THREE.SphereGeometry(
+        1000,
+        16,
+        16,
+        0,
+        phiLength
+      );
+    } else {
+      this._panoGeomHemisphere = new THREE.SphereGeometry(
+        1000,
+        16,
+        16,
+        0,
+        Math.PI,
+      );
+    }
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#ffffff',
       side: THREE.DoubleSide,
@@ -169,6 +180,10 @@ export default class Environment {
       } else if (data.format === '3DBT') {
         this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere();
+      } else if (data.format === '3DLR') {
+        // 180 side-by-side 3D
+        this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
+        this._setPanoGeometryToHemisphere();
       }
     }
     this._panoMaterial.needsUpdate = true;

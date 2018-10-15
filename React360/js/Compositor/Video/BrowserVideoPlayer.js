@@ -146,11 +146,11 @@ export default class BrowserVideoPlayer implements VideoPlayer {
 
   destroy() {
     this.pause();
-    if (this._element.parentNode) {
-      this._element.parentNode.removeChild(this._element);
-    }
     if (this._texture) {
       this._texture.dispose();
+    }
+    if (this._element.parentNode) {
+      this._element.parentNode.removeChild(this._element);
     }
     this._element.src = '';
   }
