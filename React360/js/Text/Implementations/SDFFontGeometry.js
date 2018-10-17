@@ -73,6 +73,10 @@ export default class SDFFontGeometry implements FontGeometry {
     this._geometryDirty = true;
   }
 
+  setAlignWidth(width: number | void) {
+    this._alignWidth = width;
+  }
+
   setMaxWidth(width: number | void) {
     if (this._maxWidth !== width) {
       this._infoDirty = true;
@@ -125,11 +129,14 @@ export default class SDFFontGeometry implements FontGeometry {
     if (this._infoDirty) {
       this._info = wrapText(this._impl, '', this._size, this._text, this._maxWidth);
       this._geometryDirty = true;
+      this._infoDirty = false;
     }
     if (this._geometryDirty) {
       const {buffer, index} = this._impl.createBufferGeometry(
         this._info,
         this._center,
+        this._align,
+        this._alignWidth,
       );
       const floatArray = new Float32Array(buffer);
       const uintArray = new Uint8Array(buffer);
@@ -143,6 +150,7 @@ export default class SDFFontGeometry implements FontGeometry {
       attributes.a_center.data.needsUpdate = true;
       attributes.a_color.data.setArray(uintArray);
       attributes.a_color.data.needsUpdate = true;
+      this._geometryDirty = false;
     }
   }
 }

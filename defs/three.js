@@ -160,6 +160,7 @@ declare module 'three' {
     map: ?Texture;
     needsUpdate: boolean;
     opacity: number;
+    premultipliedAlpha: boolean;
     renderOrder: number;
     shading: number;
     transparent: boolean;

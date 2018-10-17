@@ -48,7 +48,10 @@ SDFTextMaterial.premultipliedAlpha = true;
 SDFTextMaterial.depthWrite = false;
 
 export default class SDFTextImplementation implements TextImplementation {
-  _atlases: Array<{image: Image, texture: THREE.Texture | Promise<THREE.Texture>}>;
+  _atlases: Array<{
+    image: Image,
+    texture: THREE.Texture | Promise<THREE.Texture>,
+  }>;
   _fonts: Array<SDFFont>;
 
   constructor() {
@@ -158,10 +161,20 @@ export default class SDFTextImplementation implements TextImplementation {
     return run;
   }
 
-  createBufferGeometry(info: TextRenderInfo, center: number = 0.5) {
+  createBufferGeometry(
+    info: TextRenderInfo,
+    center: number = 0.5,
+    align?: string,
+    maxWidth?: number,
+  ) {
     let count = 0;
+    let width = maxWidth || 0;
     for (let i = 0; i < info.lines.length; i++) {
       count += info.lines[i].glyphs.length;
+      const lineWidth = info.lines[i].width;
+      if (lineWidth > width) {
+        width = lineWidth;
+      }
     }
     const buffer = new ArrayBuffer(count * 4 * 24);
     const floatBuffer = new Float32Array(buffer);
@@ -174,6 +187,11 @@ export default class SDFTextImplementation implements TextImplementation {
       const line = info.lines[i];
       const glyphs = line.glyphs;
       let x = 0;
+      if (align === 'right') {
+        x = width - line.width;
+      } else if (align === 'center') {
+        x = (width - line.width) / 2;
+      }
       for (let j = 0; j < glyphs.length; j++) {
         const glyph = glyphs[j];
         const attr = glyph.attributes;
