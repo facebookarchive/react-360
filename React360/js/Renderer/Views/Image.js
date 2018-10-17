@@ -11,21 +11,33 @@
 
 /* eslint-disable camelcase */
 
-import * as THREE from 'three';
 import GLTexturedView, {type ResizeMode} from '../Primitives/GLTexturedView';
+import TextureManager from '../../Runtime/TextureManager';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import type {Dispatcher} from './ShadowView';
 
 export default class RCTImage extends ShadowViewWebGL<GLTexturedView> {
-  constructor() {
+  _textures: TextureManager;
+
+  constructor(textureManager: TextureManager) {
     super(() => new GLTexturedView());
+    this._textures = textureManager;
   }
 
-  setSource(value: {uri: string}) {
+  setSource(value: ?{uri: string}) {
     // Will use a centralized store soon
-    new THREE.TextureLoader().load(value.uri, tex => {
-      this.view.setBackgroundImage(tex);
-    });
+    if (!value || !value.uri) {
+      this.view.setBackgroundImage(null);
+      return;
+    }
+    this._textures.getTextureForURL(value.uri).then(
+      tex => {
+        this.view.setBackgroundImage(tex);
+      },
+      () => {
+        this.view.setBackgroundImage(null);
+      }
+    );
   }
 
   __setStyle_resizeMode(mode: ResizeMode) {

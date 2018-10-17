@@ -96,33 +96,25 @@ export default class UIManager extends Module {
       },
     };
 
-    this.registerViewType(
-      'RCTView',
-      View.registerBindings.bind(View),
-      () => new View(),
-    );
+    this.registerViewType('RCTView', View.registerBindings.bind(View), () => new View());
     this.registerViewType(
       'RCTImageView',
       Image.registerBindings.bind(Image),
-      () => new Image(),
+      () => new Image(ctx.TextureManager)
     );
     this.registerViewType(
       'RCTText',
       Text.registerBindings.bind(Text),
-      () => new Text(this._textImplementation),
+      () => new Text(this._textImplementation)
     );
     this.registerViewType(
       'RCTRawText',
       RawText.registerBindings.bind(RawText),
-      () => new RawText(),
+      () => new RawText()
     );
   }
 
-  registerViewType(
-    name: string,
-    registerBindings: Dispatcher => void,
-    viewCreator: ViewCreator,
-  ) {
+  registerViewType(name: string, registerBindings: Dispatcher => void, viewCreator: ViewCreator) {
     const dispatch = {};
     registerBindings(dispatch);
     this._viewDispatchers[name] = dispatch;
@@ -218,7 +210,7 @@ export default class UIManager extends Module {
     moveTo: ?Array<number>,
     addChildTags: Array<number>,
     addAtIndices: Array<number>,
-    removeFrom: Array<number>,
+    removeFrom: Array<number>
   ) {
     const parent = this._views[tag];
     if (!parent) {
@@ -304,11 +296,7 @@ export default class UIManager extends Module {
       if (!root) {
         continue;
       }
-      root.YGNode.calculateLayout(
-        Flexbox.UNDEFINED,
-        Flexbox.UNDEFINED,
-        Flexbox.DIRECTION_LTR,
-      );
+      root.YGNode.calculateLayout(Flexbox.UNDEFINED, Flexbox.UNDEFINED, Flexbox.DIRECTION_LTR);
       // Layout children recursively in root-to-leaf order, so that parents
       // are guaranteed to update before their children
       recursiveLayout(root);

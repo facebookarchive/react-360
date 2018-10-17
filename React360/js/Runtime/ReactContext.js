@@ -15,7 +15,7 @@ import type RenderRoot from '../Renderer/RenderRoot';
 
 import DeviceInfo from '../Modules/DeviceInfo';
 import Timing from '../Modules/Timing';
-import TextureManager from '../Utils/TextureManager';
+import TextureManager from './TextureManager';
 import UIManager from './UIManager';
 
 type ContextOptions = {
@@ -56,7 +56,7 @@ export default class ReactContext {
   createRootView(
     module: string,
     renderRoot: RenderRoot,
-    props: {[prop: string]: any} = {},
+    props: {[prop: string]: any} = {}
   ): number {
     const tag = this.UIManager.createRootTag();
     this.executor.call('AppRegistry', 'runApplication', [
@@ -70,7 +70,7 @@ export default class ReactContext {
   describe() {
     const moduleConfig = [];
     for (const module of this.modules) {
-      const description = module._describe();
+      const description = module.__describe();
       moduleConfig.push(description);
     }
     return moduleConfig;
@@ -87,9 +87,9 @@ export default class ReactContext {
         if (results && results.length >= 3) {
           const [moduleIndex, funcIndex, params] = results;
           for (let i = 0; i < moduleIndex.length; i++) {
-            this.modules[moduleIndex[i]]._functionMap[funcIndex[i]].apply(
+            this.modules[moduleIndex[i]].__functionMap[funcIndex[i]].apply(
               this.modules[moduleIndex[i]],
-              params[i],
+              params[i]
             );
           }
         }
@@ -113,27 +113,15 @@ export default class ReactContext {
     this.modules.push(module);
   }
 
-  registerTextureSource(
-    name: string,
-    source: Element,
-    options: {[key: string]: any} = {},
-  ) {
-    this.TextureManager.registerLocalTextureSource(name, source, options);
+  registerTextureSource(name: string, source: Element) {
+    this.TextureManager.registerLocalTextureSource(name, source);
   }
 
   enqueueOnEnter(tag: number) {
-    this.callFunction('RCTEventEmitter', 'receiveEvent', [
-      tag,
-      'topEnter',
-      {target: tag},
-    ]);
+    this.callFunction('RCTEventEmitter', 'receiveEvent', [tag, 'topEnter', {target: tag}]);
   }
 
   enqueueOnExit(tag: number) {
-    this.callFunction('RCTEventEmitter', 'receiveEvent', [
-      tag,
-      'topExit',
-      {target: tag},
-    ]);
+    this.callFunction('RCTEventEmitter', 'receiveEvent', [tag, 'topExit', {target: tag}]);
   }
 }

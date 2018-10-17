@@ -1,0 +1,79 @@
+/**
+ * Copyright (c) 2015-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @flow
+ */
+
+import {Texture, TextureLoader} from 'three';
+
+export default class TextureManager {
+  _pendingTextures: {[url: string]: Promise<Texture>};
+  _textureMap: {[url: string]: Texture};
+  _textureResolvers: {[url: string]: (Texture) => mixed};
+
+  constructor() {
+    this._pendingTextures = {};
+    this._textureMap = {};
+    this._textureResolvers = {};
+  }
+
+  getTextureForURL(url: string): Promise<Texture> {
+    if (this._textureMap[url]) {
+      // Already registered source, return the texture
+      return Promise.resolve(this._textureMap[url]);
+    }
+    if (this._pendingTextures[url]) {
+      // Other components are waiting on the source, wait on the same Promise
+      return this._pendingTextures[url];
+    }
+
+    if (url.startsWith('texture://')) {
+      // Local texture
+      const promise = new Promise(resolve => {
+        this._textureResolvers[url] = resolve;
+      });
+      this._pendingTextures[url] = promise;
+      return promise;
+    }
+    // Network texture
+    const promise = new Promise((resolve, reject) => {
+      const loader = new TextureLoader();
+      loader.setCrossOrigin('anonymous');
+      loader.load(
+        url,
+        texture => {
+          this._textureMap[url] = texture;
+          delete this._pendingTextures[url];
+          resolve(texture);
+        },
+        undefined,
+        error => {
+          reject(error);
+        }
+      );
+    });
+    this._pendingTextures[url] = promise;
+    return promise;
+  }
+
+  registerLocalTextureSource(name: string, source: Element) {
+    if (source instanceof HTMLCanvasElement || source instanceof Image) {
+      const tex = new Texture(source);
+      tex.needsUpdate = true;
+      const url = `texture://${name}`;
+      this._textureMap[url] = tex;
+      delete this._pendingTextures[url];
+      if (this._textureResolvers[url]) {
+        this._textureResolvers[url](tex);
+        delete this._textureResolvers[url];
+      }
+    } else {
+      throw new Error('Unsupported texture source');
+    }
+  }
+}
