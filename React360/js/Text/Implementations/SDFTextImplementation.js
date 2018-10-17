@@ -161,14 +161,12 @@ export default class SDFTextImplementation implements TextImplementation {
     return run;
   }
 
-  createBufferGeometry(
-    info: TextRenderInfo,
-    center: number = 0.5,
-    align?: string,
-    maxWidth?: number,
-  ) {
+  updateGeometryAndMaterial(geometry, material, info: TextRenderInfo, params: Object) {
+    const {align} = params;
+    const center = params.center || 0.5;
+
     let count = 0;
-    let width = maxWidth || 0;
+    let width = params.alignWidth || 0;
     for (let i = 0; i < info.lines.length; i++) {
       count += info.lines[i].glyphs.length;
       const lineWidth = info.lines[i].width;
@@ -270,7 +268,47 @@ export default class SDFTextImplementation implements TextImplementation {
       y -= info.size;
     }
 
-    const material = SDFTextMaterial.clone();
+    geometry.setIndex(index);
+    const attrBuffer32 = new THREE.InterleavedBuffer(floatBuffer, 6);
+    const attrBuffer8 = new THREE.InterleavedBuffer(uintBuffer, 24);
+    const attributes = geometry.attributes;
+    if ('a_position' in attributes) {
+      attributes.a_position.data.setArray(floatBuffer);
+      attributes.a_position.data.needsUpdate = true;
+    } else {
+      geometry.addAttribute(
+        'a_position',
+        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 0, false),
+      );
+    }
+    if ('a_uv' in attributes) {
+      attributes.a_uv.data.setArray(floatBuffer);
+      attributes.a_uv.data.needsUpdate = true;
+    } else {
+      geometry.addAttribute(
+        'a_uv',
+        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 2, false),
+      );
+    }
+    if ('a_center' in attributes) {
+      attributes.a_center.data.setArray(floatBuffer);
+      attributes.a_center.data.needsUpdate = true;
+    } else {
+      geometry.addAttribute(
+        'a_center',
+        new THREE.InterleavedBufferAttribute(attrBuffer32, 1, 4, false),
+      );
+    }
+    if ('a_color' in attributes) {
+      attributes.a_color.data.setArray(uintBuffer);
+      attributes.a_color.data.needsUpdate = true;
+    } else {
+      geometry.addAttribute(
+        'a_color',
+        new THREE.InterleavedBufferAttribute(attrBuffer8, 4, 20, true),
+      );
+    }
+
     const tex = this._atlases[0].texture;
     if (tex instanceof Promise) {
       tex.then(t => {
@@ -281,12 +319,10 @@ export default class SDFTextImplementation implements TextImplementation {
       material.uniforms.u_texture.value = tex;
       material.uniforms.u_texture.needsUpdate = true;
     }
+  }
 
-    return {
-      buffer,
-      index,
-      material,
-    };
+  createMaterial() {
+    return SDFTextMaterial.clone();
   }
 
   static parseFontJSON(json: Object): SDFFont {

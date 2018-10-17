@@ -15,11 +15,13 @@ import type RenderRoot from '../Renderer/RenderRoot';
 
 import DeviceInfo from '../Modules/DeviceInfo';
 import Timing from '../Modules/Timing';
+import {type TextImplementation} from '../Text/TextTypes';
 import TextureManager from './TextureManager';
 import UIManager from './UIManager';
 
 type ContextOptions = {
   assetRoot?: string,
+  textImplementation?: TextImplementation,
 };
 type Message = [Array<number>, Array<number>, Array<number>];
 
@@ -38,8 +40,8 @@ export default class ReactContext {
     this.messages = [];
     this.modules = [];
     this.executor = executor;
-
-    this.UIManager = new UIManager(this);
+    console.log(options);
+    this.UIManager = new UIManager(this, options.textImplementation);
     this.TextureManager = new TextureManager();
     this.Timing = new Timing((this: any));
 

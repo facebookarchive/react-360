@@ -48,7 +48,7 @@ export default class UIManager extends Module {
   _viewTypeCreators: {[t: string]: ViewCreator};
   _viewDispatchers: {[name: string]: Dispatcher};
 
-  constructor(ctx: ReactContext) {
+  constructor(ctx: ReactContext, ti?: TextImplementation) {
     super('UIManager');
     this._ctx = ctx;
     this._nextRootTag = 1;
@@ -59,7 +59,7 @@ export default class UIManager extends Module {
     this._viewTypeCreators = {};
     this._viewDispatchers = {};
 
-    this._textImplementation = new SDFTextImplementation();
+    this._textImplementation = ti || new SDFTextImplementation();
 
     (this: any).customDirectEventTypes = {
       topLayout: {registrationName: 'onLayout'},
