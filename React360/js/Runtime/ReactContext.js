@@ -40,7 +40,7 @@ export default class ReactContext {
     this.messages = [];
     this.modules = [];
     this.executor = executor;
-    console.log(options);
+
     this.UIManager = new UIManager(this, options.textImplementation);
     this.TextureManager = new TextureManager();
     this.Timing = new Timing((this: any));

@@ -9,7 +9,7 @@
 
 /* eslint-disable oculus/use-flow */
 
-jest.dontMock('../RenderRoot');
+jest.dontMock('../RenderRoot').dontMock('../StackingContext');
 
 const RenderRoot = require('../RenderRoot').default;
 
@@ -18,6 +18,14 @@ class MockView {
     this.children = [];
     this.zIndex = z;
     this.renderOrder = 0;
+  }
+
+  setRenderOrder(order) {
+    this.renderOrder = order;
+  }
+
+  getRenderOrder() {
+    return this.renderOrder;
   }
 
   getChildCount() {
@@ -68,13 +76,7 @@ describe('RenderRoot', () => {
     //      0
     //   1     2
     //  3 4
-    const nodes = [
-      new MockView(),
-      new MockView(),
-      new MockView(),
-      new MockView(),
-      new MockView(),
-    ];
+    const nodes = [new MockView(), new MockView(), new MockView(), new MockView(), new MockView()];
     nodes[0].addChild(0, nodes[1]);
     nodes[0].addChild(1, nodes[2]);
     nodes[1].addChild(0, nodes[3]);
@@ -91,6 +93,7 @@ describe('RenderRoot', () => {
 
     nodes.push(new MockView());
     nodes[3].addChild(0, nodes[5]);
+    root.setRenderOrderDirty(true);
     root.updateRenderOrder();
     expect(nodes[0].renderOrder).toBe(1);
     expect(nodes[1].renderOrder).toBe(2);
@@ -101,13 +104,7 @@ describe('RenderRoot', () => {
   });
 
   test('render order with z-index', () => {
-    const nodes = [
-      new MockView(),
-      new MockView(),
-      new MockView(),
-      new MockView(1),
-      new MockView(),
-    ];
+    const nodes = [new MockView(), new MockView(), new MockView(), new MockView(1), new MockView()];
     nodes[0].addChild(0, nodes[1]);
     nodes[0].addChild(1, nodes[2]);
     nodes[1].addChild(0, nodes[3]);
@@ -123,6 +120,7 @@ describe('RenderRoot', () => {
     expect(nodes[4].renderOrder).toBe(3);
 
     nodes[4].zIndex = 10;
+    root.setRenderOrderDirty(true);
     root.updateRenderOrder();
     expect(nodes[2].renderOrder).toBe(3);
     expect(nodes[3].renderOrder).toBe(4);
@@ -131,6 +129,7 @@ describe('RenderRoot', () => {
     nodes[1].zIndex = 1;
     nodes[3].zIndex = 0;
     nodes[4].zIndex = 0;
+    root.setRenderOrderDirty(true);
     root.updateRenderOrder();
     expect(nodes[0].renderOrder).toBe(1);
     expect(nodes[1].renderOrder).toBe(3);
