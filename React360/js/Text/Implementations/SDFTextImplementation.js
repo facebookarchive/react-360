@@ -13,7 +13,7 @@ import type {GlyphRun, TextImplementation, TextRenderInfo} from '../TextTypes';
 import {
   DEFAULT_FONT_TEXTURE,
   DEFAULT_FONT_JSON,
-} from '../../OVRUI/SDFFont/DefaultFont';
+} from './SDFDefaultFont';
 import SDFFontGeometry from './SDFFontGeometry';
 import {VERT_SHADER, FRAG_SHADER} from './SDFTextShaders';
 import * as THREE from 'three';

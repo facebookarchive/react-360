@@ -17,6 +17,7 @@ import * as THREE from 'three';
 
 export default class SDFFontGeometry implements FontGeometry {
   _align: string;
+  _alignWidth: void | number;
   _center: number;
   _geometry: THREE.BufferGeometry;
   _geometryDirty: boolean;

@@ -40,7 +40,7 @@ const BG_RESIZE = {
   stretch: 'stretch',
 };
 
-export type ResizeMode = $Values<typeof BG_RESIZE>;
+export type ResizeMode = 'center' | 'contain' | 'cover' | 'stretch';
 
 export default class GLTexturedView extends GLView {
   _bgResize: ResizeMode;
@@ -54,9 +54,9 @@ export default class GLTexturedView extends GLView {
     this._bgTextureWidth = 0;
     this._bgResize = 'stretch';
 
-    this._geometry.addAttribute(
+    this.getGeometry().addAttribute(
       'a_uv',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 5, false),
+      new THREE.InterleavedBufferAttribute(this.getPositionBuffer(), 2, 5, false)
     );
   }
 
@@ -72,7 +72,7 @@ export default class GLTexturedView extends GLView {
     tr: number,
     br: number,
     bl: number,
-    hasCorners: boolean,
+    hasCorners: boolean
   ): Array<number> {
     // There are 8 unique values for each UV axis, determined by the resize mode
     const texX = [
@@ -200,7 +200,7 @@ export default class GLTexturedView extends GLView {
   }
 
   setBackgroundImage(tex: THREE.Texture) {
-    this._material.uniforms.u_texture.value = tex;
+    this.getMaterial().uniforms.u_texture.value = tex;
     if (tex) {
       const source = tex.image;
       if (source instanceof Image) {
@@ -214,7 +214,7 @@ export default class GLTexturedView extends GLView {
       this._bgTextureWidth = 0;
       this._bgTextureHeight = 0;
     }
-    this._geometryDirty = true;
+    this.setGeometryDirty(true);
     this.update();
   }
 
@@ -224,7 +224,7 @@ export default class GLTexturedView extends GLView {
     }
     this._bgResize = mode;
     if (this._bgTextureHeight > 0 && this._bgTextureWidth > 0) {
-      this._geometryDirty = true;
+      this.setGeometryDirty(true);
       this.update();
     }
   }

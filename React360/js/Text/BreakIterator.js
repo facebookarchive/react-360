@@ -24,7 +24,7 @@ export default class BreakIterator {
     this._text = text;
     this._bi = null;
     if (!options.forcePolyfill) {
-      if (typeof window.Intl !== 'undefined' && window.Intl.v8BreakIterator) {
+      if (window.Intl !== undefined && window.Intl.v8BreakIterator) {
         this._bi = new window.Intl.v8BreakIterator(locale, {type: 'line'});
         this._bi.adoptText(text);
       }
@@ -32,9 +32,11 @@ export default class BreakIterator {
     this._pos = 0;
   }
 
-  // Flow-only iterator annotation
-  /* eslint-disable-next-line */
-  /*:: @@iterator(): Iterator<number> { return this; } */
+  // $FlowFixMe - Computed properties not supported
+  ['@@iterator'](): Iterator<number> {
+    return this;
+  }
+
   // $FlowFixMe - Computed properties not supported
   [Symbol.iterator]() {
     return this;
