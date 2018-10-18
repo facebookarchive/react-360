@@ -95,11 +95,11 @@ export default class BasicVideoPlayer {
   }
 
   play() {
-    this.videoElement.play();
+    return this.videoElement.play();
   }
 
   pause() {
-    this.videoElement.pause();
+    return this.videoElement.pause();
   }
 
   seekTo(position: number) {

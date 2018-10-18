@@ -14,7 +14,7 @@ import bundleFromLocation from './bundleFromLocation';
 import Compositor from './Compositor/Compositor';
 import Location from './Compositor/Location';
 import type Surface from './Compositor/Surface';
-import Overlay, {type OverlayInterface} from './Compositor/Overlay';
+import Overlay, { type OverlayInterface } from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
 import ScrollPanCameraController from './Controls/CameraControllers/ScrollPanCameraController';
@@ -24,8 +24,8 @@ import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
 import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
 import MouseInputChannel from './Controls/InputChannels/MouseInputChannel';
 import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
-import {type InputEvent} from './Controls/InputChannels/Types';
-import {type Quaternion, type Ray, type Vec3} from './Controls/Types';
+import { type InputEvent } from './Controls/InputChannels/Types';
+import { type Quaternion, type Ray, type Vec3 } from './Controls/Types';
 import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
@@ -34,9 +34,9 @@ import AudioModule from './Modules/AudioModule';
 import EnvironmentModule from './Modules/EnvironmentModule';
 import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
-import type {CustomView} from './Modules/UIManager';
-import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
-import {rotateByQuaternion} from './Renderer/Math';
+import type { CustomView } from './Modules/UIManager';
+import Runtime, { type NativeModuleInitializer } from './Runtime/Runtime';
+import { rotateByQuaternion } from './Renderer/Math';
 
 type Root = {
   initialProps: Object,
@@ -45,13 +45,13 @@ type Root = {
 
 type AnimationFrameData =
   | {
-      id: number,
-      vr: true,
-    }
+    id: number,
+    vr: true,
+  }
   | {
-      id: AnimationFrameID,
-      vr: false,
-    };
+    id: AnimationFrameID,
+    vr: false,
+  };
 
 // Store appearance data that can be pushed onto a stack and re-accessed later
 type AppearanceState = {
@@ -64,11 +64,12 @@ export type React360Options = {
   assetRoot?: string,
   customOverlay?: OverlayInterface,
   customViews?: Array<CustomView>,
+  orientation: Array<Number>,
   executor?: ReactExecutor,
   frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
-  useNewViews?: boolean,
+  eventLayer: HTMLElement,
 };
 
 const DEFAULT_SURFACE_DEPTH = 4;
@@ -118,7 +119,15 @@ export default class ReactInstance {
 
     this._appearanceStateStack = [];
     this._cameraPosition = [0, 0, 0];
-    this._cameraQuat = [0, 0, 0, 1];
+    if (options.orientation) {
+      const orientation = options.orientation;
+      const newEuler = new THREE.Euler(...orientation);
+      const quat = new THREE.Quaternion();
+      quat.setFromEuler(newEuler);
+      this._cameraQuat = [quat.x, quat.y, quat.z, quat.w];
+    } else {
+      this._cameraQuat = [0, 0, 0, 1];
+    }
     this._events = [];
     this._needsResize = false;
     this._parent = parent;
@@ -153,7 +162,10 @@ export default class ReactInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
-    this.compositor = new Compositor(this._eventLayer, this.scene);
+    this.compositor = new Compositor(this._eventLayer, this.scene, options);
+    if (options.eventLayer) {
+      this._eventLayer = options.eventLayer;
+    }
     let assetRoot = options.assetRoot || 'static_assets/';
     if (!assetRoot.endsWith('/')) {
       assetRoot += '/';
@@ -179,15 +191,14 @@ export default class ReactInstance {
         },
         ...(options.nativeModules || []),
       ],
-      useNewViews: options.useNewViews,
     };
     this.runtime = new Runtime(
       this.scene,
-      bundleFromLocation(bundle),
+      bundle ? bundleFromLocation(bundle) : '',
       runtimeOptions,
     );
-
-    this.vrState = new VRState();
+    const glRenderer = this.compositor.getRenderer();
+    this.vrState = new VRState(glRenderer);
     this.vrState.onDisplayChange(display => {
       if (display) {
         this.overlay.setVRButtonState(true, 'View in VR', this.enterVR);
@@ -345,7 +356,6 @@ export default class ReactInstance {
     this.overlay.setCameraRotation(this._cameraQuat);
 
     this.compositor.setMouseCursorActive(this.runtime.isMouseCursorActive());
-
     if (display && display.isPresenting && frameData) {
       this.compositor.renderVR(display, frameData);
       if (this._looping) {
@@ -376,7 +386,11 @@ export default class ReactInstance {
         }
       }
     } else {
-      this.compositor.render(this._cameraPosition, this._cameraQuat);
+      if (display && display.isPresenting) {
+        this.compositor.render(this._cameraPosition, this._cameraQuat, display);
+      } else {
+        this.compositor.render(this._cameraPosition, this._cameraQuat);
+      }
       if (this._looping) {
         // Avoid reallocating objects each frame
         if (this._nextFrame) {
@@ -530,6 +544,17 @@ export default class ReactInstance {
           1,
         );
       });
+  }
+
+  exitVR() {
+    const display = this.vrState.getCurrentDisplay();
+    if (display && display.isPresenting) {
+      display
+        .exitPresent()
+        .then(() => {
+          console.log('exit VR mode!');
+        });
+    }
   }
 
   resize(width: number, height: number) {

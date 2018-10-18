@@ -10,13 +10,13 @@
  */
 
 import * as THREE from 'three';
-import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
+import { type Quaternion, type Ray, type Vec3 } from '../Controls/Types';
 import createRemoteImageManager from '../Utils/createRemoteImageManager';
 import type ResourceManager from '../Utils/ResourceManager';
 import Cursor from './Cursor';
-import Environment, {type PanoOptions} from './Environment/Environment';
+import Environment, { type PanoOptions } from './Environment/Environment';
 import Surface from './Surface';
-import type {VideoPlayer} from './Video/Types';
+import type { VideoPlayer } from './Video/Types';
 import VideoPlayerManager from './Video/VideoPlayerManager';
 
 const LEFT = 'left';
@@ -39,11 +39,11 @@ export default class Compositor {
   _renderer: THREE.WebGLRenderer;
   _scene: THREE.Scene;
   _surfaceRoot: THREE.Object3D;
-  _surfaces: {[name: string]: Surface};
+  _surfaces: { [name: string]: Surface };
   _resourceManager: ResourceManager<Image>;
   _videoPlayers: VideoPlayerManager;
 
-  constructor(frame: HTMLElement, scene: THREE.Scene) {
+  constructor(frame: HTMLElement, scene: THREE.Scene, options: object) {
     this._frame = frame;
     this._cursorVisibility = 'auto';
     this._isMouseCursorActive = false;
@@ -60,6 +60,7 @@ export default class Compositor {
     );
     this._renderer = new THREE.WebGLRenderer({
       antialias: true,
+      preserveDrawingBuffer: true,
     });
     this._canvas = this._renderer.domElement;
     this._renderer.setPixelRatio(window.devicePixelRatio);
@@ -70,8 +71,10 @@ export default class Compositor {
     this._environment = new Environment(
       this._resourceManager,
       this._videoPlayers,
+      options
     );
-    scene.add(this._environment.getPanoNode());
+    const panoNode = this._environment.getPanoNode();
+    scene.add(panoNode);
 
     this._surfaceRoot = new THREE.Object3D();
     scene.add(this._surfaceRoot);
@@ -167,7 +170,7 @@ export default class Compositor {
   }
 
   frame(delta: number) {
-    this._environment.frame(delta);
+    this._environment.frame(delta, this._camera);
     this._videoPlayers.frame();
   }
 
@@ -190,12 +193,15 @@ export default class Compositor {
     this._cursor.setPosition(cameraToCursorX, cameraToCursorY, cameraToCursorZ);
   }
 
-  render(position: Vec3, quat: Quaternion) {
+  render(position: Vec3, quat: Quaternion, renderer) {
     this.prepareForRender(null);
     this._camera.position.set(position[0], position[1], position[2]);
     this._camera.quaternion.set(quat[0], quat[1], quat[2], quat[3]);
-
-    this._renderer.render(this._scene, this._camera);
+    if (!renderer) {
+      this._renderer.render(this._scene, this._camera);
+    } else {
+      renderer.render(this._scene, this._camera);
+    }
   }
 
   renderSurface(surface: Surface) {

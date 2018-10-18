@@ -131,13 +131,13 @@ export default class BrowserVideoPlayer implements VideoPlayer {
   }
 
   play() {
-    this._element.play();
     this._playing = true;
+    return this._element.play();
   }
 
   pause() {
-    this._element.pause();
     this._playing = false;
+    return this._element.pause();
   }
 
   seekTo(position: number) {
@@ -146,11 +146,11 @@ export default class BrowserVideoPlayer implements VideoPlayer {
 
   destroy() {
     this.pause();
-    if (this._element.parentNode) {
-      this._element.parentNode.removeChild(this._element);
-    }
     if (this._texture) {
       this._texture.dispose();
+    }
+    if (this._element.parentNode) {
+      this._element.parentNode.removeChild(this._element);
     }
     this._element.src = '';
   }

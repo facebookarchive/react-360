@@ -67,11 +67,11 @@ function clipLinePlane(plane, p0, p1, uv0, uv1) {
  * returns true if any portion of the line would be outsize of the frustum by clipping
  * to the left, right, top and bottom planes
  */
-const clipLineToFrustum = (function() {
+const clipLineToFrustum = (function () {
   const p0 = new THREE.Vector4();
   const p1 = new THREE.Vector4();
 
-  return function(ctx, pnt0, pnt1, uv0, uv1, projectionMatrix) {
+  return function (ctx, pnt0, pnt1, uv0, uv1, projectionMatrix) {
     p0.fromArray([pnt0[0], pnt0[1], pnt0[2], 1]);
     p0.applyMatrix4(projectionMatrix);
     p1.fromArray([pnt1[0], pnt1[1], pnt1[2], 1]);
@@ -112,17 +112,17 @@ const HPANO_MAP_UNLOADED = 0;
 const HPANO_MAP_LOADING = 1;
 const HPANO_MAP_LOADED = 2;
 
-export function HPanoBufferGeometry(rad, maxLevels, baseurl) {
+export function HPanoBufferGeometry(rad, maxLevels, baseurl, events = {}) {
   THREE.BufferGeometry.call(this);
-
   this.dirty = true;
   this.type = 'HPanoBufferGeometry';
   this.material = [];
   this.materialsCached = {};
   this.rad = rad;
   this.baseurl = baseurl;
-
-  this.update(maxLevels);
+  this.events = events;
+  this.maxLevels = 1;
+  this.update();
 }
 
 HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry.prototype), {
@@ -130,9 +130,12 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
 
   isHPanoBufferGeometry: true,
 
-  dispose: function() {
+  dispose: function () {
     THREE.BufferGeometry.prototype.dispose();
-    for (let i = 0; i < this.material.length; i++) {
+    for (const i in this.material) {
+      if (i === 'isMultiMaterial') {
+        return;
+      }
       this.material[i].map && this.material[i].map.dispose();
       this.material[i].map = null;
       this.material[i].dispose();
@@ -141,15 +144,13 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
     this.materialsCached = {};
   },
 
-  update: function(maxLevels, projectionMatrix) {
+  update: function (projectionMatrix) {
     this.dirty = false;
-
     if (this.boundingSphere === null) {
       this.boundingSphere = new THREE.Sphere();
     }
     this.boundingSphere.radius = Math.sqrt(3 * this.rad * this.rad);
-
-    const quadCount = Math.pow(4, maxLevels) * 6;
+    const quadCount = Math.pow(4, this.maxLevels) * 6;
     const vertCount = quadCount * 4;
     if (this.quadCount !== quadCount) {
       this.quadCount = quadCount;
@@ -170,7 +171,7 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
       offsetIndices: 0,
     };
 
-    for (let i = 0; i < this.material.length; i++) {
+    for (const i in this.material) {
       this.material[i].referenced = false;
     }
 
@@ -184,24 +185,34 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
     // br - bottomRight
     function fillQuad(ctx, tl, tr, bl, br, tile, side, level) {
       // replace markup for texture url
-      const file = geom.baseurl
-        .replace('%l', (level + 1).toString())
-        .replace('%s', side)
-        .replace('%h', (tile[0] + 1).toString())
-        .replace('%v', (tile[1] + 1).toString())
-        .replace('%0h', zeroPrepend((tile[0] + 1).toString()))
-        .replace('%0v', zeroPrepend((tile[1] + 1).toString()))
-        .replace('%t0', (tile[0] + 1).toString())
-        .replace('%t1', (tile[1] + 1).toString())
-        .replace('%0t0', zeroPrepend((tile[0] + 1).toString()))
-        .replace('%0t1', zeroPrepend((tile[1] + 1).toString()));
+      let file = '';
+      if (level === 0) {
+        file = geom.baseurl
+          .replace('%l', (level + 1).toString())
+          .replace('%s', side)
+          .replace('_%h', '')
+          .replace('_%v', '');
+      } else {
+        file = geom.baseurl
+          .replace('%l', (level).toString())
+          .replace('%s', side)
+          .replace('%h', (tile[0] + 1).toString())
+          .replace('%v', (tile[1] + 1).toString());
+      }
+      // .replace('%0h', zeroPrepend((tile[0] + 1).toString()))
+      // .replace('%0v', zeroPrepend((tile[1] + 1).toString()))
+      // .replace('%t0', (tile[0] + 1).toString())
+      // .replace('%t1', (tile[1] + 1).toString())
+      // .replace('%0t0', zeroPrepend((tile[0] + 1).toString()))
+      // .replace('%0t1', zeroPrepend((tile[1] + 1).toString()));
       let mtr = geom.materialsCached[file];
+
       let divide = false;
       if (projectionMatrix) {
         // very basic test to see if edges clip frustum
         // and calculates a rough pixel per meter ratio
         // which is used to determine if it is worth dividing the tiles
-        const ctx = {texelPerPixel: 1};
+        const ctx = { texelPerPixel: 1 };
         let anyVisible = false;
         anyVisible |= !clipLineToFrustum(
           ctx,
@@ -220,6 +231,7 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
           [tileSize, tileSize],
           projectionMatrix
         );
+
         anyVisible |= !clipLineToFrustum(
           ctx,
           br,
@@ -239,7 +251,7 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
         mtr = new THREE.MeshBasicMaterial({
           wireframe: false,
           depthWrite: false,
-          color: ['white', 'green', 'blue'][level],
+          // color: ['white', 'green', 'blue'][level],
           side: THREE.DoubleSide,
         });
         mtr.loadState = HPANO_MAP_UNLOADED;
@@ -250,14 +262,14 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
       }
 
       let addQuad = false;
-      if (mtr.loadState !== HPANO_MAP_LOADED || level === maxLevels || !divide) {
+      if (mtr.loadState !== HPANO_MAP_LOADED || level === geom.maxLevels || !divide) {
         // only issue load requests if not already in progress
         if (mtr.loadState === HPANO_MAP_UNLOADED) {
           mtr.loadState = HPANO_MAP_LOADING;
           const loader = new THREE.TextureLoader();
           loader.load(
             file,
-            function(texture) {
+            function (texture) {
               texture.wrapS = THREE.ClampToEdgeWrapping;
               texture.wrapT = THREE.ClampToEdgeWrapping;
               texture.minFilter = THREE.LinearFilter;
@@ -268,17 +280,24 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
                 mtr.loadState = HPANO_MAP_LOADED;
               }
               geom.dirty = true;
+              if (typeof geom.events.onTileLoad === 'function') {
+                geom.events.onTileLoad(file, mtr);
+              }
             },
             undefined,
-            function() {
+            function () {
               console.log('failed to load ' + file);
+              if (level > 1) {
+                // TODO fixed some level error
+                geom.maxLevels = level - 1;
+              }
             }
           );
         }
         mtr.referenced = true;
         addQuad = true;
       } else {
-        // quad  should be subdivided, calculate the corners
+        // quad should be subdivided, calculate the corners
         const mid_tlbr = [(tl[0] + br[0]) / 2, (tl[1] + br[1]) / 2, (tl[2] + br[2]) / 2];
         const mid_tltr = [(tl[0] + tr[0]) / 2, (tl[1] + tr[1]) / 2, (tl[2] + tr[2]) / 2];
         const mid_blbr = [(bl[0] + br[0]) / 2, (bl[1] + br[1]) / 2, (bl[2] + br[2]) / 2];
@@ -381,7 +400,7 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
       }
       return mtr.loadState === HPANO_MAP_LOADED;
     }
-    const tileSize = 1024;
+    const tileSize = 512;
     const rad = this.rad;
     fillQuad(
       context,

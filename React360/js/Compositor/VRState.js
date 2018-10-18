@@ -8,6 +8,7 @@
  *
  * @flow
  */
+import MobileVREffect from './MobileVREffect';
 
 type Callback = (...any) => mixed;
 
@@ -15,17 +16,21 @@ type Callback = (...any) => mixed;
  * State management for VR Display
  */
 
+function isVRBrowser(): boolean {
+  return 'VRDisplay' in window;
+}
+
 export default class VRState {
   vrDisplay: ?VRDisplay;
   _displayChangeCallbacks: Array<Callback>;
   _enterCallbacks: Array<Callback>;
   _exitCallbacks: Array<Callback>;
 
-  constructor() {
+  constructor(glRenderer) {
     this._displayChangeCallbacks = [];
     this._enterCallbacks = [];
     this._exitCallbacks = [];
-
+    this.glRenderer = glRenderer;
     (this: any).onDisplayActivate = this.onDisplayActivate.bind(this);
     (this: any).onDisplayDeactivate = this.onDisplayDeactivate.bind(this);
     (this: any).onDisplayConnect = this.onDisplayConnect.bind(this);
@@ -47,6 +52,9 @@ export default class VRState {
           this.setCurrentDisplay(displays[0]);
         }
       });
+    } else if (isVRBrowser) {
+      const effect = new MobileVREffect(this.glRenderer);
+      this.setCurrentDisplay(effect)
     }
   }
 
@@ -93,26 +101,26 @@ export default class VRState {
     return !!this.vrDisplay && this.vrDisplay.isPresenting;
   }
 
-  onDisplayActivate({display}: VRDisplayEvent) {
+  onDisplayActivate({ display }: VRDisplayEvent) {
     if (display === this.vrDisplay) {
       // May need to do something here for vr-to-vr navigation
     }
   }
 
-  onDisplayDeactivate({display}: VRDisplayEvent) {
+  onDisplayDeactivate({ display }: VRDisplayEvent) {
     if (display === this.vrDisplay) {
       // May need to do something here for vr-to-vr navigation
     }
   }
 
-  onDisplayConnect({display}: VRDisplayEvent) {
+  onDisplayConnect({ display }: VRDisplayEvent) {
     if (this.vrDisplay) {
       return;
     }
     this.setCurrentDisplay(display);
   }
 
-  onDisplayDisconnect({display}: VRDisplayEvent) {
+  onDisplayDisconnect({ display }: VRDisplayEvent) {
     // If `display` is not the current display, return.
     // If presenting, exit presenting, clean up.
     // Query remaining displays.
@@ -132,7 +140,7 @@ export default class VRState {
     }
   }
 
-  onDisplayPresentChange({display}: VRDisplayEvent) {
+  onDisplayPresentChange({ display }: VRDisplayEvent) {
     if (
       this.vrDisplay &&
       display &&

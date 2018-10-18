@@ -14,12 +14,12 @@ import Location from '../Compositor/Location';
 import Surface from '../Compositor/Surface';
 import type ReactExecutor from '../Executor/ReactExecutor';
 import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
-import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
-import {type InputEvent} from '../Controls/InputChannels/Types';
+import { type Quaternion, type Ray, type Vec3 } from '../Controls/Types';
+import { type InputEvent } from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
-import type {CustomView} from '../Modules/UIManager';
+import type { CustomView } from '../Modules/UIManager';
 import GuiSys from '../OVRUI/UIView/GuiSys';
-import {ReactNativeContext} from '../ReactNativeContext';
+import { ReactNativeContext } from '../ReactNativeContext';
 import ReactContext from './ReactContext';
 import SurfaceRuntime from './SurfaceRuntime';
 
@@ -76,7 +76,7 @@ export default class Runtime {
   _lastHit: ?number;
   _offscreenRenderUID: number;
   _rootLocations: Array<LocationNode>;
-  _rootSurfaces: {[id: string]: SurfaceNode};
+  _rootSurfaces: { [id: string]: SurfaceNode };
   _scene: THREE.Scene;
   context: ReactContext | ReactNativeContext;
   executor: ReactExecutor;
@@ -104,8 +104,8 @@ export default class Runtime {
           /* eslint-disable no-console */
           console.log(
             'We detected that you have the React Devtools extension installed. ' +
-              'Please note that at this time, React VR is only compatible with the ' +
-              'standalone Inspector (npm run devtools).',
+            'Please note that at this time, React VR is only compatible with the ' +
+            'standalone Inspector (npm run devtools).',
           );
           /* eslint-enable no-console */
         }
@@ -151,7 +151,9 @@ export default class Runtime {
         }
       }
     }
-    this.context.init(bundleURL);
+    if (bundleURL) {
+      this.context.init(bundleURL);
+    }
   }
 
   createRootView(name: string, initialProps: Object, dest: Location | Surface) {
@@ -228,7 +230,7 @@ export default class Runtime {
       renderer.localClippingEnabled = oldClipping;
     }
     for (let i = 0; i < this._rootLocations.length; i++) {
-      const {location, node} = this._rootLocations[i];
+      const { location, node } = this._rootLocations[i];
       if (location.isDirty()) {
         const worldPosition = location.worldPosition;
         node.position.set(worldPosition[0], worldPosition[1], worldPosition[2]);
