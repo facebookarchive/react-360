@@ -59,10 +59,14 @@ export default class Environment {
   constructor(rm: ?ResourceManager<Image>, videoPlayers: ?VideoPlayerManager, options: object) {
     this._resourceManager = rm;
     this._videoPlayers = videoPlayers;
+    this._options = options;
     // Objects for panorama management
-    this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
+
     if (options.uv) {
-      const {phiLength} = options.uv;
+      const {phiStart, phiLength, thetaStart, thetaLength} = options.uv;
+      // console.log()
+      this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16, 0,
+      phiLength);
       this._panoGeomHemisphere = new THREE.SphereGeometry(
         1000,
         16,
@@ -78,6 +82,7 @@ export default class Environment {
         0,
         Math.PI,
       );
+      this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
     }
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#ffffff',
@@ -103,8 +108,10 @@ export default class Environment {
   _setPanoGeometryToHemisphere() {
     this._panoMesh.geometry = this._panoGeomHemisphere;
     this._panoMesh.rotation.y = Math.PI;
-    this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
-    this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI;
+    if (this._options.fov && this._options.fov.hfov * 1 === 180) {
+      this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
+      this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI;
+    }
     this._panoMesh.needsUpdate = true;
   }
 
@@ -168,6 +175,9 @@ export default class Environment {
         // 180 side-by-side 3D
         this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
         this._setPanoGeometryToHemisphere();
+      } if (data.format === '3DTB') {
+        this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
+        this._setPanoGeometryToSphere();
       } else {
         // assume 360 mono
         this._panoEyeOffsets = [[0, 0, 1, 1]];
@@ -175,14 +185,14 @@ export default class Environment {
       }
     } else {
       if (data.format === '3DTB') {
-        this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
+        this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere();
       } else if (data.format === '3DBT') {
         this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere();
       } else if (data.format === '3DLR') {
         // 180 side-by-side 3D
-        this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
+        this._panoEyeOffsets = [[0.5, 0, 0.5, 1],[0, 0, 0.5, 1]];
         this._setPanoGeometryToHemisphere();
       }
     }
