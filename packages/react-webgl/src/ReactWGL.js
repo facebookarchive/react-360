@@ -12,6 +12,8 @@
 import Reconciler from 'react-reconciler';
 import * as HostConfig from './HostConfig';
 import GLRoot from './GLRoot';
+import CanvasRoot from './CanvasRoot';
+import RenderTargetRoot from './RenderTargetRoot';
 
 const Renderer = Reconciler(HostConfig);
 
@@ -34,4 +36,4 @@ export const Text = 'text';
 export const Quad = 'quad';
 export const View = 'quad';
 
-export {GLRoot};
+export {CanvasRoot, GLRoot, RenderTargetRoot};

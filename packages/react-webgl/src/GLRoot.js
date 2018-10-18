@@ -9,7 +9,6 @@
  * @flow
  */
 
-import * as THREE from 'three';
 import {
   Flexbox,
   SDFTextImplementation,
@@ -27,12 +26,8 @@ function recursiveLayout(view) {
 }
 
 export default class GLRoot {
-  constructor(width: number, height: number) {
-    this._renderer = new THREE.WebGLRenderer();
-    this._scene = new THREE.Scene();
-    this._camera = new THREE.OrthographicCamera();
-    this.resize(width, height);
-
+  constructor(scene: any) {
+    this._scene = scene;
     this._roots = [];
     this.YGNode = Flexbox.Node.create();
 
@@ -43,20 +38,6 @@ export default class GLRoot {
     this._hitCurrentFrame = new Set();
     this._cursorX = -9999;
     this._cursorY = -9999;
-    this._renderer.domElement.addEventListener('mousemove', this._onMouseMove);
-    this._renderer.domElement.addEventListener('mouseleave', this._onMouseLeave);
-  }
-
-  resize(width: number, height: number) {
-    this._renderer.setSize(width, height, true);
-    this._camera.left = 0;
-    this._camera.right = width;
-    this._camera.top = 0;
-    this._camera.bottom = height;
-    this._camera.near = -1000;
-    this._camera.far = 1000;
-    this._camera.setViewOffset(width, height, 0, 0, width, height);
-    this._camera.updateProjectionMatrix();
   }
 
   append(child) {
@@ -72,15 +53,10 @@ export default class GLRoot {
       StackingContext.restack(root);
     }
     this._detectCurrentHits();
-    this._renderer.render(this._scene, this._camera);
   }
 
-  getRenderer() {
-    return this._renderer;
-  }
-
-  getScene() {
-    return this._scene;
+  showCursor() {
+    return false;
   }
 
   getTextImplementation() {
@@ -91,15 +67,14 @@ export default class GLRoot {
     return this._textureManager;
   }
 
-  _onMouseMove = e => {
-    this._cursorX = e.offsetX;
-    this._cursorY = e.offsetY;
-  };
+  getScene() {
+    return this._scene;
+  }
 
-  _onMouseLeave = () => {
-    this._cursorX = -9999;
-    this._cursorY = -9999;
-  };
+  setCursorCoordinates(x: number, y: number) {
+    this._cursorX = x;
+    this._cursorY = y;
+  }
 
   _detectCurrentHits() {
     const currentHits = this._hitCurrentFrame;
@@ -124,21 +99,26 @@ export default class GLRoot {
     }
     let cursor = null;
     let cursorOrder = -1;
+    const showCursor = this.showCursor();
     for (const newHit of currentHits) {
       if (!this._hitLastFrame.has(newHit)) {
         // Entered newHit
         newHit.fireEvent('onEnter');
       }
-      const nodeRenderOrder = newHit.getRenderOrder();
-      if (nodeRenderOrder > cursorOrder) {
-        const nodeCursor = newHit.getCursor();
-        if (nodeCursor) {
-          cursor = nodeCursor;
-          cursorOrder = nodeRenderOrder;
+      if (showCursor) {
+        const nodeRenderOrder = newHit.getRenderOrder();
+        if (nodeRenderOrder > cursorOrder) {
+          const nodeCursor = newHit.getCursor();
+          if (nodeCursor) {
+            cursor = nodeCursor;
+            cursorOrder = nodeRenderOrder;
+          }
         }
       }
     }
-    this._renderer.domElement.style.cursor = cursor || 'initial';
+    if (showCursor) {
+      this.updateCursor(cursor || 'initial');
+    }
 
     this._hitCurrentFrame = this._hitLastFrame;
     this._hitLastFrame = currentHits;
