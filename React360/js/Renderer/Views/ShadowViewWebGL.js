@@ -24,6 +24,9 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderTopRightRadius: ?number;
   _borderBottomRightRadius: ?number;
   _borderBottomLeftRadius: ?number;
+  _cursor: ?string;
+  _eventHandlers: {[event: string]: any};
+  _hasCursorEvent: boolean;
   _hasOnLayout: boolean;
   _layoutOrigin: [number, number];
   _onLayoutHook: ?LayoutHook;
@@ -35,6 +38,9 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     super();
 
     this._borderRadiusDirty = false;
+    this._cursor = null;
+    this._eventHandlers = {};
+    this._hasCursorEvent = false;
     this._hasOnLayout = false;
     this._layoutOrigin = [0, 0];
     this._zIndex = 0;
@@ -161,6 +167,30 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
   }
 
+  getCursor(): ?string {
+    return this._cursor;
+  }
+
+  hasCursorEvent(): boolean {
+    return this._hasCursorEvent;
+  }
+
+  setEventHandler(event: string, callback: any) {
+    if (!callback) {
+      delete this._eventHandlers[event];
+    } else {
+      this._eventHandlers[event] = callback;
+    }
+    this._hasCursorEvent = this._cursor != null || Object.keys(this._eventHandlers).length > 0;
+  }
+
+  fireEvent(event: string) {
+    const callback = this._eventHandlers[event];
+    if (callback) {
+      callback();
+    }
+  }
+
   _getBorderValue(edge: number): number {
     const value = this.YGNode.getBorder(edge);
     const allValue = this.YGNode.getBorder(Flexbox.EDGE_ALL);
@@ -221,6 +251,15 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
     this._borderTopRightRadius = radius;
     this._borderRadiusDirty = true;
+  }
+
+  __setStyle_cursor(cursor: ?string) {
+    this._cursor = cursor;
+    if (cursor) {
+      this._hasCursorEvent = true;
+    } else {
+      this._hasCursorEvent = Object.keys(this._eventHandlers).length > 0;
+    }
   }
 
   __setStyle_layoutOrigin(origin: [number, number]) {

@@ -38,6 +38,13 @@ export default class GLRoot {
 
     this._textImplementation = new SDFTextImplementation();
     this._textureManager = new TextureManager();
+
+    this._hitLastFrame = new Set();
+    this._hitCurrentFrame = new Set();
+    this._cursorX = -9999;
+    this._cursorY = -9999;
+    this._renderer.domElement.addEventListener('mousemove', this._onMouseMove);
+    this._renderer.domElement.addEventListener('mouseleave', this._onMouseLeave);
   }
 
   resize(width: number, height: number) {
@@ -64,6 +71,7 @@ export default class GLRoot {
       recursiveLayout(root);
       StackingContext.restack(root);
     }
+    this._detectCurrentHits();
     this._renderer.render(this._scene, this._camera);
   }
 
@@ -81,5 +89,58 @@ export default class GLRoot {
 
   getTextureManager() {
     return this._textureManager;
+  }
+
+  _onMouseMove = e => {
+    this._cursorX = e.offsetX;
+    this._cursorY = e.offsetY;
+  };
+
+  _onMouseLeave = () => {
+    this._cursorX = -9999;
+    this._cursorY = -9999;
+  };
+
+  _detectCurrentHits() {
+    const currentHits = this._hitCurrentFrame;
+    currentHits.clear();
+    const x = this._cursorX;
+    const y = this._cursorY;
+    const nodes = this._roots.slice();
+    while (nodes.length > 0) {
+      const node = nodes.shift();
+      if (node.hasCursorEvent()) {
+        if (node.view.containsPoint(x, y)) {
+          currentHits.add(node);
+        }
+      }
+      nodes.unshift.apply(nodes, node.children);
+    }
+    for (const oldHit of this._hitLastFrame) {
+      if (!currentHits.has(oldHit)) {
+        // Left oldHit
+        oldHit.fireEvent('onExit');
+      }
+    }
+    let cursor = null;
+    let cursorOrder = -1;
+    for (const newHit of currentHits) {
+      if (!this._hitLastFrame.has(newHit)) {
+        // Entered newHit
+        newHit.fireEvent('onEnter');
+      }
+      const nodeRenderOrder = newHit.getRenderOrder();
+      if (nodeRenderOrder > cursorOrder) {
+        const nodeCursor = newHit.getCursor();
+        if (nodeCursor) {
+          cursor = nodeCursor;
+          cursorOrder = nodeRenderOrder;
+        }
+      }
+    }
+    this._renderer.domElement.style.cursor = cursor || 'initial';
+
+    this._hitCurrentFrame = this._hitLastFrame;
+    this._hitLastFrame = currentHits;
   }
 }

@@ -51,6 +51,7 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
       align: 'auto',
     });
     this.view.getNode().add(this._text.getNode());
+    this.__setStyle_cursor('text');
 
     this.YGNode.setMeasureFunc((width, widthMeasureMode, height, heightMeasureMode) =>
       this.measure(width, widthMeasureMode, height, heightMeasureMode)

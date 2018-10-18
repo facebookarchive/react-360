@@ -9,12 +9,22 @@
  * @flow
  */
 
+const EVENTS = {
+  onEnter: true,
+  onExit: true,
+  onInput: true,
+};
+
 export default function applyProps(view, oldProps, newProps, dispatchers) {
   for (const p in newProps) {
     if (p === 'children') {
       continue;
     }
     if (oldProps != null && oldProps[p] === newProps[p]) {
+      continue;
+    }
+    if (p in EVENTS) {
+      view.setEventHandler(p, newProps[p]);
       continue;
     }
     const setter = view[`__setStyle_${p}`];
