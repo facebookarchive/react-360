@@ -10,7 +10,12 @@
  */
 
 import * as THREE from 'three';
-import {Flexbox, StackingContext} from '../../../React360/js/WebGLRendering';
+import {
+  Flexbox,
+  SDFTextImplementation,
+  StackingContext,
+  TextureManager,
+} from '../../../React360/js/WebGLRendering';
 
 function recursiveLayout(view) {
   view.presentLayout();
@@ -30,6 +35,9 @@ export default class GLRoot {
 
     this._roots = [];
     this.YGNode = Flexbox.Node.create();
+
+    this._textImplementation = new SDFTextImplementation();
+    this._textureManager = new TextureManager();
   }
 
   resize(width: number, height: number) {
@@ -65,5 +73,13 @@ export default class GLRoot {
 
   getScene() {
     return this._scene;
+  }
+
+  getTextImplementation() {
+    return this._textImplementation;
+  }
+
+  getTextureManager() {
+    return this._textureManager;
   }
 }

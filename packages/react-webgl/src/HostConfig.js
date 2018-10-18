@@ -11,6 +11,7 @@
 
 import * as Elements from './Elements';
 import applyProps from './applyProps';
+import {RawText} from '../../../React360/js/WebGLRendering';
 
 const NO_CONTEXT = {};
 const UPDATE_SIGNAL = {};
@@ -46,7 +47,7 @@ export function createInstance(
   // create view from type
   const element = Elements[type];
   const view = element.create(rootContainerInstance);
-  applyProps(view, null, props);
+  applyProps(view, null, props, element.dispatchers);
   return view;
 }
 
@@ -77,15 +78,22 @@ export function prepareUpdate(
 }
 
 export function shouldSetTextContent(type, props) {
-  return typeof props.children === 'string' || typeof props.children === 'number';
+  return false;
 }
 
 export function shouldDeprioritizeSubtree(type, props) {
   return false;
 }
 
-export function createTextInstance() {
-  throw new Error('not implemented');
+export function createTextInstance(
+  text,
+  rootContainerInstance,
+  hostContext,
+  internalInstanceHandle
+) {
+  const raw = new RawText();
+  raw.setText(text);
+  return raw;
 }
 
 export const scheduleTimeout = setTimeout;
@@ -108,7 +116,9 @@ export function appendChildToContainer(parentInstance, child) {
 }
 
 export function commitTextUpdate(textInstance, oldText, newText) {
-  throw new Error('not implemented');
+  if (oldText !== newText) {
+    textInstance.setText(newText);
+  }
 }
 
 export function commitMount(instance, type, newProps) {
@@ -116,7 +126,7 @@ export function commitMount(instance, type, newProps) {
 }
 
 export function commitUpdate(instance, updatePayload, type, oldProps, newProps) {
-  applyProps(instance, oldProps, newProps);
+  applyProps(instance, oldProps, newProps, Elements[type].dispatchers);
 }
 
 export function insertBefore(parentInstance, child, beforeChild) {
@@ -137,5 +147,5 @@ export function removeChildFromContainer(parentInstance, child) {
 
 export function resetTextContent(instance) {
   // set instance text to ''
-  throw new Error('not implemented');
+  instance.setText('');
 }

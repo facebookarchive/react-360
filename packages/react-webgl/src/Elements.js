@@ -9,8 +9,31 @@
  * @flow
  */
 
-import {View} from '../../../React360/js/WebGLRendering';
+import {Image, Text, View} from '../../../React360/js/WebGLRendering';
 
 export const quad = {
   create: () => new View(),
+  dispatchers: (() => {
+    const d = {};
+    View.registerBindings(d);
+    return d;
+  })(),
+};
+
+export const text = {
+  create: root => new Text(root.getTextImplementation()),
+  dispatchers: (() => {
+    const d = {};
+    Text.registerBindings(d);
+    return d;
+  })(),
+};
+
+export const image = {
+  create: root => new Image(root.getTextureManager()),
+  dispatchers: (() => {
+    const d = {};
+    Image.registerBindings(d);
+    return d;
+  })(),
 };

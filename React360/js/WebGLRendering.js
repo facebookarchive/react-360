@@ -17,5 +17,18 @@ import ShadowView from './Renderer/Views/ShadowView';
 import ShadowViewWebGL from './Renderer/Views/ShadowViewWebGL';
 import Text from './Renderer/Views/Text';
 import View from './Renderer/Views/View';
+import TextureManager from './Runtime/TextureManager';
+import SDFTextImplementation from './Text/Implementations/SDFTextImplementation';
 
-export {Flexbox, StackingContext, Image, RawText, ShadowView, ShadowViewWebGL, Text, View};
+export {
+  Flexbox,
+  StackingContext,
+  Image,
+  RawText,
+  ShadowView,
+  ShadowViewWebGL,
+  Text,
+  View,
+  TextureManager,
+  SDFTextImplementation,
+};

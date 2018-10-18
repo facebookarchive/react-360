@@ -9,7 +9,7 @@
  * @flow
  */
 
-export default function applyProps(view, oldProps, newProps) {
+export default function applyProps(view, oldProps, newProps, dispatchers) {
   for (const p in newProps) {
     if (p === 'children') {
       continue;
@@ -20,8 +20,10 @@ export default function applyProps(view, oldProps, newProps) {
     const setter = view[`__setStyle_${p}`];
     if (typeof setter === 'function') {
       setter.call(view, newProps[p]);
+    } else if (p in dispatchers) {
+      dispatchers[p].call(view, newProps[p]);
     } else {
-      console.error('unknown props', p);
+      console.error('unknown prop', p);
     }
   }
 }

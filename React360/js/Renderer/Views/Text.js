@@ -99,6 +99,10 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this.markTextDirty();
   }
 
+  getChildCount(): number {
+    return this.textChildren.length;
+  }
+
   setRenderOrder(order: number) {
     super.setRenderOrder(order);
     this._text.getNode().renderOrder = order;
