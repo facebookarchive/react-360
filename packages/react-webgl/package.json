@@ -1,0 +1,7 @@
+{
+  "name": "react-webgl",
+  "version": "0.0.1",
+  "dependencies": {
+    "react-reconciler": "0.15.0"
+  }
+}
