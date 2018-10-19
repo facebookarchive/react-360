@@ -13,8 +13,8 @@ import type ReactExecutor from '../Executor/ReactExecutor';
 import type Module from '../Modules/Module';
 import type RenderRoot from '../Renderer/RenderRoot';
 
-import DeviceInfo from '../Modules/DeviceInfo';
-import Timing from '../Modules/Timing';
+//import DeviceInfo from '../Modules/DeviceInfo';
+//import Timing from '../Modules/Timing';
 import TextureManager from '../Utils/TextureManager';
 import UIManager from './UIManager';
 
@@ -44,8 +44,8 @@ export default class ReactContext {
     this.Timing = new Timing((this: any));
 
     this.registerModule(this.UIManager);
-    this.registerModule(this.Timing);
-    this.registerModule(new DeviceInfo());
+    // this.registerModule(this.Timing);
+    //this.registerModule(new DeviceInfo());
   }
 
   init(bundle: string) {

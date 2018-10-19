@@ -12,7 +12,7 @@
 import * as THREE from 'three';
 import bundleFromLocation from './bundleFromLocation';
 import Compositor from './Compositor/Compositor';
-import Location from './Compositor/Location';
+// import Location from './Compositor/Location';
 import type Surface from './Compositor/Surface';
 import Overlay, { type OverlayInterface } from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
@@ -20,8 +20,8 @@ import MousePanCameraController from './Controls/CameraControllers/MousePanCamer
 import ScrollPanCameraController from './Controls/CameraControllers/ScrollPanCameraController';
 import DeviceOrientationCameraController from './Controls/CameraControllers/DeviceOrientationCameraController';
 import Controls from './Controls/Controls';
-import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
-import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
+// import GamepadInputChannel from './Controls/InputChannels/GamepadInputChannel';
+// import KeyboardInputChannel from './Controls/InputChannels/KeyboardInputChannel';
 import MouseInputChannel from './Controls/InputChannels/MouseInputChannel';
 import TouchInputChannel from './Controls/InputChannels/TouchInputChannel';
 import { type InputEvent } from './Controls/InputChannels/Types';
@@ -30,12 +30,12 @@ import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import type ReactExecutor from './Executor/ReactExecutor';
-import AudioModule from './Modules/AudioModule';
-import EnvironmentModule from './Modules/EnvironmentModule';
-import VideoModule from './Modules/VideoModule';
-import type Module from './Modules/Module';
-import type { CustomView } from './Modules/UIManager';
-import Runtime, { type NativeModuleInitializer } from './Runtime/Runtime';
+// import AudioModule from './Modules/AudioModule';
+// import EnvironmentModule from './Modules/EnvironmentModule';
+// import VideoModule from './Modules/VideoModule';
+// import type Module from './Modules/Module';
+// import type { CustomView } from './Modules/UIManager';
+// import Runtime, { type NativeModuleInitializer } from './Runtime/Runtime';
 import { rotateByQuaternion } from './Renderer/Math';
 
 type Root = {
@@ -68,7 +68,7 @@ export type React360Options = {
   executor?: ReactExecutor,
   frame?: number => mixed,
   fullScreen?: boolean,
-  nativeModules?: Array<Module | NativeModuleInitializer>,
+  // nativeModules?: Array<Module | NativeModuleInitializer>,
   eventLayer: HTMLElement,
 };
 
@@ -171,32 +171,32 @@ export default class ReactInstance {
       assetRoot += '/';
     }
     this._assetRoot = assetRoot;
-    const runtimeOptions = {
-      assetRoot: assetRoot,
-      customViews: options.customViews || [],
-      executor: options.executor,
-      nativeModules: [
-        new EnvironmentModule(this.compositor.getEnvironment()),
-        ctx => {
-          const audio = new AudioModule(ctx);
-          this._audioModule = audio;
-          return audio;
-        },
-        ctx => {
-          const video = new VideoModule(
-            this.compositor.getVideoPlayerManager(),
-          );
-          this._videoModule = video;
-          return video;
-        },
-        ...(options.nativeModules || []),
-      ],
-    };
-    this.runtime = new Runtime(
-      this.scene,
-      bundle ? bundleFromLocation(bundle) : '',
-      runtimeOptions,
-    );
+    // const runtimeOptions = {
+    //   assetRoot: assetRoot,
+    //   customViews: options.customViews || [],
+    //   executor: options.executor,
+    //   nativeModules: [
+    //     new EnvironmentModule(this.compositor.getEnvironment()),
+    //     ctx => {
+    //       const audio = new AudioModule(ctx);
+    //       this._audioModule = audio;
+    //       return audio;
+    //     },
+    //     ctx => {
+    //       const video = new VideoModule(
+    //         this.compositor.getVideoPlayerManager(),
+    //       );
+    //       this._videoModule = video;
+    //       return video;
+    //     },
+    //     ...(options.nativeModules || []),
+    //   ],
+    // };
+    // this.runtime = new Runtime(
+    //   this.scene,
+    //   bundle ? bundleFromLocation(bundle) : '',
+    //   runtimeOptions,
+    // );
     const glRenderer = this.compositor.getRenderer();
     this.vrState = new VRState(glRenderer);
     this.vrState.onDisplayChange(display => {
@@ -221,8 +221,8 @@ export default class ReactInstance {
     );
     this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
-    this.controls.addEventChannel(new KeyboardInputChannel());
-    this.controls.addEventChannel(new GamepadInputChannel());
+    // this.controls.addEventChannel(new KeyboardInputChannel());
+    //this.controls.addEventChannel(new GamepadInputChannel());
     this.controls.addRaycaster(new ControllerRaycaster());
     this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
@@ -324,38 +324,38 @@ export default class ReactInstance {
     }
     // Update runtime
     // Compute intersections
-    if (this._focused2DSurface) {
-      this.runtime.set2DRays(this._rays, this._focused2DSurface);
-    } else {
-      this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
-    }
-    this.runtime.queueEvents(this._events);
-    // Update each view
-    this.runtime.frame(
-      this.compositor.getCamera(),
-      this.compositor.getRenderer(),
-    );
-    if (this._audioModule) {
-      const audioModule = this._audioModule;
-      audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
-      audioModule.frame(delta);
-    }
+    // if (this._focused2DSurface) {
+    //   this.runtime.set2DRays(this._rays, this._focused2DSurface);
+    // } else {
+    //   this.runtime.setRays(this._rays, this._cameraPosition, this._cameraQuat);
+    // }
+    // this.runtime.queueEvents(this._events);
+    // // Update each view
+    // this.runtime.frame(
+    //   this.compositor.getCamera(),
+    //   this.compositor.getRenderer(),
+    // );
+    // if (this._audioModule) {
+    //   const audioModule = this._audioModule;
+    //   audioModule._setCameraParameters(this._cameraPosition, this._cameraQuat);
+    //   audioModule.frame(delta);
+    // }
     if (this._frameHook) {
       this._frameHook(frameStart);
     }
     this.compositor.frame(delta);
     const cursorVis = this.compositor.getCursorVisibility();
-    if (cursorVis !== 'hidden' && this.runtime.isCursorActive()) {
-      this.compositor.updateCursor(this._rays, this.runtime.getCursorDepth());
-    } else if (cursorVis === 'visible') {
-      this.compositor.updateCursor(this._rays, DEFAULT_SURFACE_DEPTH);
-    } else {
-      this.compositor.updateCursor(null, 0);
-    }
+    // if (cursorVis !== 'hidden' && this.runtime.isCursorActive()) {
+    //   this.compositor.updateCursor(this._rays, this.runtime.getCursorDepth());
+    // } else if (cursorVis === 'visible') {
+    //   this.compositor.updateCursor(this._rays, DEFAULT_SURFACE_DEPTH);
+    // } else {
+    //   this.compositor.updateCursor(null, 0);
+    // }
 
     this.overlay.setCameraRotation(this._cameraQuat);
 
-    this.compositor.setMouseCursorActive(this.runtime.isMouseCursorActive());
+    // this.compositor.setMouseCursorActive(this.runtime.isMouseCursorActive());
     if (display && display.isPresenting && frameData) {
       this.compositor.renderVR(display, frameData);
       if (this._looping) {
@@ -436,7 +436,8 @@ export default class ReactInstance {
       this.start();
     }
     this.compositor.showSurface(surface);
-    return this.runtime.createRootView(root.name, root.initialProps, surface);
+    // this.runtime.createRootView(root.name, root.initialProps, surface);
+    return
   }
 
   /**

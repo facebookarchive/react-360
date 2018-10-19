@@ -11,29 +11,29 @@
 
 /* eslint-disable import/order,no-console */
 
-import RCTBox from '../Views/Box';
-import RCTCylinder from '../Views/Cylinder';
-import RCTPlane from '../Views/Plane';
+// import RCTBox from '../Views/Box';
+// import RCTCylinder from '../Views/Cylinder';
+// import RCTPlane from '../Views/Plane';
 import ShadowView from '../Renderer/Views/ShadowView';
-import RCTSphere from '../Views/Sphere';
-import RCTImage from '../Views/Image';
+// import RCTSphere from '../Views/Sphere';
+// import RCTImage from '../Views/Image';
 import RCTView from '../Views/View';
-import RCTPano from '../Views/Pano';
-import RCTLiveEnvCamera from '../Views/LiveEnvCamera';
-import RCTModel from '../Views/Model';
-import RCTScene from '../Views/Scene';
-import RCTSound from '../Views/Sound';
-import RCTText from '../Views/Text';
-import RCTRawText from '../Views/RawText';
-import RCTVideo from '../Views/Video';
-import RCTVideoPano from '../Views/VideoPano';
-import RCTAmbientLight from '../Views/AmbientLight';
-import RCTDirectionalLight from '../Views/DirectionalLight';
-import RCTPointLight from '../Views/PointLight';
-import RCTSpotLight from '../Views/SpotLight';
-import RCTCylindricalPanel from '../Views/CylindricalPanel';
-import RCTQuadPanel from '../Views/QuadPanel';
-import RCTPrefetch from '../Views/Prefetch';
+// import RCTPano from '../Views/Pano';
+// import RCTLiveEnvCamera from '../Views/LiveEnvCamera';
+// import RCTModel from '../Views/Model';
+// import RCTScene from '../Views/Scene';
+// import RCTSound from '../Views/Sound';
+// import RCTText from '../Views/Text';
+// import RCTRawText from '../Views/RawText';
+// import RCTVideo from '../Views/Video';
+// import RCTVideoPano from '../Views/VideoPano';
+// import RCTAmbientLight from '../Views/AmbientLight';
+// import RCTDirectionalLight from '../Views/DirectionalLight';
+// import RCTPointLight from '../Views/PointLight';
+// import RCTSpotLight from '../Views/SpotLight';
+// import RCTCylindricalPanel from '../Views/CylindricalPanel';
+// import RCTQuadPanel from '../Views/QuadPanel';
+// import RCTPrefetch from '../Views/Prefetch';
 
 import ViewGL from '../Renderer/Views/View';
 import ImageGL from '../Renderer/Views/Image';
@@ -166,83 +166,83 @@ export default class UIManager extends Module {
     this._layoutAnimation = null;
     if (flags.useNewViews) {
       this.registerGLViewType('RCTView', (dispatch: Dispatcher) => ViewGL.registerBindings(dispatch), () => new ViewGL());
-      this.registerGLViewType('RCTImageView', (dispatch: Dispatcher) => ImageGL.registerBindings(dispatch), () => new ImageGL());
+      // this.registerGLViewType('RCTImageView', (dispatch: Dispatcher) => ImageGL.registerBindings(dispatch), () => new ImageGL());
     } else {
       this.registerViewType('RCTView', RCTView.describe(), () => {
         return new RCTView(guiSys);
       });
-      this.registerViewType('RCTImageView', RCTImage.describe(), () => {
-        return new RCTImage(guiSys, rnctx);
-      });
+      // this.registerViewType('RCTImageView', RCTImage.describe(), () => {
+      //   return new RCTImage(guiSys, rnctx);
+      // });
     }
-    this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), () => {
-      return new RCTLiveEnvCamera(guiSys);
-    });
-    this.registerViewType('Pano', RCTPano.describe(), () => {
-      return new RCTPano(guiSys, rnctx);
-    });
-    this.registerViewType('Model', RCTModel.describe(), () => {
-      return new RCTModel(guiSys, rnctx);
-    });
-    this.registerViewType('Scene', RCTScene.describe(), () => {
-      return new RCTScene(guiSys);
-    });
-    this.registerViewType('Sound', RCTSound.describe(), () => {
-      return new RCTSound(guiSys, rnctx);
-    });
-    this.registerViewType('RCTText', RCTText.describe(), (options = {}) => {
-      return new RCTText(guiSys, rnctx, !!options.inSurfaceContext);
-    });
-    this.registerViewType('RCTRawText', RCTRawText.describe(), () => {
-      return new RCTRawText(guiSys);
-    });
-    this.registerViewType('Video', RCTVideo.describe(), () => {
-      return new RCTVideo(guiSys, rnctx);
-    });
-    this.registerViewType('VideoPano', RCTVideoPano.describe(), () => {
-      return new RCTVideoPano(guiSys, rnctx);
-    });
-    this.registerViewType('AmbientLight', RCTAmbientLight.describe(), () => {
-      return new RCTAmbientLight(guiSys);
-    });
-    this.registerViewType(
-      'DirectionalLight',
-      RCTDirectionalLight.describe(),
-      () => {
-        return new RCTDirectionalLight(guiSys);
-      },
-    );
-    this.registerViewType('PointLight', RCTPointLight.describe(), () => {
-      return new RCTPointLight(guiSys);
-    });
-    this.registerViewType('SpotLight', RCTSpotLight.describe(), () => {
-      return new RCTSpotLight(guiSys);
-    });
-    this.registerViewType(
-      'CylindricalPanel',
-      RCTCylindricalPanel.describe(),
-      () => {
-        return new RCTCylindricalPanel(guiSys);
-      },
-    );
-    this.registerViewType('QuadPanel', RCTQuadPanel.describe(), () => {
-      return new RCTQuadPanel(guiSys);
-    });
-    this.registerViewType('Box', RCTBox.describe(), () => {
-      return new RCTBox(guiSys, rnctx);
-    });
-    this.registerViewType('Cylinder', RCTCylinder.describe(), () => {
-      return new RCTCylinder(guiSys, rnctx);
-    });
-    this.registerViewType('Plane', RCTPlane.describe(), () => {
-      return new RCTPlane(guiSys, rnctx);
-    });
-    this.registerViewType('Sphere', RCTSphere.describe(), () => {
-      return new RCTSphere(guiSys, rnctx);
-    });
-    this.registerViewType('Prefetch', RCTPrefetch.describe(), () => {
-      return new RCTPrefetch(guiSys);
-    });
+    // this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), () => {
+    //   return new RCTLiveEnvCamera(guiSys);
+    // });
+    // this.registerViewType('Pano', RCTPano.describe(), () => {
+    //   return new RCTPano(guiSys, rnctx);
+    // });
+    // this.registerViewType('Model', RCTModel.describe(), () => {
+    //   return new RCTModel(guiSys, rnctx);
+    // });
+    // this.registerViewType('Scene', RCTScene.describe(), () => {
+    //   return new RCTScene(guiSys);
+    // });
+    // this.registerViewType('Sound', RCTSound.describe(), () => {
+    //   return new RCTSound(guiSys, rnctx);
+    // });
+    // this.registerViewType('RCTText', RCTText.describe(), (options = {}) => {
+    //   return new RCTText(guiSys, rnctx, !!options.inSurfaceContext);
+    // });
+    // this.registerViewType('RCTRawText', RCTRawText.describe(), () => {
+    //   return new RCTRawText(guiSys);
+    // });
+    // this.registerViewType('Video', RCTVideo.describe(), () => {
+    //   return new RCTVideo(guiSys, rnctx);
+    // });
+    // this.registerViewType('VideoPano', RCTVideoPano.describe(), () => {
+    //   return new RCTVideoPano(guiSys, rnctx);
+    // });
+    // this.registerViewType('AmbientLight', RCTAmbientLight.describe(), () => {
+    //   return new RCTAmbientLight(guiSys);
+    // });
+    // this.registerViewType(
+    //   'DirectionalLight',
+    //   RCTDirectionalLight.describe(),
+    //   () => {
+    //     return new RCTDirectionalLight(guiSys);
+    //   },
+    // );
+    // this.registerViewType('PointLight', RCTPointLight.describe(), () => {
+    //   return new RCTPointLight(guiSys);
+    // });
+    // this.registerViewType('SpotLight', RCTSpotLight.describe(), () => {
+    //   return new RCTSpotLight(guiSys);
+    // });
+    // this.registerViewType(
+    //   'CylindricalPanel',
+    //   RCTCylindricalPanel.describe(),
+    //   () => {
+    //     return new RCTCylindricalPanel(guiSys);
+    //   },
+    // );
+    // this.registerViewType('QuadPanel', RCTQuadPanel.describe(), () => {
+    //   return new RCTQuadPanel(guiSys);
+    // });
+    // this.registerViewType('Box', RCTBox.describe(), () => {
+    //   return new RCTBox(guiSys, rnctx);
+    // });
+    // this.registerViewType('Cylinder', RCTCylinder.describe(), () => {
+    //   return new RCTCylinder(guiSys, rnctx);
+    // });
+    // this.registerViewType('Plane', RCTPlane.describe(), () => {
+    //   return new RCTPlane(guiSys, rnctx);
+    // });
+    // this.registerViewType('Sphere', RCTSphere.describe(), () => {
+    //   return new RCTSphere(guiSys, rnctx);
+    // });
+    // this.registerViewType('Prefetch', RCTPrefetch.describe(), () => {
+    //   return new RCTPrefetch(guiSys);
+    // });
 
     customViews.forEach(({name, view}) => {
       this.registerViewType(name, view.describe(), () => {

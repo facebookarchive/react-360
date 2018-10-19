@@ -11,30 +11,30 @@
 
 /* eslint-disable import/order,no-console */
 
-import AndroidConstants from './Modules/AndroidConstants';
-import AsyncLocalStorage from './Modules/AsyncLocalStorage';
-import ControllerInfo from './Modules/ControllerInfo';
-import DeviceInfo from './Modules/DeviceInfo';
-import ExternalAssets from './Modules/ExternalAssets';
-import GlyphTextures from './Modules/GlyphTextures';
-import History from './Modules/History';
-import LinkingManager from './Modules/LinkingManager';
-import Location from './Modules/Location';
-import LocationObserver from './Modules/LocationObserver';
-import Networking from './Modules/Networking';
-import PlatformConstants from './Modules/PlatformConstants';
-import {RCTResourceManager} from './Utils/RCTResourceManager';
-import {RCTInputControls} from './Utils/RCTInputControls';
-import RCTHeadModel from './Utils/RCTHeadModel';
-import RCTVideoModule from './Modules/RCTVideoModule';
-import RCTAudioModule from './Modules/RCTAudioModule';
+// import AndroidConstants from './Modules/AndroidConstants';
+// import AsyncLocalStorage from './Modules/AsyncLocalStorage';
+// import ControllerInfo from './Modules/ControllerInfo';
+// import DeviceInfo from './Modules/DeviceInfo';
+// import ExternalAssets from './Modules/ExternalAssets';
+// import GlyphTextures from './Modules/GlyphTextures';
+// import History from './Modules/History';
+// import LinkingManager from './Modules/LinkingManager';
+// import Location from './Modules/Location';
+// import LocationObserver from './Modules/LocationObserver';
+// import Networking from './Modules/Networking';
+// import PlatformConstants from './Modules/PlatformConstants';
+// import {RCTResourceManager} from './Utils/RCTResourceManager';
+// import {RCTInputControls} from './Utils/RCTInputControls';
+// import RCTHeadModel from './Utils/RCTHeadModel';
+// import RCTVideoModule from './Modules/RCTVideoModule';
+// import RCTAudioModule from './Modules/RCTAudioModule';
 import TextureManager from './Utils/TextureManager';
-import Timing from './Modules/Timing';
+// import Timing from './Modules/Timing';
 import UIManager from './Modules/UIManager';
-import WebSocketModule from './Modules/WebSocketModule';
-import ReactVRConstants from './Modules/ReactVRConstants';
-import RCTExceptionsManager from './Modules/RCTExceptionsManager';
-import RCTSourceCode from './Modules/RCTSourceCode';
+// import WebSocketModule from './Modules/WebSocketModule';
+// import ReactVRConstants from './Modules/ReactVRConstants';
+// import RCTExceptionsManager from './Modules/RCTExceptionsManager';
+// import RCTSourceCode from './Modules/RCTSourceCode';
 import {GuiSysEventType, UIViewEventType} from './OVRUI/UIView/GuiSysEvent';
 import * as THREE from 'three';
 
@@ -172,38 +172,38 @@ export class ReactNativeContext {
 
     const flags = options.useNewViews ? {useNewViews: true} : undefined;
     this.UIManager = new UIManager(this, guiSys, options.customViews, flags);
-    this.Timing = new Timing(this);
-    this.RCTResourceManager = new RCTResourceManager();
-    this.RCTInputControls = new RCTInputControls(this, guiSys);
-    this.HeadModel = new RCTHeadModel(this);
-    this.VideoModule = new RCTVideoModule(this);
-    this.AudioModule = new RCTAudioModule(this);
+    //this.Timing = new Timing(this);
+    //this.RCTResourceManager = new RCTResourceManager();
+    //this.RCTInputControls = new RCTInputControls(this, guiSys);
+    //this.HeadModel = new RCTHeadModel(this);
+    // this.VideoModule = new RCTVideoModule(this);
+    // this.AudioModule = new RCTAudioModule(this);
     this.TextureManager = new TextureManager();
-    this.GlyphTextures = new GlyphTextures(this);
+    //this.GlyphTextures = new GlyphTextures(this);
     this._moduleForTag = [];
     this._cameraParentFromTag = [];
 
     // register the core modules
     this.registerModule(this.UIManager);
-    this.registerModule(new AndroidConstants());
-    this.registerModule(new AsyncLocalStorage(this));
-    this.registerModule(new ControllerInfo(this));
-    this.registerModule(new DeviceInfo());
-    this.registerModule(new History(this));
-    this.registerModule(new Networking(this));
-    this.registerModule(new LinkingManager(this));
-    this.registerModule(new Location(this));
-    this.registerModule(new LocationObserver(this));
-    this.registerModule(new PlatformConstants());
-    this.registerModule(this.Timing);
+    //this.registerModule(new AndroidConstants());
+    //this.registerModule(new AsyncLocalStorage(this));
+    // this.registerModule(new ControllerInfo(this));
+    //this.registerModule(new DeviceInfo());
+    //this.registerModule(new History(this));
+    //this.registerModule(new Networking(this));
+    //this.registerModule(new LinkingManager(this));
+    //this.registerModule(new Location(this));
+    //this.registerModule(new LocationObserver(this));
+    //this.registerModule(new PlatformConstants());
+    // this.registerModule(this.Timing);
     this.registerModule(this.VideoModule);
     this.registerModule(this.AudioModule);
-    this.registerModule(new WebSocketModule(this));
-    this.registerModule(new ReactVRConstants());
-    this.registerModule(new RCTExceptionsManager());
-    this.registerModule(new RCTSourceCode(this));
-    this.registerModule(new ExternalAssets(options.assetRoot || ''));
-    this.registerModule(this.GlyphTextures);
+    //this.registerModule(new WebSocketModule(this));
+    //this.registerModule(new ReactVRConstants());
+    //this.registerModule(new RCTExceptionsManager());
+    //this.registerModule(new RCTSourceCode(this));
+    // this.registerModule(new ExternalAssets(options.assetRoot || ''));
+    // this.registerModule(this.GlyphTextures);
 
     // Register event listener to Guisys
     guiSys.eventDispatcher.addEventListener(
