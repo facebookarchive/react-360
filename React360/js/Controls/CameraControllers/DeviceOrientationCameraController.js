@@ -9,147 +9,181 @@
  * @flow
  */
 
-import { type Quaternion, type Vec3 } from '../Types';
-import { type CameraController } from './Types';
+import {
+  quaternionMultiply,
+  quaternionPremultiply,
+  setQuatFromEuler,
+  setQuatFromXRotation,
+  setQuatFromYRotation,
+  setQuatFromZRotation,
+} from '../../Renderer/Math';
+import {type Quaternion, type Vec3} from '../Types';
+import {type CameraController} from './Types';
 
 const DEFAULT_FOV = Math.PI / 6;
+const DEG_TO_RAD = Math.PI / 180;
 const HALF_PI = Math.PI / 2;
-const DEFAULT_Y_ROTATION_DELATA = 0.0004;
+const TWO_PI = Math.PI * 2;
+const SCREEN_ROTATION = [-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)];
 
-export default class MousePanCameraController implements CameraController {
-  _deltaYaw: number;
-  _deltaPitch: number;
-  _draggingMouse: boolean;
-  _draggingTouch: boolean;
+type DeviceOrientationEvent = {
+  absolute: boolean,
+  alpha: number,
+  beta: number,
+  gamma: number,
+};
+
+function getScreenOrientation(): number {
+  const orientation =
+    screen.orientation || screen.mozOrientation || screen.msOrientation || {};
+  const angle = orientation.angle || window.orientation || 0;
+  return ((angle: any): number) * DEG_TO_RAD;
+}
+
+function isSupported() {
+  return (
+    'DeviceOrientationEvent' in window &&
+    /Mobi/i.test(navigator.userAgent) &&
+    !/OculusBrowser/i.test(navigator.userAgent)
+  );
+}
+
+/**
+ * Camera controls linked to device orientation.
+ * Allows a "Magic Window" effect, where users rotate a mobile device to see
+ * different parts of a 360 world.
+ * Additionally, it listens to touches, and updates an orientation offset
+ * based on those touches.
+ */
+export default class DeviceOrientationCameraController
+  implements CameraController {
+  _alpha: null | number;
+  _beta: null | number;
+  _dragging: boolean;
   _enabled: boolean;
   _frame: HTMLElement;
-  _lastMouseX: number;
-  _lastMouseY: number;
-  _lastTouchX: number;
-  _lastTouchY: number;
+  _gamma: null | number;
+  _lastX: number;
+  _lastY: number;
+  _offsetPitch: number;
+  _offsetPitchQuat: Quaternion;
+  _offsetYaw: number;
+  _offsetYawQuat: null | Quaternion;
+  _screenOrientation: Quaternion;
   _verticalFov: number;
 
   constructor(frame: HTMLElement, fov: number = DEFAULT_FOV) {
-    this._deltaYaw = 0;
-    this._deltaPitch = 0;
-    this._draggingMouse = false;
-    this._draggingTouch = false;
-    this._enabled = true;
+    this._alpha = null;
+    this._beta = null;
+    this._dragging = false;
+    this._gamma = null;
+    this._enabled = isSupported();
     this._frame = frame;
-    this._lastMouseX = 0;
-    this._lastMouseY = 0;
-    this._lastTouchX = 0;
-    this._lastTouchY = 0;
+    this._lastX = 0;
+    this._lastY = 0;
+    this._screenOrientation = [0, 0, 0, 1];
+    this._onOrientationChange(); // Set initial screen orientation quat
     this._verticalFov = fov;
+    this._offsetYaw = 0;
+    this._offsetPitch = 0;
+    this._offsetYawQuat = null;
+    this._offsetPitchQuat = [0, 0, 0, 1];
+    setQuatFromXRotation(this._offsetPitchQuat, 0);
 
-    (this: any)._onMouseDown = this._onMouseDown.bind(this);
-    (this: any)._onMouseMove = this._onMouseMove.bind(this);
-    (this: any)._onMouseUp = this._onMouseUp.bind(this);
+    (this: any)._onOrientationChange = this._onOrientationChange.bind(this);
+    (this: any)._onDeviceOrientation = this._onDeviceOrientation.bind(this);
     (this: any)._onTouchStart = this._onTouchStart.bind(this);
     (this: any)._onTouchMove = this._onTouchMove.bind(this);
     (this: any)._onTouchEnd = this._onTouchEnd.bind(this);
-    this._frame.addEventListener('mousedown', this._onMouseDown);
-    document.addEventListener('mousemove', this._onMouseMove);
-    document.addEventListener('mouseup', this._onMouseUp);
+
+    window.addEventListener('orientationchange', this._onOrientationChange);
+    window.addEventListener('deviceorientation', this._onDeviceOrientation);
     this._frame.addEventListener('touchstart', this._onTouchStart);
     this._frame.addEventListener('touchmove', this._onTouchMove);
     this._frame.addEventListener('touchcancel', this._onTouchEnd);
     this._frame.addEventListener('touchend', this._onTouchEnd);
   }
 
-  _onMouseDown(e: MouseEvent) {
-    if (!this._enabled) {
-      return;
-    }
-    this._draggingMouse = true;
-    this._lastMouseX = e.clientX;
-    this._lastMouseY = e.clientY;
-    this.pauseInitMove();
+  _onOrientationChange() {
+    const angle = getScreenOrientation();
+    // build a quaternion that accounts for screen orientation ("top" is
+    // different from physical top of device), and for the transform necessary
+    // to rotate the device top into a screen normal
+    setQuatFromZRotation(this._screenOrientation, -angle);
+    quaternionPremultiply(this._screenOrientation, SCREEN_ROTATION);
   }
 
-  _onMouseMove(e: MouseEvent) {
-    if (!this._draggingMouse) {
-      return;
+  _onDeviceOrientation(event: DeviceOrientationEvent) {
+    const alpha = event.alpha * DEG_TO_RAD;
+    const beta = event.beta * DEG_TO_RAD;
+    const gamma = event.gamma * DEG_TO_RAD;
+    if (this._offsetYawQuat == null) {
+      const alphaOffset = getScreenOrientation() - alpha;
+      this._offsetYawQuat = [0, 0, 0, 1];
+      this._offsetYaw = alphaOffset;
     }
-    const width = this._frame.clientWidth;
-    const height = this._frame.clientHeight;
-    const aspect = width / height;
-    const deltaX = e.clientX - this._lastMouseX;
-    const deltaY = e.clientY - this._lastMouseY;
-    this._lastMouseX = e.clientX;
-    this._lastMouseY = e.clientY;
-    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
-    this._deltaYaw += deltaY / height * this._verticalFov;
-    this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
-  }
-
-  _onMouseUp() {
-    this._draggingMouse = false;
+    this._alpha = alpha;
+    this._beta = beta;
+    this._gamma = gamma;
   }
 
   _onTouchStart(e: TouchEvent) {
     if (!this._enabled) {
       return;
     }
-    this._draggingTouch = true;
-    this._lastTouchX = e.changedTouches[0].clientX;
-    this._lastTouchY = e.changedTouches[0].clientY;
+    this._dragging = true;
+    this._lastX = e.changedTouches[0].clientX;
+    this._lastY = e.changedTouches[0].clientY;
+    e.preventDefault();
   }
 
   _onTouchMove(e: TouchEvent) {
-    if (!this._draggingTouch) {
+    if (!this._enabled || !this._dragging) {
       return;
     }
     const x = e.changedTouches[0].clientX;
     const y = e.changedTouches[0].clientY;
+    const dx = x - this._lastX;
+    const dy = y - this._lastY;
+    this._lastX = x;
+    this._lastY = y;
     const width = this._frame.clientWidth;
     const height = this._frame.clientHeight;
     const aspect = width / height;
-    const deltaX = x - this._lastTouchX;
-    const deltaY = y - this._lastTouchY;
-    this._lastTouchX = x;
-    this._lastTouchY = y;
-    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
-    this._deltaYaw += deltaY / height * this._verticalFov;
-    this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      // Horizontal pan
+      this._offsetYaw += dx / width * this._verticalFov * aspect;
+      if (this._offsetYaw > TWO_PI) {
+        this._offsetYaw -= TWO_PI;
+      } else if (this._offsetYaw < 0) {
+        this._offsetYaw += TWO_PI;
+      }
+    } else {
+      // Vertical pan
+      this._offsetPitch += dy / height * this._verticalFov;
+      if (this._offsetPitch > HALF_PI) {
+        this._offsetPitch = HALF_PI;
+      } else if (this._offsetPitch < -HALF_PI) {
+        this._offsetPitch = -HALF_PI;
+      }
+    }
+    e.preventDefault();
   }
 
   _onTouchEnd(e: TouchEvent) {
-    this._draggingTouch = false;
-  }
-
-  _autoMove() {
-    if (this.initMove === 1) {
-      this._deltaPitch -= 0.0004;
+    if (!this._enabled) {
+      return;
     }
-  }
-
-  startInitMove() {
-    if (this.initMove === undefined || this.initMove > -1) {
-      this.initMove = 1;
-    }
-  }
-
-  pauseInitMove() {
-    if (this.initMove > -1) {
-      this.initMove = 0;
-    }
-  }
-
-  stopInitMove() {
-    this.initMove = -1;
+    this._dragging = false;
+    e.preventDefault();
   }
 
   enable() {
     this._enabled = true;
-    this._draggingMouse = false;
-    this._draggingTouch = false;
   }
 
   disable() {
     this._enabled = false;
-    this._draggingMouse = false;
-    this._draggingTouch = false;
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
@@ -157,44 +191,24 @@ export default class MousePanCameraController implements CameraController {
       return false;
     }
 
-    if (!/Mobi/i.test(navigator.userAgent)) {
-      this._autoMove();
-    }
+    const alpha = this._alpha;
+    const beta = this._beta;
+    const gamma = this._gamma;
 
-    if (this._deltaPitch === 0 && this._deltaYaw === 0) {
+    if (alpha == null || beta == null || gamma == null) {
+      // No device orientation event has been received yet
       return false;
     }
 
-    // premultiply the camera rotation by the horizontal (pitch) rotation,
-    // then multiply by the vertical (yaw) rotation
-
-    const cp = Math.cos(this._deltaPitch / 2);
-    const sp = Math.sin(this._deltaPitch / 2);
-    const cy = Math.cos(this._deltaYaw / 2);
-    const sy = Math.sin(this._deltaYaw / 2);
-
-    const x1 = rotation[0];
-    const y1 = rotation[1];
-    const z1 = rotation[2];
-    const w1 = rotation[3];
-
-    const x2 = cp * x1 + sp * z1;
-    const y2 = cp * y1 + sp * w1;
-    const z2 = cp * z1 - sp * x1;
-    const w2 = cp * w1 - sp * y1;
-
-    const x3 = w2 * sy + x2 * cy;
-    const y3 = y2 * cy + z2 * sy;
-    const z3 = -y2 * sy + z2 * cy;
-    const w3 = w2 * cy - x2 * sy;
-
-    rotation[0] = x3;
-    rotation[1] = y3;
-    rotation[2] = z3;
-    rotation[3] = w3;
-
-    this._deltaPitch = 0;
-    this._deltaYaw = 0;
+    setQuatFromEuler(rotation, beta || 0, alpha || 0, -(gamma || 0));
+    setQuatFromXRotation(this._offsetPitchQuat, this._offsetPitch);
+    quaternionMultiply(rotation, this._offsetPitchQuat);
+    const yawQuat = this._offsetYawQuat;
+    if (yawQuat) {
+      setQuatFromYRotation(yawQuat, this._offsetYaw);
+      quaternionPremultiply(rotation, yawQuat);
+    }
+    quaternionMultiply(rotation, this._screenOrientation);
     return true;
   }
 }

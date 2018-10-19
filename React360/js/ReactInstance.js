@@ -586,4 +586,16 @@ export default class ReactInstance {
   getCameraQuaternion(): Quaternion {
     return this._cameraQuat;
   }
+
+  /**
+   * set the current cameta rotation via Euler params
+   */
+  setCameraRotation (orientation: Array<Number>) {
+    if (orientation) {
+      const newEuler = new THREE.Euler(...orientation);
+      const quat = new THREE.Quaternion();
+      quat.setFromEuler(newEuler);
+      this._cameraQuat = [quat.x, quat.y, quat.z, quat.w];
+    }
+  }
 }

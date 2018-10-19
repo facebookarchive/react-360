@@ -121,7 +121,7 @@ export function HPanoBufferGeometry(rad, maxLevels, baseurl, events = {}) {
   this.rad = rad;
   this.baseurl = baseurl;
   this.events = events;
-  this.maxLevels = 1;
+  this.maxLevels = maxLevels;
   this.update();
 }
 
