@@ -38,3 +38,11 @@ export function setBackgroundVideo(player: string) {
   const scene = {type: 'video', player};
   EnvironmentModule.loadScene(scene);
 }
+
+export function preloadBackgroundImage(url: Resource) {
+  const scene: Object = {
+    type: 'photo',
+    url: typeof url === 'object' ? url.uri : url
+  };
+  EnvironmentModule.preloadScene(scene);
+}

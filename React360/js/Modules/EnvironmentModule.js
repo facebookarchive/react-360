@@ -32,11 +32,13 @@ type SceneDef = BlackSceneDef | PhotoSceneDef | VideoSceneDef;
 
 export default class EnvironmentModule extends Module {
   _env: Environment;
+  _preloadedSrc: ?string;
 
   constructor(env: Environment) {
     super('EnvironmentModule');
 
     this._env = env;
+    this._preloadedSrc = null;
   }
 
   loadScene(scene: SceneDef) {
@@ -50,6 +52,22 @@ export default class EnvironmentModule extends Module {
     }
     if (scene.type === 'video') {
       this._env.setVideoSource(scene.player);
+    }
+  }
+
+  preloadScene(scene: SceneDef) {
+    if (scene.type === 'photo') {
+      if (this._preloadedSrc === scene.url) {
+        return;
+      }
+      if (this._preloadedSrc) {
+        this._env.unloadImage(this._preloadedSrc);
+        this._preloadedSrc = null;
+      }
+      if (scene.url) {
+        this._env.preloadImage(scene.url);
+        this._preloadedSrc = scene.url;
+      }
     }
   }
 }
