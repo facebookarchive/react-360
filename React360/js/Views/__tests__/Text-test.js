@@ -21,7 +21,7 @@ jest
   .dontMock('../Text')
   .dontMock('../BaseView')
   .dontMock('../../Utils/merge')
-  .dontMock('../../Utils/FlexboxImplementation')
+  .dontMock('../../Renderer/FlexboxImplementation')
   .dontMock('../../Utils/Yoga.bundle')
   .mock('../../OVRUI/UIView/UIView', () => MockUIView)
   .mock(
@@ -49,6 +49,7 @@ jest
       LinearFilter: 'LinearFilter',
       Object3D: jest.fn(() => ({})),
       Color: jest.fn(() => ({})),
+      Texture: jest.fn(() => ({})),
     }),
     {virtual: true},
   );

@@ -14,6 +14,7 @@ const MockUIView = jest.fn(() => ({
 
 jest
   .dontMock('../BaseView')
+  .dontMock('../../Renderer/FlexboxImplementation')
   .mock(
     'three',
     () => ({
@@ -39,10 +40,10 @@ jest
       LinearFilter: 'LinearFilter',
       Object3D: jest.fn(() => ({})),
       Color: jest.fn(() => ({})),
+      Texture: jest.fn(() => ({})),
     }),
     {virtual: true},
   )
-  .dontMock('../../Utils/FlexboxImplementation')
   .dontMock('../../Utils/Yoga.bundle');
 
 const BaseView = require('../BaseView').default;

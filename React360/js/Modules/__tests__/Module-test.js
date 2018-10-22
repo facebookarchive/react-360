@@ -23,7 +23,7 @@ describe('Module', () => {
     }
 
     const s = new ModuleSubclass();
-    const description = s._describe();
+    const description = s.__describe();
 
     expect(Array.isArray(description)).toBe(true);
     expect(description[0]).toBe('ModuleSubclass');
@@ -49,7 +49,7 @@ describe('Module', () => {
     }
 
     const i = new Implementation();
-    const description = i._describe();
+    const description = i.__describe();
 
     expect(description[2]).toEqual(['normalMethod', 'promiseMethod', 'otherNormalMethod']);
 

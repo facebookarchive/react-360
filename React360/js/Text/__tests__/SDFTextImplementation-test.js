@@ -15,6 +15,7 @@ jest
   .dontMock('../BreakIterator')
   .dontMock('../wrapText')
   .dontMock('../../OVRUI/SDFFont/DefaultFont')
+  .dontMock('../Implementations/SDFDefaultFont')
   .dontMock('../Implementations/SDFTextImplementation');
 
 const SDFTextImplementation = require('../Implementations/SDFTextImplementation').default;

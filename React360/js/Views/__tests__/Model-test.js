@@ -64,6 +64,7 @@ jest
       LinearFilter: 'LinearFilter',
       Object3D: jest.fn(() => ({})),
       Color: jest.fn(() => ({})),
+      Texture: jest.fn(() => ({})),
     }),
     {virtual: true},
   );
