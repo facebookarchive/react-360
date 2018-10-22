@@ -120,4 +120,4 @@ render() {
 }
 ```
 
-Refresh your app, and try clicking the button. The count should increase each time you click the button. You could further extend this by highlighting the button when your cursor moves over it, leveraging the `onEnter` and `onExit` events available to most components. With all of these tool, you can start to build a complex, interactive application.
+Refresh your app, and try clicking the button. The count should increase each time you click the button. You could further extend this by highlighting the button when your cursor moves over it, leveraging the `onEnter` and `onExit` events available to most components. With all of these tools, you can start to build a complex, interactive application.
