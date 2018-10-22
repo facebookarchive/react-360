@@ -46,3 +46,7 @@ export function preloadBackgroundImage(url: Resource) {
   };
   EnvironmentModule.preloadScene(scene);
 }
+
+export function animateFade(fadeLevel: number, fadeTime: number) {
+  EnvironmentModule.animateFade(fadeLevel, fadeTime);
+}

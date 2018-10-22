@@ -70,4 +70,8 @@ export default class EnvironmentModule extends Module {
       }
     }
   }
+  
+  animateFade(fadeLevel: number, fadeTime: number) {
+    this._env.animateFade(fadeLevel, fadeTime);
+  }
 }

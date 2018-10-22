@@ -15,6 +15,7 @@ import type {VideoStereoFormat} from '../Video/Types';
 import type VideoPlayerManager from '../Video/VideoPlayerManager';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
 import type {TextureMetadata} from './Types';
+import Fader from '../../Utils/Fader';
 
 export type PanoOptions = {
   format?: VideoStereoFormat,
@@ -51,7 +52,7 @@ export default class Environment {
   _panoMaterial: StereoBasicTextureMaterial;
   _panoMesh: THREE.Mesh;
   _panoSource: ?string;
-  _panoTransition: number;
+  _panoFade: Fader;
   _resourceManager: ?ResourceManager<Image>;
   _videoPlayers: ?VideoPlayerManager;
 
@@ -71,7 +72,7 @@ export default class Environment {
     this._panoMesh.scale.set(-1, 1, 1);
     this._panoMesh.rotation.y = -Math.PI / 2;
     this._panoEyeOffsets = [[0, 0, 1, 1]];
-    this._panoTransition = 0;
+    this._panoFade = new Fader();
   }
 
   _setPanoGeometryToSphere() {
@@ -183,21 +184,33 @@ export default class Environment {
     id: ?string,
     transitionTime: ?number
   ): Promise<void> {
-    const oldID = this._panoSource;
     this._panoSource = id;
     const duration = typeof transitionTime === 'number' ? transitionTime : 500;
-    const transition = duration ? 1 / duration : 1;
-    this._panoTransition = oldID ? -transition : 0;
+    this._panoLoad = loader;
+    if (duration) {
+      this._panoFade.fadeImmediate({
+        targetLevel: 0,
+        duration: duration,
+        onFadeEnd: state => {
+          if (state !== 'finished' || !this._panoLoad) {
+            return;
+          }
+          this._panoLoad.then(data => {
+            this._panoFade.fadeImmediate({
+              targetLevel: 1,
+              duration: duration,
+            });
+            this._updateTexture(data);
+          });
+        },
+      });
+    }
     if (!loader) {
-      this._panoLoad = null;
       return Promise.resolve();
     }
-    this._panoLoad = loader;
     return loader.then(data => {
-      if (this._panoTransition === 0) {
+      if (!duration) {
         this._panoLoad = null;
-        // Fade transition completed
-        this._panoTransition = transition;
         return this._updateTexture(data);
       }
       // Fade is still in progress
@@ -227,29 +240,17 @@ export default class Environment {
     }
   }
 
+  animateFade(fadeLevel: number, fadeTime: number) {
+    this._panoFade.queueFade({
+      targetLevel: fadeLevel,
+      duration: fadeTime,
+    });
+  }
+
   frame(delta: number) {
-    const transition = this._panoTransition;
-    if (transition === 0) {
-      return;
-    }
-    const step = transition * delta;
-    const color = this._panoMaterial.color;
-    const oldValue = color.r;
-    let newValue = oldValue + step;
-    if (newValue <= 0) {
-      this._panoTransition = 0;
-      newValue = 0;
-    }
-    if (newValue >= 1) {
-      this._panoTransition = 0;
-      newValue = 1;
-    }
-    color.setRGB(newValue, newValue, newValue);
-    if (transition < 0 && this._panoTransition === 0 && this._panoLoad) {
-      this._panoLoad.then(data => {
-        this._panoTransition = -transition;
-        this._updateTexture(data);
-      });
+    if (this._panoFade.fadeFrame(delta)) {
+      const level = this._panoFade.getCurrentLevel();
+      this._panoMaterial.color.setRGB(level, level, level);
     }
   }
 }
