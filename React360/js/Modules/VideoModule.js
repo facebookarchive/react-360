@@ -51,7 +51,7 @@ export default class VideoModule extends Module {
     if (!player) {
       return;
     }
-    const {source, ...params} = options;
+    const {source, autoPlay, startPosition, ...params} = options;
     let url = null;
     if (Array.isArray(source)) {
       url = source[0].url;
@@ -75,7 +75,16 @@ export default class VideoModule extends Module {
     this._applyParams(player, params);
     const format = params.stereo || '2D';
     player.setSource(url, format);
-    player.load().then(() => player.play());
+    if (startPosition) {
+      player.seekTo(startPosition);
+    }
+    player.load().then(
+      () => {
+        if (autoPlay !== false) {
+          player.play()
+        }
+      }
+    );
   }
 
   pause(handle: string) {

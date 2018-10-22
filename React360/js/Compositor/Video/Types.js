@@ -47,6 +47,8 @@ export type VideoPlayOptions = {
 
 export type VideoOptions = VideoPlayOptions & {
   source: VideoSource | Array<VideoSource>,
+  startPosition?: number,
+  autoPlay?: boolean,
 };
 
 export type VideoEvent = {
