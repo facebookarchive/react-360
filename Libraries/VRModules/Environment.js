@@ -14,8 +14,10 @@ import {EnvironmentModule} from 'NativeModules';
 
 type Resource = string | {uri: string};
 
-export type EnvironmentImageOptions = {
+export type EnvironmentOptions = {
   format?: string,
+  transition?: number,
+  fadeLevel?: number,
 };
 
 export function clearBackground() {
@@ -31,12 +33,20 @@ export function setBackgroundImage(
     url: typeof url === 'object' ? url.uri : url,
     stereo: options.format,
   };
-  EnvironmentModule.loadScene(scene);
+  const transition: Object = {
+    transition: options.transition,
+    fadeLevel: options.fadeLevel,
+  }
+  EnvironmentModule.loadScene(scene, transition);
 }
 
-export function setBackgroundVideo(player: string) {
+export function setBackgroundVideo(player: string, options: EnvironmentOptions = {}) {
   const scene = {type: 'video', player};
-  EnvironmentModule.loadScene(scene);
+  const transition: Object = {
+    transition: options.transition,
+    fadeLevel: options.fadeLevel,
+  }
+  EnvironmentModule.loadScene(scene, transition);
 }
 
 export function preloadBackgroundImage(url: Resource) {

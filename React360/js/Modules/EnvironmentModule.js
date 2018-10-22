@@ -28,6 +28,11 @@ type VideoSceneDef = {
   type: 'video',
 };
 
+type SceneTransition = {
+  transition?: number, // duration for fade in/out transition
+  fadeLevel?: number, // initial fade level when fading in
+};
+
 type SceneDef = BlackSceneDef | PhotoSceneDef | VideoSceneDef;
 
 export default class EnvironmentModule extends Module {
@@ -41,17 +46,25 @@ export default class EnvironmentModule extends Module {
     this._preloadedSrc = null;
   }
 
-  loadScene(scene: SceneDef) {
+  loadScene(scene: SceneDef, transition: SceneTransition) {
+    transition = transition || {};
     if (scene.type === 'black') {
       this._env.setSource(null);
       return;
     }
     if (scene.type === 'photo') {
-      this._env.setSource(scene.url, {format: scene.stereo});
+      this._env.setSource(scene.url, {
+        format: scene.stereo, 
+        transition: transition.transition,
+        fadeLevel: transition.fadeLevel,
+      });
       return;
     }
     if (scene.type === 'video') {
-      this._env.setVideoSource(scene.player);
+      this._env.setVideoSource(scene.player, {
+        transition: transition.transition,
+        fadeLevel: transition.fadeLevel,
+      });
     }
   }
 

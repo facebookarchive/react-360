@@ -20,6 +20,7 @@ import Fader from '../../Utils/Fader';
 export type PanoOptions = {
   format?: VideoStereoFormat,
   transition?: number,
+  fadeLevel?: number,
 };
 
 /**
@@ -182,10 +183,12 @@ export default class Environment {
   _setBackground(
     loader: ?Promise<TextureMetadata>,
     id: ?string,
-    transitionTime: ?number
+    transitionTime: ?number,
+    targetFadeLevel: ?number
   ): Promise<void> {
     this._panoSource = id;
     const duration = typeof transitionTime === 'number' ? transitionTime : 500;
+    const fadeLevel = typeof targetFadeLevel === 'number' ? targetFadeLevel : 1;
     this._panoLoad = loader;
     if (duration) {
       this._panoFade.fadeImmediate({
@@ -197,7 +200,7 @@ export default class Environment {
           }
           this._panoLoad.then(data => {
             this._panoFade.fadeImmediate({
-              targetLevel: 1,
+              targetLevel: fadeLevel,
               duration: duration,
             });
             this._updateTexture(data);
@@ -223,13 +226,13 @@ export default class Environment {
       this._resourceManager.removeReference(this._panoSource);
     }
     const loader = src ? this._loadImage(src, options) : null;
-    return this._setBackground(loader, src, options.transition);
+    return this._setBackground(loader, src, options.transition, options.fadeLevel);
   }
 
   setVideoSource(handle: string, options: PanoOptions = {}) {
     const player = this._videoPlayers ? this._videoPlayers.getPlayer(handle) : null;
     const loader = player ? player.load().then(data => ({...data, src: handle})) : null;
-    return this._setBackground(loader, handle, options.transition);
+    return this._setBackground(loader, handle, options.transition, options.fadeLevel);
   }
 
   prepareForRender(eye: ?string) {
