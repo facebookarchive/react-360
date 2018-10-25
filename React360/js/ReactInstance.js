@@ -68,6 +68,7 @@ export type React360Options = {
   executor?: ReactExecutor,
   frame?: number => mixed,
   fullScreen?: boolean,
+  fov?: number,
   // nativeModules?: Array<Module | NativeModuleInitializer>,
   eventLayer: HTMLElement,
 };
@@ -141,7 +142,6 @@ export default class ReactInstance {
     this._lastFrameTime = 0;
     this._focused2DSurface = null;
     this._frameHook = options.frame;
-
     if (options.fullScreen) {
       parent.style.position = 'fixed';
       parent.style.top = '0';

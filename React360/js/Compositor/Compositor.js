@@ -53,7 +53,7 @@ export default class Compositor {
     this._videoPlayers = new VideoPlayerManager();
 
     this._camera = new THREE.PerspectiveCamera(
-      60,
+      options.cameraFov || 60,
       frame.clientWidth / frame.clientHeight,
       0.1,
       2000,
@@ -155,6 +155,9 @@ export default class Compositor {
   }
 
   resize(width: number, height: number, pixelRatio: number = 1) {
+    if (window.devicePixelRatio) {
+      pixelRatio = window.devicePixelRatio
+    }
     this._renderer.setPixelRatio(pixelRatio);
     this._renderer.setSize(width, height, false);
   }
