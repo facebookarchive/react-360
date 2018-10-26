@@ -287,6 +287,9 @@ HPanoBufferGeometry.prototype = Object.assign(Object.create(THREE.BufferGeometry
             undefined,
             function () {
               console.log('failed to load ' + file);
+              if (typeof geom.events.onTileLoadError === 'function') {
+                geom.events.onTileLoadError(file, mtr);
+              }
               if (level > 1) {
                 // TODO fixed some level error
                 geom.maxLevels = level - 1;

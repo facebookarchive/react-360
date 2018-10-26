@@ -68,7 +68,7 @@ export type React360Options = {
   executor?: ReactExecutor,
   frame?: number => mixed,
   fullScreen?: boolean,
-  fov?: number,
+  cameraFov?: number,
   // nativeModules?: Array<Module | NativeModuleInitializer>,
   eventLayer: HTMLElement,
 };
@@ -150,10 +150,11 @@ export default class ReactInstance {
       parent.style.padding = '0';
       parent.style.width = '100%';
       parent.style.height = `${window.innerHeight}px`;
+      window.addEventListener('resize', this._onResize);
 
     }
 
-    window.addEventListener('resize', this._onResize);
+
     this._eventLayer = document.createElement('div');
     this._eventLayer.style.width = `${parent.clientWidth}px`;
     this._eventLayer.style.height = `${parent.clientHeight}px`;

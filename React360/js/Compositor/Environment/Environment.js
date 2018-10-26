@@ -247,7 +247,7 @@ export default class Environment {
       // use tile renderer
       this._panoMesh.geometry.dispose();
       this.maxDepth = src.maxDepth || 2;
-      this._hpanoGeomSphere = new HPanoBufferGeometry(1000, this.maxDepth, src.tile);
+      this._hpanoGeomSphere = new HPanoBufferGeometry(1000, this.maxDepth, src.tile, options.events);
       this._panoMesh.onUpdate = this.globeOnUpdate.bind(this);
       this._setHPanoGeometryToSphere();
       return Promise.resolve();
