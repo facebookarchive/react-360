@@ -65,6 +65,9 @@ export type VideoStatusEvent = VideoEvent & {
   volume: number,
 };
 
+export type onVideoStatusChangedCallback = (event: VideoStatusEvent) => void;
+export type VideoEventListener = onVideoStatusChangedCallback;
+
 export interface VideoPlayer {
   constructor(src: string): void;
   destroy(): void;
@@ -76,6 +79,8 @@ export interface VideoPlayer {
   setMuted(muted: boolean): void;
   setSource(url: string, format?: string): void;
   setVolume(vol: number): void;
+  addEventListener(event: string, listener: VideoEventListener): void;
+  removeEventListener(event: string, listener: VideoEventListener): void;
 }
 export type VideoPlayerStatics = {
   getSupportedFormats(): Array<string>,

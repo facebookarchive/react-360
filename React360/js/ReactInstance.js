@@ -170,7 +170,7 @@ export default class ReactInstance {
           return audio;
         },
         ctx => {
-          const video = new VideoModule(this.compositor.getVideoPlayerManager());
+          const video = new VideoModule(ctx, this.compositor.getVideoPlayerManager());
           this._videoModule = video;
           return video;
         },

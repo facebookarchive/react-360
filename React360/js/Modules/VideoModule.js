@@ -13,16 +13,21 @@ import {
   type VideoOptions,
   type VideoPlayOptions,
   type VideoPlayer,
+  type VideoStatusEvent,
 } from '../Compositor/Video/Types';
 import type VideoPlayerManager from '../Compositor/Video/VideoPlayerManager';
 import Module from './Module';
+import type {ReactNativeContext} from '../ReactNativeContext';
 
 export default class VideoModule extends Module {
+  _rnctx: ReactNativeContext;
   allowCreatePlayer: boolean;
   _videoPlayers: VideoPlayerManager;
 
-  constructor(videoPlayers: VideoPlayerManager) {
+  constructor(ctx: ReactNativeContext, videoPlayers: VideoPlayerManager) {
     super('VideoModule');
+
+    this._rnctx = ctx;
 
     this._videoPlayers = videoPlayers;
 
@@ -38,8 +43,23 @@ export default class VideoModule extends Module {
     }
   }
 
+  _onVideoEvents(handle: string, event: Object) {
+    const {type, target, ...videoEvent} = event;
+    this._rnctx.callFunction('RCTDeviceEventEmitter', 'emit', [
+      'onVideoStatusChanged',
+      {
+        player: handle,
+        ...videoEvent,
+      }
+    ]);
+  }
+
   createPlayer(handle: string) {
     this._videoPlayers.createPlayer(handle);
+    const player = this._videoPlayers.getPlayer(handle);
+    player && player.addEventListener('status', (event: Object) => {
+      this._onVideoEvents(handle, event)
+    });
   }
 
   destroyPlayer(handle: string) {

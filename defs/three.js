@@ -371,4 +371,12 @@ declare module 'three' {
     constructor(Scene): this;
     clipAction(clip: any): any;
   }
+
+  declare class EventDispatcher {
+    constructor(): this;
+    addEventListener(string, Object => void): void;
+    hasEventListener(string, Object => void): bool;
+    removeEventListener(string, Object => void): void;
+    dispatchEvent(Object): void;
+  }
 }
