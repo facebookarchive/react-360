@@ -61,11 +61,7 @@ export default class Surface {
   _renderTarget: THREE.WebGLRenderTarget;
   _subScene: THREE.Scene;
 
-  constructor(
-    width: number,
-    height: number,
-    shape: ShapeType = SurfaceShape.Cylinder,
-  ) {
+  constructor(width: number, height: number, shape: ShapeType = SurfaceShape.Cylinder) {
     this._width = width;
     this._height = height;
     this._density = DEFAULT_DENSITY;
@@ -178,6 +174,14 @@ export default class Surface {
     this._mesh.visible = visible;
   }
 
+  attachSubNode(subNode: THREE.Object3D) {
+    this._subScene.add(subNode);
+  }
+
+  removeSubNode(subNode: THREE.Object3D) {
+    this._subScene.remove(subNode);
+  }
+
   getWidth(): number {
     return this._width;
   }
@@ -236,14 +240,14 @@ export default class Surface {
         this._width,
         this._height,
         this._density,
-        this._radius,
+        this._radius
       );
     } else if (this._shape === SurfaceShape.Flat) {
       this._geometry = Surface.createFlatGeometry(
         this._width,
         this._height,
         this._density,
-        this._radius,
+        this._radius
       );
     }
     if (this._mesh) {
@@ -285,14 +289,9 @@ export default class Surface {
    * The geometry will only build the arc needed to create a surface of the
    * proper size.
    */
-  static createCylinderGeometry(
-    width: number,
-    height: number,
-    density: number,
-    radius: number,
-  ) {
-    const delta = 2 * Math.PI * width / density;
-    const halfHeight = radius * Math.PI * height / density;
+  static createCylinderGeometry(width: number, height: number, density: number, radius: number) {
+    const delta = (2 * Math.PI * width) / density;
+    const halfHeight = (radius * Math.PI * height) / density;
     return new THREE.CylinderGeometry(
       radius,
       radius,
@@ -301,7 +300,7 @@ export default class Surface {
       6,
       true,
       -delta * 0.5,
-      delta,
+      delta
     );
   }
 
@@ -309,14 +308,9 @@ export default class Surface {
    * Build a planar geometry for a given size, density, and distance from the
    * user.
    */
-  static createFlatGeometry(
-    width: number,
-    height: number,
-    density: number,
-    radius: number,
-  ) {
-    const halfWidth = radius * Math.PI * width / density;
-    const halfHeight = radius * Math.PI * height / density;
+  static createFlatGeometry(width: number, height: number, density: number, radius: number) {
+    const halfWidth = (radius * Math.PI * width) / density;
+    const halfHeight = (radius * Math.PI * height) / density;
     return new THREE.PlaneGeometry(halfWidth * 2, halfHeight * 2, 1, 1);
   }
 

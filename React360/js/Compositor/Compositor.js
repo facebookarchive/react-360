@@ -16,6 +16,7 @@ import type ResourceManager from '../Utils/ResourceManager';
 import Cursor from './Cursor';
 import Environment, {type PanoOptions} from './Environment/Environment';
 import Surface from './Surface';
+import SurfaceManager from './SurfaceManager';
 import type {VideoPlayer} from './Video/Types';
 import VideoPlayerManager from './Video/VideoPlayerManager';
 
@@ -32,14 +33,12 @@ export default class Compositor {
   _canvas: HTMLCanvasElement;
   _cursor: Cursor;
   _cursorVisibility: string;
-  _defaultSurface: ?Surface;
   _environment: Environment;
   _frame: HTMLElement;
   _isMouseCursorActive: boolean;
   _renderer: THREE.WebGLRenderer;
   _scene: THREE.Scene;
-  _surfaceRoot: THREE.Object3D;
-  _surfaces: {[name: string]: Surface};
+  _surfaceManager: SurfaceManager;
   _resourceManager: ResourceManager<Image>;
   _videoPlayers: VideoPlayerManager;
 
@@ -47,8 +46,6 @@ export default class Compositor {
     this._frame = frame;
     this._cursorVisibility = 'auto';
     this._isMouseCursorActive = false;
-    this._defaultSurface = null;
-    this._surfaces = {};
     this._resourceManager = createRemoteImageManager();
     this._videoPlayers = new VideoPlayerManager();
 
@@ -56,7 +53,7 @@ export default class Compositor {
       60,
       frame.clientWidth / frame.clientHeight,
       0.1,
-      2000,
+      2000
     );
     this._renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -67,14 +64,14 @@ export default class Compositor {
     frame.appendChild(this._renderer.domElement);
     this._scene = scene;
 
+    this._surfaceManager = new SurfaceManager(scene);
+
     this._environment = new Environment(
       this._resourceManager,
       this._videoPlayers,
+      this._surfaceManager
     );
     scene.add(this._environment.getPanoNode());
-
-    this._surfaceRoot = new THREE.Object3D();
-    scene.add(this._surfaceRoot);
 
     this._cursor = new Cursor();
     scene.add(this._cursor.getMesh());
@@ -116,27 +113,19 @@ export default class Compositor {
   }
 
   addSurface(name: string, surface: Surface) {
-    if (this._surfaces[name]) {
-      throw new Error(
-        `Cannot add Surface with tag '${name}', a Surface with that name already exists.`,
-      );
-    }
-    this._surfaces[name] = surface;
+    this._surfaceManager.addSurface(name, surface);
   }
 
   showSurface(surface: Surface) {
-    this._surfaceRoot.add(surface.getNode());
+    this._surfaceManager.showSurface(surface);
   }
 
   getSurface(name: string): ?Surface {
-    return this._surfaces[name];
+    return this._surfaceManager.getSurface(name);
   }
 
   getDefaultSurface(): Surface {
-    if (!this._defaultSurface) {
-      this._defaultSurface = new Surface(1000, 600);
-    }
-    return this._defaultSurface;
+    return this._surfaceManager.getDefaultSurface();
   }
 
   getCanvas(): HTMLCanvasElement {

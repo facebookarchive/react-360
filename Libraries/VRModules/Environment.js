@@ -60,3 +60,16 @@ export function preloadBackgroundImage(url: Resource) {
 export function animateFade(fadeLevel: number, fadeTime: number) {
   EnvironmentModule.animateFade(fadeLevel, fadeTime);
 }
+
+export function setScreen(screenId: string, handle: string, surfaceId: string, x: number, y: number, width: number, height: number) {
+  EnvironmentModule.setScreen({
+    screenId: screenId,
+    type: 'surface',
+    surface: surfaceId,
+    player: handle,
+    x: x,
+    y: y,
+    width: width,
+    height: height,
+  });
+}

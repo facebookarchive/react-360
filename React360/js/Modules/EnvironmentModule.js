@@ -13,10 +13,33 @@ import type Environment from '../Compositor/Environment/Environment';
 import type {VideoStereoFormat} from '../Compositor/Video/Types';
 import Module from './Module';
 
+// A screen should declare what content is displayed in the screen
+type ScreenContentDef = {|
+  player?: string, // the id of video player attached to the screen, by default it's "default"
+|};
+// relative position on an existing surface
+type SurfaceScreenDef = {|
+  ...ScreenContentDef,
+  type: 'surface',
+  screenId?: string, // The id of the screen, by default it's "screen"
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  surface: string,
+|};
+type ScreenDef = SurfaceScreenDef;
+
+type SceneScreenDef = {|
+  screenIds?: Array<string>, // The ids of the screens in the scene, by default it's ["screen"]
+|};
+
 type BlackSceneDef = {
+  ...SceneScreenDef,
   type: 'black',
 };
 type PhotoSceneDef = {
+  ...SceneScreenDef,
   force2D: boolean,
   stereo?: VideoStereoFormat,
   transform?: Array<number>,
@@ -24,6 +47,7 @@ type PhotoSceneDef = {
   url: string,
 };
 type VideoSceneDef = {
+  ...SceneScreenDef,
   player: string,
   type: 'video',
 };
@@ -47,6 +71,9 @@ export default class EnvironmentModule extends Module {
   }
 
   loadScene(scene: SceneDef, transition: SceneTransition) {
+    const screenIds = scene.screenIds || ['default'];
+    this._env.updateScreenIds(screenIds);
+
     transition = transition || {};
     if (scene.type === 'black') {
       this._env.setSource(null);
@@ -81,6 +108,16 @@ export default class EnvironmentModule extends Module {
         this._env.preloadImage(scene.url);
         this._preloadedSrc = scene.url;
       }
+    }
+  }
+
+  setScreen(screen: ScreenDef) {
+    if (screen.type === 'surface') {
+      const surfaceScreen: SurfaceScreenDef = (screen: any);
+      const id = surfaceScreen.id || 'default';
+      const handle = surfaceScreen.player || 'default';
+      this._env.setScreen(id, handle, surfaceScreen.surface, surfaceScreen.x, surfaceScreen.y, surfaceScreen.width, surfaceScreen.height);
+      return;
     }
   }
   

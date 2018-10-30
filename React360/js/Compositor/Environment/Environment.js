@@ -13,9 +13,11 @@ import * as THREE from 'three';
 import type ResourceManager from '../../Utils/ResourceManager';
 import type {VideoStereoFormat} from '../Video/Types';
 import type VideoPlayerManager from '../Video/VideoPlayerManager';
+import type SurfaceManager from '../SurfaceManager';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
 import type {TextureMetadata} from './Types';
 import Fader from '../../Utils/Fader';
+import Screen from './Screen';
 
 export type PanoOptions = {
   format?: VideoStereoFormat,
@@ -56,10 +58,17 @@ export default class Environment {
   _panoFade: Fader;
   _resourceManager: ?ResourceManager<Image>;
   _videoPlayers: ?VideoPlayerManager;
+  _surfaceManager: SurfaceManager;
+  _screens: {[id: string]: ?Screen};
 
-  constructor(rm: ?ResourceManager<Image>, videoPlayers: ?VideoPlayerManager) {
+  constructor(
+    rm: ?ResourceManager<Image>,
+    videoPlayers: ?VideoPlayerManager,
+    surfaceManager: SurfaceManager
+  ) {
     this._resourceManager = rm;
     this._videoPlayers = videoPlayers;
+    this._surfaceManager = surfaceManager;
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
     this._panoGeomHemisphere = new THREE.SphereGeometry(1000, 16, 16, 0, Math.PI);
@@ -74,6 +83,7 @@ export default class Environment {
     this._panoMesh.rotation.y = -Math.PI / 2;
     this._panoEyeOffsets = [[0, 0, 1, 1]];
     this._panoFade = new Fader();
+    this._screens = {default: null};
   }
 
   _setPanoGeometryToSphere() {
@@ -241,6 +251,13 @@ export default class Environment {
     } else {
       this._panoMaterial.uniforms.stereoOffsetRepeat.value = this._panoEyeOffsets[0];
     }
+
+    for (const id in this._screens) {
+      const screen = this._screens[id];
+      if (screen) {
+        screen.prepareForRender(eye);
+      }
+    }
   }
 
   animateFade(fadeLevel: number, fadeTime: number) {
@@ -248,6 +265,73 @@ export default class Environment {
       targetLevel: fadeLevel,
       duration: fadeTime,
     });
+  }
+
+  setScreen(
+    screenId: string,
+    handle: string,
+    surfaceId: string,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) {
+    if (this._screens[screenId] === undefined) {
+      throw new Error(`The scene doesn't include the screen ${screenId}!`);
+    } else if (!this._screens[screenId]) {
+      const screen = new Screen(surfaceId, x, y, width, height);
+      this._attachScreen(screen);
+      this._screens[screenId] = screen;
+    } else {
+      const screen = this._screens[screenId];
+      const previousScreen = screen.getSurfaceID();
+      if (previousScreen !== surfaceId) {
+        this._removeScreen(screen);
+      }
+      screen.update(surfaceId, x, y, width, height);
+      if (previousScreen !== surfaceId) {
+        this._attachScreen(screen);
+      }
+    }
+
+    if (this._screens[screenId]) {
+      const screen = this._screens[screenId];
+      const player = this._videoPlayers ? this._videoPlayers.getPlayer(handle) : null;
+      const loader = player ? player.load().then(data => ({...data, src: handle})) : null;
+      screen.setTexture(loader, handle);
+    }
+  }
+
+  _attachScreen(screen: Screen) {
+    const surface = this._surfaceManager.getSurface(screen.getSurfaceID());
+    if (surface) {
+      surface.attachSubNode(screen.getNode());
+    }
+  }
+
+  _removeScreen(screen: Screen) {
+    const surface = this._surfaceManager.getSurface(screen.getSurfaceID());
+    if (surface) {
+      surface.removeSubNode(screen.getNode());
+    }
+  }
+
+  updateScreenIds(screenIds: Array<string>) {
+    const newIdsDict = {};
+    for (const newId of screenIds) {
+      newIdsDict[newId] = true;
+      if (this._screens[newId] === undefined) {
+        this._screens[newId] = null;
+      }
+    }
+    for (const oldId in this._screens) {
+      if (!newIdsDict[oldId]) {
+        if (this._screens[oldId] != null) {
+          this._removeScreen(this._screens[oldId]);
+        }
+        delete this._screens[oldId];
+      }
+    }
   }
 
   frame(delta: number) {
