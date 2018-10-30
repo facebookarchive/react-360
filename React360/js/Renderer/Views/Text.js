@@ -14,6 +14,7 @@
 import {matrixMultiply4} from '../Math';
 import GLView from '../Primitives/GLView';
 import * as Flexbox from '../FlexboxImplementation';
+import type {Transform} from '../RendererTypes';
 import type {FontGeometry} from '../../Text/FontGeometry';
 import type {TextImplementation} from '../../Text/TextTypes';
 import ShadowViewWebGL from './ShadowViewWebGL';
@@ -56,6 +57,20 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this.YGNode.setMeasureFunc((width, widthMeasureMode, height, heightMeasureMode) =>
       this.measure(width, widthMeasureMode, height, heightMeasureMode)
     );
+  }
+
+  _updateTextTransform() {
+    const offX = -this.YGNode.getComputedWidth() / 2;
+    const offY = -this.YGNode.getComputedHeight() / 2;
+    // prettier-ignore
+    const transform = [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      offX, offY, 0, 1,
+    ];
+    matrixMultiply4(transform, this.view.getWorldTransform());
+    this._text.getNode().material.uniforms.u_transform.value.fromArray(transform);
   }
 
   __setStyle_color(color: number) {
@@ -161,6 +176,11 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     return this._cachedText;
   }
 
+  setParentTransform(transform: Transform) {
+    super.setParentTransform(transform);
+    this._updateTextTransform();
+  }
+
   presentLayout() {
     let transformDirty = false;
     if (this.YGNode.getHasNewLayout() || this._transformDirty) {
@@ -176,17 +196,7 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
       this._geometryDirty = false;
     }
     if (transformDirty) {
-      const offX = -this.YGNode.getComputedWidth() / 2;
-      const offY = -this.YGNode.getComputedHeight() / 2;
-      // prettier-ignore
-      const transform = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        offX, offY, 0, 1,
-      ];
-      matrixMultiply4(transform, this.view.getWorldTransform());
-      this._text.getNode().material.uniforms.u_transform.value.fromArray(transform);
+      this._updateTextTransform();
     }
   }
 }

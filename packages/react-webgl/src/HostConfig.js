@@ -108,7 +108,8 @@ export const supportsHydration = false;
 // Mutation
 
 export function appendChild(parentInstance, child) {
-  throw new Error('not implemented');
+  const index = parentInstance.getChildCount();
+  parentInstance.addChild(index, child);
 }
 
 export function appendChildToContainer(parentInstance, child) {
@@ -130,7 +131,10 @@ export function commitUpdate(instance, updatePayload, type, oldProps, newProps) 
 }
 
 export function insertBefore(parentInstance, child, beforeChild) {
-  throw new Error('not implemented');
+  const index = parentInstance.getIndexOf(beforeChild);
+  if (index > -1) {
+    parentInstance.addChild(index, child);
+  }
 }
 
 export function insertInContainerBefore(parentInstance, child, beforeChild) {
@@ -138,7 +142,10 @@ export function insertInContainerBefore(parentInstance, child, beforeChild) {
 }
 
 export function removeChild(parentInstance, child) {
-  throw new Error('not implemented');
+  const index = parentInstance.getIndexOf(child);
+  if (index > -1) {
+    parentInstance.removeChild(index);
+  }
 }
 
 export function removeChildFromContainer(parentInstance, child) {

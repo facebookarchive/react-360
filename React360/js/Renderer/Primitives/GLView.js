@@ -28,6 +28,7 @@ export interface GLViewCompatible {
   setFrame(number, number, number, number): void;
   setLocalTransform(Transform): void;
   setOpacity(number): void;
+  setParentTransform(Transform): void;
   setVisible(boolean): void;
   update(): void;
 }

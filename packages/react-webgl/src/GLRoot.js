@@ -71,6 +71,10 @@ export default class GLRoot {
     return this._scene;
   }
 
+  getCurrentHitSet() {
+    return this._hitCurrentFrame;
+  }
+
   setCursorCoordinates(x: number, y: number) {
     this._cursorX = x;
     this._cursorY = y;

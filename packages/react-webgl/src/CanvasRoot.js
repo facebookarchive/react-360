@@ -29,6 +29,7 @@ export default class CanvasRoot extends GLRoot {
     this._camera = new THREE.OrthographicCamera();
     this.resize(width, height);
 
+    this._renderer.domElement.addEventListener('mousedown', this._onInput.bind(this, 'mousedown'));
     this._renderer.domElement.addEventListener('mousemove', this._onMouseMove);
     this._renderer.domElement.addEventListener('mouseleave', this._onMouseLeave);
   }
@@ -69,4 +70,10 @@ export default class CanvasRoot extends GLRoot {
   _onMouseLeave = () => {
     this.setCursorCoordinates(-9999, -9999);
   };
+
+  _onInput(event) {
+    for (const node of this.getCurrentHitSet()) {
+      node.fireEvent('onInput', {type: event});
+    }
+  }
 }

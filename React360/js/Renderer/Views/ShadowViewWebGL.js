@@ -12,6 +12,7 @@
 /* eslint-disable camelcase, no-param-reassign */
 
 import type {GLViewCompatible} from '../Primitives/GLView';
+import type {Transform} from '../RendererTypes';
 import * as Flexbox from '../FlexboxImplementation';
 import ShadowView, {type Dispatcher} from './ShadowView';
 
@@ -52,7 +53,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     super.addChild(index, child);
     if (child instanceof ShadowViewWebGL) {
       this.view.getNode().add(child.view.getNode());
-      child.view.setParentTransform(this.view.getWorldTransform());
+      child.setParentTransform(this.view.getWorldTransform());
     } else {
       this.view.getNode().add((child: any).view);
     }
@@ -141,7 +142,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     if (childrenNeedUpdate) {
       for (const c of this.children) {
         if (c instanceof ShadowViewWebGL) {
-          c.view.setParentTransform(this.view.getWorldTransform());
+          c.setParentTransform(this.view.getWorldTransform());
           const width = this.view.getWidth();
           const height = this.view.getHeight();
           c.view.setOffset(-width / 2, -height / 2);
@@ -167,6 +168,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
   }
 
+  setParentTransform(transform: Transform) {
+    this.view.setParentTransform(transform);
+  }
+
   getCursor(): ?string {
     return this._cursor;
   }
@@ -184,10 +189,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     this._hasCursorEvent = this._cursor != null || Object.keys(this._eventHandlers).length > 0;
   }
 
-  fireEvent(event: string) {
+  fireEvent(event: string, payload?: any) {
     const callback = this._eventHandlers[event];
     if (callback) {
-      callback();
+      callback(payload);
     }
   }
 
