@@ -28,6 +28,7 @@ export default class RCTRawText extends ShadowView {
   markTextDirty() {
     let node = this.getParent();
     while (node) {
+      // $FlowFixMe - need to inspect existence of function
       if (typeof node.markTextDirty === 'function') {
         node.markTextDirty();
       }

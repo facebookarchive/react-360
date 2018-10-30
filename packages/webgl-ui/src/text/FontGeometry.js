@@ -21,7 +21,10 @@ export const Align = {
   justify: 'left',
 };
 
+export type Align$Values = 'auto' | 'left' | 'right' | 'center' | 'justify';
+
 export type FontOptions = {
+  align?: Align$Values,
   size?: number,
   weight?: number,
 };
@@ -30,11 +33,15 @@ export default class FontGeometry {
   _align: string;
   _alignWidth: void | number; // Width of the span the alignment is relative to
   _fontFamily: string; // Specify the font to use, if supported by implementation
+  _geometry: THREE.Geometry;
   _geometryDirty: boolean; // Tracks whether geometry needs to be recomputed
+  _impl: TextImplementation;
   _info: TextRenderInfo; // Layout information
   _infoDirty: boolean; // Tracks whether layout information is dirty
   _lineHeight: number; // Distance from one baseline to the next
+  _material: THREE.Material;
   _maxWidth: void | number; // Maximum width the text can fill before breaking
+  _node: THREE.Mesh;
   _size: number; // Font size, in pixels
   _text: string; // Text string to display
 
@@ -56,7 +63,7 @@ export default class FontGeometry {
       this._geometry,
       this._material,
       this._info,
-      this.getParams(),
+      this.getParams()
     );
     this._node = new THREE.Mesh(this._geometry, this._material);
   }
@@ -128,15 +135,13 @@ export default class FontGeometry {
     this._infoDirty = true;
   }
 
+  setWeight(numericWeight: number) {
+    // no-op
+  }
+
   update() {
     if (this._infoDirty) {
-      this._info = wrapText(
-        this._impl,
-        this._fontFamily,
-        this._size,
-        this._text,
-        this._maxWidth,
-      );
+      this._info = wrapText(this._impl, this._fontFamily, this._size, this._text, this._maxWidth);
       this._geometryDirty = true;
       this._infoDirty = false;
     }
@@ -145,7 +150,7 @@ export default class FontGeometry {
         this._geometry,
         this._material,
         this._info,
-        this.getParams(),
+        this.getParams()
       );
       this._geometryDirty = false;
     }

@@ -10,17 +10,21 @@
  */
 
 import * as Flexbox from '../Renderer/FlexboxImplementation';
-import Image from '../Renderer/Views/Image';
 import type RenderRoot from '../Renderer/RenderRoot';
-import RawText from '../Renderer/Views/RawText';
-import type ShadowView, {Dispatcher} from '../Renderer/Views/ShadowView';
-import ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
-import Text from '../Renderer/Views/Text';
-import View from '../Renderer/Views/View';
+
+import {
+  Image,
+  RawText,
+  Text,
+  View,
+  ShadowViewWebGL,
+  SDFTextImplementation,
+  type ShadowView,
+  type Dispatcher,
+  type TextImplementation,
+} from 'webgl-ui';
 
 import Module from '../Modules/Module';
-import SDFTextImplementation from '../Text/Implementations/SDFTextImplementation';
-import type {TextImplementation} from '../Text/TextTypes';
 import type ReactContext from './ReactContext';
 
 type Attributes = {[attr: string]: any};

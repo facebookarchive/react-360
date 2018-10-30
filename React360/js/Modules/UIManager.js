@@ -14,7 +14,6 @@
 import RCTBox from '../Views/Box';
 import RCTCylinder from '../Views/Cylinder';
 import RCTPlane from '../Views/Plane';
-import ShadowView from '../Renderer/Views/ShadowView';
 import RCTSphere from '../Views/Sphere';
 import RCTImage from '../Views/Image';
 import RCTView from '../Views/View';
@@ -35,10 +34,7 @@ import RCTCylindricalPanel from '../Views/CylindricalPanel';
 import RCTQuadPanel from '../Views/QuadPanel';
 import RCTPrefetch from '../Views/Prefetch';
 
-import ViewGL from '../Renderer/Views/View';
-import ImageGL from '../Renderer/Views/Image';
-import ShadowViewWebGL from '../Renderer/Views/ShadowViewWebGL';
-import type {Dispatcher} from '../Renderer/Views/ShadowView';
+import {ViewGL, ImageGL, ShadowView, ShadowViewWebGL, type Dispatcher} from 'webgl-ui';
 
 import Module from './Module';
 import * as THREE from 'three';

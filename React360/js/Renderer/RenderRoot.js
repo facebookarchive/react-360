@@ -9,8 +9,9 @@
  * @flow
  */
 
-import {restack} from './StackingContext';
-import type ShadowViewWebGL from './Views/ShadowViewWebGL';
+import {StackingContext, type ShadowViewWebGL} from 'webgl-ui';
+
+const {restack} = StackingContext;
 
 /**
  * Manages a tree of view nodes.

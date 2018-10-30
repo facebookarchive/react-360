@@ -9,6 +9,8 @@
  * @flow
  */
 
+/* global Iterator */
+
 const TRAILING_WHITESPACE = /^\S*[ \t]*\r?\n?/;
 
 type Options = {

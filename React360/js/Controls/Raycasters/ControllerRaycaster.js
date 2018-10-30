@@ -9,18 +9,18 @@
  * @flow
  */
 
-import {rotateByQuaternion} from '../../Renderer/Math';
+import {Math as GLMath} from 'webgl-ui';
 
 import {type Quaternion, type Vec3} from '../Types';
 import {type Raycaster} from './Types';
+
+const {rotateByQuaternion} = GLMath;
 
 const TYPE = 'controller';
 
 // Fallback for browsers that don't support a getGamepads interface
 const getGamepads: () => Array<Gamepad> =
-  typeof navigator.getGamepads === 'function'
-    ? navigator.getGamepads.bind(navigator)
-    : () => [];
+  typeof navigator.getGamepads === 'function' ? navigator.getGamepads.bind(navigator) : () => [];
 
 const armModelVector = [0, 0, -1];
 function basicArmModel(origin: Vec3, orientation: Quaternion, hand: ?string) {
@@ -46,6 +46,7 @@ export default class ControllerRaycaster implements Raycaster {
 
     const initialGamepads = getGamepads();
     // Iterate backwards to pick up the "newest" controller first
+    /* eslint-disable-next-line */
     for (let i = initialGamepads.length; i--; ) {
       this._setGamepadIfValid(initialGamepads[i]);
     }

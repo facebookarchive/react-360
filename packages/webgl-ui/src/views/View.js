@@ -9,7 +9,7 @@
  * @flow
  */
 
-import GLView from '../Primitives/GLView';
+import GLView from '../primitives/GLView';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import type {Dispatcher} from './ShadowView';
 

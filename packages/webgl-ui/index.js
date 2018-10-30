@@ -5,14 +5,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @flow
  */
 
-/* eslint-disable import/no-commonjs */
+const GLUI = require('./dist/GLUI');
 
-/**
- * Singular entry point for Flexbox implementation, so that the backing
- * library can be switched out as needed.
- */
-module.exports = require('webgl-ui').Flexbox;
+module.exports = GLUI;

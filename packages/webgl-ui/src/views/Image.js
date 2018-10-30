@@ -11,8 +11,8 @@
 
 /* eslint-disable camelcase */
 
-import GLTexturedView, {type ResizeMode} from '../Primitives/GLTexturedView';
-import TextureManager from '../../Runtime/TextureManager';
+import GLTexturedView, {type ResizeMode} from '../primitives/GLTexturedView';
+import TextureManager from '../TextureManager';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import type {Dispatcher} from './ShadowView';
 

@@ -9,12 +9,7 @@
  * @flow
  */
 
-import {
-  Flexbox,
-  SDFTextImplementation,
-  StackingContext,
-  TextureManager,
-} from '../../../React360/js/WebGLRendering';
+import {Flexbox, SDFTextImplementation, StackingContext, TextureManager} from 'webgl-ui';
 
 function recursiveLayout(view) {
   view.presentLayout();

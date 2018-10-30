@@ -11,7 +11,7 @@
 
 import * as Elements from './Elements';
 import applyProps from './applyProps';
-import {RawText} from '../../../React360/js/WebGLRendering';
+import {RawText} from 'webgl-ui';
 
 const NO_CONTEXT = {};
 const UPDATE_SIGNAL = {};

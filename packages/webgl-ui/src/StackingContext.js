@@ -9,7 +9,7 @@
  * @flow
  */
 
-import type ShadowViewWebGL from './Views/ShadowViewWebGL';
+import type ShadowViewWebGL from './views/ShadowViewWebGL';
 
 export type StackingContext = {
   '0': Array<ShadowViewWebGL<*>>,

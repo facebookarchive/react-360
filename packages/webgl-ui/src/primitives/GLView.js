@@ -12,8 +12,7 @@
 /* eslint-disable no-bitwise */
 
 import * as THREE from 'three';
-import {matrixMultiply4} from '../Math';
-import type {Transform} from '../RendererTypes';
+import {type Transform, matrixMultiply4} from '../Math';
 import {VERT_SHADER, FRAG_SHADER} from './SDFRectangle';
 
 export interface GLViewCompatible {
@@ -21,6 +20,7 @@ export interface GLViewCompatible {
   getNode(): THREE.Mesh;
   getWidth(): number;
   getWorldTransform(): Transform;
+  containsPoint(x: number, y: number): boolean;
   setBackgroundColor(number): void;
   setBorderColor(number): void;
   setBorderRadius(number, number, number, number): void;

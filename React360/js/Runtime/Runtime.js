@@ -20,7 +20,7 @@ import type Module from '../Modules/Module';
 import type {CustomView} from '../Modules/UIManager';
 import GuiSys from '../OVRUI/UIView/GuiSys';
 import {ReactNativeContext} from '../ReactNativeContext';
-import {type TextImplementation} from '../Text/TextTypes';
+import {type TextImplementation} from 'webgl-ui';
 import ReactContext from './ReactContext';
 import SurfaceRuntime from './SurfaceRuntime';
 

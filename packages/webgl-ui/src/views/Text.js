@@ -12,11 +12,11 @@
 /* eslint-disable camelcase, no-bitwise, no-param-reassign */
 
 import {matrixMultiply4} from '../Math';
-import GLView from '../Primitives/GLView';
-import * as Flexbox from '../FlexboxImplementation';
-import type {Transform} from '../RendererTypes';
-import type {FontGeometry} from '../../Text/FontGeometry';
-import type {TextImplementation} from '../../Text/TextTypes';
+import GLView from '../primitives/GLView';
+import * as Flexbox from '../vendor/Yoga.bundle';
+import type {Transform} from '../Math';
+import type FontGeometry from '../text/FontGeometry';
+import type {TextImplementation} from '../text/TextTypes';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import RawText from './RawText';
 
@@ -31,7 +31,6 @@ const FONT_WEIGHTS = {
  */
 export default class RCTText extends ShadowViewWebGL<GLView> {
   textChildren: Array<RCTText | RawText>;
-  _alignWidth: number;
   _cachedText: string;
   _geometryDirty: boolean;
   _text: FontGeometry;
@@ -41,7 +40,6 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
   constructor(impl: TextImplementation) {
     super(() => new GLView());
     this.textChildren = [];
-    this._alignWidth = undefined;
     this._textColor = null;
     this._textDirty = true;
     this._geometryDirty = false;

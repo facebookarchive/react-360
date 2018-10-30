@@ -11,10 +11,11 @@
 
 /* eslint-disable camelcase, no-param-reassign */
 
-import type {GLViewCompatible} from '../Primitives/GLView';
-import type {Transform} from '../RendererTypes';
-import * as Flexbox from '../FlexboxImplementation';
+import type {GLViewCompatible} from '../primitives/GLView';
+import type {Transform} from '../Math';
+import * as Flexbox from '../vendor/Yoga.bundle';
 import ShadowView, {type Dispatcher} from './ShadowView';
+import recursiveLayout from '../recursiveLayout';
 
 type LayoutHook = (number, {height: number, width: number, x: number, y: number}) => mixed;
 
@@ -151,6 +152,11 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
   }
 
+  updateLayoutAndGeometry() {
+    this.calculateLayout();
+    recursiveLayout(this);
+  }
+
   frame() {}
 
   setOnLayout(value: any) {
@@ -194,6 +200,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     if (callback) {
       callback(payload);
     }
+  }
+
+  containsPoint(x: number, y: number): boolean {
+    return this.view.containsPoint(x, y);
   }
 
   _getBorderValue(edge: number): number {

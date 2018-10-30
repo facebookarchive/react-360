@@ -9,7 +9,7 @@
  * @flow
  */
 
-import type {FontGeometry} from './FontGeometry';
+import type FontGeometry from './FontGeometry';
 import * as THREE from 'three';
 
 export type Glyph = {
@@ -48,11 +48,11 @@ export type TextRenderInfo = {
 export interface TextImplementation {
   extractGlyphs(font: string, size: number, text: string, color?: number): GlyphRun;
   createText(text: string, options?: Object): FontGeometry;
-  createMaterial(): THREE.Material,
+  createMaterial(): THREE.Material;
   updateGeometryAndMaterial(
     geometry: THREE.Geometry,
     material: THREE.Material,
     info: TextRenderInfo,
-    params: Object,
+    params: Object
   ): void;
 }

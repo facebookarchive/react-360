@@ -36,8 +36,9 @@ import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
-import {rotateByQuaternion} from './Renderer/Math';
-import {type TextImplementation} from './Text/TextTypes';
+import {Math as GLMath, type TextImplementation} from 'webgl-ui';
+
+const {rotateByQuaternion} = GLMath;
 
 type Root = {
   initialProps: Object,

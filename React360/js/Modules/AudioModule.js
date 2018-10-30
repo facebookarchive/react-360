@@ -19,8 +19,10 @@ import type {
 } from '../Compositor/Audio/Types';
 import type {Quaternion, Vec3} from '../Controls/Types';
 import type {ReactNativeContext} from '../ReactNativeContext';
-import {rotateByQuaternion} from '../Renderer/Math';
+import {Math as GLMath} from 'webgl-ui';
 import Module from './Module';
+
+const {rotateByQuaternion} = GLMath;
 
 const FORWARD = [0, 0, -1];
 const UP = [0, 1, 0];

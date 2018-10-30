@@ -9,7 +9,7 @@
  * @flow
  */
 
-import {Image, Text, View} from '../../../React360/js/WebGLRendering';
+import {Image, Text, View} from 'webgl-ui';
 
 export const quad = {
   create: () => new View(),

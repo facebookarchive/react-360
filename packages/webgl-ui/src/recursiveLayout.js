@@ -9,10 +9,11 @@
  * @flow
  */
 
-/* eslint-disable import/no-commonjs */
-
-/**
- * Singular entry point for Flexbox implementation, so that the backing
- * library can be switched out as needed.
- */
-module.exports = require('webgl-ui').Flexbox;
+export default function recursiveLayout(view: any) {
+  view.presentLayout();
+  for (const child of view.children) {
+    if (child) {
+      recursiveLayout(child);
+    }
+  }
+}

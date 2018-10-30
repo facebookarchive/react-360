@@ -11,8 +11,8 @@
 
 /* eslint-disable camelcase, no-param-reassign */
 
-import * as Flexbox from '../FlexboxImplementation';
-import type {Transform} from '../RendererTypes';
+import * as Flexbox from '../vendor/Yoga.bundle';
+import type {Transform} from '../Math';
 
 export type Dispatcher = {[prop: string]: (any) => mixed};
 
@@ -132,6 +132,10 @@ export default class ShadowView {
     // No-op, for compatibility
   }
 
+  calculateLayout() {
+    this.YGNode.calculateLayout(Flexbox.UNDEFINED, Flexbox.UNDEFINED, Flexbox.DIRECTION_LTR);
+  }
+
   _setBorderWidth(edge: number, value: string | number) {
     if (value == null) {
       value = Flexbox.UNDEFINED;
@@ -175,21 +179,15 @@ export default class ShadowView {
   /* style setters */
 
   __setStyle_alignContent(value: $Keys<typeof MAP_CSS_ALIGN>): void {
-    this.YGNode.setAlignContent(
-      value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
-    );
+    this.YGNode.setAlignContent(value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO);
   }
 
   __setStyle_alignItems(value: $Keys<typeof MAP_CSS_ALIGN>): void {
-    this.YGNode.setAlignItems(
-      value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
-    );
+    this.YGNode.setAlignItems(value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO);
   }
 
   __setStyle_alignSelf(value: $Keys<typeof MAP_CSS_ALIGN>): void {
-    this.YGNode.setAlignSelf(
-      value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO,
-    );
+    this.YGNode.setAlignSelf(value != null ? MAP_CSS_ALIGN[value] : Flexbox.ALIGN_AUTO);
   }
 
   __setStyle_aspectRatio(value: ?number): void {
@@ -231,9 +229,7 @@ export default class ShadowView {
   }
 
   __setStyle_display(value: $Keys<typeof MAP_CSS_DISPLAY>): void {
-    this.YGNode.setDisplay(
-      value != null ? MAP_CSS_DISPLAY[value] : Flexbox.DISPLAY_FLEX,
-    );
+    this.YGNode.setDisplay(value != null ? MAP_CSS_DISPLAY[value] : Flexbox.DISPLAY_FLEX);
   }
 
   __setStyle_flex(value: ?number): void {
@@ -255,9 +251,7 @@ export default class ShadowView {
   }
 
   __setStyle_flexDirection(value: $Keys<typeof MAP_CSS_FLEX_DIRECTION>): void {
-    this.YGNode.setFlexDirection(
-      value != null ? MAP_CSS_FLEX_DIRECTION[value] : Flexbox.UNDEFINED,
-    );
+    this.YGNode.setFlexDirection(value != null ? MAP_CSS_FLEX_DIRECTION[value] : Flexbox.UNDEFINED);
   }
 
   __setStyle_flexGrow(value: ?number): void {
@@ -275,9 +269,7 @@ export default class ShadowView {
   }
 
   __setStyle_flexWrap(value: $Keys<typeof MAP_CSS_WRAP>): void {
-    this.YGNode.setFlexWrap(
-      value != null ? MAP_CSS_WRAP[value] : Flexbox.UNDEFINED,
-    );
+    this.YGNode.setFlexWrap(value != null ? MAP_CSS_WRAP[value] : Flexbox.UNDEFINED);
   }
 
   __setStyle_height(value: ?number | string): void {
@@ -293,7 +285,7 @@ export default class ShadowView {
 
   __setStyle_justifyContent(value: $Keys<typeof MAP_CSS_JUSTIFY>): void {
     this.YGNode.setJustifyContent(
-      value != null ? MAP_CSS_JUSTIFY[value] : Flexbox.JUSTIFY_FLEX_START,
+      value != null ? MAP_CSS_JUSTIFY[value] : Flexbox.JUSTIFY_FLEX_START
     );
   }
 
@@ -374,9 +366,7 @@ export default class ShadowView {
   }
 
   __setStyle_overflow(value: $Keys<typeof MAP_CSS_OVERFLOW>): void {
-    this.YGNode.setOverflow(
-      value != null ? MAP_CSS_OVERFLOW[value] : Flexbox.OVERFLOW_VISIBLE,
-    );
+    this.YGNode.setOverflow(value != null ? MAP_CSS_OVERFLOW[value] : Flexbox.OVERFLOW_VISIBLE);
   }
 
   __setStyle_padding(value: string | number): void {
@@ -409,7 +399,7 @@ export default class ShadowView {
 
   __setStyle_position(value: string): void {
     this.YGNode.setPositionType(
-      value != null ? MAP_CSS_POSITION[value] : Flexbox.POSITION_TYPE_RELATIVE,
+      value != null ? MAP_CSS_POSITION[value] : Flexbox.POSITION_TYPE_RELATIVE
     );
   }
 

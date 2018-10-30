@@ -10,10 +10,7 @@
  */
 
 import type {GlyphRun, TextImplementation, TextRenderInfo} from '../TextTypes';
-import {
-  DEFAULT_FONT_TEXTURE,
-  DEFAULT_FONT_JSON,
-} from './SDFDefaultFont';
+import {DEFAULT_FONT_TEXTURE, DEFAULT_FONT_JSON} from './SDFDefaultFont';
 import SDFFontGeometry from './SDFFontGeometry';
 import {VERT_SHADER, FRAG_SHADER} from './SDFTextShaders';
 import * as THREE from 'three';
@@ -95,7 +92,7 @@ export default class SDFTextImplementation implements TextImplementation {
     fontName: string,
     size: number,
     text: string,
-    color: number = 0xff000000,
+    color: number = 0xff000000
   ): GlyphRun {
     const run = {
       glyphs: [],
@@ -161,7 +158,12 @@ export default class SDFTextImplementation implements TextImplementation {
     return run;
   }
 
-  updateGeometryAndMaterial(geometry, material, info: TextRenderInfo, params: Object) {
+  updateGeometryAndMaterial(
+    geometry: THREE.Geometry,
+    material: THREE.Material,
+    info: TextRenderInfo,
+    params: Object
+  ) {
     const {align} = params;
     const center = params.center || 0.5;
 
@@ -278,7 +280,7 @@ export default class SDFTextImplementation implements TextImplementation {
     } else {
       geometry.addAttribute(
         'a_position',
-        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 0, false),
+        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 0, false)
       );
     }
     if ('a_uv' in attributes) {
@@ -287,7 +289,7 @@ export default class SDFTextImplementation implements TextImplementation {
     } else {
       geometry.addAttribute(
         'a_uv',
-        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 2, false),
+        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 2, false)
       );
     }
     if ('a_center' in attributes) {
@@ -296,7 +298,7 @@ export default class SDFTextImplementation implements TextImplementation {
     } else {
       geometry.addAttribute(
         'a_center',
-        new THREE.InterleavedBufferAttribute(attrBuffer32, 1, 4, false),
+        new THREE.InterleavedBufferAttribute(attrBuffer32, 1, 4, false)
       );
     }
     if ('a_color' in attributes) {
@@ -305,7 +307,7 @@ export default class SDFTextImplementation implements TextImplementation {
     } else {
       geometry.addAttribute(
         'a_color',
-        new THREE.InterleavedBufferAttribute(attrBuffer8, 4, 20, true),
+        new THREE.InterleavedBufferAttribute(attrBuffer8, 4, 20, true)
       );
     }
 

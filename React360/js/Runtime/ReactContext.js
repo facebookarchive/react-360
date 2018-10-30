@@ -15,8 +15,7 @@ import type RenderRoot from '../Renderer/RenderRoot';
 
 import DeviceInfo from '../Modules/DeviceInfo';
 import Timing from '../Modules/Timing';
-import {type TextImplementation} from '../Text/TextTypes';
-import TextureManager from './TextureManager';
+import {type TextImplementation, TextureManager} from 'webgl-ui';
 import UIManager from './UIManager';
 
 type ContextOptions = {

@@ -20,7 +20,7 @@ export default function wrapText(
   size: number,
   text: string,
   fitToWidth: void | number,
-  options: Object = {},
+  options: Object = {}
 ): TextRenderInfo {
   const lines: Array<TextLine> = [];
   // Todo: expose configurable locale once the underlying API has better support
@@ -34,7 +34,8 @@ export default function wrapText(
     maxDescend: 0,
     width: 0,
   };
-  let lastColor = undefined;
+  let lastColor;
+  // $FlowFixMe
   for (const breakpoint of iter) {
     const chunk = text.slice(cursor, breakpoint);
     const run = impl.extractGlyphs(font, size, chunk, lastColor);
