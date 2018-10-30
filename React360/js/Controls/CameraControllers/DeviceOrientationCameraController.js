@@ -26,6 +26,7 @@ const HALF_PI = Math.PI / 2;
 const TWO_PI = Math.PI * 2;
 const SCREEN_ROTATION = [-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)];
 
+
 type DeviceOrientationEvent = {
   absolute: boolean,
   alpha: number,
@@ -187,6 +188,7 @@ export default class DeviceOrientationCameraController
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
+
     if (!this._enabled) {
       return false;
     }
@@ -194,7 +196,6 @@ export default class DeviceOrientationCameraController
     const alpha = this._alpha;
     const beta = this._beta;
     const gamma = this._gamma;
-
     if (alpha == null || beta == null || gamma == null) {
       // No device orientation event has been received yet
       return false;
@@ -209,6 +210,9 @@ export default class DeviceOrientationCameraController
       quaternionPremultiply(rotation, yawQuat);
     }
     quaternionMultiply(rotation, this._screenOrientation);
+    this._alpha = null;
+    this._beta = null;
+    this._gamma = null;
     return true;
   }
 }

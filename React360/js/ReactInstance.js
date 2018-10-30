@@ -210,18 +210,21 @@ export default class ReactInstance {
     this.vrState.onExit(() => {
       this._needsResize = true;
     });
+    const camera = this.compositor.getCamera();
+    const fov = camera.fov * Math.PI / 180;
+    this.controls.addCameraController(
+      new MousePanCameraController(this._eventLayer, fov),
+    );
+    this.controls.addCameraController(
+      new DeviceOrientationCameraController(this._eventLayer, fov),
+    );
 
-    this.controls.addCameraController(
-      new DeviceOrientationCameraController(this._eventLayer),
-    );
-    this.controls.addCameraController(
-      new MousePanCameraController(this._eventLayer),
-    );
     this.controls.addCameraController(
       new ScrollPanCameraController(this._eventLayer),
     );
-    this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
+
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
+    this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     // this.controls.addEventChannel(new KeyboardInputChannel());
     //this.controls.addEventChannel(new GamepadInputChannel());
     this.controls.addRaycaster(new ControllerRaycaster());

@@ -94,6 +94,7 @@ export default class MousePanCameraController implements CameraController {
     this._draggingTouch = true;
     this._lastTouchX = e.changedTouches[0].clientX;
     this._lastTouchY = e.changedTouches[0].clientY;
+    this.pauseInitMove();
   }
 
   _onTouchMove(e: TouchEvent) {
@@ -153,11 +154,11 @@ export default class MousePanCameraController implements CameraController {
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
+
     if (!this._enabled) {
       return false;
     }
     this._autoMove();
-
     if (this._deltaPitch === 0 && this._deltaYaw === 0) {
       return false;
     }
@@ -189,7 +190,6 @@ export default class MousePanCameraController implements CameraController {
     rotation[1] = y3;
     rotation[2] = z3;
     rotation[3] = w3;
-
     this._deltaPitch = 0;
     this._deltaYaw = 0;
     return true;
