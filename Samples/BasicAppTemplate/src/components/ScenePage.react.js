@@ -14,8 +14,9 @@ import {
   Environment,
 } from 'react-360';
 import InfoButton from 'InfoButton.react';
+import {default as VideoModule, VideoPlayerInstance, type VideoStatusEvent} from 'VideoModule';
 
-const {AudioModule, VideoModule} = NativeModules;
+const {AudioModule} = NativeModules;
 
 const DATA_BASE = [
   {
@@ -62,16 +63,24 @@ class ScenePage extends React.Component {
   static defaultProps = {
     index: 0,
   };
+  _player: VideoPlayerInstance;
 
   componentWillMount() {
     // create a play to play video
-    VideoModule.createPlayer('myplayer');
+    this._player = VideoModule.createPlayer('myplayer');
+    this._player.addListener('onVideoStatusChanged', this._onVideoStatus);
     this._setData(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.index !== this.props.index) {
       this._setData(nextProps);
+    }
+  }
+
+  _onVideoStatus = (event: VideoStatusEvent) => {
+    if (event.status === 'finished') {
+      this._player.resume();
     }
   }
 
@@ -85,7 +94,7 @@ class ScenePage extends React.Component {
       // Two steps:
       // 1. play video on the player
       // 2. set enviroment to the player
-      VideoModule.play('myplayer', {
+      this._player.play({
         source: data.source,
         // un-muted won't work with Android right now
         // will be solved later

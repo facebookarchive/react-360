@@ -22,6 +22,7 @@ import type {ReactNativeContext} from '../ReactNativeContext';
 export default class VideoModule extends Module {
   _rnctx: ReactNativeContext;
   allowCreatePlayer: boolean;
+  maxPlayers: number;
   _videoPlayers: VideoPlayerManager;
 
   constructor(ctx: ReactNativeContext, videoPlayers: VideoPlayerManager) {
@@ -32,6 +33,7 @@ export default class VideoModule extends Module {
     this._videoPlayers = videoPlayers;
 
     this.allowCreatePlayer = true;
+    this.maxPlayers = -1;
   }
 
   _applyParams(player: VideoPlayer, params: VideoPlayOptions) {
