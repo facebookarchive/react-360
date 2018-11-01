@@ -1,7 +1,7 @@
 {
-  "name": "webgl-ui",
-  "version": "0.1.2",
-  "description": "2D primitives and utilities for building interfaces in WebGL",
+  "name": "react-webgl-video-manager",
+  "version": "0.1.0",
+  "description": "Centralized video playback controls for applications built on top of React WebGL",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
@@ -22,10 +22,10 @@
   "devDependencies": {
     "@babel/cli": "7.1.2",
     "@babel/core": "7.1.2",
-    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
     "@babel/plugin-transform-flow-strip-types": "7.0.0"
   },
   "scripts": {
-    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-object-rest-spread"
+    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
   }
 }

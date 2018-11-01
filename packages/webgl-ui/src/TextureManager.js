@@ -9,14 +9,20 @@
  * @flow
  */
 
-import {Texture, TextureLoader} from 'three';
+import {ClampToEdgeWrapping, LinearFilter, Texture, TextureLoader, UVMapping} from 'three';
+
+type CustomProtocolTransform = string => Promise<Image | HTMLCanvasElement>;
+
+const PROTOCOL = /^([a-zA-Z]+):/;
 
 export default class TextureManager {
+  _customProtocols: {[protocol: string]: CustomProtocolTransform};
   _pendingTextures: {[url: string]: Promise<Texture>};
   _textureMap: {[url: string]: Texture};
   _textureResolvers: {[url: string]: (Texture) => mixed};
 
   constructor() {
+    this._customProtocols = {};
     this._pendingTextures = {};
     this._textureMap = {};
     this._textureResolvers = {};
@@ -39,6 +45,32 @@ export default class TextureManager {
       });
       this._pendingTextures[url] = promise;
       return promise;
+    }
+    const protocolMatch = url.match(PROTOCOL);
+    if (protocolMatch) {
+      const protocol = protocolMatch[1];
+      const transform = this._customProtocols[protocol];
+      if (transform) {
+        const promise = transform(url).then(img => {
+          let tex = img;
+          if (!(tex instanceof Texture)) {
+            tex = new Texture(
+              img,
+              UVMapping,
+              ClampToEdgeWrapping,
+              ClampToEdgeWrapping,
+              LinearFilter,
+              LinearFilter
+            );
+          }
+          tex.needsUpdate = true;
+          this._textureMap[url] = tex;
+          delete this._pendingTextures[url];
+          return tex;
+        });
+        this._pendingTextures[url] = promise;
+        return promise;
+      }
     }
     // Network texture
     const promise = new Promise((resolve, reject) => {
@@ -75,5 +107,9 @@ export default class TextureManager {
     } else {
       throw new Error('Unsupported texture source');
     }
+  }
+
+  registerCustomProtocol(protocol: string, transform: CustomProtocolTransform) {
+    this._customProtocols[protocol] = transform;
   }
 }

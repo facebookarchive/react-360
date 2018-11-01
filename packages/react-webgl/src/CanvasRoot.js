@@ -36,6 +36,7 @@ export default class CanvasRoot extends GLRoot {
 
   resize(width: number, height: number) {
     this._renderer.setSize(width, height, true);
+    this._renderer.setPixelRatio(window.devicePixelRatio || 1);
     this._camera.left = 0;
     this._camera.right = width;
     this._camera.top = 0;
