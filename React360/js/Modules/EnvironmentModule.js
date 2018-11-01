@@ -115,7 +115,7 @@ export default class EnvironmentModule extends Module {
     if (screen.type === 'surface') {
       const surfaceScreen: SurfaceScreenDef = (screen: any);
       const id = surfaceScreen.id || 'default';
-      const handle = surfaceScreen.player || 'default';
+      const handle = surfaceScreen.player === undefined ? 'default' : surfaceScreen.player;
       this._env.setScreen(id, handle, surfaceScreen.surface, surfaceScreen.x, surfaceScreen.y, surfaceScreen.width, surfaceScreen.height);
       return;
     }

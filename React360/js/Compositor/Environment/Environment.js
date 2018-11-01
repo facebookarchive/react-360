@@ -269,7 +269,7 @@ export default class Environment {
 
   setScreen(
     screenId: string,
-    handle: string,
+    handle?: string,
     surfaceId: string,
     x: number,
     y: number,
@@ -296,9 +296,13 @@ export default class Environment {
 
     if (this._screens[screenId]) {
       const screen = this._screens[screenId];
-      const player = this._videoPlayers ? this._videoPlayers.getPlayer(handle) : null;
-      const loader = player ? player.load().then(data => ({...data, src: handle})) : null;
-      screen.setTexture(loader, handle);
+      if (handle) {
+        const player = this._videoPlayers ? this._videoPlayers.getPlayer(handle) : null;
+        const loader = player ? player.load().then(data => ({...data, src: handle})) : null;
+        screen.setTexture(loader, handle);
+      } else {
+        screen.setTexture(null, handle);
+      }
     }
   }
 

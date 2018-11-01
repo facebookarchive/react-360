@@ -61,7 +61,7 @@ export function animateFade(fadeLevel: number, fadeTime: number) {
   EnvironmentModule.animateFade(fadeLevel, fadeTime);
 }
 
-export function setScreen(screenId: string, handle: string, surfaceId: string, x: number, y: number, width: number, height: number) {
+export function setScreen(screenId: string, handle: ?string, surfaceId: string, x: number, y: number, width: number, height: number) {
   EnvironmentModule.setScreen({
     screenId: screenId,
     type: 'surface',
