@@ -121,6 +121,7 @@ declare module 'three' {
     constructor(number, number, number, ?string): this;
     copy(e: Euler): this;
     set(number, number, number, string): this;
+    setFromQuaternion(Quaternion, string): this;
   }
 
   declare class Face3 {

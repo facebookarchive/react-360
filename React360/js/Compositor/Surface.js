@@ -10,8 +10,11 @@
  */
 
 import * as THREE from 'three';
+import {type Quaternion} from '../Controls/Types';
 
 type ShapeType = 'Cylinder' | 'Flat';
+
+type SurfaceCenterControl = 'yaw' | 'yaw-pitch';
 
 export const SurfaceShape: {[key: ShapeType]: ShapeType} = {
   Cylinder: 'Cylinder',
@@ -154,6 +157,28 @@ export default class Surface {
   setAngle(yaw: number, pitch: number) {
     this._yaw = yaw;
     this._pitch = pitch;
+    this._recomputeOrientation();
+  }
+
+  /**
+   * Recenter a Flat panel, positioned on the outside of a sphere.
+   * Given the center control options:
+   *   1. 'yaw': The surface will fit the yaw angle with current camera orientaion
+   *   2. 'yaw-pitch': The surface will fit both the yaw and pitch angle
+   *       with the camera orientation.
+   */
+  recenter(cameraQuat: Quaternion, centerControl: SurfaceCenterControl) {
+    const euler = new THREE.Euler(0, 0, 0).setFromQuaternion(
+      new THREE.Quaternion(cameraQuat[0], cameraQuat[1], cameraQuat[2], cameraQuat[3]),
+      'YXZ'
+    );
+
+    if (centerControl === 'yaw') {
+      this._yaw = -euler.y;
+    } else {
+      this._yaw = -euler.y;
+      this._pitch = euler.x;
+    }
     this._recomputeOrientation();
   }
 
