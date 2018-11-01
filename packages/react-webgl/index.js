@@ -7,6 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-const ReactWGL = require('./src/ReactWGL');
+const ReactWGL = require('./dist/ReactWGL');
 
 module.exports = ReactWGL;
