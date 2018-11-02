@@ -22,6 +22,9 @@ const ImageMaterial = new THREE.ShaderMaterial({
     u_bordercolor: {
       value: new THREE.Vector4(0.0, 0.0, 0.0, 1.0),
     },
+    u_tint: {
+      value: new THREE.Vector3(1.0, 1.0, 1.0),
+    },
     u_transform: {
       value: new THREE.Matrix4(),
     },
@@ -46,6 +49,7 @@ export default class GLTexturedView extends GLView {
   _bgResize: ResizeMode;
   _bgTextureHeight: number;
   _bgTextureWidth: number;
+  _tintColor: number;
 
   constructor() {
     super();
@@ -53,6 +57,7 @@ export default class GLTexturedView extends GLView {
     this._bgTextureHeight = 0;
     this._bgTextureWidth = 0;
     this._bgResize = 'stretch';
+    this._tintColor = 0xffffffff;
 
     this.getGeometry().addAttribute(
       'a_uv',
@@ -206,7 +211,10 @@ export default class GLTexturedView extends GLView {
       if (source instanceof Image) {
         this._bgTextureWidth = source.naturalWidth;
         this._bgTextureHeight = source.naturalHeight;
-      } else if (source instanceof HTMLCanvasElement) {
+      } else if (source instanceof HTMLVideoElement) {
+        this._bgTextureWidth = source.videoWidth;
+        this._bgTextureHeight = source.videoHeight;
+      } else if (source.width !== undefined && source.height !== undefined) {
         this._bgTextureWidth = source.width;
         this._bgTextureHeight = source.height;
       }
@@ -229,7 +237,15 @@ export default class GLTexturedView extends GLView {
     }
   }
 
-  setTintColor(color: number) {}
+  setTintColor(color: number) {
+    this._tintColor = color;
+    this.getMaterial().uniforms.u_tint.value.set(
+      ((color >>> 16) & 0xff) / 255,
+      ((color >>> 8) & 0xff) / 255,
+      (color & 0xff) / 255
+    );
+    this.getMaterial().needsUpdate = true;
+  }
 }
 (GLTexturedView: any).POSITION_STRIDE = 7;
 (GLTexturedView: any).MAX_BUFFER_SIZE = 40 * 7;

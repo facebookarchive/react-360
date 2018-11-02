@@ -51,13 +51,14 @@ varying float v_edge;
 
 #ifdef IMAGE
 uniform sampler2D u_texture;
+uniform vec3 u_tint;
 varying vec2 v_uv;
 #endif
 
 void main() {
   float dist = distance(v_position, v_center) - v_edge;
   #ifdef IMAGE
-  vec4 sample = texture2D(u_texture, v_uv);
+  vec4 sample = texture2D(u_texture, v_uv) * vec4(u_tint.rgb, 1.0);
   if (v_uv.x < 0. || v_uv.y < 0. || v_uv.x > 1. || v_uv.y > 1.) {
     sample = vec4(0., 0., 0., 0.);
   }

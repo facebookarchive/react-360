@@ -9,11 +9,33 @@
  * @flow
  */
 
-import {ClampToEdgeWrapping, LinearFilter, Texture, TextureLoader, UVMapping} from 'three';
+import {ClampToEdgeWrapping, LinearFilter, Texture, UVMapping} from 'three';
 
 type CustomProtocolTransform = string => Promise<Image | HTMLCanvasElement>;
 
 const PROTOCOL = /^([a-zA-Z]+):/;
+
+function loadTextureFromURL(url): Promise<Texture> {
+  if (typeof self.createImageBitmap === 'function') {
+    return fetch(url)
+      .then(response => response.blob())
+      .then(blob => self.createImageBitmap(blob, {imageOrientation: 'flipY'}))
+      .then(imageBitmap => {
+        const tex = new Texture(imageBitmap);
+        tex.needsUpdate = true;
+        return tex;
+      });
+  }
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const tex = new Texture(img);
+      tex.needsUpdate = true;
+      resolve(tex);
+    };
+    img.src = url;
+  });
+}
 
 export default class TextureManager {
   _customProtocols: {[protocol: string]: CustomProtocolTransform};
@@ -73,22 +95,15 @@ export default class TextureManager {
       }
     }
     // Network texture
-    const promise = new Promise((resolve, reject) => {
-      const loader = new TextureLoader();
-      loader.setCrossOrigin('anonymous');
-      loader.load(
-        url,
-        texture => {
-          this._textureMap[url] = texture;
-          delete this._pendingTextures[url];
-          resolve(texture);
-        },
-        undefined,
-        error => {
-          reject(error);
-        }
-      );
-    });
+    const promise = loadTextureFromURL(url)
+      .then(tex => {
+        this._textureMap[url] = tex;
+        delete this._pendingTextures[url];
+        return tex;
+      })
+      .catch(err => {
+        console.log(err);
+      });
     this._pendingTextures[url] = promise;
     return promise;
   }
