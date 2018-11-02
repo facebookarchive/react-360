@@ -26,6 +26,9 @@ export interface GLViewCompatible {
   setBorderRadius(number, number, number, number): void;
   setBorderWidth(number, number, number, number): void;
   setFrame(number, number, number, number): void;
+  setGradientAngle(angle: number): void;
+  setGradientEnd(color: number): void;
+  setGradientStart(color: number): void;
   setLocalTransform(Transform): void;
   setOpacity(number): void;
   setParentTransform(Transform): void;
@@ -46,6 +49,10 @@ const ViewMaterial = new THREE.ShaderMaterial({
       value: new THREE.Matrix4(),
     },
     u_opacity: {value: 1.0},
+    u_gradientstart: {value: new THREE.Vector4(0, 0, 0, 0)},
+    u_gradientend: {value: new THREE.Vector4(0, 0, 0, 0.0)},
+    u_gradientunit: {value: new THREE.Vector2(0, 1.0)},
+    u_gradientlength: {value: 1},
   },
   vertexShader: VERT_SHADER,
   fragmentShader: FRAG_SHADER,
@@ -61,6 +68,7 @@ export default class GLView {
   _borderWidth: number;
   _geometry: THREE.BufferGeometry;
   _geometryDirty: boolean;
+  _gradientAngle: number;
   _height: number;
   _intersectTest: [[number, number], [number, number], [number, number]];
   _layoutOriginX: number;
@@ -106,6 +114,7 @@ export default class GLView {
     this._y = 0;
     this._geometryDirty = true;
     this._transformDirty = true;
+    this._gradientAngle = 0;
 
     // Three.js specifics
     this._geometry = new THREE.BufferGeometry();
@@ -424,6 +433,38 @@ export default class GLView {
     this._material.needsUpdate = true;
   }
 
+  setGradientStart(color: number) {
+    this._material.uniforms.u_gradientstart.value.set(
+      ((color >> 16) & 0xff) / 255,
+      ((color >> 8) & 0xff) / 255,
+      (color & 0xff) / 255,
+      ((color >> 24) & 0xff) / 255
+    );
+    this._material.needsUpdate = true;
+  }
+
+  setGradientEnd(color: number) {
+    this._material.uniforms.u_gradientend.value.set(
+      ((color >> 16) & 0xff) / 255,
+      ((color >> 8) & 0xff) / 255,
+      (color & 0xff) / 255,
+      ((color >> 24) & 0xff) / 255
+    );
+    this._material.needsUpdate = true;
+  }
+
+  setGradientAngle(rad: number) {
+    this._gradientAngle = rad;
+    this.updateGradient();
+  }
+
+  updateGradient() {
+    const angle = this._gradientAngle;
+    this._material.uniforms.u_gradientunit.value.fromArray([Math.sin(angle), Math.cos(angle)]);
+    this._material.uniforms.u_gradientlength.value =
+      this._width * Math.sin(angle) + this._height * Math.cos(angle);
+  }
+
   setFrame(x: number, y: number, width: number, height: number) {
     this._x = x;
     this._y = y;
@@ -490,6 +531,7 @@ export default class GLView {
       this._geometry.needsUpdate = true;
       this._geometry.index.needsUpdate = true;
       this._positionBuffer.needsUpdate = true;
+      this.updateGradient();
       this._geometryDirty = false;
     }
     if (this._transformDirty) {

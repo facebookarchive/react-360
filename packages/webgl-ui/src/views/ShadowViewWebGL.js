@@ -280,6 +280,39 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     }
   }
 
+  __setStyle_gradientColorA(color: ?number | string) {
+    if (color == null) {
+      color = 0xff000000;
+    }
+    const colorNumber = typeof color === 'number' ? color : colorStringToARGB(color);
+    this.view.setGradientStart(colorNumber);
+  }
+
+  __setStyle_gradientColorB(color: ?number | string) {
+    if (color == null) {
+      color = 0xff000000;
+    }
+    const colorNumber = typeof color === 'number' ? color : colorStringToARGB(color);
+    this.view.setGradientEnd(colorNumber);
+  }
+
+  __setStyle_gradientAngle(angle: ?string) {
+    if (angle == null) {
+      angle = '0deg';
+    }
+    let rad = 0;
+    if (angle.endsWith('rad')) {
+      rad = Number(angle.substr(0, angle.length - 3));
+    } else if (angle.endsWith('deg')) {
+      const deg = Number(angle.substr(0, angle.length - 3));
+      rad = (deg * Math.PI) / 180;
+    }
+    if (isNaN(rad)) {
+      rad = 0;
+    }
+    this.view.setGradientAngle(rad);
+  }
+
   __setStyle_layoutOrigin(origin: [number, number]) {
     this._layoutOrigin[0] = origin[0];
     this._layoutOrigin[1] = origin[1];

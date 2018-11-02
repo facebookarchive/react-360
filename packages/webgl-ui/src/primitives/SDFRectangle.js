@@ -44,6 +44,10 @@ uniform float u_stroke;
 uniform vec4 u_bgcolor;
 uniform vec4 u_bordercolor;
 uniform float u_opacity;
+uniform vec4 u_gradientstart;
+uniform vec4 u_gradientend;
+uniform vec2 u_gradientunit;
+uniform float u_gradientlength;
 
 varying vec2 v_position;
 varying vec2 v_center;
@@ -65,6 +69,15 @@ void main() {
   #else
   vec4 sample = u_bgcolor;
   #endif
+
+  // Project the position onto the gradient unit vector, and scale it
+  float grad_distance = dot(v_position, u_gradientunit) / u_gradientlength;
+  vec4 grad_color = mix(u_gradientstart, u_gradientend, grad_distance + 0.5);
+  float alpha = clamp(sample.a + grad_color.a, 0., 1.);
+  // Blend the gradient color into the underlying bg color or image
+  sample.rgb = mix(sample.rgb, grad_color.rgb, grad_color.a / alpha);
+  sample.a = alpha;
+
   vec4 color = mix(sample, u_bordercolor, clamp(dist + u_stroke, 0., 1.));
   float opacity = clamp(0.6 - dist, 0., 1.);
   gl_FragColor = vec4(color.rgb, color.a * opacity * u_opacity);

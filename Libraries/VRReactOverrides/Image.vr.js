@@ -12,6 +12,7 @@
 'use strict';
 
 const NativeMethodsMixin = require('NativeMethodsMixin');
+const ColorPropType = require('ColorPropType');
 const ImageResizeMode = require('ImageResizeMode');
 const ImageStylePropTypes = require('ImageStylePropTypes');
 const PropTypes = require('prop-types');
@@ -52,7 +53,12 @@ const resolveAssetSource = require('resolveAssetSource');
 const Image = createReactClass({
   propTypes: {
     ...View.propTypes,
-    style: StyleSheetPropType(ImageStylePropTypes),
+    style: StyleSheetPropType({
+      ...ImageStylePropTypes,
+      gradientColorA: ColorPropType,
+      gradientColorB: ColorPropType,
+      gradientAngle: PropTypes.string,
+    }),
     /**
      * `uri` is a string representing the resource identifier for the image, which
      * could be an http address, a local file path, or a static image
