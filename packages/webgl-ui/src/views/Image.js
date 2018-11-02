@@ -13,6 +13,7 @@
 
 import GLTexturedView, {type ResizeMode} from '../primitives/GLTexturedView';
 import TextureManager from '../TextureManager';
+import colorStringToARGB from '../colorStringToARGB';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import type {Dispatcher} from './ShadowView';
 
@@ -42,6 +43,11 @@ export default class RCTImage extends ShadowViewWebGL<GLTexturedView> {
 
   __setStyle_resizeMode(mode: ResizeMode) {
     this.view.setBackgroundResizeMode(mode);
+  }
+
+  __setStyle_tintColor(color: number | string) {
+    const colorNumber = typeof color === 'number' ? color : colorStringToARGB(color);
+    this.view.setTintColor(colorNumber);
   }
 
   static registerBindings(dispatch: Dispatcher) {

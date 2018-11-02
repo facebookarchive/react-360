@@ -17,6 +17,7 @@ import * as Flexbox from '../vendor/Yoga.bundle';
 import type {Transform} from '../Math';
 import type FontGeometry from '../text/FontGeometry';
 import type {TextImplementation} from '../text/TextTypes';
+import colorStringToARGB from '../colorStringToARGB';
 import ShadowViewWebGL from './ShadowViewWebGL';
 import RawText from './RawText';
 
@@ -71,8 +72,9 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this._text.getNode().material.uniforms.u_transform.value.fromArray(transform);
   }
 
-  __setStyle_color(color: number) {
-    this._textColor = color;
+  __setStyle_color(color: number | string) {
+    const colorNumber = typeof color === 'number' ? color : colorStringToARGB(color);
+    this._textColor = colorNumber;
     this._textDirty = true;
   }
 

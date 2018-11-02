@@ -16,6 +16,7 @@ import type {Transform} from '../Math';
 import * as Flexbox from '../vendor/Yoga.bundle';
 import ShadowView, {type Dispatcher} from './ShadowView';
 import recursiveLayout from '../recursiveLayout';
+import colorStringToARGB from '../colorStringToARGB';
 
 type LayoutHook = (number, {height: number, width: number, x: number, y: number}) => mixed;
 
@@ -214,11 +215,12 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
 
   /* style setters */
 
-  __setStyle_backgroundColor(color: ?number) {
+  __setStyle_backgroundColor(color: ?number | string) {
     if (color == null) {
       color = 0;
     }
-    this.view.setBackgroundColor(color);
+    const colorNumber = typeof color === 'number' ? color : colorStringToARGB(color);
+    this.view.setBackgroundColor(colorNumber);
   }
 
   __setStyle_borderBottomLeftRadius(radius: ?number) {
@@ -237,11 +239,12 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     this._borderRadiusDirty = true;
   }
 
-  __setStyle_borderColor(color: ?number) {
+  __setStyle_borderColor(color: ?number | string) {
     if (color == null) {
       color = 0xff000000;
     }
-    this.view.setBorderColor(color);
+    const colorNumber = typeof color === 'number' ? color : colorStringToARGB(color);
+    this.view.setBorderColor(colorNumber);
   }
 
   __setStyle_borderRadius(radius: ?number) {

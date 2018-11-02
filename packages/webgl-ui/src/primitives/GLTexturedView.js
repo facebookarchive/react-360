@@ -228,6 +228,8 @@ export default class GLTexturedView extends GLView {
       this.update();
     }
   }
+
+  setTintColor(color: number) {}
 }
 (GLTexturedView: any).POSITION_STRIDE = 7;
 (GLTexturedView: any).MAX_BUFFER_SIZE = 40 * 7;
