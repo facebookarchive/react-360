@@ -129,6 +129,7 @@ export default class ReactInstance {
     } else {
       this._cameraQuat = [0, 0, 0, 1];
     }
+    this._initCameraQuat = Object.assign({}, this._cameraQuat);
     this._events = [];
     this._needsResize = false;
     this._parent = parent;
@@ -143,17 +144,15 @@ export default class ReactInstance {
     this._focused2DSurface = null;
     this._frameHook = options.frame;
     if (options.fullScreen) {
-      parent.style.position = 'fixed';
+      parent.style.position = 'absolute';
       parent.style.top = '0';
       parent.style.left = '0';
       parent.style.margin = '0';
       parent.style.padding = '0';
       parent.style.width = '100%';
-      parent.style.height = `${window.innerHeight}px`;
+      parent.style.height = `100%`;
       window.addEventListener('resize', this._onResize);
-
     }
-
 
     this._eventLayer = document.createElement('div');
     this._eventLayer.style.width = `${parent.clientWidth}px`;
@@ -161,7 +160,9 @@ export default class ReactInstance {
     parent.appendChild(this._eventLayer);
     this.scene = new THREE.Scene();
     this.controls = new Controls();
-    this.overlay = options.customOverlay || new Overlay(parent);
+    this.overlay = options.customOverlay || new Overlay(parent, () => {
+      this._cameraQuat = Object.assign({}, this._initCameraQuat);
+    });
 
     this.compositor = new Compositor(this._eventLayer, this.scene, options);
     if (options.eventLayer) {
@@ -267,9 +268,9 @@ export default class ReactInstance {
     this._lastFrameTime = frameStart;
 
     if (this._needsResize) {
-      const height = window.innerHeight;
+      const height = this._parent.clientHeight;
       const width = this._parent.clientWidth;
-      this._parent.style.height = `${height}px`;
+      // this._parent.style.height = `${height}px`;
       this.resize(width, height);
       this._needsResize = false;
     }
@@ -595,7 +596,7 @@ export default class ReactInstance {
   /**
    * set the current cameta rotation via Euler params
    */
-  setCameraRotation (orientation: Array<Number>) {
+  setCameraRotation(orientation: Array<Number>) {
     if (orientation) {
       const newEuler = new THREE.Euler(...orientation);
       const quat = new THREE.Quaternion();
