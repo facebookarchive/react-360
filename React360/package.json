@@ -18,6 +18,7 @@
     "README.md"
   ],
   "dependencies": {
+    "eventemitter3": "3.1.0",
     "three-gltf2-loader": "~1.2.0"
   }
 }
