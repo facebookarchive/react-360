@@ -36,7 +36,6 @@ export default class VRState {
     (this: any).onDisplayConnect = this.onDisplayConnect.bind(this);
     (this: any).onDisplayDisconnect = this.onDisplayDisconnect.bind(this);
     (this: any).onDisplayPresentChange = this.onDisplayPresentChange.bind(this);
-
     // Listen for headsets that connect / disconnect after the page has loaded
     window.addEventListener('vrdisplayconnect', this.onDisplayConnect);
     window.addEventListener('vrdisplaydisconnect', this.onDisplayDisconnect);
@@ -45,14 +44,16 @@ export default class VRState {
       'vrdisplaypresentchange',
       this.onDisplayPresentChange,
     );
-
     if (typeof navigator.getVRDisplays === 'function') {
       navigator.getVRDisplays().then(displays => {
         if (displays.length) {
           this.setCurrentDisplay(displays[0]);
+        } else if (displays.length === 0) {
+          const effect = new MobileVREffect(this.glRenderer);
+          this.setCurrentDisplay(effect)
         }
       });
-    } else if (isVRBrowser) {
+    } else {
       const effect = new MobileVREffect(this.glRenderer);
       this.setCurrentDisplay(effect)
     }

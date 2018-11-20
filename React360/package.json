@@ -17,6 +17,7 @@
     "README.md"
   ],
   "dependencies": {
+    "ismobilejs": "^0.5.1",
     "three-gltf2-loader": "~1.2.0"
   }
 }

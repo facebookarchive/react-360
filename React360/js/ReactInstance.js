@@ -30,6 +30,7 @@ import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import type ReactExecutor from './Executor/ReactExecutor';
+import { isMobileBrowser } from './Utils/util';
 // import AudioModule from './Modules/AudioModule';
 // import EnvironmentModule from './Modules/EnvironmentModule';
 // import VideoModule from './Modules/VideoModule';
@@ -135,7 +136,7 @@ export default class ReactInstance {
     this._parent = parent;
     this._rays = [];
     this._frameData = null;
-    if ('VRFrameData' in window) {
+    if ('VRFrameData' in window && !isMobileBrowser()) {
       this._frameData = new VRFrameData();
     }
     this._looping = false;
@@ -152,6 +153,7 @@ export default class ReactInstance {
       parent.style.width = '100%';
       parent.style.height = `100%`;
       window.addEventListener('resize', this._onResize);
+
     }
 
     this._eventLayer = document.createElement('div');

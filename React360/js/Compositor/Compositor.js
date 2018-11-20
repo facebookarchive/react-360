@@ -160,12 +160,14 @@ export default class Compositor {
     }
     this._renderer.setPixelRatio(pixelRatio);
     this._renderer.setSize(width, height, false);
+
   }
 
   resizeCanvas(width: number, height: number) {
     this._camera.aspect = width / height;
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(width, height, true);
+    this._renderer.setViewport(0, 0, width, height);
   }
 
   prepareForRender(eye: ?string) {
