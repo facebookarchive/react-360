@@ -11,6 +11,7 @@
 
 import { type Quaternion } from '../Controls/Types';
 import { createCompassGlyph, createViewInVrGlyph } from './Glyphs';
+import { isMobileBrowser } from '../Utils/util';
 
 type Handler = () => mixed;
 
@@ -154,7 +155,7 @@ export default class Overlay implements OverlayInterface {
   }
 
   setVRButtonState(visible: boolean, text: string, handler: ?Handler) {
-    if (visible) {
+    if (visible && !isMobileBrowser()) {
       this.enableVRButton();
     } else {
       this.disableVRButton();

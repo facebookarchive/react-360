@@ -166,8 +166,9 @@ export default class Compositor {
   resizeCanvas(width: number, height: number) {
     this._camera.aspect = width / height;
     this._camera.updateProjectionMatrix();
-    this._renderer.setSize(width, height, true);
     this._renderer.setViewport(0, 0, width, height);
+    this._renderer.setSize(width, height, true);
+
   }
 
   prepareForRender(eye: ?string) {
