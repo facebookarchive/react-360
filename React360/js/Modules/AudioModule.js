@@ -180,6 +180,28 @@ export default class AudioModule extends Module {
   }
 
   /**
+   * Pause an audio track. It can be resumed by calling `play` again
+   */
+  pause(handle: string) {
+    const audio = this._handles[handle];
+    if (!audio) {
+      return;
+    }
+    audio.pause();
+  }
+
+  /**
+   * Move an audio track to a specific position, in seconds
+   */
+  seek(handle: string, time: number) {
+    const audio = this._handles[handle];
+    if (!audio) {
+      return;
+    }
+    audio.seekTo(time);
+  }
+
+  /**
    * Stop playback of environment sound
    */
   stopEnvironmental() {

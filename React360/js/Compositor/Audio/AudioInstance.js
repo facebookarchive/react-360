@@ -79,6 +79,20 @@ export default class AudioInstance {
     }
   }
 
+  pause() {
+    if (this._node) {
+      this._node.pause();
+    } else {
+      this._autoPlay = false;
+    }
+  }
+
+  seekTo(time: number) {
+    if (this._node) {
+      this._node.seekTo(time);
+    }
+  }
+
   frame(ms: number) {
     if (this._node && this._transition !== 0) {
       const node = this._node;
