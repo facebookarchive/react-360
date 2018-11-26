@@ -304,7 +304,15 @@ export default class Runtime {
     if (surfaceHits.length === 0) {
       return null;
     }
-    return surfaceHits[surfaceHits.length - 1];
+    for (let i = surfaceHits.length - 1; i >= 0; i--) {
+      const hit = surfaceHits[i];
+      if (hit.object && typeof hit.object.shouldAcceptHitEvent === 'function') {
+        if (!hit.object.shouldAcceptHitEvent()) {
+          continue;
+        }
+      }
+      return hit;
+    }
   }
 
   setIntersection(hit: ?Object, ray: Ray, onSurface?: boolean) {
@@ -314,6 +322,9 @@ export default class Runtime {
     }
     if (hit) {
       this.guiSys.updateLastHit(hit.object, ray.type);
+      if (hit.object.shouldAcceptHitEvent && hit.object.shouldAcceptHitEvent()) {
+        this.guiSys.setLastLocalIntersect(hit.uv.x, hit.uv.y);
+      }
       this.guiSys._cursor.intersectDistance = hit.distance;
     } else {
       this.guiSys.updateLastHit(null, ray.type);

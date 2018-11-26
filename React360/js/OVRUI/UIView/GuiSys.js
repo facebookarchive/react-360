@@ -816,6 +816,11 @@ export default class GuiSys {
     this._raycasters = raycasters;
   }
 
+  setLastLocalIntersect(x, y) {
+    this._cursor.lastLocalX = x;
+    this._cursor.lastLocalY = y;
+  }
+
   getLastLocalIntersect() {
     if (this._cursor.lastLocalX === null || this._cursor.lastLocalY === null) {
       return null;
