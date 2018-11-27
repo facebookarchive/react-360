@@ -6,6 +6,10 @@
 .*/website/.*
 .*/__tests__/.*
 <PROJECT_ROOT>/node_modules/.*
+<PROJECT_ROOT>/packages/react-webgl/.*
+<PROJECT_ROOT>/packages/react-webgl-video-manager/.*
+<PROJECT_ROOT>/packages/webgl-lite/.*
+<PROJECT_ROOT>/packages/webgl-ui/.*
 
 [include]
 

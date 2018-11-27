@@ -15,4 +15,4 @@
  * Singular entry point for Flexbox implementation, so that the backing
  * library can be switched out as needed.
  */
-module.exports = require('webgl-ui').Flexbox;
+module.exports = require('../Utils/Yoga.bundle');

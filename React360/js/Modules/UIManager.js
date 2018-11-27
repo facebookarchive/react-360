@@ -34,8 +34,6 @@ import RCTCylindricalPanel from '../Views/CylindricalPanel';
 import RCTQuadPanel from '../Views/QuadPanel';
 import RCTPrefetch from '../Views/Prefetch';
 
-import {ViewGL, ImageGL, ShadowView, ShadowViewWebGL, type Dispatcher} from 'webgl-ui';
-
 import Module from './Module';
 import * as THREE from 'three';
 import * as SDFFont from '../OVRUI/SDFFont/SDFFont';
@@ -160,17 +158,12 @@ export default class UIManager extends Module {
     this._viewsOfType = {};
     this._viewDispatchers = {};
     this._layoutAnimation = null;
-    if (flags.useNewViews) {
-      this.registerGLViewType('RCTView', (dispatch: Dispatcher) => ViewGL.registerBindings(dispatch), () => new ViewGL());
-      this.registerGLViewType('RCTImageView', (dispatch: Dispatcher) => ImageGL.registerBindings(dispatch), () => new ImageGL());
-    } else {
-      this.registerViewType('RCTView', RCTView.describe(), () => {
-        return new RCTView(guiSys);
-      });
-      this.registerViewType('RCTImageView', RCTImage.describe(), () => {
-        return new RCTImage(guiSys, rnctx);
-      });
-    }
+    this.registerViewType('RCTView', RCTView.describe(), () => {
+      return new RCTView(guiSys);
+    });
+    this.registerViewType('RCTImageView', RCTImage.describe(), () => {
+      return new RCTImage(guiSys, rnctx);
+    });
     this.registerViewType('LiveEnvCamera', RCTLiveEnvCamera.describe(), () => {
       return new RCTLiveEnvCamera(guiSys);
     });
@@ -425,19 +418,6 @@ export default class UIManager extends Module {
     this._viewsOfType[name] = {};
   }
 
-  registerGLViewType(name: string, registerBindings: Dispatcher => void, viewCreator: (...any) => ShadowViewWebGL<any>) {
-    const dispatch = {};
-    registerBindings(dispatch);
-    this._viewDispatchers[name] = dispatch;
-    const NativeProps = {};
-    for (const key in dispatch) {
-      NativeProps[key] = true;
-    }
-    (this: any)[name] = {NativeProps};
-    this._viewCreator[name] = viewCreator;
-    this._viewsOfType[name] = {};
-  }
-
   /**
    * applies the attributes in the attr object to the view
    * @param tag - react tag id
@@ -446,46 +426,31 @@ export default class UIManager extends Module {
    */
   updateView(tag: number, type: string, attr: Attributes) {
     const view = this._views[String(tag)];
-    if (view instanceof ShadowView) {
-      const dispatchers = this._viewDispatchers[type];
-      for (const a in attr) {
-        const dispatcher = dispatchers[a];
-        if (dispatcher) {
-          dispatcher.call(view, attr[a]);
-        } else {
-          const styleSetter = (view: any)[`__setStyle_${a}`];
-          if (typeof styleSetter === 'function') {
-            styleSetter.call(view, attr[a]);
-          }
-        }
-      }
-    } else {
-      let forceLayout = false;
-      for (const a in attr) {
-        // use the declaration of the NativeProps to determine if this
-        // attribute is a style type or property
-        if ((this: any)[type] && (this: any)[type].NativeProps[a]) {
-          view.props[a] = attr[a];
-        } else {
+    let forceLayout = false;
+    for (const a in attr) {
+      // use the declaration of the NativeProps to determine if this
+      // attribute is a style type or property
+      if ((this: any)[type] && (this: any)[type].NativeProps[a]) {
+        view.props[a] = attr[a];
+      } else {
+        /* $FlowFixMe */
+        if (typeof view[`_${a}`] === 'function') {
           /* $FlowFixMe */
-          if (typeof view[`_${a}`] === 'function') {
-            /* $FlowFixMe */
-            view[`_${a}`](attr[a]);
-          } else {
-            view.style[a] = attr[a];
-          }
-          // check attribute is not in black list before forcing layout
-          forceLayout = forceLayout || !STYLES_THAT_DONT_ALTER_LAYOUT[a];
+          view[`_${a}`](attr[a]);
+        } else {
+          view.style[a] = attr[a];
         }
+        // check attribute is not in black list before forcing layout
+        forceLayout = forceLayout || !STYLES_THAT_DONT_ALTER_LAYOUT[a];
       }
-      // force a layout if any layout styles are applied
-      if (forceLayout) {
-        view.makeDirty();
-      }
-      // call update of view if required
-      if (typeof view.updateView === 'function') {
-        view.updateView();
-      }
+    }
+    // force a layout if any layout styles are applied
+    if (forceLayout) {
+      view.makeDirty();
+    }
+    // call update of view if required
+    if (typeof view.updateView === 'function') {
+      view.updateView();
     }
   }
 
@@ -528,11 +493,7 @@ export default class UIManager extends Module {
       view.inSurfaceContext = true;
     }
     this._rootViews[String(tag)] = view;
-    if (view instanceof ShadowViewWebGL) {
-      this._guiSys.add(view.view.getNode(), container);
-    } else {
-      this._guiSys.add(view.view, container);
-    }
+    this._guiSys.add(view.view, container);
   }
 
   /**

@@ -9,12 +9,9 @@
  * @flow
  */
 
-import {Math as GLMath} from 'webgl-ui';
-
+import {rotateByQuaternion} from '../../Utils/Math';
 import {type Quaternion, type Vec3} from '../Types';
 import {type Raycaster} from './Types';
-
-const {rotateByQuaternion} = GLMath;
 
 const TYPE = 'controller';
 

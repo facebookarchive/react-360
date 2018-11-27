@@ -36,10 +36,8 @@ import VideoModule from './Modules/VideoModule';
 import type Module from './Modules/Module';
 import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
-import {Math as GLMath, type TextImplementation} from 'webgl-ui';
+import {rotateByQuaternion} from './Utils/Math';
 import EventEmitter from 'eventemitter3';
-
-const {rotateByQuaternion} = GLMath;
 
 type Root = {
   initialProps: Object,
@@ -71,8 +69,6 @@ export type React360Options = {
   frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
-  textImplementation?: TextImplementation,
-  useNewViews?: boolean,
 };
 
 export type React360Event = {
@@ -185,8 +181,6 @@ export default class ReactInstance {
         },
         ...(options.nativeModules || []),
       ],
-      textImplementation: options.textImplementation,
-      useNewViews: options.useNewViews,
     };
     this.runtime = new Runtime(this.scene, bundleFromLocation(bundle), runtimeOptions);
 

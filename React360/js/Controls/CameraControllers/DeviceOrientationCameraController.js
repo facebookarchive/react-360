@@ -9,17 +9,16 @@
  * @flow
  */
 
-import {Math as GLMath} from 'webgl-ui';
-import {type Quaternion, type Vec3} from '../Types';
-import {type CameraController} from './Types';
-const {
+import {
   quaternionMultiply,
   quaternionPremultiply,
   setQuatFromEuler,
   setQuatFromXRotation,
   setQuatFromYRotation,
   setQuatFromZRotation,
-} = GLMath;
+} from '../../Utils/Math';
+import {type Quaternion, type Vec3} from '../Types';
+import {type CameraController} from './Types';
 
 const DEFAULT_FOV = Math.PI / 6;
 const DEG_TO_RAD = Math.PI / 180;
