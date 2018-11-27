@@ -48,7 +48,7 @@ export type RuntimeOptions = {
 
 const raycaster = new THREE.Raycaster();
 function intersectObject(object: Object, ray: THREE.Raycaster, intersects: Array<Object>) {
-  if (object.visible === false) {
+  if (object.visible === false || object.raycastDisabled === true) {
     return;
   }
   object.raycast(ray, intersects);

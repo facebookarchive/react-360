@@ -13,6 +13,10 @@ import * as THREE from 'three';
 import type {TextureMetadata} from './Types';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
 
+class ScreenMesh extends THREE.Mesh {
+  raycastDisabled: boolean = true;
+};
+
 export default class Screen {
   _attachedSurface: string;
   _screenEyeOffsets: Array<[number, number, number, number]>;
@@ -29,7 +33,7 @@ export default class Screen {
     });
     this._screenMaterial.useUV = 1;
     this._screenGeometry = new THREE.PlaneBufferGeometry(1, 1);
-    this._screenNode = new THREE.Mesh(this._screenGeometry, this._screenMaterial);
+    this._screenNode = new ScreenMesh(this._screenGeometry, this._screenMaterial);
     this._screenNode.visible = false;
     this._screenSource = null;
     this._screenEyeOffsets = [[0, 0, 1, 1]];
