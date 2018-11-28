@@ -61,10 +61,6 @@ class InfoButton extends React.Component {
   _click = () => {
     // input handling
     this.props.onClick && this.props.onClick();
-    // playing one shot audio
-    AudioModule.playOneShot({
-      source: CLICK_SOUND,
-    });
   };
 
   render() {
@@ -79,6 +75,10 @@ class InfoButton extends React.Component {
           onClick={this._click} //this event trigger when click the view
           onExit={this._blur} //this event trigger when cursor move out of the view
           onEnter={this._focus} //this event trigger when cursor move into of the view
+          onClickSound={CLICK_SOUND}
+          onEnterSound={CLICK_SOUND}
+          onExitSound={CLICK_SOUND}
+          onLongClickSound={CLICK_SOUND}
           >
           <Animated.View
             style={[
@@ -93,7 +93,7 @@ class InfoButton extends React.Component {
                   outputRange: [this.props.width, this.props.width * FOCUS_SCALE],
                 }),
               }]}>
-              <Image 
+              <Image
                 style={styles.icon}
                 source={this.props.source} />
               <Text style={styles.text}>

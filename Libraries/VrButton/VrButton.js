@@ -19,7 +19,7 @@ const View = require('View');
 const BatchedBridge = require('BatchedBridge');
 const StyleSheetPropType = require('StyleSheetPropType');
 const ViewStylePropTypes = require('ViewStylePropTypes');
-const VrSoundEffects = require('VrSoundEffects');
+const AudioModule = require('NativeModules').AudioModule;
 
 const keyMirror = require('fbjs/lib/keyMirror');
 
@@ -364,7 +364,7 @@ class VrButton extends React.Component {
     for (const name of SOUND_PROP_NAMES) {
       const resource = this.props[name];
       if (resource) {
-        VrSoundEffects.load(resource);
+        AudioModule.load(resource, () => {});
       }
     }
     if (__DEV__) {
@@ -380,13 +380,13 @@ class VrButton extends React.Component {
     this._ensureDisableState(nextProps);
     // Cache any new sounds.
     for (const name of SOUND_PROP_NAMES) {
-      const resource = VrSoundEffects.getSupportedResource(this.props[name]);
-      const nextResource = VrSoundEffects.getSupportedResource(nextProps[name]);
+      const resource = this.props[name];
+      const nextResource = nextProps[name];
       const uri = resource ? resource.uri : null;
       const nextUri = nextResource ? nextResource.uri : null;
       if (uri !== nextUri) {
-        nextResource && VrSoundEffects.load(nextResource);
-        resource && VrSoundEffects.unload(resource);
+        nextResource && AudioModule.load(nextResource, () => {});
+        resource && AudioModule.unload(resource);
       }
     }
   }
@@ -397,7 +397,7 @@ class VrButton extends React.Component {
     for (const name of SOUND_PROP_NAMES) {
       const resource = this.props[name];
       if (resource) {
-        VrSoundEffects.unload(resource);
+        AudioModule.unload(resource);
       }
     }
   }
@@ -453,7 +453,7 @@ class VrButton extends React.Component {
     }
 
     if (this.props.onEnterSound && shouldPlaySound(event)) {
-      VrSoundEffects.play(this.props.onEnterSound);
+      AudioModule.playOneShot({source: this.props.onEnterSound});
     }
     this.props.onEnter && this.props.onEnter(event);
   };
@@ -466,7 +466,7 @@ class VrButton extends React.Component {
     }
 
     if (this.props.onExitSound && shouldPlaySound(event)) {
-      VrSoundEffects.play(this.props.onExitSound);
+      AudioModule.playOneShot({source: this.props.onExitSound});
     }
     this.props.onExit && this.props.onExit(event);
   };
@@ -516,7 +516,7 @@ class VrButton extends React.Component {
       signal === Signals.KEY_PRESSED
     ) {
       if (this.props.onDisableClickSound && shouldPlaySound(event)) {
-        VrSoundEffects.play(this.props.onDisableClickSound);
+        AudioModule.playOneShot({source: this.props.onDisableClickSound});
       }
     }
   };
@@ -561,13 +561,13 @@ class VrButton extends React.Component {
       ) {
         if (!this.props.ignoreLongClick) {
           if (this.props.onLongClickSound) {
-            VrSoundEffects.play(this.props.onLongClickSound);
+            AudioModule.playOneShot({source: this.props.onLongClickSound});
           }
           this.props.onLongClick(event);
         }
       } else {
         if (this.props.onClickSound && shouldPlaySound(event)) {
-          VrSoundEffects.play(this.props.onClickSound);
+          AudioModule.playOneShot({source: this.props.onClickSound});
         }
         this.props.onClick && this.props.onClick(event);
       }

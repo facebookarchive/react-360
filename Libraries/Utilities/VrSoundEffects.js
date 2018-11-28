@@ -47,30 +47,38 @@ export function getSupportedResource(formats: MultiFormatResource | Resource): ?
 /**
  * Load the given audio resource. Audio clips must be loaded before playing.
  */
-export function load(formats: MultiFormatResource | Resource) {
+export function load(formats: MultiFormatResource | Resource,
+  onReady: () => void = undefined) {
   const resource = getSupportedResource(formats);
   if (!resource || !resource.uri) {
     console.warn(
-      "VrSoundEffects.load(resource) expected resource in format {url: 'http'}, got:",
+      "VrSoundEffects.load(resource) expected resource in format {uri: 'http'}, got:",
       resource
     );
     return;
   }
   const url = resource.uri;
-  const sound = {
-    handle: url,
-    src: url,
-    config: {},
-  };
   if (loadedSounds[url]) {
     loadedSoundsRefs[url] += 1;
+    onReady && onReady();
   } else {
+    const sound = {
+      handle: url,
+      options: {
+        source: url,
+      },
+      ready: false,
+    };
     loadedSoundsRefs[url] = 1;
     loadedSounds[url] = sound;
-    loadedSounds[url].ready = false;
-    AudioModule.addHandle(url, sound.config);
-    AudioModule.setUrl(url, sound.src);
-    AudioModule.load(url);
+
+    AudioModule.createAudio(url, {source: url});
+    AudioModule.load(url, () => {
+      if (loadedSounds[url]) {
+        loadedSounds[url].ready = true;
+      }
+      onReady && onReady();
+    });
   }
 }
 
@@ -96,6 +104,27 @@ export function play(formats: MultiFormatResource | Resource) {
 }
 
 /**
+ * Play an "one shot" audio resource indicated by the handle. Resource must have
+ * previously been loaded.
+ */
+export function playOneShot(formats: MultiFormatResource | Resource) {
+  const resource = getSupportedResource(formats);
+  if (!resource || !resource.uri) {
+    console.warn(
+      "VrSoundEffects.load(resource) expected resource in format {url: 'http'}, got:",
+      resource
+    );
+    return;
+  }
+  const url = resource.uri;
+  if (!loadedSounds[url] || !loadedSounds[url].ready) {
+    console.warn('VrSoundEffects: must load sound before playing', url);
+    return;
+  }
+  AudioModule.playOneShot({source: url});
+}
+
+/**
  * Adjust the volume for this sound.
  */
 export function volume(formats: MultiFormatResource | Resource, volume: number) {
@@ -109,7 +138,7 @@ export function volume(formats: MultiFormatResource | Resource, volume: number) 
     console.warn('VrSoundEffects: volume cannot be negative', volume);
     return;
   }
-  AudioModule.setVolume(url, volume);
+  AudioModule.setParams(url, {volume: volume, fadeTime: 0.0});
 }
 
 /**
@@ -127,11 +156,3 @@ export function unload(formats: MultiFormatResource | Resource, volume: number) 
     }
   }
 }
-
-function _onAudioCanPlay(handle) {
-  if (loadedSounds[handle]) {
-    loadedSounds[handle].ready = true;
-  }
-}
-
-RCTDeviceEventEmitter.addListener('onAudioCanPlay', _onAudioCanPlay);
