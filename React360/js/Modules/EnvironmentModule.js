@@ -42,12 +42,13 @@ type PhotoSceneDef = {
   ...SceneScreenDef,
   force2D: boolean,
   stereo?: VideoStereoFormat,
-  transform?: Array<number>,
+  rotateTransform?: Array<number>,
   type: 'photo',
   url: string,
 };
 type VideoSceneDef = {
   ...SceneScreenDef,
+  rotateTransform?: Array<number>,
   player: string,
   type: 'video',
 };
@@ -84,6 +85,7 @@ export default class EnvironmentModule extends Module {
         format: scene.stereo, 
         transition: transition.transition,
         fadeLevel: transition.fadeLevel,
+        rotateTransform: scene.rotateTransform,
       });
       return;
     }
@@ -91,6 +93,7 @@ export default class EnvironmentModule extends Module {
       this._env.setVideoSource(scene.player, {
         transition: transition.transition,
         fadeLevel: transition.fadeLevel,
+        rotateTransform: scene.rotateTransform,
       });
     }
   }

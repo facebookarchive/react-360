@@ -23,6 +23,7 @@ export type PanoOptions = {
   format?: VideoStereoFormat,
   transition?: number,
   fadeLevel?: number,
+  rotateTransform?: Array<number>,
 };
 
 /**
@@ -54,6 +55,7 @@ export default class Environment {
   _panoLoad: ?Promise<TextureMetadata>;
   _panoMaterial: StereoBasicTextureMaterial;
   _panoMesh: THREE.Mesh;
+  _panoMeshQuat: THREE.Quaternion;
   _panoSource: ?string;
   _panoFade: Fader;
   _resourceManager: ?ResourceManager<Image>;
@@ -77,10 +79,11 @@ export default class Environment {
       side: THREE.DoubleSide,
     });
     this._panoMaterial.useUV = 0;
+    this._panoMeshQuat = new THREE.Quaternion();
     this._panoMesh = new THREE.Mesh(this._panoGeomSphere, this._panoMaterial);
     this._panoMesh.visible = false;
     this._panoMesh.scale.set(-1, 1, 1);
-    this._panoMesh.rotation.y = -Math.PI / 2;
+    this._applyPanoRotation();
     this._panoEyeOffsets = [[0, 0, 1, 1]];
     this._panoFade = new Fader();
     this._screens = {default: null};
@@ -88,7 +91,7 @@ export default class Environment {
 
   _setPanoGeometryToSphere() {
     this._panoMesh.geometry = this._panoGeomSphere;
-    this._panoMesh.rotation.y = -Math.PI / 2;
+    this._applyPanoRotation();
     this._panoMaterial.uniforms.arcOffset.value = 0;
     this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI / 2;
     this._panoMesh.needsUpdate = true;
@@ -96,7 +99,7 @@ export default class Environment {
 
   _setPanoGeometryToHemisphere() {
     this._panoMesh.geometry = this._panoGeomHemisphere;
-    this._panoMesh.rotation.y = Math.PI;
+    this._applyPanoRotation();
     this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
     this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI;
     this._panoMesh.needsUpdate = true;
@@ -194,7 +197,8 @@ export default class Environment {
     loader: ?Promise<TextureMetadata>,
     id: ?string,
     transitionTime: ?number,
-    targetFadeLevel: ?number
+    targetFadeLevel: ?number,
+    rotateTransform?: Array<number>
   ): Promise<void> {
     this._panoSource = id;
     const duration = typeof transitionTime === 'number' ? transitionTime : 500;
@@ -209,6 +213,7 @@ export default class Environment {
             return;
           }
           this._panoLoad.then(data => {
+            this._setRotateTransform(rotateTransform);
             this._panoFade.fadeImmediate({
               targetLevel: fadeLevel,
               duration: duration,
@@ -236,13 +241,50 @@ export default class Environment {
       this._resourceManager.removeReference(this._panoSource);
     }
     const loader = src ? this._loadImage(src, options) : null;
-    return this._setBackground(loader, src, options.transition, options.fadeLevel);
+    return this._setBackground(
+      loader,
+      src,
+      options.transition,
+      options.fadeLevel,
+      options.rotateTransform
+    );
   }
 
   setVideoSource(handle: string, options: PanoOptions = {}) {
     const player = this._videoPlayers ? this._videoPlayers.getPlayer(handle) : null;
     const loader = player ? player.load().then(data => ({...data, src: handle})) : null;
-    return this._setBackground(loader, handle, options.transition, options.fadeLevel);
+    return this._setBackground(
+      loader,
+      handle,
+      options.transition,
+      options.fadeLevel,
+      options.rotateTransform
+    );
+  }
+
+  _setRotateTransform(rotateTransform?: Array<number>) {
+    const quat = new THREE.Quaternion();
+    if (rotateTransform) {
+      const mat = new THREE.Matrix4();
+      mat.set.apply(mat, rotateTransform);
+      const pos = new THREE.Vector3();
+      const scale = new THREE.Vector3();
+      mat.decompose(pos, quat, scale);
+    }
+    this._panoMeshQuat = quat;
+    this._applyPanoRotation();
+    this._panoMesh.needsUpdate = true;
+  }
+
+  _applyPanoRotation() {
+    // specific yaw rotation offset to match geometry uv to pano definition
+    const yawOffset = this._panoMesh.geometry === this._panoGeomSphere ? -Math.PI / 2 : Math.PI;
+    this._panoMesh.rotation.setFromQuaternion(
+      new THREE.Quaternion()
+        .setFromEuler(new THREE.Euler(0, yawOffset, 0, 'YXZ'))
+        .premultiply(this._panoMeshQuat),
+      'YXZ'
+    );
   }
 
   prepareForRender(eye: ?string) {

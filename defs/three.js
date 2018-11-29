@@ -178,6 +178,10 @@ declare module 'three' {
     decompose(Vector3, Quaternion, Vector3): this;
     fromArray(Array<number> | $TypedArray): void;
     getInverse(matrix: Matrix4): Matrix4;
+    set(number, number, number, number,
+      number, number, number, number,
+      number, number, number, number,
+      number, number, number, number): this;
   }
 
   declare class Mesh extends Object3D {

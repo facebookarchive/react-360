@@ -11,13 +11,18 @@
  */
 
 import {EnvironmentModule} from 'NativeModules';
+import processTransform from 'processTransform';
 
 type Resource = string | {uri: string};
+
+type RotateTransform = {rotateX: string} | {rotateY: string}
+  | {rotateZ: string} | {rotate: string}
 
 export type EnvironmentOptions = {
   format?: string,
   transition?: number,
   fadeLevel?: number,
+  rotateTransform?: Array<RotateTransform>
 };
 
 export function clearBackground() {
@@ -26,12 +31,15 @@ export function clearBackground() {
 
 export function setBackgroundImage(
   url: Resource,
-  options: EnvironmentImageOptions = {},
+  options: EnvironmentOptions = {},
 ) {
   const scene: Object = {
     type: 'photo',
     url: typeof url === 'object' ? url.uri : url,
     stereo: options.format,
+    rotateTransform: options.rotateTransform
+        ? processTransform(options.rotateTransform)
+        : undefined,
   };
   const transition: Object = {
     transition: options.transition,
@@ -41,7 +49,13 @@ export function setBackgroundImage(
 }
 
 export function setBackgroundVideo(player: string, options: EnvironmentOptions = {}) {
-  const scene = {type: 'video', player};
+  const scene = {
+    type: 'video',
+    player: player,
+    rotateTransform: options.rotateTransform
+        ? processTransform(options.rotateTransform)
+        : undefined,
+  };
   const transition: Object = {
     transition: options.transition,
     fadeLevel: options.fadeLevel,
