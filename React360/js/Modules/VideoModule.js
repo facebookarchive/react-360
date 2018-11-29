@@ -12,12 +12,20 @@
 import {
   type VideoOptions,
   type VideoPlayOptions,
-  type VideoPlayer,
   type VideoStatusEvent,
 } from '../Compositor/Video/Types';
+import VideoPlayer from '../Compositor/Video/VideoPlayer';
 import type VideoPlayerManager from '../Compositor/Video/VideoPlayerManager';
 import Module from './Module';
 import type {ReactNativeContext} from '../ReactNativeContext';
+
+function getExt(url: string) {
+  const fileurl = url.substr(url.lastIndexOf("/") + 1);
+  return fileurl
+    .split('?')[0]
+    .split('#')[0]
+    .substr(fileurl.lastIndexOf('.') + 1);
+}
 
 export default class VideoModule extends Module {
   _rnctx: ReactNativeContext;
@@ -75,29 +83,34 @@ export default class VideoModule extends Module {
     }
     const {source, autoPlay, startPosition, ...params} = options;
     let url = null;
+    let fileFormat = null;
     if (Array.isArray(source)) {
       url = source[0].url;
-      const supported = (player.constructor: any).getSupportedFormats();
+      const supported = this._videoPlayers.getSupportedFormats();
       for (let i = 0; i < source.length; i++) {
         const sourceOption = source[i];
         const format =
           sourceOption.fileFormat ||
-          sourceOption.url.substr(sourceOption.url.lastIndexOf('.'));
-        if (supported.indexOf(format) > 0) {
+          getExt(sourceOption.url);
+        if (supported.indexOf(format) > -1) {
           url = sourceOption.url;
+          fileFormat = format;
           break;
         }
       }
     } else {
+      fileFormat =
+          source.fileFormat ||
+          getExt(source.url);
       url = source.url;
     }
-    if (!url) {
+    if (!url || !fileFormat) {
       throw new Error('Cannot play video, unsupported format');
     }
     this._applyParams(player, params);
-    const format = params.stereo || '2D';
+    const stereoFormat = params.stereo || '2D';
     const layout = params.layout || 'RECT';
-    player.setSource(url, format, layout);
+    player.setSource(url, stereoFormat, fileFormat, layout);
     if (startPosition) {
       player.seekTo(startPosition);
     }

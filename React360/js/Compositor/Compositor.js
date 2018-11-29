@@ -17,7 +17,9 @@ import Cursor from './Cursor';
 import Environment, {type PanoOptions} from './Environment/Environment';
 import Surface from './Surface';
 import SurfaceManager from './SurfaceManager';
-import type {VideoPlayer} from './Video/Types';
+import type {VideoPlayerImplementation} from './Video/Types';
+import VideoPlayer from './Video/VideoPlayer';
+import BrowserVideoPlayer from './Video/BrowserVideoPlayer';
 import VideoPlayerManager from './Video/VideoPlayerManager';
 
 const LEFT = 'left';
@@ -42,12 +44,22 @@ export default class Compositor {
   _resourceManager: ResourceManager<Image>;
   _videoPlayers: VideoPlayerManager;
 
-  constructor(frame: HTMLElement, scene: THREE.Scene) {
+  constructor(
+    frame: HTMLElement,
+    scene: THREE.Scene,
+    customVideoPlayers?: Array<Class<VideoPlayerImplementation>>
+  ) {
     this._frame = frame;
     this._cursorVisibility = 'auto';
     this._isMouseCursorActive = false;
     this._resourceManager = createRemoteImageManager();
     this._videoPlayers = new VideoPlayerManager();
+    if (customVideoPlayers) {
+      for (const player of customVideoPlayers) {
+        this._videoPlayers.registerPlayerImplementation(player);
+      }
+    }
+    this._videoPlayers.registerPlayerImplementation(BrowserVideoPlayer);
 
     this._camera = new THREE.PerspectiveCamera(
       60,

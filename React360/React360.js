@@ -16,11 +16,7 @@ import Module from './js/Modules/Module';
 import RCTBaseView from './js/Views/BaseView';
 import ReactInstance from './js/ReactInstance';
 import Surface from './js/Compositor/Surface';
-import {
-  BasicVideoPlayer,
-  addCustomizedVideoPlayer,
-  getSupportedFormats,
-} from './js/Video/OVRVideo';
+import BrowserVideoPlayer from './js/Compositor/Video/BrowserVideoPlayer';
 
 import {ReactNativeContext} from './js/ReactNativeContext';
 
@@ -32,6 +28,4 @@ export {RCTBaseView};
 export {ReactNativeContext};
 export {ReactInstance};
 export {Surface};
-export {BasicVideoPlayer};
-export {addCustomizedVideoPlayer};
-export {getSupportedFormats};
+export {BrowserVideoPlayer};

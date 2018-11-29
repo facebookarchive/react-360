@@ -9,24 +9,27 @@
  * @flow
  */
 
-import BrowserVideoPlayer from './BrowserVideoPlayer';
-import type {VideoPlayer} from './Types';
+import VideoPlayer from './VideoPlayer';
+import type {VideoPlayerImplementation} from './Types';
 
 /**
  * Simple utility class for organizing Video Players by their handle
  */
 export default class VideoPlayerManager {
   _players: {[handle: string]: VideoPlayer};
+  _playerImplementations: Array<Class<VideoPlayerImplementation>>;
+  _supportCache: ?Array<string> = null;
 
   constructor() {
     this._players = {};
+    this._playerImplementations = [];
   }
 
   createPlayer(handle: string) {
     if (this._players[handle]) {
       return this._players[handle];
     }
-    const player = new BrowserVideoPlayer();
+    const player = new VideoPlayer(this);
     this._players[handle] = player;
     return player;
   }
@@ -46,7 +49,42 @@ export default class VideoPlayerManager {
 
   frame() {
     for (const handle in this._players) {
-      this._players[handle].refreshTexture();
+      this._players[handle].update();
     }
+  }
+
+  registerPlayerImplementation(impl: Class<VideoPlayerImplementation>) {
+    this._playerImplementations.push(impl);
+  }
+
+  createPlayerImplementation(format: string) {
+    for (const Impl of this._playerImplementations) {
+      // $FlowFixMe - no support for statics
+      const supported = Impl.getSupportedFormats();
+      if (supported.indexOf(format) > -1) {
+        // $FlowFixMe - can't instantiate an interface
+        return new Impl();
+      }
+    }
+    throw new Error(`No registered player supports ${format} files.`);
+  }
+
+  getSupportedFormats() {
+    if (this._supportCache != null) {
+      return this._supportCache;
+    }
+
+    const supportCache = [];
+    for (const Impl of this._playerImplementations) {
+      // $FlowFixMe - no support for statics
+      const supported = Impl.getSupportedFormats();
+      for (const format of supported) {
+        if (supportCache.indexOf(format) < 0) {
+          supportCache.push(format);
+        }
+      }
+    }
+    this._supportCache = supportCache;
+    return supportCache;
   }
 }

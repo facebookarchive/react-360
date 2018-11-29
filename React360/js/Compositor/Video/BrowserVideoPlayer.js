@@ -12,7 +12,11 @@
 import * as THREE from 'three';
 
 import type {TextureMetadata} from '../Environment/Types';
-import type {VideoPlayer, VideoPlayerStatus, onVideoStatusChangedCallback} from './Types';
+import type {
+  VideoPlayerImplementation,
+  VideoPlayerStatus,
+  onVideoStatusChangedCallback,
+} from './Types';
 
 const FORMATS = {
   ogg: 'video/ogg; codecs="theora, vorbis"',
@@ -37,7 +41,7 @@ function fillSupportCache() {
  * Implements a video player interface using the browser's native video
  * playback abilities.
  */
-export default class BrowserVideoPlayer implements VideoPlayer {
+export default class BrowserVideoPlayer implements VideoPlayerImplementation {
   _element: HTMLVideoElement;
   _load: ?Promise<TextureMetadata>;
   _status: VideoPlayerStatus;
@@ -126,7 +130,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
     }
   };
 
-  setSource(src: string, format?: string, layout?: string) {
+  setSource(src: string, stereoFormat: string, fileFormat: string, layout?: string) {
     if (this._texture) {
       this._texture.dispose();
     }
@@ -153,7 +157,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
         this._texture = tex;
         this._updateStatus('ready');
         resolve({
-          format: format || '2D',
+          format: stereoFormat || '2D',
           layout: layout || 'RECT',
           height,
           src,
@@ -179,7 +183,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
     return this._load || Promise.reject(new Error('No source set'));
   }
 
-  refreshTexture() {
+  update() {
     if (this._texture && this._playing) {
       this._texture.needsUpdate = true;
     }

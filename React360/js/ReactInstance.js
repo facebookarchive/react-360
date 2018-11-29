@@ -16,6 +16,7 @@ import Location from './Compositor/Location';
 import type Surface from './Compositor/Surface';
 import Overlay, {type OverlayInterface} from './Compositor/Overlay';
 import VRState from './Compositor/VRState';
+import type {VideoPlayerImplementation} from './Compositor/Video/Types';
 import MousePanCameraController from './Controls/CameraControllers/MousePanCameraController';
 import ScrollPanCameraController from './Controls/CameraControllers/ScrollPanCameraController';
 import DeviceOrientationCameraController from './Controls/CameraControllers/DeviceOrientationCameraController';
@@ -69,6 +70,7 @@ export type React360Options = {
   frame?: number => mixed,
   fullScreen?: boolean,
   nativeModules?: Array<Module | NativeModuleInitializer>,
+  customVideoPlayers?: Array<Class<VideoPlayerImplementation>>,
 };
 
 export type React360Event = {
@@ -157,7 +159,7 @@ export default class ReactInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent);
 
-    this.compositor = new Compositor(this._eventLayer, this.scene);
+    this.compositor = new Compositor(this._eventLayer, this.scene, options.customVideoPlayers);
     let assetRoot = options.assetRoot || 'static_assets/';
     if (!assetRoot.endsWith('/')) {
       assetRoot += '/';
