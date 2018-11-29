@@ -12,10 +12,11 @@
 import * as THREE from 'three';
 import type {TextureMetadata} from './Types';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
+import {panoEyeOffsetsForStereoFormat} from './EnvironmentUtils';
 
 class ScreenMesh extends THREE.Mesh {
   raycastDisabled: boolean = true;
-};
+}
 
 export default class Screen {
   _attachedSurface: string;
@@ -70,17 +71,7 @@ export default class Screen {
     }
     this._screenNode.visible = true;
     this._screenMaterial.map = data.tex;
-    if (data.format === '3DTB') {
-      this._screenEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
-    } else if (data.format === '3DBT') {
-      this._screenEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
-    } else if (data.format === '3DLR') {
-      this._screenEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
-    } else if (data.format === '3DRL') {
-      this._screenEyeOffsets = [[0.5, 0, 0.5, 1], [0, 0, 0.5, 1]];
-    } else {
-      this._screenEyeOffsets = [[0, 0, 1, 1]];
-    }
+    this._screenEyeOffsets = panoEyeOffsetsForStereoFormat(data.format);
     this._screenMaterial.needsUpdate = true;
   }
 

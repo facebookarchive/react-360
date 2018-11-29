@@ -15,6 +15,8 @@ import type {VideoStereoFormat} from '../Video/Types';
 import type VideoPlayerManager from '../Video/VideoPlayerManager';
 import type SurfaceManager from '../SurfaceManager';
 import StereoBasicTextureMaterial from './StereoBasicTextureMaterial';
+import CubemapGeometry from './CubemapGeometry';
+import {panoEyeOffsetsForStereoFormat} from './EnvironmentUtils';
 import type {TextureMetadata} from './Types';
 import Fader from '../../Utils/Fader';
 import Screen from './Screen';
@@ -52,6 +54,7 @@ export default class Environment {
   _panoEyeOffsets: Array<[number, number, number, number]>;
   _panoGeomHemisphere: THREE.Geometry;
   _panoGeomSphere: THREE.Geometry;
+  _panoGeomCube: THREE.Geometry;
   _panoLoad: ?Promise<TextureMetadata>;
   _panoMaterial: StereoBasicTextureMaterial;
   _panoMesh: THREE.Mesh;
@@ -74,6 +77,7 @@ export default class Environment {
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
     this._panoGeomHemisphere = new THREE.SphereGeometry(1000, 16, 16, 0, Math.PI);
+    this._panoGeomCube = new CubemapGeometry(1000, 1, 6, 1.01);
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#000000',
       side: THREE.DoubleSide,
@@ -92,6 +96,7 @@ export default class Environment {
   _setPanoGeometryToSphere() {
     this._panoMesh.geometry = this._panoGeomSphere;
     this._applyPanoRotation();
+    this._panoMaterial.uniforms.useUV.value = false;
     this._panoMaterial.uniforms.arcOffset.value = 0;
     this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI / 2;
     this._panoMesh.needsUpdate = true;
@@ -100,8 +105,22 @@ export default class Environment {
   _setPanoGeometryToHemisphere() {
     this._panoMesh.geometry = this._panoGeomHemisphere;
     this._applyPanoRotation();
+    this._panoMaterial.uniforms.useUV.value = false;
     this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
     this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI;
+    this._panoMesh.needsUpdate = true;
+  }
+
+  _setPanoGeometryToCube(columns: number, rows: number) {
+    // rebuild geometry if different
+    if (this._panoGeomCube.columns !== columns || this._panoGeomCube.rows !== rows) {
+      this._panoGeomCube = new CubemapGeometry(1000, columns, rows, 1.01);
+    }
+    this._panoMesh.geometry = this._panoGeomCube;
+    this._applyPanoRotation();
+    this._panoMaterial.uniforms.useUV.value = true;
+    this._panoMaterial.uniforms.arcOffset.value = 0;
+    this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI / 2;
     this._panoMesh.needsUpdate = true;
   }
 
@@ -151,41 +170,35 @@ export default class Environment {
     this._panoMaterial.map = data.tex;
     const width = data.width;
     const height = data.height;
-    if (width === height) {
+    this._panoEyeOffsets = panoEyeOffsetsForStereoFormat(data.format);
+    if (data.layout === 'CUBEMAP_32') {
+      // video specified layout to be cube map
+      this._setPanoGeometryToCube(3, 2);
+    } else if (width === height) {
       // 1:1 ratio, 180 mono or top/bottom 360 3D
-      if (data.format === '3DTB') {
-        // 360 top-bottom 3D
-        this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
-        this._setPanoGeometryToSphere();
-      } else if (data.format === '3DBT') {
-        // 360 top-bottom 3D
-        this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
+      if (data.format === '3DTB' || data.format === '3DBT') {
+        // 360 top-bottom 3D or 360 top-bottom 3D
         this._setPanoGeometryToSphere();
       } else {
         // assume 180 mono
-        this._panoEyeOffsets = [[0, 0, 1, 1]];
         this._setPanoGeometryToHemisphere();
       }
     } else if (width / 2 === height) {
       // 2:1 ratio, 360 mono or 180 3D
       if (data.format === '3DLR') {
         // 180 side-by-side 3D
-        this._panoEyeOffsets = [[0, 0, 0.5, 1], [0.5, 0, 0.5, 1]];
         this._setPanoGeometryToHemisphere();
       } else {
         // assume 360 mono
-        this._panoEyeOffsets = [[0, 0, 1, 1]];
         this._setPanoGeometryToSphere();
       }
+    } else if (width === height / 6) {
+      // cube strip format for 360 photo cubemap
+      this._setPanoGeometryToCube(1, 6);
     } else {
-      if (data.format === '3DTB') {
-        this._panoEyeOffsets = [[0, 0, 1, 0.5], [0, 0.5, 1, 0.5]];
-        this._setPanoGeometryToSphere();
-      } else if (data.format === '3DBT') {
-        this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
-        this._setPanoGeometryToSphere();
-      }
+      this._setPanoGeometryToSphere();
     }
+
     this._panoMaterial.needsUpdate = true;
   }
 
@@ -278,7 +291,12 @@ export default class Environment {
 
   _applyPanoRotation() {
     // specific yaw rotation offset to match geometry uv to pano definition
-    const yawOffset = this._panoMesh.geometry === this._panoGeomSphere ? -Math.PI / 2 : Math.PI;
+    let yawOffset = 0;
+    if (this._panoMesh.geometry === this._panoGeomSphere) {
+      yawOffset = -Math.PI / 2;
+    } else if (this._panoMesh.geometry === this._panoGeomHemisphere) {
+      yawOffset = Math.PI;
+    }
     this._panoMesh.rotation.setFromQuaternion(
       new THREE.Quaternion()
         .setFromEuler(new THREE.Euler(0, yawOffset, 0, 'YXZ'))

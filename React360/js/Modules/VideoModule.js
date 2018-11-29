@@ -96,7 +96,8 @@ export default class VideoModule extends Module {
     }
     this._applyParams(player, params);
     const format = params.stereo || '2D';
-    player.setSource(url, format);
+    const layout = params.layout || 'RECT';
+    player.setSource(url, format, layout);
     if (startPosition) {
       player.seekTo(startPosition);
     }

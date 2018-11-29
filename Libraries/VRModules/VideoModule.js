@@ -31,7 +31,7 @@ export type VideoPlayerStatus =
   | 'stopped'; // Session is stopped (ready to play)
 
 export type VideoStereoFormat = '2D' | '3DLR' | '3DTB' | '3DBT' | 'UNKNOWN';
-export type VideoLayout = 'RECT' | 'SPHERICAL';
+export type VideoLayout = 'RECT' | 'SPHERICAL' | 'CUBEMAP_32';
 
 export type VideoRotation = {
   yaw: number,

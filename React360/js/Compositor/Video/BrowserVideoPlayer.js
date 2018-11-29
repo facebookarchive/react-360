@@ -126,7 +126,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
     }
   };
 
-  setSource(src: string, format?: string) {
+  setSource(src: string, format?: string, layout?: string) {
     if (this._texture) {
       this._texture.dispose();
     }
@@ -154,6 +154,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
         this._updateStatus('ready');
         resolve({
           format: format || '2D',
+          layout: layout || 'RECT',
           height,
           src,
           tex,
