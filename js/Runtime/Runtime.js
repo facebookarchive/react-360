@@ -236,6 +236,7 @@ export default class Runtime {
     let hitSurface = false;
     for (let i = 0; i < hits.length; i++) {
       let hit = hits[i];
+      let notHit = false;
       if (hit.uv && hit.object && hit.object.subScene) {
         hitSurface = true;
         const distanceToSubscene = hit.distance;
@@ -246,9 +247,11 @@ export default class Runtime {
         if (surfaceHit) {
           hit = surfaceHit;
           hit.distance = distanceToSubscene;
+        } else {
+          notHit = true;
         }
       }
-      if (!firstHit && !hit.isAlmostHit) {
+      if (!notHit && !firstHit && !hit.isAlmostHit) {
         firstHit = hit;
       }
     }
@@ -326,9 +329,9 @@ export default class Runtime {
 
   getCursorDepth(): number {
     // Will derive from React components
-    if (this._cursorIntersectsSurface) {
-      return SURFACE_DEPTH;
-    }
+    // if (this._cursorIntersectsSurface) {
+    //  return SURFACE_DEPTH;
+    // }
     return this.guiSys._cursor.intersectDistance;
   }
 }
