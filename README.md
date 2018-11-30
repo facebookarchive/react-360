@@ -29,7 +29,7 @@ Once installed, the CLI can be used to create a new project by running
 react-360 init PROJECT_NAME
 ```
 
-where `PROJECT_NAME` is the name of your new application. Once it's been created and the dependencies are installed, change your working directory to `PROJECT_NAME`, and start the application server by running `npm start` (or `yarn start`).
+where `PROJECT_NAME` is the name of your new application. Once it's been created and the dependencies are installed, change your working directory to `PROJECT_NAME`, and start the application server by running `npm start` (or `yarn start`). You can also use `--https` option to run the server with https.
 
 When the server has booted, you can access your application by navigating to `http://localhost:8081/` in your web browser. Your application's code can be found in `index.js`, and you can learn more about available framework features by diving into our documentation.
 
