@@ -107,10 +107,10 @@ export default class VideoModule extends Module {
     if (!url || !fileFormat) {
       throw new Error('Cannot play video, unsupported format');
     }
-    this._applyParams(player, params);
     const stereoFormat = params.stereo || '2D';
     const layout = params.layout || 'RECT';
     player.setSource(url, stereoFormat, fileFormat, layout);
+    this._applyParams(player, params);
     if (startPosition) {
       player.seekTo(startPosition);
     }
