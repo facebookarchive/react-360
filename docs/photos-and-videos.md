@@ -59,7 +59,7 @@ When using a 3D background, the depth effect will only be visible when viewing i
 If your background is dynamic, such as in a multi-room environment, you'll want to control it from your React application. This is possible through the Environment module.
 
 ```js
-import {Environment} from 'react-360';
+import {asset, Environment} from 'react-360';
 
 // Set the background to a 360 or 180 image
 Environment.setBackground(
