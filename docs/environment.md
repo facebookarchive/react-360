@@ -31,7 +31,7 @@ Sets the current background to a video, referenced by the specified handle. The 
 VideoModule.createPlayer('myplayer');
 // Play a specific video
 VideoModule.play('myplayer', {
-  source: {url: staticResourceURL('path/to/video.mp4')}, // provide the path to the video
+  source: {url: staticAssetURL('path/to/video.mp4')}, // provide the path to the video
   stereo: '3DTB', // optionally, supply the format of the video
 });
 // Display the video on the Environment

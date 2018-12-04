@@ -105,14 +105,14 @@ r360.compositor.setBackgroundVideo('myplayer');
 To create a Video Player from the React side, use the `VideoModule` Native Module. Again, a Player must be set up before it can be set to the Environment. Once it has been created, it can be attached to the background with the `Environment` module.
 
 ```js
-import {Environment, NativeModules, staticResourceURL} from 'react-360';
+import {Environment, NativeModules, staticAssetURL} from 'react-360';
 const {VideoModule} = NativeModules;
 
 // Create a player
 VideoModule.createPlayer('myplayer');
 // Play a specific video
 VideoModule.play('myplayer', {
-  source: {url: staticResourceURL('path/to/video.mp4')}, // provide the path to the video
+  source: {url: staticAssetURL('path/to/video.mp4')}, // provide the path to the video
   stereo: '3DTB', // optionally, supply the format of the video
 });
 // Display the video on the Environment

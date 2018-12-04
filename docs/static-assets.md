@@ -18,7 +18,7 @@ To create references to assets that can be moved at production time, you should 
 <Image source={asset('myImage.png')} />
 ```
 
-The `asset()` method creates a resource object containing a URI path. There may be times where you need to just generate a string path to a resource. You can use `staticResourceURL()` in those situations – it takes a local resource path, and transforms it when your static resources move.
+The `asset()` method creates a resource object containing a URI path. There may be times where you need to just generate a string path to a resource. You can use `staticAssetURL()` in those situations – it takes a local resource path, and transforms it when your static resources move.
 
 ## Specifying the Asset Location
 
