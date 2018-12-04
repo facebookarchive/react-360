@@ -62,6 +62,11 @@ export default class BrowserVideoPlayer implements VideoPlayerImplementation {
     // Prevents the default go to fullscreen behavior on iOS 10+
     this._element.setAttribute('playsinline', 'playsinline');
     this._element.setAttribute('webkit-playsinline', 'webkit-playsinline');
+    // Use dummy image for poster to prevent android webview poster image security issue
+    this._element.setAttribute(
+      'poster',
+      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+    );
     this._element.crossOrigin = 'anonymous';
     this._texture = null;
     if (document.body) {
