@@ -25,7 +25,7 @@ function init(bundle, parent, options = {}) {
       // It will be really hard to view and interact with the content in VR
       // if it's placed in a corner position.
       const cameraQuat = r360.getCameraQuaternion();
-      subtitleSurface.recenter(cameraQuat, 'yaw-pitch');
+      subtitleSurface.recenter(cameraQuat, 'all');
     },
     ...options,
   });

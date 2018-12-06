@@ -14,7 +14,7 @@ import {type Quaternion} from '../Controls/Types';
 
 type ShapeType = 'Cylinder' | 'Flat';
 
-type SurfaceCenterControl = 'yaw' | 'yaw-pitch';
+type SurfaceCenterControl = 'yaw' | 'yaw-pitch' | 'all';
 
 export const SurfaceShape: {[key: ShapeType]: ShapeType} = {
   Cylinder: 'Cylinder',
@@ -56,6 +56,7 @@ export default class Surface {
   _shape: ShapeType;
   _width: number;
   _yaw: number;
+  _roll: number;
   // Three.js properties
   _camera: THREE.Camera;
   _geometry: THREE.Geometry;
@@ -72,6 +73,7 @@ export default class Surface {
     this._shape = shape;
     this._yaw = 0;
     this._pitch = 0;
+    this._roll = 0;
     this.rootTag = -1;
 
     this._material = new THREE.MeshBasicMaterial({
@@ -154,9 +156,10 @@ export default class Surface {
    * x-y plane; the pitch angle moves the panel vertically between the floor
    * and the ceiling.
    */
-  setAngle(yaw: number, pitch: number) {
+  setAngle(yaw: number, pitch: number, roll: number = 0) {
     this._yaw = yaw;
     this._pitch = pitch;
+    this._roll = roll;
     this._recomputeOrientation();
   }
 
@@ -175,9 +178,13 @@ export default class Surface {
 
     if (centerControl === 'yaw') {
       this._yaw = -euler.y;
+    } else if (centerControl === 'yaw-pitch') {
+      this._yaw = -euler.y;
+      this._pitch = euler.x;
     } else {
       this._yaw = -euler.y;
       this._pitch = euler.x;
+      this._roll = euler.z;
     }
     this._recomputeOrientation();
   }
@@ -305,7 +312,14 @@ export default class Surface {
       const cp = Math.cos(this._pitch / 2);
       const sy = Math.sin(-this._yaw / 2);
       const cy = Math.cos(-this._yaw / 2);
-      this._mesh.quaternion.set(cy * sp, sy * cp, -sy * sp, cy * cp);
+      const sr = Math.sin(this._roll / 2);
+      const cr = Math.cos(this._roll / 2);
+      this._mesh.quaternion.set(
+        sp * cy * cr + cp * sy * sr,
+        cp * sy * cr - sp * cy * sr,
+        cp * cy * sr - sp * sy * cr,
+        cp * cy * cr + sp * sy * sr
+      );
     }
   }
 
