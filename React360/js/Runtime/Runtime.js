@@ -133,7 +133,12 @@ export default class Runtime {
     this.context.init(bundleURL);
   }
 
-  createRootView(name: string, initialProps: Object, dest: Location | Surface) {
+  createRootView(
+    name: string,
+    initialProps: Object,
+    dest: Location | Surface,
+    surfaceName?: string
+  ) {
     if (dest instanceof Surface) {
       const context = this.context;
       this.guiSys.registerOffscreenRender(
@@ -142,6 +147,10 @@ export default class Runtime {
         dest.getRenderTarget()
       );
       const tag = context.createRootView(name, initialProps, dest.getScene(), true);
+      const rootView = context.getViewForTag(tag);
+      if (rootView) {
+        rootView.surfaceName = surfaceName;
+      }
       return tag;
     } else if (dest instanceof Location) {
       const node = new THREE.Object3D();

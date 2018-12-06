@@ -24,10 +24,10 @@ export default class SurfaceManager {
     scene.add(this._surfaceRoot);
   }
 
-  addSurface(name: string, surface: Surface) {
+  registerSurface(name: string, surface: Surface) {
     if (this._surfaces[name]) {
       throw new Error(
-        `Cannot add Surface with tag '${name}', a Surface with that name already exists.`
+        `Cannot register Surface with tag '${name}', a Surface with that name already exists.`
       );
     }
     this._surfaces[name] = surface;

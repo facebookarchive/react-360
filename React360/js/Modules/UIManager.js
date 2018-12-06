@@ -882,6 +882,33 @@ export default class UIManager extends Module {
     view.receiveCommand(commandId, commandArgs);
   }
 
+  /**
+   * Get the root id of a component, this can be used for video
+   * playing to know the attached surface
+   *
+   * @param reactTag - react tag id
+   */
+  $getViewRootID(reactTag: number, success: number, error: number) {
+    let view = this._views[String(reactTag)];
+    if (!view) {
+      this._rnctx.invokeCallback(error, [`Failed to get surfaceID, view doesn't exist.`]);
+      return;
+    }
+    const rootView = this.getViewForTag(view.rootTag);
+    if (!rootView) {
+      this._rnctx.invokeCallback(error, [`Failed to get surfaceID, root view doesn't exist.`]);
+      return;
+    }
+    this._rnctx.invokeCallback(success, [rootView.surfaceName]);
+  }
+
+  /**
+   * get a view from certain tag
+   */
+  getViewForTag(reactTag: number) {
+    return this._views[String(reactTag)];
+  }
+
   // TODO:
   // findSubviewIn
 }

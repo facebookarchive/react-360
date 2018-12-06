@@ -104,6 +104,7 @@ export default class ReactInstance {
   _nextFrame: null | AnimationFrameData;
   _parent: HTMLElement;
   _rays: Array<Ray>;
+  _surfaceNameOffset: number = 0;
   _videoModule: ?VideoModule;
   controls: Controls;
   compositor: Compositor;
@@ -407,12 +408,26 @@ export default class ReactInstance {
    * of a Surface, returning the unique tag of the React root.
    * If the render loop hasn't started yet, this kicks it off.
    */
-  renderToSurface(root: Root, surface: Surface): number | null {
+  renderToSurface(root: Root, surface: Surface, surfaceName?: string): number | null {
     if (!this._looping) {
       this.start();
     }
+
+    const isDefaultSurface = surface === this.compositor.getDefaultSurface();
+    if (!isDefaultSurface && surfaceName === 'default') {
+      throw new Error('Only default surface can use "default" as surface name.');
+    }
+    const _surfaceName = surfaceName
+      ? surfaceName
+      : isDefaultSurface
+        ? 'default'
+        : `surface_${this._surfaceNameOffset++}`;
+    const tag = this.runtime.createRootView(root.name, root.initialProps, surface, _surfaceName);
     this.compositor.showSurface(surface);
-    return this.runtime.createRootView(root.name, root.initialProps, surface);
+    if (_surfaceName !== 'default') {
+      this.compositor.registerSurface(_surfaceName, surface);
+    }
+    return tag;
   }
 
   /**

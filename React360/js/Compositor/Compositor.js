@@ -124,8 +124,8 @@ export default class Compositor {
     }
   }
 
-  addSurface(name: string, surface: Surface) {
-    this._surfaceManager.addSurface(name, surface);
+  registerSurface(name: string, surface: Surface) {
+    this._surfaceManager.registerSurface(name, surface);
   }
 
   showSurface(surface: Surface) {

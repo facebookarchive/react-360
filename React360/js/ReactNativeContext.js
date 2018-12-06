@@ -511,4 +511,11 @@ export class ReactNativeContext {
   registerTextureSource(name: string, source: Element, options: {[key: string]: any} = {}) {
     this.TextureManager.registerLocalTextureSource(name, source, options);
   }
+
+  /**
+   * get a view from certain tag
+   */
+  getViewForTag(reactTag: number) {
+    return this.UIManager.getViewForTag(reactTag);
+  }
 }

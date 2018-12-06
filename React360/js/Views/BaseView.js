@@ -116,6 +116,7 @@ export default class RCTBaseView {
   style: any;
   tag: number;
   rootTag: number;
+  surfaceName: ?string;
   interactableCount: number;
   inSurfaceContext: boolean;
   mouseInteractableCount: number;
@@ -143,6 +144,7 @@ export default class RCTBaseView {
     this.UIManager = null;
     this.tag = 0;
     this.rootTag = 0;
+    this.surfaceName = null;
     this.children = [];
     this.parent = null;
     this.props = {};
