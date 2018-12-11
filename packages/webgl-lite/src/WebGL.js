@@ -9,7 +9,8 @@
  * @flow
  */
 
+import Geometry from './Geometry';
 import Program from './Program';
 import VertexBuffer from './VertexBuffer';
 
-export {Program, VertexBuffer};
+export {Geometry, Program, VertexBuffer};

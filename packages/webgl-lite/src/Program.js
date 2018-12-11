@@ -24,7 +24,7 @@ type Uniform = {
   type: number,
 };
 
-type Attribute = {
+export type Attribute = {
   location: number,
   size: number,
   type: number,
