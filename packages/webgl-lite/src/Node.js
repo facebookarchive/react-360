@@ -11,6 +11,7 @@
 
 import Geometry from './Geometry';
 import type Program from './Program';
+import type RenderGroup from './RenderGroup';
 import Texture from './Texture';
 
 /**
@@ -21,6 +22,7 @@ export default class Node {
   _gl: WebGLRenderingContext;
   geometry: Geometry;
   program: Program;
+  renderGroup: ?RenderGroup;
   renderOrder: number;
   uniforms: Object;
 
@@ -28,6 +30,7 @@ export default class Node {
     this._gl = gl;
     this.geometry = new Geometry(gl);
     this.program = program;
+    this.renderGroup = null;
     this.renderOrder = 1;
     this.uniforms = {};
   }
@@ -56,6 +59,13 @@ export default class Node {
   }
 
   /**
+   * Associate this node with a render group,
+   */
+  setRenderGroup(rg: ?RenderGroup) {
+    this.renderGroup = rg;
+  }
+
+  /**
    * Use the associated geometry and shaders to draw the object.
    * For uniforms, the Node first looks at locally stored values. If no value
    * is stored, it looks to the Program to fetch a default.
@@ -63,11 +73,14 @@ export default class Node {
   draw() {
     let texSlot = 0;
     const program = this.program;
+    const renderGroup = this.renderGroup;
     const uniforms = program.getUniforms();
     for (const name in uniforms) {
       let value = null;
       if (name in this.uniforms) {
         value = this.uniforms[name];
+      } else if (renderGroup && renderGroup.hasUniform(name)) {
+        value = renderGroup.getUniform(name);
       } else {
         value = program.getDefaultValueForUniform(name);
       }

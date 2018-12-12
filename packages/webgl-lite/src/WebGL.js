@@ -12,7 +12,8 @@
 import Geometry from './Geometry';
 import Node from './Node';
 import Program from './Program';
+import RenderGroup from './RenderGroup';
 import Texture from './Texture';
 import VertexBuffer from './VertexBuffer';
 
-export {Geometry, Node, Program, Texture, VertexBuffer};
+export {Geometry, Node, Program, RenderGroup, Texture, VertexBuffer};
