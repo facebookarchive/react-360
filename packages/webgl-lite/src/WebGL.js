@@ -10,8 +10,9 @@
  */
 
 import Geometry from './Geometry';
+import Node from './Node';
 import Program from './Program';
 import Texture from './Texture';
 import VertexBuffer from './VertexBuffer';
 
-export {Geometry, Program, Texture, VertexBuffer};
+export {Geometry, Node, Program, Texture, VertexBuffer};
