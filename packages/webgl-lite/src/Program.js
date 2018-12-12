@@ -119,7 +119,17 @@ export default class Program {
     if (this._program) {
       throw new Error('Cannot add a shader, the program has already been compiled');
     }
-    const code = definitions ? definitions.map(def => `#define ${def}\n`).join() + source : source;
+    let code = source;
+    if (definitions) {
+      const defineCode = definitions.map(def => `#define ${def}\n`).join('');
+      if (source.startsWith('#version')) {
+        // version declaration must always be first
+        const split = source.indexOf('\n') + 1;
+        code = source.substr(0, split) + defineCode + source.substr(split);
+      } else {
+        code = defineCode + source;
+      }
+    }
     this._shaders.push({code, type});
     return this;
   }

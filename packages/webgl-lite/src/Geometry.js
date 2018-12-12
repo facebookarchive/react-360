@@ -39,6 +39,8 @@ type AttributeInfo = {
   type: number,
 };
 
+type WebGLVertexArrayObject = any;
+
 /**
  * Buffered geometry primitive, designed to support interleaved and indexed
  * vertex arrays.
@@ -53,6 +55,7 @@ export default class Geometry {
   _indexArray: ?Uint16Array;
   _indexCount: number;
   _stride: number;
+  _vertexArray: ?WebGLVertexArrayObject;
 
   constructor(gl: WebGLRenderingContext) {
     this._attributes = [];
@@ -143,6 +146,16 @@ export default class Geometry {
    * Bind all attributes to the current array buffer.
    */
   bindToAttributes() {
+    if (this._vertexArray) {
+      return;
+    }
+    const gl = this._gl;
+    // If using a WebGL2 context, construct a VAO the first time attributes are bound
+    if ('WebGL2RenderingContext' in window && gl instanceof window.WebGL2RenderingContext) {
+      this._vertexArray = gl.createVertexArray();
+      // $FlowFixMe - Flow lib does not include WebGL2
+      gl.bindVertexArray(this._vertexArray);
+    }
     for (let i = 0; i < this._attributes.length; i++) {
       const attr = this._attributes[i];
       this._buffer.bindToAttribute(
@@ -157,6 +170,10 @@ export default class Geometry {
     if (this._indexBuffer) {
       this._indexBuffer.bindToElements();
     }
+    if (this._vertexArray) {
+      // $FlowFixMe - Flow lib does not include WebGL2
+      gl.bindVertexArray(null);
+    }
   }
 
   /**
@@ -170,11 +187,19 @@ export default class Geometry {
       );
     }
     const gl = this._gl;
+    if (this._vertexArray) {
+      // $FlowFixMe - Flow lib does not include WebGL2
+      gl.bindVertexArray(this._vertexArray);
+    }
     if (this._indexArray) {
       gl.drawElements(gl.TRIANGLES, this._indexCount, gl.UNSIGNED_SHORT, 0);
     } else {
       const count = this._dataLength / this._stride;
       gl.drawArrays(gl.TRIANGLES, 0, count);
+    }
+    if (this._vertexArray) {
+      // $FlowFixMe - Flow lib does not include WebGL2
+      gl.bindVertexArray(null);
     }
   }
 }
