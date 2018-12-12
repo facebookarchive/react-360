@@ -11,6 +11,7 @@
 
 import Geometry from './Geometry';
 import Program from './Program';
+import Texture from './Texture';
 import VertexBuffer from './VertexBuffer';
 
-export {Geometry, Program, VertexBuffer};
+export {Geometry, Program, Texture, VertexBuffer};
