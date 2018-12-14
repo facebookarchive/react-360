@@ -24,6 +24,7 @@ export default class AudioNode {
   _playing: boolean;
   _source: AudioBufferSourceNode;
   _volume: number;
+  _startTime: number;
 
   constructor(buffer: AudioBuffer, ctx: AudioContext) {
     this._beginPlayFrom = 0;
