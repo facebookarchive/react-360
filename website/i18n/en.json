@@ -29,6 +29,18 @@
         "title": "Environment",
         "sidebar_label": "Environment"
       },
+      "example-basicapptemplate": {
+        "title": "Example: Basic App Template",
+        "sidebar_label": "Basic App Template"
+      },
+      "example-customplayer": {
+        "title": "Example: Custom Player",
+        "sidebar_label": "Custom Player"
+      },
+      "example-mediaapptemplate": {
+        "title": "Example: Media App Template",
+        "sidebar_label": "Media App Template"
+      },
       "example-multisurface": {
         "title": "Example: Multi-Surface and 3D",
         "sidebar_label": "Multi-Surface and 3D"

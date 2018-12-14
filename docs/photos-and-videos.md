@@ -274,7 +274,7 @@ class VideoTest extends Component {
 
 ### Custom Video Player
 
-React360 provides a default functional video player using HTML5 video element. If you want use your own version of video player to provide additional functionalities such as Mpeg-Dash, HLS, etc. You can implement your own custom video player. And add it to `customVideoPlayers` in ReactInstance's option. An example on how to use custom video players is provided.
+React360 provides a default functional video player using HTML5 video element. If you want use your own version of video player to provide additional functionalities such as Mpeg-Dash, HLS, etc. You can implement your own custom video player. And add it to `customVideoPlayers` in ReactInstance's option. An example on how to use custom video players is provided [here](example-customplayer.md).
 
 ## Clearing the Background
 

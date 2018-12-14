@@ -7,6 +7,6 @@
     "APIs": ["animated", "async-storage", "controller-info", "environment"]
   },
   "examples": {
-    "Examples": ["example-slideshow", "example-multisurface", "example-native-modules"]
+    "Examples": ["example-slideshow", "example-multisurface", "example-native-modules", "example-customplayer", "example-basicapptemplate", "example-mediaapptemplate"]
   }
 }
