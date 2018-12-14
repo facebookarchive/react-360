@@ -1,5 +1,5 @@
 /**
- * @providesModule ScenePage.react
+ * @providesModule BasicAppTemplateScenePage.react
  */
 'use strict';
 
@@ -13,7 +13,6 @@ import {
   NativeModules,
   Environment,
 } from 'react-360';
-import InfoButton from 'InfoButton.react';
 import {default as VideoModule, VideoPlayerInstance, type VideoStatusEvent} from 'VideoModule';
 
 const {AudioModule} = NativeModules;
@@ -59,7 +58,7 @@ const DATA_BASE = [
   },
 ];
 
-class ScenePage extends React.Component {
+class BasicAppTemplateScenePage extends React.Component {
   static defaultProps = {
     index: 0,
   };
@@ -159,4 +158,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = ScenePage;
+module.exports = BasicAppTemplateScenePage;

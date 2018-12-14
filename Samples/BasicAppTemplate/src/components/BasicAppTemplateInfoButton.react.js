@@ -2,8 +2,8 @@
  * A simple component to use
  * Do the "providesModule" provides module name to haste map
  * So you can reference it from other file by
- * import InfoButton from "InfoButton.react"
- * @providesModule InfoButton.react
+ * import BasicAppTemplateInfoButton from "BasicAppTemplateInfoButton.react"
+ * @providesModule BasicAppTemplateInfoButton.react
  */
 'use strict';
 
@@ -24,7 +24,7 @@ const {AudioModule} = NativeModules;
 const CLICK_SOUND = asset('menu-click.wav');
 const FOCUS_SCALE = 1.3;
 
-class InfoButton extends React.Component {
+class BasicAppTemplateInfoButton extends React.Component {
   static defaultProps = {
     width: 180,
     text: '',
@@ -142,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = InfoButton;
+module.exports = BasicAppTemplateInfoButton;

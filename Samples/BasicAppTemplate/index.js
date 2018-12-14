@@ -8,8 +8,8 @@ import {
   asset,
   Environment,
 } from 'react-360';
-import InfoButton from 'InfoButton.react';
-import ScenePage from 'ScenePage.react';
+import BasicAppTemplateInfoButton from 'BasicAppTemplateInfoButton.react';
+import BasicAppTemplateScenePage from 'BasicAppTemplateScenePage.react';
 
 // referencing an asset from 'static_assets' directory
 const INFO_BUTTON_IMAGE = asset('info_icon.png');
@@ -32,7 +32,7 @@ export default class BasicAppTemplate extends React.Component {
     const sceneButtons = [];
     for (const i = 0; i < SCENE_COUNT; i++) {
       sceneButtons.push(
-        <InfoButton
+        <BasicAppTemplateInfoButton
           key={i}
           style={styles.button}
           source={INFO_BUTTON_IMAGE}
@@ -46,7 +46,7 @@ export default class BasicAppTemplate extends React.Component {
           {sceneButtons}
         </View>
         <View style={styles.scenePage}>
-          <ScenePage
+          <BasicAppTemplateScenePage
             index={this.state.index} />
         </View>
       </View>
