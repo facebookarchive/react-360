@@ -11,13 +11,13 @@
 
 /* eslint-disable no-bitwise */
 
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 import {type Transform, matrixMultiply4} from '../Math';
 import {VERT_SHADER, FRAG_SHADER} from './SDFRectangle';
 
 export interface GLViewCompatible {
   getHeight(): number;
-  getNode(): THREE.Mesh;
+  getNode(): WebGL.Node;
   getWidth(): number;
   getWorldTransform(): Transform;
   containsPoint(x: number, y: number): boolean;
@@ -36,28 +36,20 @@ export interface GLViewCompatible {
   update(): void;
 }
 
-const ViewMaterial = new THREE.ShaderMaterial({
-  uniforms: {
-    u_stroke: {value: 0},
-    u_bgcolor: {
-      value: new THREE.Vector4(0.0, 0.0, 0.0, 0.0),
-    },
-    u_bordercolor: {
-      value: new THREE.Vector4(0.0, 0.0, 0.0, 1.0),
-    },
-    u_transform: {
-      value: new THREE.Matrix4(),
-    },
-    u_opacity: {value: 1.0},
-    u_gradientstart: {value: new THREE.Vector4(0, 0, 0, 0)},
-    u_gradientend: {value: new THREE.Vector4(0, 0, 0, 0.0)},
-    u_gradientunit: {value: new THREE.Vector2(0, 1.0)},
-    u_gradientlength: {value: 1},
-  },
-  vertexShader: VERT_SHADER,
-  fragmentShader: FRAG_SHADER,
-  transparent: true,
-});
+function createProgram(gl: WebGLRenderingContext) {
+  const prog = new WebGL.Program(gl);
+  prog
+    .addShader(VERT_SHADER, gl.VERTEX_SHADER)
+    .addShader(FRAG_SHADER, gl.FRAGMENT_SHADER)
+    .compile()
+    .setUniformDefaults({
+      u_bordercolor: [0, 0, 0, 1],
+      u_opacity: 1,
+      u_gradientunit: [0, 1],
+      u_gradientlength: 1,
+    });
+  return prog;
+}
 
 /**
  * Implements rectangles with border and corner radii using a SDF shader
@@ -66,7 +58,6 @@ export default class GLView {
   _bgColor: number;
   _borderColor: number;
   _borderWidth: number;
-  _geometry: THREE.BufferGeometry;
   _geometryDirty: boolean;
   _gradientAngle: number;
   _height: number;
@@ -74,13 +65,11 @@ export default class GLView {
   _layoutOriginX: number;
   _layoutOriginY: number;
   _localTransform: Transform;
-  _material: THREE.ShaderMaterial;
-  _node: THREE.Mesh;
+  _node: WebGL.Node;
   _offsetX: number;
   _offsetY: number;
   _opacity: number;
   _parentTransform: Transform;
-  _positionBuffer: THREE.InterleavedBuffer;
   _radiusBL: number;
   _radiusBR: number;
   _radiusTL: number;
@@ -90,8 +79,10 @@ export default class GLView {
   _worldTransform: Transform;
   _x: number;
   _y: number;
+  gl: WebGLRenderingContext;
 
-  constructor() {
+  constructor(gl: WebGLRenderingContext) {
+    this.gl = gl;
     this._width = 1;
     this._height = 1;
     this._radiusTL = 0;
@@ -116,51 +107,19 @@ export default class GLView {
     this._transformDirty = true;
     this._gradientAngle = 0;
 
-    // Three.js specifics
-    this._geometry = new THREE.BufferGeometry();
-    this._material = this.createNewMaterial();
+    const prog = this.createProgram();
+    const node = new WebGL.Node(this.gl, prog);
+    node.addAttribute('a_position');
+    node.addAttribute('a_center');
+    node.addAttribute('a_edge');
     const {position, index} = this.createGeometry();
-    const posArray = new Float32Array((this.constructor: any).MAX_BUFFER_SIZE); // Max size
-    for (let i = 0; i < posArray.length; i++) {
-      if (i < position.length) {
-        posArray[i] = position[i];
-      } else {
-        posArray[i] = 0;
-      }
-    }
-    this._positionBuffer = new THREE.InterleavedBuffer(
-      posArray,
-      (this.constructor: any).POSITION_STRIDE
-    );
-    const indexArray = new Array(24 * 3); // Max size
-    for (let i = 0; i < indexArray.length; i++) {
-      if (i < index.length) {
-        indexArray[i] = index[i];
-      } else {
-        indexArray[i] = 0;
-      }
-    }
-    this._geometry.setIndex(indexArray);
-    this._geometry.addAttribute(
-      'a_position',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 0, false)
-    );
-    this._geometry.addAttribute(
-      'a_center',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 2, 2, false)
-    );
-    this._geometry.addAttribute(
-      'a_edge',
-      new THREE.InterleavedBufferAttribute(this._positionBuffer, 1, 4, false)
-    );
-    this._node = new THREE.Mesh(this._geometry, this._material);
-    this._node.matrixAutoUpdate = false;
+    node.geometry.bufferData(position);
+    node.geometry.bufferIndex(index);
+    this._node = node;
   }
 
-  createNewMaterial(): THREE.ShaderMaterial {
-    const mat = ViewMaterial.clone();
-    mat.depthTest = false;
-    return mat;
+  createProgram() {
+    return createProgram(this.gl);
   }
 
   createGeometryVertexArray(
@@ -368,20 +327,8 @@ export default class GLView {
     return true;
   }
 
-  getGeometry() {
-    return this._geometry;
-  }
-
-  getMaterial() {
-    return this._material;
-  }
-
   getNode() {
     return this._node;
-  }
-
-  getPositionBuffer() {
-    return this._positionBuffer;
   }
 
   getWidth() {
@@ -398,24 +345,22 @@ export default class GLView {
 
   setBackgroundColor(color: number) {
     this._bgColor = color;
-    this._material.uniforms.u_bgcolor.value.set(
+    this._node.setUniform('u_bgcolor', [
       ((color >> 16) & 0xff) / 255,
       ((color >> 8) & 0xff) / 255,
       (color & 0xff) / 255,
-      ((color >> 24) & 0xff) / 255
-    );
-    this._material.needsUpdate = true;
+      ((color >> 24) & 0xff) / 255,
+    ]);
   }
 
   setBorderColor(color: number) {
     this._borderColor = color;
-    this._material.uniforms.u_bordercolor.value.set(
+    this._node.setUniform('u_bordercolor', [
       ((color >> 16) & 0xff) / 255,
       ((color >> 8) & 0xff) / 255,
       (color & 0xff) / 255,
-      ((color >> 24) & 0xff) / 255
-    );
-    this._material.needsUpdate = true;
+      ((color >> 24) & 0xff) / 255,
+    ]);
   }
 
   setBorderRadius(tl: number, tr: number, br: number, bl: number) {
@@ -429,28 +374,25 @@ export default class GLView {
   setBorderWidth(top: number, right: number, bottom: number, left: number) {
     // TODO: Support four different border widths
     this._borderWidth = top;
-    this._material.uniforms.u_stroke.value = top;
-    this._material.needsUpdate = true;
+    this._node.setUniform('u_stroke', top);
   }
 
   setGradientStart(color: number) {
-    this._material.uniforms.u_gradientstart.value.set(
+    this._node.setUniform('u_gradientstart', [
       ((color >> 16) & 0xff) / 255,
       ((color >> 8) & 0xff) / 255,
       (color & 0xff) / 255,
-      ((color >> 24) & 0xff) / 255
-    );
-    this._material.needsUpdate = true;
+      ((color >> 24) & 0xff) / 255,
+    ]);
   }
 
   setGradientEnd(color: number) {
-    this._material.uniforms.u_gradientend.value.set(
+    this._node.setUniform('u_gradientend', [
       ((color >> 16) & 0xff) / 255,
       ((color >> 8) & 0xff) / 255,
       (color & 0xff) / 255,
-      ((color >> 24) & 0xff) / 255
-    );
-    this._material.needsUpdate = true;
+      ((color >> 24) & 0xff) / 255,
+    ]);
   }
 
   setGradientAngle(rad: number) {
@@ -460,9 +402,11 @@ export default class GLView {
 
   updateGradient() {
     const angle = this._gradientAngle;
-    this._material.uniforms.u_gradientunit.value.fromArray([Math.sin(angle), Math.cos(angle)]);
-    this._material.uniforms.u_gradientlength.value =
-      this._width * Math.sin(angle) + this._height * Math.cos(angle);
+    this._node.setUniform('u_gradientunit', [Math.sin(angle), Math.cos(angle)]);
+    this._node.setUniform(
+      'u_gradientlength',
+      this._width * Math.sin(angle) + this._height * Math.cos(angle)
+    );
   }
 
   setFrame(x: number, y: number, width: number, height: number) {
@@ -508,8 +452,7 @@ export default class GLView {
 
   setOpacity(opacity: number) {
     this._opacity = opacity;
-    this._material.uniforms.u_opacity.value = opacity;
-    this._material.needsUpdate = true;
+    this._node.setUniform('u_opacity', opacity);
   }
 
   setVisible(visible: boolean) {
@@ -519,18 +462,8 @@ export default class GLView {
   update() {
     if (this._geometryDirty) {
       const {position, index} = this.createGeometry();
-      for (let i = 0; i < position.length; i++) {
-        this._positionBuffer.array[i] = position[i];
-      }
-      if (index.length !== this._geometry.drawRange.count) {
-        for (let i = 0; i < index.length; i++) {
-          this._geometry.index.array[i] = index[i];
-        }
-      }
-      this._geometry.setDrawRange(0, index.length);
-      this._geometry.needsUpdate = true;
-      this._geometry.index.needsUpdate = true;
-      this._positionBuffer.needsUpdate = true;
+      this._node.geometry.bufferData(position);
+      this._node.geometry.bufferIndex(index);
       this.updateGradient();
       this._geometryDirty = false;
     }
@@ -543,7 +476,7 @@ export default class GLView {
       this._worldTransform[12] += x;
       this._worldTransform[13] += y;
       matrixMultiply4(this._worldTransform, this._parentTransform);
-      this._material.uniforms.u_transform.value.fromArray(this._worldTransform);
+      this._node.setUniform('u_transform', this._worldTransform.slice());
 
       this._intersectTest[0][0] = -this._width / 2;
       this._intersectTest[0][1] = this._height / 2;
@@ -564,5 +497,3 @@ export default class GLView {
     }
   }
 }
-(GLView: any).POSITION_STRIDE = 5;
-(GLView: any).MAX_BUFFER_SIZE = 40 * 5;

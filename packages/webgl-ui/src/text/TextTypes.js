@@ -10,7 +10,7 @@
  */
 
 import type FontGeometry from './FontGeometry';
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 
 export type Glyph = {
   attributes: {[key: string]: any}, // Any per-glyph values needed to render, like atlas offset
@@ -48,11 +48,6 @@ export type TextRenderInfo = {
 export interface TextImplementation {
   extractGlyphs(font: string, size: number, text: string, color?: number): GlyphRun;
   createText(text: string, options?: Object): FontGeometry;
-  createMaterial(): THREE.Material;
-  updateGeometryAndMaterial(
-    geometry: THREE.Geometry,
-    material: THREE.Material,
-    info: TextRenderInfo,
-    params: Object
-  ): void;
+  createNode(): WebGL.Node;
+  updateGeometry(node: WebGL.Node, info: TextRenderInfo, params: Object): void;
 }

@@ -20,6 +20,7 @@ varying vec4 v_color;
 varying float v_center;
 
 uniform mat4 u_transform;
+uniform mat4 projectionMatrix;
 
 void main() {
   v_uv = a_uv;
@@ -30,6 +31,8 @@ void main() {
 `;
 
 export const FRAG_SHADER = `
+#extension GL_OES_standard_derivatives : enable
+
 precision mediump float;
 
 varying vec2 v_uv;

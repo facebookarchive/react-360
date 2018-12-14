@@ -9,36 +9,25 @@
  * @flow
  */
 
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 import GLView from './GLView';
 import {VERT_SHADER, FRAG_SHADER} from './SDFRectangle';
 
-const ImageMaterial = new THREE.ShaderMaterial({
-  uniforms: {
-    u_stroke: {value: 0},
-    u_bgcolor: {
-      value: new THREE.Vector4(0.0, 0.0, 0.0, 0.0),
-    },
-    u_bordercolor: {
-      value: new THREE.Vector4(0.0, 0.0, 0.0, 1.0),
-    },
-    u_tint: {
-      value: new THREE.Vector3(1.0, 1.0, 1.0),
-    },
-    u_transform: {
-      value: new THREE.Matrix4(),
-    },
-    u_opacity: {value: 1.0},
-    u_texture: {value: new THREE.Texture()},
-    u_gradientstart: {value: new THREE.Vector4(0, 0, 0, 0)},
-    u_gradientend: {value: new THREE.Vector4(0, 0, 0, 0)},
-    u_gradientunit: {value: new THREE.Vector2(0, 1.0)},
-    u_gradientlength: {value: 1},
-  },
-  vertexShader: `#define IMAGE\n${VERT_SHADER}`,
-  fragmentShader: `#define IMAGE\n${FRAG_SHADER}`,
-  transparent: true,
-});
+function createProgram(gl: WebGLRenderingContext) {
+  const prog = new WebGL.Program(gl);
+  prog
+    .addShader(VERT_SHADER, gl.VERTEX_SHADER, ['IMAGE'])
+    .addShader(FRAG_SHADER, gl.FRAGMENT_SHADER, ['IMAGE'])
+    .compile()
+    .setUniformDefaults({
+      u_bordercolor: [0, 0, 0, 1],
+      u_tint: [1, 1, 1],
+      u_opacity: 1,
+      u_gradientunit: [0, 1],
+      u_gradientlength: 1,
+    });
+  return prog;
+}
 
 const BG_RESIZE = {
   center: 'center',
@@ -55,22 +44,19 @@ export default class GLTexturedView extends GLView {
   _bgTextureWidth: number;
   _tintColor: number;
 
-  constructor() {
-    super();
+  constructor(gl: WebGLRenderingContext) {
+    super(gl);
 
     this._bgTextureHeight = 0;
     this._bgTextureWidth = 0;
     this._bgResize = 'stretch';
     this._tintColor = 0xffffffff;
 
-    this.getGeometry().addAttribute(
-      'a_uv',
-      new THREE.InterleavedBufferAttribute(this.getPositionBuffer(), 2, 5, false)
-    );
+    this.getNode().addAttribute('a_uv');
   }
 
-  createNewMaterial(): THREE.ShaderMaterial {
-    return ImageMaterial.clone();
+  createProgram() {
+    return createProgram(this.gl);
   }
 
   createGeometryVertexArray(
@@ -208,20 +194,11 @@ export default class GLTexturedView extends GLView {
     ];
   }
 
-  setBackgroundImage(tex: THREE.Texture) {
-    this.getMaterial().uniforms.u_texture.value = tex;
+  setBackgroundImage(tex: WebGL.Texture) {
+    this.getNode().setUniform('u_texture', tex);
     if (tex) {
-      const source = tex.image;
-      if (source instanceof Image) {
-        this._bgTextureWidth = source.naturalWidth;
-        this._bgTextureHeight = source.naturalHeight;
-      } else if (source instanceof HTMLVideoElement) {
-        this._bgTextureWidth = source.videoWidth;
-        this._bgTextureHeight = source.videoHeight;
-      } else if (source.width !== undefined && source.height !== undefined) {
-        this._bgTextureWidth = source.width;
-        this._bgTextureHeight = source.height;
-      }
+      this._bgTextureWidth = tex.getWidth();
+      this._bgTextureHeight = tex.getHeight();
     } else {
       this._bgTextureWidth = 0;
       this._bgTextureHeight = 0;
@@ -243,13 +220,10 @@ export default class GLTexturedView extends GLView {
 
   setTintColor(color: number) {
     this._tintColor = color;
-    this.getMaterial().uniforms.u_tint.value.set(
+    this.getNode().setUniform('u_tint', [
       ((color >>> 16) & 0xff) / 255,
       ((color >>> 8) & 0xff) / 255,
-      (color & 0xff) / 255
-    );
-    this.getMaterial().needsUpdate = true;
+      (color & 0xff) / 255,
+    ]);
   }
 }
-(GLTexturedView: any).POSITION_STRIDE = 7;
-(GLTexturedView: any).MAX_BUFFER_SIZE = 40 * 7;

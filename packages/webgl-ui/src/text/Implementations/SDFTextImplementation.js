@@ -13,7 +13,7 @@ import type {GlyphRun, TextImplementation, TextRenderInfo} from '../TextTypes';
 import {DEFAULT_FONT_TEXTURE, DEFAULT_FONT_JSON} from './SDFDefaultFont';
 import SDFFontGeometry from './SDFFontGeometry';
 import {VERT_SHADER, FRAG_SHADER} from './SDFTextShaders';
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 
 type GlyphData = {
   AdvanceX: number,
@@ -31,52 +31,47 @@ type SDFFont = {
 const COLOR_MARKER = 0;
 const FALLBACK_CODE = 42;
 
-const SDFTextMaterial = new THREE.ShaderMaterial({
-  uniforms: {
-    u_transform: {value: new THREE.Matrix4()},
-    u_texture: {value: new THREE.Texture()},
-  },
-  vertexShader: VERT_SHADER,
-  fragmentShader: FRAG_SHADER,
-  extensions: {derivatives: true},
-  transparent: true,
-});
-SDFTextMaterial.premultipliedAlpha = true;
-SDFTextMaterial.depthWrite = false;
+function createProgram(gl: WebGLRenderingContext) {
+  const prog = new WebGL.Program(gl);
+  prog
+    .addShader(VERT_SHADER, gl.VERTEX_SHADER)
+    .addShader(FRAG_SHADER, gl.FRAGMENT_SHADER)
+    .compile()
+    .setUniformDefaults({
+      u_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    });
+  return prog;
+}
 
 export default class SDFTextImplementation implements TextImplementation {
   _atlases: Array<{
     image: Image,
-    texture: THREE.Texture | Promise<THREE.Texture>,
+    texture: WebGL.Texture,
   }>;
   _fonts: Array<SDFFont>;
+  _gl: WebGLRenderingContext;
 
-  constructor() {
+  constructor(gl: WebGLRenderingContext) {
+    this._gl = gl;
+    gl.getExtension('OES_standard_derivatives');
     this._fonts = [];
     this._fonts[0] = SDFTextImplementation.parseFontJSON(DEFAULT_FONT_JSON);
     this._atlases = [];
 
+    const tex = new WebGL.Texture(gl);
     const image = new Image();
     this._atlases[0] = {
       image,
-      texture: new Promise(resolve => {
-        image.onload = () => {
-          const tex = new THREE.Texture(image);
-          tex.wrapS = THREE.ClampToEdgeWrapping;
-          tex.wrapT = THREE.ClampToEdgeWrapping;
-          tex.minFilter = THREE.LinearFilter;
-          tex.flipY = false;
-          tex.needsUpdate = true;
-          this._atlases[0].texture = tex;
-          resolve(tex);
-        };
-      }),
+      texture: tex,
+    };
+    image.onload = () => {
+      tex.setSource(image);
     };
     image.src = DEFAULT_FONT_TEXTURE;
   }
 
   createText(text: string, options?: Object) {
-    return new SDFFontGeometry(this, text, options);
+    return new SDFFontGeometry(this._gl, this, text, options);
   }
 
   loadFont(dataPath: string, texPath: string): Promise<void> {
@@ -158,12 +153,7 @@ export default class SDFTextImplementation implements TextImplementation {
     return run;
   }
 
-  updateGeometryAndMaterial(
-    geometry: THREE.Geometry,
-    material: THREE.Material,
-    info: TextRenderInfo,
-    params: Object
-  ) {
+  updateGeometry(node: WebGL.Node, info: TextRenderInfo, params: Object) {
     const {align} = params;
     const center = params.center || 0.5;
 
@@ -270,61 +260,21 @@ export default class SDFTextImplementation implements TextImplementation {
       y -= info.size;
     }
 
-    geometry.setIndex(index);
-    const attrBuffer32 = new THREE.InterleavedBuffer(floatBuffer, 6);
-    const attrBuffer8 = new THREE.InterleavedBuffer(uintBuffer, 24);
-    const attributes = geometry.attributes;
-    if ('a_position' in attributes) {
-      attributes.a_position.data.setArray(floatBuffer);
-      attributes.a_position.data.needsUpdate = true;
-    } else {
-      geometry.addAttribute(
-        'a_position',
-        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 0, false)
-      );
-    }
-    if ('a_uv' in attributes) {
-      attributes.a_uv.data.setArray(floatBuffer);
-      attributes.a_uv.data.needsUpdate = true;
-    } else {
-      geometry.addAttribute(
-        'a_uv',
-        new THREE.InterleavedBufferAttribute(attrBuffer32, 2, 2, false)
-      );
-    }
-    if ('a_center' in attributes) {
-      attributes.a_center.data.setArray(floatBuffer);
-      attributes.a_center.data.needsUpdate = true;
-    } else {
-      geometry.addAttribute(
-        'a_center',
-        new THREE.InterleavedBufferAttribute(attrBuffer32, 1, 4, false)
-      );
-    }
-    if ('a_color' in attributes) {
-      attributes.a_color.data.setArray(uintBuffer);
-      attributes.a_color.data.needsUpdate = true;
-    } else {
-      geometry.addAttribute(
-        'a_color',
-        new THREE.InterleavedBufferAttribute(attrBuffer8, 4, 20, true)
-      );
-    }
+    node.geometry.bufferData(buffer);
+    node.geometry.bufferIndex(index);
 
     const tex = this._atlases[0].texture;
-    if (tex instanceof Promise) {
-      tex.then(t => {
-        material.uniforms.u_texture.value = t;
-        material.needsUpdate = true;
-      });
-    } else {
-      material.uniforms.u_texture.value = tex;
-      material.uniforms.u_texture.needsUpdate = true;
-    }
+    node.setUniform('u_texture', tex);
   }
 
-  createMaterial() {
-    return SDFTextMaterial.clone();
+  createNode() {
+    const program = createProgram(this._gl);
+    const node = new WebGL.Node(this._gl, program);
+    node.addAttribute('a_position');
+    node.addAttribute('a_uv');
+    node.addAttribute('a_center');
+    node.addAttribute('a_color', true);
+    return node;
   }
 
   static parseFontJSON(json: Object): SDFFont {

@@ -38,8 +38,8 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
   _textColor: ?number;
   _textDirty: boolean;
 
-  constructor(impl: TextImplementation) {
-    super(() => new GLView());
+  constructor(gl: WebGLRenderingContext, impl: TextImplementation) {
+    super(gl, gl_ => new GLView(gl_));
     this.textChildren = [];
     this._textColor = null;
     this._textDirty = true;
@@ -50,7 +50,6 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
       size: 20,
       align: 'auto',
     });
-    this.view.getNode().add(this._text.getNode());
     this.__setStyle_cursor('text');
 
     this.YGNode.setMeasureFunc((width, widthMeasureMode, height, heightMeasureMode) =>
@@ -69,7 +68,7 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
       offX, offY, 0, 1,
     ];
     matrixMultiply4(transform, this.view.getWorldTransform());
-    this._text.getNode().material.uniforms.u_transform.value.fromArray(transform);
+    this._text.getNode().setUniform('u_transform', transform);
   }
 
   __setStyle_color(color: number | string) {
@@ -104,6 +103,25 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this._geometryDirty = true;
   }
 
+  setParent(parent: any) {
+    if (!parent) {
+      const currentParent = this.getParent();
+      if (currentParent) {
+        // $FlowFixMe
+        const currentParentNode = currentParent.getNode();
+        if (currentParentNode.renderGroup) {
+          currentParentNode.renderGroup.removeNode(this._text.getNode());
+        }
+      }
+    } else {
+      const parentNode = parent.view.getNode();
+      if (parentNode.renderGroup) {
+        parentNode.renderGroup.addNode(this._text.getNode());
+      }
+    }
+    super.setParent(parent);
+  }
+
   addChild(index: number, child: any) {
     this.textChildren.splice(index, 0, child);
     child.setParent(this);
@@ -121,7 +139,7 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
 
   setRenderOrder(order: number) {
     super.setRenderOrder(order);
-    this._text.getNode().renderOrder = order;
+    this._text.getNode().renderOrder = order + 0.1;
   }
 
   measure(width: number, widthMeasureMode: number, height: number, heightMeasureMode: number) {

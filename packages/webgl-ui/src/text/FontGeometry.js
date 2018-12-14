@@ -11,7 +11,7 @@
 
 import type {TextImplementation, TextRenderInfo} from './TextTypes';
 import wrapText from './wrapText';
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 
 export const Align = {
   auto: 'left',
@@ -33,19 +33,23 @@ export default class FontGeometry {
   _align: string;
   _alignWidth: void | number; // Width of the span the alignment is relative to
   _fontFamily: string; // Specify the font to use, if supported by implementation
-  _geometry: THREE.Geometry;
   _geometryDirty: boolean; // Tracks whether geometry needs to be recomputed
+  _gl: WebGLRenderingContext;
   _impl: TextImplementation;
   _info: TextRenderInfo; // Layout information
   _infoDirty: boolean; // Tracks whether layout information is dirty
   _lineHeight: number; // Distance from one baseline to the next
-  _material: THREE.Material;
   _maxWidth: void | number; // Maximum width the text can fill before breaking
-  _node: THREE.Mesh;
+  _node: WebGL.Node;
   _size: number; // Font size, in pixels
   _text: string; // Text string to display
 
-  constructor(impl: TextImplementation, text: string, options: FontOptions = {}) {
+  constructor(
+    gl: WebGLRenderingContext,
+    impl: TextImplementation,
+    text: string,
+    options: FontOptions = {}
+  ) {
     this._align = options.align || Align.auto;
     this._fontFamily = '';
     this._geometryDirty = true;
@@ -57,15 +61,8 @@ export default class FontGeometry {
     this._text = text;
 
     this._info = wrapText(this._impl, this._fontFamily, this._size, this._text);
-    this._geometry = new THREE.BufferGeometry();
-    this._material = this._impl.createMaterial();
-    this._impl.updateGeometryAndMaterial(
-      this._geometry,
-      this._material,
-      this._info,
-      this.getParams()
-    );
-    this._node = new THREE.Mesh(this._geometry, this._material);
+    this._node = this._impl.createNode();
+    this._impl.updateGeometry(this._node, this._info, this.getParams());
   }
 
   getParams() {
@@ -146,12 +143,7 @@ export default class FontGeometry {
       this._infoDirty = false;
     }
     if (this._geometryDirty) {
-      this._impl.updateGeometryAndMaterial(
-        this._geometry,
-        this._material,
-        this._info,
-        this.getParams()
-      );
+      this._impl.updateGeometry(this._node, this._info, this.getParams());
       this._geometryDirty = false;
     }
   }

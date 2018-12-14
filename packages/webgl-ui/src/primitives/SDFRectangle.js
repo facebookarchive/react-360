@@ -19,6 +19,7 @@ varying vec2 v_center;
 varying float v_edge;
 
 uniform mat4 u_transform;
+uniform mat4 projectionMatrix;
 
 #ifdef IMAGE
 attribute vec2 a_uv;

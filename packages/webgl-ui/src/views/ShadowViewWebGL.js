@@ -29,6 +29,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderBottomLeftRadius: ?number;
   _cursor: ?string;
   _eventHandlers: {[event: string]: any};
+  _gl: WebGLRenderingContext;
   _hasCursorEvent: boolean;
   _hasOnLayout: boolean;
   _layoutOrigin: [number, number];
@@ -37,9 +38,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _renderOrder: number;
   view: T;
 
-  constructor(viewCreator: () => T) {
+  constructor(gl: WebGLRenderingContext, viewCreator: any => T) {
     super();
 
+    this._gl = gl;
     this._borderRadiusDirty = false;
     this._cursor = null;
     this._eventHandlers = {};
@@ -48,25 +50,32 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     this._layoutOrigin = [0, 0];
     this._zIndex = 0;
     this._renderOrder = 0;
-    this.view = viewCreator();
+    this.view = viewCreator(gl);
   }
 
   addChild(index: number, child: ShadowView) {
     super.addChild(index, child);
     if (child instanceof ShadowViewWebGL) {
-      this.view.getNode().add(child.view.getNode());
+      const node = this.view.getNode();
+      const childNode = child.view.getNode();
+      if (node.renderGroup && !childNode.renderGroup) {
+        node.renderGroup.addNode(childNode);
+      }
       child.setParentTransform(this.view.getWorldTransform());
     } else {
-      this.view.getNode().add((child: any).view);
+      throw new Error('Cannot add unsupported child');
     }
   }
 
   removeChild(index: number) {
     const child = this.children[index];
     if (child instanceof ShadowViewWebGL) {
-      this.view.getNode().remove(child.view.getNode());
+      const childNode = child.view.getNode();
+      if (childNode.renderGroup) {
+        childNode.renderGroup.removeNode(childNode);
+      }
     } else {
-      this.view.getNode().remove((child: any).view);
+      throw new Error('Cannot remove unsupported child');
     }
     super.removeChild(index);
   }

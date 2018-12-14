@@ -9,116 +9,71 @@
  * @flow
  */
 
-import {ClampToEdgeWrapping, LinearFilter, Texture, UVMapping} from 'three';
+import {Texture} from 'webgl-lite';
 
 type CustomProtocolTransform = string => Promise<Image | HTMLCanvasElement>;
 
 const PROTOCOL = /^([a-zA-Z]+):/;
 
-function loadTextureFromURL(url): Promise<Texture> {
+function loadTextureFromURL(gl, url): Texture {
+  const tex = new Texture(gl);
   if (typeof self.createImageBitmap === 'function') {
-    return fetch(url)
+    fetch(url)
       .then(response => response.blob())
       .then(blob => self.createImageBitmap(blob, {imageOrientation: 'flipY'}))
       .then(imageBitmap => {
-        const tex = new Texture(imageBitmap);
-        tex.needsUpdate = true;
-        return tex;
+        tex.setSource(imageBitmap);
       });
+    return tex;
   }
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      const tex = new Texture(img);
-      tex.needsUpdate = true;
-      resolve(tex);
-    };
-    img.src = url;
-  });
+  const img = new Image();
+  img.onload = () => {
+    tex.setSource(img);
+  };
+  img.src = url;
+  return tex;
 }
 
 export default class TextureManager {
   _customProtocols: {[protocol: string]: CustomProtocolTransform};
-  _pendingTextures: {[url: string]: Promise<Texture>};
+  _gl: WebGLRenderingContext;
   _textureMap: {[url: string]: Texture};
-  _textureResolvers: {[url: string]: (Texture) => mixed};
 
-  constructor() {
+  constructor(gl: WebGLRenderingContext) {
     this._customProtocols = {};
-    this._pendingTextures = {};
+    this._gl = gl;
     this._textureMap = {};
-    this._textureResolvers = {};
   }
 
   getTextureForURL(url: string): Promise<Texture> {
     if (this._textureMap[url]) {
       // Already registered source, return the texture
-      return Promise.resolve(this._textureMap[url]);
-    }
-    if (this._pendingTextures[url]) {
-      // Other components are waiting on the source, wait on the same Promise
-      return this._pendingTextures[url];
-    }
-
-    if (url.startsWith('texture://')) {
-      // Local texture
-      const promise = new Promise(resolve => {
-        this._textureResolvers[url] = resolve;
-      });
-      this._pendingTextures[url] = promise;
-      return promise;
+      return this._textureMap[url];
     }
     const protocolMatch = url.match(PROTOCOL);
     if (protocolMatch) {
       const protocol = protocolMatch[1];
       const transform = this._customProtocols[protocol];
       if (transform) {
-        const promise = transform(url).then(img => {
-          let tex = img;
-          if (!(tex instanceof Texture)) {
-            tex = new Texture(
-              img,
-              UVMapping,
-              ClampToEdgeWrapping,
-              ClampToEdgeWrapping,
-              LinearFilter,
-              LinearFilter
-            );
-          }
-          tex.needsUpdate = true;
-          this._textureMap[url] = tex;
-          delete this._pendingTextures[url];
-          return tex;
+        const tex = new Texture(this._gl);
+        transform(url).then(img => {
+          tex.setSource(img);
         });
-        this._pendingTextures[url] = promise;
-        return promise;
+        this._textureMap[url] = tex;
+        return tex;
       }
     }
     // Network texture
-    const promise = loadTextureFromURL(url)
-      .then(tex => {
-        this._textureMap[url] = tex;
-        delete this._pendingTextures[url];
-        return tex;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    this._pendingTextures[url] = promise;
-    return promise;
+    const tex = loadTextureFromURL(this._gl, url);
+    this._textureMap[url] = tex;
+    return tex;
   }
 
   registerLocalTextureSource(name: string, source: Element) {
     if (source instanceof HTMLCanvasElement || source instanceof Image) {
-      const tex = new Texture(source);
-      tex.needsUpdate = true;
+      const tex = new Texture(this._gl, {source});
       const url = `texture://${name}`;
       this._textureMap[url] = tex;
-      delete this._pendingTextures[url];
-      if (this._textureResolvers[url]) {
-        this._textureResolvers[url](tex);
-        delete this._textureResolvers[url];
-      }
     } else {
       throw new Error('Unsupported texture source');
     }

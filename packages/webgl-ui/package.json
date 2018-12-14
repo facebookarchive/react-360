@@ -17,7 +17,7 @@
     "README.md"
   ],
   "dependencies": {
-    "three": "^0.88.0"
+    "webgl-lite": "~0.0.1"
   },
   "devDependencies": {
     "@babel/cli": "7.1.2",

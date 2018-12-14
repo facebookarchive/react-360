@@ -17,8 +17,8 @@ import type {Dispatcher} from './ShadowView';
  * Implementation of View backed by the new GLView
  */
 export default class RCTView extends ShadowViewWebGL<GLView> {
-  constructor() {
-    super(() => new GLView());
+  constructor(gl: WebGLRenderingContext) {
+    super(gl, gl_ => new GLView(gl_));
   }
 
   setCursorVisibilitySlop(slop: number) {

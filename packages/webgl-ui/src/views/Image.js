@@ -20,8 +20,8 @@ import type {Dispatcher} from './ShadowView';
 export default class RCTImage extends ShadowViewWebGL<GLTexturedView> {
   _textures: TextureManager;
 
-  constructor(textureManager: TextureManager) {
-    super(() => new GLTexturedView());
+  constructor(gl: WebGLRenderingContext, textureManager: TextureManager) {
+    super(gl, gl_ => new GLTexturedView(gl_));
     this._textures = textureManager;
   }
 
@@ -31,14 +31,7 @@ export default class RCTImage extends ShadowViewWebGL<GLTexturedView> {
       this.view.setBackgroundImage(null);
       return;
     }
-    this._textures.getTextureForURL(value.uri).then(
-      tex => {
-        this.view.setBackgroundImage(tex);
-      },
-      () => {
-        this.view.setBackgroundImage(null);
-      }
-    );
+    this.view.setBackgroundImage(this._textures.getTextureForURL(value.uri));
   }
 
   __setStyle_resizeMode(mode: ResizeMode) {

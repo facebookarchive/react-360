@@ -15,8 +15,13 @@ import type SDFTextImplementation from './SDFTextImplementation';
 export default class SDFFontGeometry extends FontGeometry {
   _center: number;
 
-  constructor(impl: SDFTextImplementation, text: string, options: Object = {}) {
-    super(impl, text, options);
+  constructor(
+    gl: WebGLRenderingContext,
+    impl: SDFTextImplementation,
+    text: string,
+    options: Object = {}
+  ) {
+    super(gl, impl, text, options);
   }
 
   getParms() {
