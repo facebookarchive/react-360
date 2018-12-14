@@ -8,7 +8,9 @@
  */
 
 import VideoPlayer from './src/VideoPlayer.react';
+import VideoControl from './src/VideoControl.react';
 
 module.exports = {
   VideoPlayer,
+  VideoControl,
 };

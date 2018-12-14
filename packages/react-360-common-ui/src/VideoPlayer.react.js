@@ -12,9 +12,10 @@
 'use strict';
 
 import React from 'react';
-import {View, Environment} from 'react-360';
+import {VrButton, Environment} from 'react-360';
 import {UIManager, findNodeHandle} from 'react-native';
 import VideoModule, {VideoPlayerInstance} from 'VideoModule';
+import VideoControl from './VideoControl.react';
 
 import type {VideoLayout, VideoStereoFormat, VideoSource} from 'VideoModule';
 import type {ViewStyleProp} from 'StyleSheetTypes';
@@ -23,6 +24,7 @@ type Source = VideoSource | Array<VideoSource>;
 
 type Props = {
   style?: ViewStyleProp,
+  controlStyle?: ViewStyleProp,
   layout?: VideoLayout,
   muted: boolean,
   onPlayerCreated: (player: VideoPlayerInstance) => void,
@@ -31,6 +33,7 @@ type Props = {
   stereo?: VideoStereoFormat,
   visible: boolean,
   volume: number,
+  showControl: boolean,
 };
 
 type VideoBound = {
@@ -43,6 +46,8 @@ type VideoBound = {
 type State = {
   videoBound: ?VideoBound,
   surface: ?string,
+  controlVisible: boolean,
+  isControlFocused: boolean,
 };
 
 function sourceEqual(a: ?Source, b: ?Source) {
@@ -72,22 +77,28 @@ function sourceEqual(a: ?Source, b: ?Source) {
   return false;
 }
 
+const VIDEO_CONTROL_FADE_DURATION = 3000;
+
 class VideoPlayer extends React.PureComponent<Props, State> {
   static defaultProps = {
     muted: false,
     screenId: 'default',
     visible: true,
     volume: 1.0,
+    showControl: true,
   };
   state: State;
   _player: VideoPlayerInstance;
   _playingSource: ?Source;
+  _controlFadeTimeout: ?TimeoutID = null;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       videoBound: null,
       surface: null,
+      controlVisible: true,
+      isControlFocused: false,
     };
     this._player = VideoModule.createPlayer();
   }
@@ -105,11 +116,51 @@ class VideoPlayer extends React.PureComponent<Props, State> {
     });
     this._updateVideo(this.props);
     this.props.onPlayerCreated && this.props.onPlayerCreated(this._player);
+    this._fadeVideoControl();
   }
 
   componentWillUnmount() {
     this._player.destroy();
   }
+
+  _cancelFadeVideoControl = () => {
+    if (this._controlFadeTimeout) {
+      clearTimeout(this._controlFadeTimeout);
+      this._controlFadeTimeout = null;
+    }
+  };
+
+  _fadeVideoControl = () => {
+    this._cancelFadeVideoControl();
+    this._controlFadeTimeout = setTimeout(() => {
+      this.setState({
+        controlVisible: false,
+      });
+    }, VIDEO_CONTROL_FADE_DURATION);
+  };
+
+  _showVideoControl = () => {
+    this.setState({
+      controlVisible: true,
+    });
+    if (!this.state.isControlFocused) {
+      this._fadeVideoControl();
+    }
+  };
+
+  _onControlEnter = () => {
+    this.setState({
+      isControlFocused: true,
+    });
+    this._cancelFadeVideoControl();
+  };
+
+  _onControlExit = () => {
+    this.setState({
+      isControlFocused: false,
+    });
+    this._fadeVideoControl();
+  };
 
   _updateVideo(props: Props) {
     if (!sourceEqual(props.source, this._playingSource)) {
@@ -163,8 +214,32 @@ class VideoPlayer extends React.PureComponent<Props, State> {
         );
       }
     }
-
-    return <View onLayout={this._setVideoBound} style={this.props.style} />;
+    const showCallback = this.props.showControl ? this._showVideoControl : undefined;
+    const fadeCallback = this.props.showControl ? this._fadeVideoControl : undefined;
+    return (
+      <VrButton
+        onExit={fadeCallback}
+        onEnter={showCallback}
+        onClick={showCallback}
+        onLayout={this._setVideoBound}
+        style={[{justifyContent: 'flex-end', alignItems: 'center'}, this.props.style]}>
+        {this.props.showControl && (
+          <VideoControl
+            onEnter={this._onControlEnter}
+            onExit={this._onControlExit}
+            player={this._player}
+            style={[
+              {
+                height: '10%',
+                width: '100%',
+                opacity: this.state.controlVisible ? 1.0 : 0.0,
+              },
+              this.props.controlStyle,
+            ]}
+          />
+        )}
+      </VrButton>
+    );
   }
 }
 
