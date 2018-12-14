@@ -33,8 +33,21 @@ export default class SurfaceManager {
     this._surfaces[name] = surface;
   }
 
+  unregisterSurface(name: string) {
+    if (!this._surfaces[name]) {
+      throw new Error(
+        `Cannot unregister Surface with tag '${name}', the Surface with that name doesn't exists.`
+      );
+    }
+    delete this._surfaces[name];
+  }
+
   showSurface(surface: Surface) {
     this._surfaceRoot.add(surface.getNode());
+  }
+
+  hideSurface(surface: Surface) {
+    this._surfaceRoot.remove(surface.getNode());
   }
 
   getSurface(name: string): ?Surface {

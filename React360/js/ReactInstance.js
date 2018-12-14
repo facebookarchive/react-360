@@ -442,6 +442,25 @@ export default class ReactInstance {
   }
 
   /**
+   * Detach a root view from the render root(Surface or Location).
+   * The tag here is the root view tag returned in `renderToSurface`
+   * or `renderToLocation`.
+   * You can also re-use the Surface/Location by calling `renderToSurface`
+   * or `renderToLocation` with another rootview name after the root view
+   * is detached
+   */
+  detachRoot(tag: number) {
+    const rootInfo = this.runtime.getSurfaceInfo(tag);
+    if (rootInfo) {
+      this.compositor.hideSurface(rootInfo.surface);
+      if (rootInfo.name !== 'default') {
+        this.compositor.unregisterSurface(rootInfo.name);
+      }
+    }
+    this.runtime.destroyRootView(tag);
+  }
+
+  /**
    * Switch to 3D rendering to rendering the contents of a specific surface
    * directly to the canvas. This may be useful for debugging or certain
    * out-of-VR use cases.

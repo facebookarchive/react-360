@@ -128,8 +128,16 @@ export default class Compositor {
     this._surfaceManager.registerSurface(name, surface);
   }
 
+  unregisterSurface(name: string) {
+    this._surfaceManager.unregisterSurface(name);
+  }
+
   showSurface(surface: Surface) {
     this._surfaceManager.showSurface(surface);
+  }
+
+  hideSurface(surface: Surface) {
+    this._surfaceManager.hideSurface(surface);
   }
 
   getSurface(name: string): ?Surface {

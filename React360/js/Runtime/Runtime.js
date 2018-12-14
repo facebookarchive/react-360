@@ -22,14 +22,16 @@ import GuiSys from '../OVRUI/UIView/GuiSys';
 import {ReactNativeContext} from '../ReactNativeContext';
 
 type LocationNode = {
+  tag: number,
   location: Location,
   node: THREE.Object3D,
 };
 
 type SurfaceNode = {
-  camera: THREE.Camera,
-  renderTarget: THREE.WebGLRenderTarget,
-  scene: THREE.Scene,
+  tag: number,
+  offscreenRenderUID: number,
+  surface: Surface,
+  name: string,
 };
 
 export type NativeModuleInitializer = ReactNativeContext => Module;
@@ -67,15 +69,15 @@ export default class Runtime {
   _initialized: boolean;
   _lastHit: ?number;
   _offscreenRenderUID: number;
-  _rootLocations: Array<LocationNode>;
-  _rootSurfaces: {[id: string]: SurfaceNode};
+  _rootLocations: {[tag: string]: LocationNode};
+  _rootSurfaces: {[tag: string]: SurfaceNode};
   _scene: THREE.Scene;
   context: ReactNativeContext;
   executor: ReactExecutor;
   guiSys: GuiSys;
 
   constructor(scene: THREE.Scene, bundle: string, options: RuntimeOptions = {}) {
-    this._rootLocations = [];
+    this._rootLocations = {};
     this._rootSurfaces = {};
     this._scene = scene;
     this._cursorIntersectsSurface = false;
@@ -141,7 +143,7 @@ export default class Runtime {
   ) {
     if (dest instanceof Surface) {
       const context = this.context;
-      this.guiSys.registerOffscreenRender(
+      const offscreenRenderUID = this.guiSys.registerOffscreenRender(
         dest.getScene(),
         dest.getCamera(),
         dest.getRenderTarget()
@@ -151,20 +153,50 @@ export default class Runtime {
       if (rootView) {
         rootView.surfaceName = surfaceName;
       }
+      this._rootSurfaces[String(tag)] = {
+        tag: tag,
+        offscreenRenderUID: offscreenRenderUID,
+        surface: dest,
+        name: surfaceName || '',
+      };
       return tag;
     } else if (dest instanceof Location) {
       const node = new THREE.Object3D();
       node.position.fromArray(dest.worldPosition);
       node.quaternion.fromArray(dest.worldRotation);
       this.guiSys.root.add(node);
-      this._rootLocations.push({
+      const tag = this.context.createRootView(name, initialProps, (node: any));
+      this._rootLocations[String(tag)] = {
+        tag: tag,
         location: dest,
         node: node,
-      });
-      const tag = this.context.createRootView(name, initialProps, (node: any));
+      };
       return tag;
     }
     throw new Error('Invalid mount point');
+  }
+
+  getSurfaceInfo(tag: number): ?SurfaceNode {
+    const key = String(tag);
+    if (this._rootSurfaces[key]) {
+      return this._rootSurfaces[key];
+    }
+    return null;
+  }
+
+  destroyRootView(tag: number) {
+    const key = String(tag);
+    if (this._rootSurfaces[key]) {
+      this.context.destroyRootView(tag);
+      this.guiSys.unregisterOffscreenRender(this._rootSurfaces[key].offscreenRenderUID);
+      delete this._rootSurfaces[key];
+      return;
+    }
+    if (this._rootLocations[key]) {
+      this.context.destroyRootView(tag);
+      delete this._rootLocations[key];
+      return;
+    }
   }
 
   frame(camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
@@ -189,8 +221,8 @@ export default class Runtime {
       renderer.setRenderTarget(null);
       renderer.localClippingEnabled = oldClipping;
     }
-    for (let i = 0; i < this._rootLocations.length; i++) {
-      const {location, node} = this._rootLocations[i];
+    for (const key in this._rootLocations) {
+      const {location, node} = this._rootLocations[key];
       if (location.isDirty()) {
         const worldPosition = location.worldPosition;
         node.position.set(worldPosition[0], worldPosition[1], worldPosition[2]);

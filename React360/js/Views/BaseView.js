@@ -929,6 +929,10 @@ export default class RCTBaseView {
         RCTBaseView.disposeThreeJSObject(node.children[i]);
       }
     }
+    if (node.parent && node.parent.type !== 'UIView') {
+      // manually detached from non UIView parent
+      node.parent.remove(node);
+    }
     node.parent = null;
     node.children = [];
   }
