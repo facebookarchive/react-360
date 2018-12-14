@@ -18,9 +18,9 @@ export type TextureMetadata = {
 };
 
 export interface VideoPlayerImplementation {
-  constructor(): void;
+  constructor(gl: WebGLRenderingContext): void;
   destroy(): void;
-  load(): Promise<TextureMetadata>;
+  getTexture(): any;
   pause(): void;
   play(): void;
   seekTo(position: number): void;

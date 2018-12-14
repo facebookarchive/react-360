@@ -45,6 +45,10 @@ export default class TextureManager {
     this._textureMap = {};
   }
 
+  getGLContext() {
+    return this._gl;
+  }
+
   getTextureForURL(url: string): Promise<Texture> {
     if (this._textureMap[url]) {
       // Already registered source, return the texture
@@ -55,12 +59,19 @@ export default class TextureManager {
       const protocol = protocolMatch[1];
       const transform = this._customProtocols[protocol];
       if (transform) {
-        const tex = new Texture(this._gl);
-        transform(url).then(img => {
-          tex.setSource(img);
-        });
-        this._textureMap[url] = tex;
-        return tex;
+        const loader = transform(url);
+        if (loader instanceof Texture) {
+          this._textureMap[url] = loader;
+          return loader;
+        } else if (loader instanceof Promise) {
+          const tex = new Texture(this._gl);
+          loader.then(img => {
+            tex.setSource(img);
+          });
+          this._textureMap[url] = tex;
+          return tex;
+        }
+        throw new Error('Custom texture protocol returned unsupported type');
       }
     }
     // Network texture

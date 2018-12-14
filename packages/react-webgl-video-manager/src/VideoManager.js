@@ -18,10 +18,12 @@ type VideoHandle = string;
 export default class VideoManager {
   _playerImplementations: Array<VideoPlayerImplementation>;
   _players: {[handle: string]: VideoPlayer};
+  _textureManager: TextureManager;
 
   constructor(textureManager: TextureManager) {
     this._players = {};
     this._playerImplementations = [];
+    this._textureManager = textureManager;
     // register video hook on texture manager
     textureManager.registerCustomProtocol('video', url => {
       const name = url.replace(/^video:\/\//, '');
@@ -29,7 +31,7 @@ export default class VideoManager {
       if (!player) {
         return null;
       }
-      return player.load().then(metadata => metadata.tex);
+      return player.getTexture();
     });
   }
 
@@ -66,7 +68,7 @@ export default class VideoManager {
       const supported = Impl.getSupportedFormats();
       if (supported.indexOf(ext) > -1) {
         // $FlowFixMe - can't instantiate an interface
-        return new Impl();
+        return new Impl(this._textureManager.getGLContext());
       }
     }
     throw new Error(`No registered player supports ${ext} files.`);

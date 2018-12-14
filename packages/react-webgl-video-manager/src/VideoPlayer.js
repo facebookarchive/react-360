@@ -21,14 +21,10 @@ export default class VideoPlayer {
   _impl: ?VideoPlayerImplementation;
   _manager: VideoManager;
   _load: Promise<TextureMetadata>;
-  _resolveImplementation: TextureMetadata => void;
 
   constructor(manager: VideoManager) {
     this._impl = null;
     this._manager = manager;
-    this._load = new Promise(resolve => {
-      this._resolveImplementation = resolve;
-    });
   }
 
   destroy() {
@@ -38,8 +34,11 @@ export default class VideoPlayer {
     this._impl.destroy();
   }
 
-  load(): Promise<TextureMetadata> {
-    return this._load;
+  getTexture() {
+    if (!this._impl) {
+      return;
+    }
+    return this._impl.getTexture();
   }
 
   pause() {
@@ -89,9 +88,6 @@ export default class VideoPlayer {
     const impl = this._manager.createPlayerImplementation(url);
     this._impl = impl;
     impl.setSource(url, format);
-    impl.load().then(tex => {
-      this._resolveImplementation(tex);
-    });
   }
 
   setVolume(vol: number) {

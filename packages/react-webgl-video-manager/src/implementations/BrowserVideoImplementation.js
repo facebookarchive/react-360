@@ -9,7 +9,7 @@
  * @flow
  */
 
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 
 import type {TextureMetadata, VideoPlayerImplementation} from '../VideoTypes';
 
@@ -38,12 +38,14 @@ function fillSupportCache() {
  */
 export default class BrowserVideoImplementation implements VideoPlayerImplementation {
   _element: HTMLVideoElement;
+  _gl: WebGLRenderingContext;
   _load: ?Promise<TextureMetadata>;
   _loop: boolean;
   _playing: boolean;
-  _texture: ?THREE.Texture;
+  _texture: WebGL.Texture;
 
-  constructor() {
+  constructor(gl: WebGLRenderingContext) {
+    this._gl = gl;
     this._playing = false;
     this._element = document.createElement('video');
     this._element.muted = true;
@@ -52,7 +54,7 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
     this._element.setAttribute('playsinline', 'playsinline');
     this._element.setAttribute('webkit-playsinline', 'webkit-playsinline');
     this._element.crossOrigin = 'anonymous';
-    this._texture = null;
+    this._texture = new WebGL.Texture(gl);
     if (document.body) {
       document.body.appendChild(this._element);
     }
@@ -72,53 +74,20 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
   };
 
   setSource(src: string, format?: string) {
-    if (this._texture) {
-      this._texture.dispose();
-    }
     this._element.src = src;
     this._element.load();
-    this._load = new Promise((resolve, reject) => {
-      let closed = false;
-      this._element.addEventListener('canplay', () => {
-        if (closed) {
-          return;
-        }
-        closed = true;
-        const width = this._element.videoWidth;
-        const height = this._element.videoHeight;
-        const tex = new THREE.Texture(this._element);
-        tex.generateMipmaps = false;
-        tex.wrapS = THREE.ClampToEdgeWrapping;
-        tex.wrapT = THREE.ClampToEdgeWrapping;
-        tex.minFilter = THREE.LinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        this._texture = tex;
-        resolve({
-          format: format || '2D',
-          height,
-          src,
-          tex,
-          width,
-        });
-      });
-      this._element.addEventListener('error', () => {
-        if (closed) {
-          return;
-        }
-        closed = true;
-        const error = this._element.error;
-        reject(new Error(error ? error.message : 'Unknown media error'));
-      });
+    this._element.addEventListener('canplay', () => {
+      this._texture.setSource(this._element);
     });
   }
 
-  load(): Promise<TextureMetadata> {
-    return this._load || Promise.reject(new Error('No source set'));
+  getTexture() {
+    return this._texture;
   }
 
   update() {
-    if (this._texture && this._playing) {
-      this._texture.needsUpdate = true;
+    if (this._playing) {
+      this._texture.update();
     }
   }
 
@@ -157,9 +126,7 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
     if (this._element.parentNode) {
       this._element.parentNode.removeChild(this._element);
     }
-    if (this._texture) {
-      this._texture.dispose();
-    }
+    this._texture.release();
     this._element.src = '';
   }
 

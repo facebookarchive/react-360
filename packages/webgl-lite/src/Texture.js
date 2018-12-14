@@ -91,19 +91,23 @@ export default class Texture {
     const gl = this._gl;
     gl.bindTexture(gl.TEXTURE_2D, this._texture);
     if (source instanceof Image) {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
       this._width = source.naturalWidth;
       this._height = source.naturalHeight;
     } else if (source instanceof ImageBitmap) {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
       // $FlowFixMe - ImageBitmap polyfill won't be compatible with texImage2D
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
       this._width = source.width;
       this._height = source.height;
     } else if (source instanceof HTMLCanvasElement) {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
       this._width = source.width;
       this._height = source.height;
     } else if (source instanceof HTMLVideoElement) {
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
       this._width = source.videoWidth;
       this._height = source.videoHeight;
