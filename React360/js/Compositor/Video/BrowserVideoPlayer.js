@@ -81,6 +81,7 @@ export default class BrowserVideoPlayer implements VideoPlayerImplementation {
     this._element.addEventListener('waiting', this._onWaiting);
     this._element.addEventListener('playing', this._onPlaying);
     this._element.addEventListener('timeupdate', this._onTimeupdate);
+    this._element.addEventListener('pause', this._onPause);
   }
 
   _updateStatus(newStatus: VideoPlayerStatus, error: ?string, forceReport: boolean = false) {
@@ -132,6 +133,13 @@ export default class BrowserVideoPlayer implements VideoPlayerImplementation {
   _onTimeupdate = () => {
     if (this._playing) {
       this._updateStatus(this._status, undefined, true);
+    }
+  };
+
+  _onPause = () => {
+    if (this._playing) {
+      this._playing = false;
+      this._updateStatus('paused');
     }
   };
 
@@ -207,9 +215,16 @@ export default class BrowserVideoPlayer implements VideoPlayerImplementation {
   }
 
   play() {
-    this._element.play();
-    this._playing = true;
-    this._updateStatus('playing');
+    this._element
+      .play()
+      .then(() => {
+        this._playing = true;
+        this._updateStatus('playing');
+      })
+      .catch((e: Error) => {
+        console.error(`BrowserVideoPlayer: get error "${e.toString()}" when calling play().`);
+        this._updateStatus(this._status, e.toString(), true);
+      });
   }
 
   pause() {
