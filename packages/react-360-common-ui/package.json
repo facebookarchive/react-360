@@ -1,0 +1,24 @@
+{
+  "name": "react-360-common-ui",
+  "version": "0.1.0",
+  "description": "A shared library of react components for useful UIs you can used in react-360",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git"
+  },
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "files": [
+    "src/",
+    "index.js",
+    "LICENSE",
+    "PATENTS",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "react": "16.3.2",
+    "react-native": "0.55.4",
+    "react-360": "1.1.0"
+  }
+}

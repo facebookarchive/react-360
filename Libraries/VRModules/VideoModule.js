@@ -197,7 +197,7 @@ for (const eventType of VideoEventTypes) {
   });
 }
 
-class VideoPlayerInstance {
+export class VideoPlayerInstance {
   _player: string;
   _emitter = new EventEmitter();
 
