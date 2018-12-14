@@ -77,7 +77,7 @@ export default class Environment {
     // Objects for panorama management
     this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
     this._panoGeomHemisphere = new THREE.SphereGeometry(1000, 16, 16, 0, Math.PI);
-    this._panoGeomCube = new CubemapGeometry(1000, 1, 6, 1.01);
+    this._panoGeomCube = new CubemapGeometry(1000, 1, 6, 1.001);
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#000000',
       side: THREE.DoubleSide,
@@ -111,10 +111,15 @@ export default class Environment {
     this._panoMesh.needsUpdate = true;
   }
 
-  _setPanoGeometryToCube(columns: number, rows: number) {
+  _setPanoGeometryToCube(columns: number, rows: number, expansion: number = 0.001) {
+    const expansionCoef = 1 + expansion;
     // rebuild geometry if different
-    if (this._panoGeomCube.columns !== columns || this._panoGeomCube.rows !== rows) {
-      this._panoGeomCube = new CubemapGeometry(1000, columns, rows, 1.01);
+    if (
+      this._panoGeomCube.columns !== columns ||
+      this._panoGeomCube.rows !== rows ||
+      this._panoGeomCube.expansionCoef !== expansionCoef
+    ) {
+      this._panoGeomCube = new CubemapGeometry(1000, columns, rows, 1 + expansion);
     }
     this._panoMesh.geometry = this._panoGeomCube;
     this._applyPanoRotation();
@@ -173,7 +178,7 @@ export default class Environment {
     this._panoEyeOffsets = panoEyeOffsetsForStereoFormat(data.format);
     if (data.layout === 'CUBEMAP_32') {
       // video specified layout to be cube map
-      this._setPanoGeometryToCube(3, 2);
+      this._setPanoGeometryToCube(3, 2, 0.01);
     } else if (width === height) {
       // 1:1 ratio, 180 mono or top/bottom 360 3D
       if (data.format === '3DTB' || data.format === '3DBT') {
@@ -194,7 +199,7 @@ export default class Environment {
       }
     } else if (width === height / 6) {
       // cube strip format for 360 photo cubemap
-      this._setPanoGeometryToCube(1, 6);
+      this._setPanoGeometryToCube(1, 6, 0.001);
     } else {
       this._setPanoGeometryToSphere();
     }
