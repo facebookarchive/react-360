@@ -9,7 +9,7 @@
  * @flow
  */
 
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 import GLRoot from './GLRoot';
 
 export type CanvasRootOptions = {
@@ -20,40 +20,59 @@ export type CanvasRootOptions = {
 
 export default class CanvasRoot extends GLRoot {
   constructor(options: CanvasRootOptions = {}) {
-    super(new THREE.Scene());
+    const canvas = options.canvas || document.createElement('canvas');
+    const gl = canvas.getContext('webgl');
+    const renderGroup = new WebGL.RenderGroup(gl);
+    super(renderGroup);
+    this._canvas = canvas;
+    this._renderGroup = renderGroup;
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     const width = options.width || (options.canvas ? options.canvas.width : 300);
     const height = options.height || (options.canvas ? options.canvas.height : 300);
-
-    this._renderer = new THREE.WebGLRenderer({canvas: options.canvas});
-    this._camera = new THREE.OrthographicCamera();
     this.resize(width, height);
 
-    this._renderer.domElement.addEventListener('mousedown', this._onInput.bind(this, 'mousedown'));
-    this._renderer.domElement.addEventListener('mousemove', this._onMouseMove);
-    this._renderer.domElement.addEventListener('mouseleave', this._onMouseLeave);
+    canvas.addEventListener('mousedown', this._onInput.bind(this, 'mousedown'));
+    canvas.addEventListener('mousemove', this._onMouseMove);
+    canvas.addEventListener('mouseleave', this._onMouseLeave);
   }
 
   resize(width: number, height: number) {
-    this._renderer.setSize(width, height, true);
-    this._renderer.setPixelRatio(window.devicePixelRatio || 1);
-    this._camera.left = 0;
-    this._camera.right = width;
-    this._camera.top = 0;
-    this._camera.bottom = height;
-    this._camera.near = -1000;
-    this._camera.far = 1000;
-    this._camera.setViewOffset(width, height, 0, 0, width, height);
-    this._camera.updateProjectionMatrix();
+    const pixelRatio = window.devicePixelRatio || 1;
+    this._canvas.width = width * pixelRatio;
+    this._canvas.height = height * pixelRatio;
+    this._canvas.style.width = width + 'px';
+    this._canvas.style.height = height + 'px';
+    this._renderGroup.getGLContext().viewport(0, 0, width * pixelRatio, height * pixelRatio);
+    this._renderGroup.setUniform('projectionMatrix', [
+      2 / width,
+      0,
+      0,
+      0,
+      0,
+      -2 / height,
+      0,
+      0,
+      0,
+      0,
+      -0.001,
+      0,
+      -1,
+      1,
+      0,
+      1,
+    ]);
   }
 
-  getRenderer() {
-    return this._renderer;
+  getCanvas() {
+    return this._canvas;
   }
 
   update() {
     super.update();
-    this._renderer.render(this.getScene(), this._camera);
+    this._renderGroup.draw();
   }
 
   showCursor() {
@@ -61,7 +80,7 @@ export default class CanvasRoot extends GLRoot {
   }
 
   updateCursor(cursor: string) {
-    this._renderer.domElement.style.cursor = cursor;
+    this._canvas.style.cursor = cursor;
   }
 
   _onMouseMove = e => {

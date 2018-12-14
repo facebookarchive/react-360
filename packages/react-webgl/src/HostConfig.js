@@ -47,6 +47,7 @@ export function createInstance(
   // create view from type
   const element = Elements[type];
   const view = element.create(rootContainerInstance);
+  rootContainerInstance.getRenderGroup().addNode(view.view.getNode());
   applyProps(view, null, props, element.dispatchers);
   return view;
 }

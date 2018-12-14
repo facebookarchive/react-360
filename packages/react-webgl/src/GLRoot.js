@@ -21,13 +21,13 @@ function recursiveLayout(view) {
 }
 
 export default class GLRoot {
-  constructor(scene: any) {
-    this._scene = scene;
+  constructor(renderGroup: any) {
+    this._renderGroup = renderGroup;
     this._roots = [];
     this.YGNode = Flexbox.Node.create();
 
-    this._textImplementation = new SDFTextImplementation();
-    this._textureManager = new TextureManager();
+    this._textImplementation = new SDFTextImplementation(renderGroup.getGLContext());
+    this._textureManager = new TextureManager(renderGroup.getGLContext());
 
     this._hitLastFrame = new Set();
     this._hitCurrentFrame = new Set();
@@ -37,7 +37,7 @@ export default class GLRoot {
 
   append(child) {
     this._roots.push(child);
-    this._scene.add(child.view.getNode());
+    this._renderGroup.addNode(child.view.getNode());
     this.YGNode.insertChild(child.YGNode, this._roots.length - 1);
   }
 
@@ -47,6 +47,7 @@ export default class GLRoot {
       recursiveLayout(root);
       StackingContext.restack(root);
     }
+    this._renderGroup.refreshRenderOrder();
     this._detectCurrentHits();
   }
 
@@ -62,8 +63,8 @@ export default class GLRoot {
     return this._textureManager;
   }
 
-  getScene() {
-    return this._scene;
+  getRenderGroup() {
+    return this._renderGroup;
   }
 
   getCurrentHitSet() {

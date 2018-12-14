@@ -12,7 +12,7 @@
 import {Image, Text, View} from 'webgl-ui';
 
 export const quad = {
-  create: () => new View(),
+  create: root => new View(root.getRenderGroup().getGLContext()),
   dispatchers: (() => {
     const d = {};
     View.registerBindings(d);
@@ -21,7 +21,7 @@ export const quad = {
 };
 
 export const text = {
-  create: root => new Text(root.getTextImplementation()),
+  create: root => new Text(root.getRenderGroup().getGLContext(), root.getTextImplementation()),
   dispatchers: (() => {
     const d = {};
     Text.registerBindings(d);
@@ -30,7 +30,7 @@ export const text = {
 };
 
 export const image = {
-  create: root => new Image(root.getTextureManager()),
+  create: root => new Image(root.getRenderGroup().getGLContext(), root.getTextureManager()),
   dispatchers: (() => {
     const d = {};
     Image.registerBindings(d);

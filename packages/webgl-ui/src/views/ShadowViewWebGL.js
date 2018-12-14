@@ -70,14 +70,22 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   removeChild(index: number) {
     const child = this.children[index];
     if (child instanceof ShadowViewWebGL) {
-      const childNode = child.view.getNode();
-      if (childNode.renderGroup) {
-        childNode.renderGroup.removeNode(childNode);
-      }
+      child.removeFromRenderGroup();
     } else {
       throw new Error('Cannot remove unsupported child');
     }
     super.removeChild(index);
+  }
+
+  removeFromRenderGroup() {
+    const node = this.view.getNode();
+    if (node.renderGroup) {
+      node.renderGroup.removeNode(node);
+    }
+    for (const child of this.children) {
+      // $FlowFixMe
+      child.removeFromRenderGroup();
+    }
   }
 
   getZIndex(): number {

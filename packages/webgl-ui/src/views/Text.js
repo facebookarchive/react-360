@@ -103,17 +103,18 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this._geometryDirty = true;
   }
 
-  setParent(parent: any) {
-    if (!parent) {
-      const currentParent = this.getParent();
-      if (currentParent) {
-        // $FlowFixMe
-        const currentParentNode = currentParent.getNode();
-        if (currentParentNode.renderGroup) {
-          currentParentNode.renderGroup.removeNode(this._text.getNode());
-        }
+  removeFromRenderGroup() {
+    super.removeFromRenderGroup();
+    if (this._text) {
+      const textNode = this._text.getNode();
+      if (textNode.renderGroup) {
+        textNode.renderGroup.removeNode(textNode);
       }
-    } else {
+    }
+  }
+
+  setParent(parent: any) {
+    if (parent) {
       const parentNode = parent.view.getNode();
       if (parentNode.renderGroup) {
         parentNode.renderGroup.addNode(this._text.getNode());
