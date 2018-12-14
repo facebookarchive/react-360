@@ -38,26 +38,47 @@ const myFlatSurface = new Surface(
 );
 ```
 
-Flat Surfaces are positioned on the outside of an imaginary sphere, 4 meters in radius – this puts them at the same distance as the Cylinder Surface. The location of the Surface on that sphere can be controlled through two angles that rotate it left and right, and up and down.
+Flat Surfaces are positioned on the outside of an imaginary sphere, 4 meters in radius – this puts them at the same distance as the Cylinder Surface. The location of the Surface on that sphere can be controlled through three angles:
+ - `yaw` - Rotate the surface location left and right
+ - `pitch` - Rotate the surface location up and down
+ - `roll` - Rotate the surface itself
+The `roll` angle is optional, only use it if you have specific requirement such as making a billboard surface.
 
 ```
 // To rotate a panel 90 degrees to your left:
 leftPanel.setAngle(
-  -Math.PI / 2, /* horiz angle */
-  0 /* vertical angle */
+  -Math.PI / 2, /* yaw angle */
+  0 /* pitch angle */
 );
 
 // To rotate a panel 30 degrees below the horizon:
 lowPanel.setAngle(
-  0, /* horiz angle */
-  -Math.PI / 6 /* vertical angle */
+  0, /* yaw angle */
+  -Math.PI / 6 /* pitch angle */
 );
 
 // To place a panel 45 degrees to the right, 45 degrees above the horizon:
 highPanel.setAngle(
-  Math.PI / 4, /* horiz angle */
-  Math.PI / 4 /* vertical angle */
+  Math.PI / 4, /* yaw angle */
+  Math.PI / 4 /* pitch angle */
 );
+
+// Optionaly, you can also provide a roll angle
+rotatedPanel.setAngle(
+  Math.PI / 4, /* yaw angle */
+  Math.PI / 4, /* pitch angle */
+  Math.PI / 4 /* roll angle */
+);
+```
+
+You can also use pass in a Quaternion of camera to re-center the surface on the user's viewport. The option for recenter is
+ - `yaw` - only match the yaw angle of camera
+ - `yaw-pitch` - match both yaw and pitch angle of camera
+ - `all` - match all angles of the camera
+
+```
+const cameraQuat = r360.getCameraQuaternion();
+subtitleSurface.recenter(cameraQuat, 'all');
 ```
 
 ## Rendering to a Surface
@@ -73,9 +94,12 @@ This tells the runtime that your component can be identified by this string ID. 
 ```
 r360.renderToSurface(
   r360.createRoot('MyAppName'),
-  r360.getDefaultSurface()
+  r360.getDefaultSurface(),
+  'default' /* optional, a name to reference the surface */
 );
 ```
+
+By optionally specifying a surface name, you can reference the surface in Environment to attach [screen](environment.md#setscreenscreenid-string-handle-string-surfaceid-string-x-number-y-number-width-number-height-number) in Environment.
 
 This instructs the runtime to attach the component we referenced above to the application's default surface. This default surface is just a Surface instance that's already created for you – you can mutate it the same way as the Surfaces described above. You can also create your own surface and render a React component to it, as long as that React component has been added to the `AppRegistry`.
 
@@ -117,3 +141,26 @@ r360.renderToSurface(
 ```
 
 In this setup, how do you share data between the different React components? They run in a shared JavaScript environment, so any global store (such as Redux) is shared between all components. You can use this technique to synchronize data between different 2D and 3D aspects of your app. A version of this is demonstrated in the [multi-surface example](/react-360/docs/example-multisurface.html).
+
+## Detaching a surface
+
+You can detach the rendering of a root view from a surface:
+
+```
+// When calling renderToSurface, it will return a tag for the root view
+const root1 = r360.renderToSurface(
+  r360.createRoot('Root1'),
+  surface,
+  "testSurface"
+);
+
+// You can detach the root view and hide surface when you don't need it any more
+r360.detachRoot(root1);
+
+// You can also render a new root view on same surface after detached.
+const root2 = r360.renderToSurface(
+  r360.createRoot('Root2'),
+  surface,
+  "testSurface",
+);
+```

@@ -4,68 +4,126 @@
     "next": "Next",
     "previous": "Previous",
     "tagline": "Create amazing 360 experiences",
-    "animated": "Animated",
-    "Animated": "Animated",
-    "async-storage": "AsyncStorage",
-    "AsyncStorage": "AsyncStorage",
-    "audio": "Playing Audio",
-    "Playing Audio": "Playing Audio",
-    "controller-info": "ControllerInfo",
-    "ControllerInfo": "ControllerInfo",
-    "entity": "Entity",
-    "Entity": "Entity",
-    "environment": "Environment",
-    "Environment": "Environment",
-    "example-multisurface": "Example: Multi-Surface and 3D",
-    "Multi-Surface and 3D": "Multi-Surface and 3D",
-    "example-native-modules": "Example: Native Modules",
-    "Native Modules": "Native Modules",
-    "example-slideshow": "Example: 360 Slideshow",
-    "360 Slideshow": "360 Slideshow",
-    "explore-code": "Exploring the Code",
-    "Exploring the Code": "Exploring the Code",
-    "from-react-vr": "Migrating from React VR",
-    "Legacy React VR Apps": "Legacy React VR Apps",
-    "image": "Image",
-    "Image": "Image",
-    "input": "Input Handling",
-    "Input Handling": "Input Handling",
-    "integrate": "Integrating into an Existing Web Site",
-    "Integrate with Another Site": "Integrate with Another Site",
-    "layout": "Layout in 2D and 3D",
-    "Layout": "Layout",
-    "native-modules": "Native Modules",
-    "objects": "3D Objects",
-    "3D Objects": "3D Objects",
-    "photos-and-videos": "360 Photos and Videos",
-    "360 Photos and Videos": "360 Photos and Videos",
-    "publish": "Build a Production Version of Your App",
-    "Build for Production": "Build for Production",
-    "runtime": "Runtime",
-    "Runtime": "Runtime",
-    "setup": "Setting up Tools, and Creating Your First Project",
-    "Create Your First Project": "Create Your First Project",
-    "static-assets": "Static Assets",
-    "Static Assets": "Static Assets",
-    "surfaces": "Surfaces",
-    "Surfaces": "Surfaces",
-    "text": "Text",
-    "Text": "Text",
-    "view": "View",
-    "View": "View",
-    "vr-button": "VrButton",
-    "VrButton": "VrButton",
-    "what-is": "What is React 360?",
-    "What is React 360?": "What is React 360?",
-    "Docs": "Docs",
-    "Examples": "Examples",
-    "Blog": "Blog",
-    "GitHub": "GitHub",
-    "Getting Started": "Getting Started",
-    "Concepts": "Concepts",
-    "Publishing": "Publishing",
-    "Components": "Components",
-    "APIs": "APIs"
+    "docs": {
+      "animated": {
+        "title": "Animated",
+        "sidebar_label": "Animated"
+      },
+      "async-storage": {
+        "title": "AsyncStorage",
+        "sidebar_label": "AsyncStorage"
+      },
+      "audio": {
+        "title": "Playing Audio",
+        "sidebar_label": "Playing Audio"
+      },
+      "controller-info": {
+        "title": "ControllerInfo",
+        "sidebar_label": "ControllerInfo"
+      },
+      "entity": {
+        "title": "Entity",
+        "sidebar_label": "Entity"
+      },
+      "environment": {
+        "title": "Environment",
+        "sidebar_label": "Environment"
+      },
+      "example-multisurface": {
+        "title": "Example: Multi-Surface and 3D",
+        "sidebar_label": "Multi-Surface and 3D"
+      },
+      "example-native-modules": {
+        "title": "Example: Native Modules",
+        "sidebar_label": "Native Modules"
+      },
+      "example-slideshow": {
+        "title": "Example: 360 Slideshow",
+        "sidebar_label": "360 Slideshow"
+      },
+      "explore-code": {
+        "title": "Exploring the Code",
+        "sidebar_label": "Exploring the Code"
+      },
+      "from-react-vr": {
+        "title": "Migrating from React VR",
+        "sidebar_label": "Legacy React VR Apps"
+      },
+      "image": {
+        "title": "Image",
+        "sidebar_label": "Image"
+      },
+      "input": {
+        "title": "Input Handling",
+        "sidebar_label": "Input Handling"
+      },
+      "integrate": {
+        "title": "Integrating into an Existing Web Site",
+        "sidebar_label": "Integrate with Another Site"
+      },
+      "layout": {
+        "title": "Layout in 2D and 3D",
+        "sidebar_label": "Layout"
+      },
+      "native-modules": {
+        "title": "Native Modules",
+        "sidebar_label": "Native Modules"
+      },
+      "objects": {
+        "title": "3D Objects",
+        "sidebar_label": "3D Objects"
+      },
+      "photos-and-videos": {
+        "title": "360 Photos and Videos",
+        "sidebar_label": "360 Photos and Videos"
+      },
+      "publish": {
+        "title": "Build a Production Version of Your App",
+        "sidebar_label": "Build for Production"
+      },
+      "runtime": {
+        "title": "Runtime",
+        "sidebar_label": "Runtime"
+      },
+      "setup": {
+        "title": "Setting up Tools, and Creating Your First Project",
+        "sidebar_label": "Create Your First Project"
+      },
+      "static-assets": {
+        "title": "Static Assets",
+        "sidebar_label": "Static Assets"
+      },
+      "surfaces": {
+        "title": "Surfaces",
+        "sidebar_label": "Surfaces"
+      },
+      "view": {
+        "title": "View",
+        "sidebar_label": "View"
+      },
+      "vr-button": {
+        "title": "VrButton",
+        "sidebar_label": "VrButton"
+      },
+      "what-is": {
+        "title": "What is React 360?",
+        "sidebar_label": "What is React 360?"
+      }
+    },
+    "links": {
+      "Docs": "Docs",
+      "Examples": "Examples",
+      "Blog": "Blog",
+      "GitHub": "GitHub"
+    },
+    "categories": {
+      "Getting Started": "Getting Started",
+      "Concepts": "Concepts",
+      "Publishing": "Publishing",
+      "Components": "Components",
+      "APIs": "APIs",
+      "Examples": "Examples"
+    }
   },
   "pages-strings": {
     "Help Translate|recruit community translators for your project": "Help Translate",
