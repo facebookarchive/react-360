@@ -87,7 +87,7 @@ export default class Node {
 
       if (typeof value === 'number') {
         program.getUniform(name).set(value);
-      } else if (Array.isArray(value)) {
+      } else if (Array.isArray(value) || value instanceof Float32Array) {
         program.getUniform(name).set(value);
       } else if (value instanceof Texture) {
         value.bindToSlot(texSlot);
