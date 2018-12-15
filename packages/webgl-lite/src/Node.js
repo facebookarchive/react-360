@@ -48,6 +48,12 @@ export default class Node {
    */
   setUniform(name: string, value: any) {
     this.uniforms[name] = value;
+    if (this.renderGroup) {
+      this.renderGroup.setNeedsRender(true);
+      if (value instanceof Texture) {
+        value.addRenderGroup(this.renderGroup);
+      }
+    }
   }
 
   /**
@@ -56,6 +62,9 @@ export default class Node {
    */
   unsetUniform(name: string) {
     delete this.uniforms[name];
+    if (this.renderGroup) {
+      this.renderGroup.setNeedsRender(true);
+    }
   }
 
   /**
@@ -63,6 +72,34 @@ export default class Node {
    */
   setRenderGroup(rg: ?RenderGroup) {
     this.renderGroup = rg;
+    for (const name in this.uniforms) {
+      const uniform = this.uniforms[name];
+      if (uniform instanceof Texture) {
+        uniform.addRenderGroup(this.renderGroup);
+      }
+    }
+  }
+
+  /**
+   * Copy an array of data to the geometry vertex buffer. This will also tell
+   * the render group that the geometry needs to be redrawn.
+   */
+  bufferData(data: ArrayBuffer | Array<number>) {
+    this.geometry.bufferData(data);
+    if (this.renderGroup) {
+      this.renderGroup.setNeedsRender(true);
+    }
+  }
+
+  /**
+   * Copy an array of element indices to the geometry index buffer. This will
+   * also tell the render group that the geometry needs to be redrawn.
+   */
+  bufferIndex(index: Array<number>) {
+    this.geometry.bufferIndex(index);
+    if (this.renderGroup) {
+      this.renderGroup.setNeedsRender(true);
+    }
   }
 
   /**

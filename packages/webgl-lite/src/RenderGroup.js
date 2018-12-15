@@ -22,11 +22,13 @@ function renderOrderSort(a: Node, b: Node) {
  */
 export default class RenderGroup {
   _gl: WebGLRenderingContext;
+  _needsRender: boolean;
   _uniforms: {[name: string]: any};
   nodes: Array<Node>;
 
   constructor(gl: WebGLRenderingContext) {
     this._gl = gl;
+    this._needsRender = true;
     this._uniforms = {};
     this.nodes = [];
   }
@@ -44,6 +46,7 @@ export default class RenderGroup {
     if (this.nodes.indexOf(node) < 0) {
       this.nodes.push(node);
     }
+    this._needsRender = true;
   }
 
   /**
@@ -54,6 +57,7 @@ export default class RenderGroup {
     const index = this.nodes.indexOf(node);
     if (index > -1) {
       this.nodes.splice(index, 1);
+      this._needsRender = true;
     }
   }
 
@@ -63,6 +67,7 @@ export default class RenderGroup {
    */
   setUniform(name: string, value: any) {
     this._uniforms[name] = value;
+    this._needsRender = true;
   }
 
   /**
@@ -100,5 +105,20 @@ export default class RenderGroup {
       }
       node.draw();
     }
+    this._needsRender = false;
+  }
+
+  /**
+   * Return whether the group needs to be redrawn
+   */
+  needsRender() {
+    return this._needsRender;
+  }
+
+  /**
+   * Mark the render group as requiring a re-render on the next draw call
+   */
+  setNeedsRender(flag: boolean) {
+    this._needsRender = flag;
   }
 }

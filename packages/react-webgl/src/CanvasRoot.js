@@ -72,7 +72,11 @@ export default class CanvasRoot extends GLRoot {
 
   update() {
     super.update();
-    this._renderGroup.draw();
+    if (this._renderGroup.needsRender()) {
+      const gl = this._renderGroup.getGLContext();
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      this._renderGroup.draw();
+    }
   }
 
   showCursor() {

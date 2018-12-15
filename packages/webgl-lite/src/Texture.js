@@ -9,6 +9,8 @@
  * @flow
  */
 
+import type RenderGroup from './RenderGroup';
+
 type TextureSource = HTMLCanvasElement | HTMLVideoElement | Image | ImageBitmap;
 
 const ImageBitmap =
@@ -27,12 +29,14 @@ type TextureOptions = {
 export default class Texture {
   _gl: WebGLRenderingContext;
   _height: number;
+  _renderGroups: Set<RenderGroup>;
   _source: ?TextureSource;
   _texture: WebGLTexture;
   _width: number;
 
   constructor(gl: WebGLRenderingContext, options: TextureOptions = {}) {
     this._gl = gl;
+    this._renderGroups = new Set();
     this._texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, this._texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -112,6 +116,9 @@ export default class Texture {
       this._width = source.videoWidth;
       this._height = source.videoHeight;
     }
+    for (const rg of this._renderGroups) {
+      rg.setNeedsRender(true);
+    }
   }
 
   bindToSlot(slot: number) {
@@ -129,6 +136,13 @@ export default class Texture {
     } else if (source instanceof HTMLVideoElement) {
       gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, source);
     }
+    for (const rg of this._renderGroups) {
+      rg.setNeedsRender(true);
+    }
+  }
+
+  addRenderGroup(rg: RenderGroup) {
+    this._renderGroups.add(rg);
   }
 
   release() {
