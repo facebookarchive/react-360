@@ -9,17 +9,45 @@
  * @flow
  */
 
-import * as THREE from 'three';
+import * as WebGL from 'webgl-lite';
 import GLRoot from './GLRoot';
 
 export type RenderTargetRootOptions = {
-  scene?: any,
+  height: number,
+  width: number,
 };
 
 export default class RenderTargetRoot extends GLRoot {
-  constructor(options: RenderTargetRootOptions = {}) {
-    const scene = options.scene || new THREE.Scene();
-    super(scene);
+  constructor(gl: WebGLRenderingContext, options: RenderTargetRootOptions = {}) {
+    const renderGroup = new WebGL.RenderGroup(gl);
+    super(renderGroup);
+    const width = options.width || 0;
+    const height = options.height || 0;
+    this._fb = new WebGL.FrameBuffer(gl, width, height);
+    // prettier-ignore
+    renderGroup.setUniform('projectionMatrix', [
+      2 / width, 0, 0, 0,
+      0, -2 / height, 0, 0,
+      0, 0, -0.001, 0,
+      -1, 1, 0, 1,
+    ]);
+  }
+
+  getFrameBuffer() {
+    return this._fb;
+  }
+
+  update() {
+    super.update();
+    const rg = this.getRenderGroup();
+    this._fb.drawToBuffer(() => {
+      if (rg.needsRender()) {
+        const gl = rg.getGLContext();
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        rg.draw();
+        this._fb.getTexture().update();
+      }
+    });
   }
 
   showCursor() {
