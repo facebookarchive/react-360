@@ -228,6 +228,14 @@ export default class Surface {
   }
 
   /**
+   * Render a React WebGL Element to the Surface.
+   * If an element was previously rendered, it will be replaced.
+   */
+  render(element: any) {
+    ReactWebGL.render(element, this._reactRoot);
+  }
+
+  /**
    * Rebuilds the indexed geometry of the surface based on its shape and dims
    */
   _regenerateGeometry() {

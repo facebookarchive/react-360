@@ -48,4 +48,16 @@ export default class GLRoot {
   getGLContext() {
     return this._gl;
   }
+
+  setCursor(x: number, y: number) {
+    this._surface.setCursor(x, y);
+  }
+
+  clearCursor() {
+    this._surface.clearCursor();
+  }
+
+  dispatchEvent(event: string, payload: any) {
+    this._surface.dispatchEvent(event, payload);
+  }
 }

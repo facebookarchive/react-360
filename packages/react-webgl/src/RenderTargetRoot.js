@@ -17,6 +17,10 @@ export type RenderTargetRootOptions = {
   width: number,
 };
 
+/**
+ * RenderTargetRoot draws a React WebGL scene to a GL FrameBuffer / Texture,
+ * which can then be used in a larger WebGL scene.
+ */
 export default class RenderTargetRoot extends GLRoot {
   constructor(gl: WebGLRenderingContext, options: RenderTargetRootOptions = {}) {
     super(gl);

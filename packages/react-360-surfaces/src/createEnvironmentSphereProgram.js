@@ -16,10 +16,11 @@ attribute vec3 a_position;
 varying highp vec3 v_position;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 u_transform;
 
 void main() {
   v_position = a_position;
-  gl_Position = projectionMatrix * viewMatrix * vec4(a_position, 1.0);
+  gl_Position = projectionMatrix * viewMatrix * u_transform * vec4(a_position, 1.0);
 }
 `;
 
@@ -47,5 +48,6 @@ export default function createEnvironmentSphereProgram(gl: WebGLRenderingContext
     .compile()
     .setUniformDefaults({
       u_arclen_reciprocal: 1 / Math.PI / 2,
+      u_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     });
 }
