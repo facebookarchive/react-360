@@ -12,6 +12,8 @@
 import * as ReactWebGL from 'react-webgl';
 import * as WebGL from 'webgl-lite';
 import {Math as GLMath} from 'webgl-ui';
+import computeCylinderIntersection from './computeCylinderIntersection';
+import computeFlatIntersection from './computeFlatIntersection';
 import createSurfaceProgram from './createSurfaceProgram';
 import generateCylinderSurface from './generateCylinderSurface';
 import generateFlatSurface from './generateFlatSurface';
@@ -27,6 +29,9 @@ const DEFAULT_DENSITY = 4680;
 const DEFAULT_RADIUS = 4;
 
 const PM = new WebGL.ProgramManager(createSurfaceProgram);
+
+const rotatedDirection = [0, 0, 0];
+const rotatedOrigin = [0, 0, 0];
 
 /**
  * Surface is an object used to place 2D layers in 3D space. It is optimized
@@ -62,6 +67,7 @@ export default class Surface {
   // WebGL properties
   _node: WebGL.Node;
   _reactRoot: any;
+  _rotationInverse: Array<number>;
 
   constructor(
     gl: WebGLRenderingContext,
@@ -91,6 +97,13 @@ export default class Surface {
       0, 0, 0, 1,
     ]);
     this._regenerateGeometry();
+    // prettier-ignore
+    this._rotationInverse = [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1,
+    ];
   }
 
   /**
@@ -168,6 +181,53 @@ export default class Surface {
   }
 
   /**
+   * Given a ray origin and direction, compute the pixel coordinates of the
+   * intersection with the surface, relative to the top-left corner
+   */
+  computeIntersection(
+    intersection: [number, number],
+    origin: [number, number, number],
+    direction: [number, number, number]
+  ) {
+    rotatedOrigin[0] = origin[0];
+    rotatedOrigin[1] = origin[1];
+    rotatedOrigin[2] = origin[2];
+    rotatedDirection[0] = direction[0];
+    rotatedDirection[1] = direction[1];
+    rotatedDirection[2] = direction[2];
+    GLMath.transformVector(rotatedDirection, this._rotationInverse);
+    GLMath.transformVector(rotatedOrigin, this._rotationInverse);
+
+    if (this._shape === SurfaceShape.Flat) {
+      computeFlatIntersection(
+        intersection,
+        rotatedOrigin,
+        rotatedDirection,
+        this._width,
+        this._height,
+        this._radius,
+        this._density
+      );
+    } else if (this._shape === SurfaceShape.Cylinder) {
+      computeCylinderIntersection(
+        intersection,
+        rotatedOrigin,
+        rotatedDirection,
+        this._width,
+        this._height,
+        this._radius,
+        this._density
+      );
+    }
+    return (
+      intersection[0] > 0 &&
+      intersection[0] < this._width &&
+      intersection[1] > 0 &&
+      intersection[1] < this._height
+    );
+  }
+
+  /**
    * Rebuilds the indexed geometry of the surface based on its shape and dims
    */
   _regenerateGeometry() {
@@ -209,6 +269,13 @@ export default class Surface {
         -sin, 0, cos, 0,
         0, 0, 0, 1,
       ]);
+      // prettier-ignore
+      this._rotationInverse = [
+        cos, 0, -sin, 0,
+        0, 1, 0, 0,
+        sin, 0, cos, 0,
+        0, 0, 0, 1,
+      ];
     } else if (this._shape === SurfaceShape.Flat) {
       const sv = Math.sin(this._pitch);
       const cv = Math.cos(this._pitch);
@@ -217,6 +284,13 @@ export default class Surface {
         1, 0, 0, 0,
         0, cv, -sv, 0,
         0, sv, cv, 0,
+        0, 0, 0, 1,
+      ];
+      // prettier-ignore
+      const vertInverse = [
+        1, 0, 0, 0,
+        0, cv, sv, 0,
+        0, -sv, cv, 0,
         0, 0, 0, 1,
       ];
       const sh = Math.sin(this._yaw);
@@ -228,8 +302,16 @@ export default class Surface {
         -sh, 0, ch, 0,
         0, 0, 0, 1,
       ];
-      GLMath.matrixMultiply4(horizontal, vertical);
-      this._node.setUniform('u_transform', horizontal);
+      // prettier-ignore
+      this._rotationInverse = [
+        ch, 0, -sh, 0,
+        0, 1, 0, 0,
+        sh, 0, ch, 0,
+        0, 0, 0, 1,
+      ];
+      GLMath.matrixMultiply4(vertical, horizontal);
+      GLMath.matrixMultiply4(this._rotationInverse, vertInverse);
+      this._node.setUniform('u_transform', vertical);
     }
   }
 }
