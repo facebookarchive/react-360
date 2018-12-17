@@ -19,18 +19,11 @@ export type RenderTargetRootOptions = {
 
 export default class RenderTargetRoot extends GLRoot {
   constructor(gl: WebGLRenderingContext, options: RenderTargetRootOptions = {}) {
-    const renderGroup = new WebGL.RenderGroup(gl);
-    super(renderGroup);
+    super(gl);
     const width = options.width || 0;
     const height = options.height || 0;
     this._fb = new WebGL.FrameBuffer(gl, width, height);
-    // prettier-ignore
-    renderGroup.setUniform('projectionMatrix', [
-      2 / width, 0, 0, 0,
-      0, -2 / height, 0, 0,
-      0, 0, -0.001, 0,
-      -1, 1, 0, 1,
-    ]);
+    this.getSurface().setViewport(width, height);
   }
 
   getFrameBuffer() {
@@ -38,19 +31,12 @@ export default class RenderTargetRoot extends GLRoot {
   }
 
   update() {
-    super.update();
-    const rg = this.getRenderGroup();
     this._fb.drawToBuffer(() => {
-      if (rg.needsRender()) {
-        const gl = rg.getGLContext();
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        rg.draw();
+      const textureNeedsUpdate = this.getSurface().isDirty();
+      super.update();
+      if (textureNeedsUpdate) {
         this._fb.getTexture().update();
       }
     });
-  }
-
-  showCursor() {
-    return false;
   }
 }

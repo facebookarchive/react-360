@@ -130,11 +130,13 @@ export default class Texture {
   update() {
     const gl = this._gl;
     const source = this._source;
-    gl.bindTexture(gl.TEXTURE_2D, this._texture);
-    if (source instanceof HTMLCanvasElement) {
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, source);
-    } else if (source instanceof HTMLVideoElement) {
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, source);
+    if (source) {
+      gl.bindTexture(gl.TEXTURE_2D, this._texture);
+      if (source instanceof HTMLCanvasElement) {
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, source);
+      } else if (source instanceof HTMLVideoElement) {
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, source);
+      }
     }
     for (const rg of this._renderGroups) {
       rg.setNeedsRender(true);

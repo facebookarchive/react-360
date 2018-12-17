@@ -28,9 +28,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   _borderBottomRightRadius: ?number;
   _borderBottomLeftRadius: ?number;
   _cursor: ?string;
-  _eventHandlers: {[event: string]: any};
   _gl: WebGLRenderingContext;
-  _hasCursorEvent: boolean;
   _hasOnLayout: boolean;
   _layoutOrigin: [number, number];
   _onLayoutHook: ?LayoutHook;
@@ -44,8 +42,6 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     this._gl = gl;
     this._borderRadiusDirty = false;
     this._cursor = null;
-    this._eventHandlers = {};
-    this._hasCursorEvent = false;
     this._hasOnLayout = false;
     this._layoutOrigin = [0, 0];
     this._zIndex = 0;
@@ -200,26 +196,6 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     return this._cursor;
   }
 
-  hasCursorEvent(): boolean {
-    return this._hasCursorEvent;
-  }
-
-  setEventHandler(event: string, callback: any) {
-    if (!callback) {
-      delete this._eventHandlers[event];
-    } else {
-      this._eventHandlers[event] = callback;
-    }
-    this._hasCursorEvent = this._cursor != null || Object.keys(this._eventHandlers).length > 0;
-  }
-
-  fireEvent(event: string, payload?: any) {
-    const callback = this._eventHandlers[event];
-    if (callback) {
-      callback(payload);
-    }
-  }
-
   containsPoint(x: number, y: number): boolean {
     return this.view.containsPoint(x, y);
   }
@@ -290,11 +266,6 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
 
   __setStyle_cursor(cursor: ?string) {
     this._cursor = cursor;
-    if (cursor) {
-      this._hasCursorEvent = true;
-    } else {
-      this._hasCursorEvent = Object.keys(this._eventHandlers).length > 0;
-    }
   }
 
   __setStyle_gradientColorA(color: ?number | string) {

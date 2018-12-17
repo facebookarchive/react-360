@@ -9,50 +9,28 @@
  * @flow
  */
 
-import {Flexbox, SDFTextImplementation, StackingContext, TextureManager} from 'webgl-ui';
-
-function recursiveLayout(view) {
-  view.presentLayout();
-  for (const child of view.children) {
-    if (child) {
-      recursiveLayout(child);
-    }
-  }
-}
+import {SDFTextImplementation, Surface, TextureManager} from 'webgl-ui';
 
 export default class GLRoot {
-  constructor(renderGroup: any) {
-    this._renderGroup = renderGroup;
-    this._roots = [];
-    this.YGNode = Flexbox.Node.create();
-
-    this._textImplementation = new SDFTextImplementation(renderGroup.getGLContext());
-    this._textureManager = new TextureManager(renderGroup.getGLContext());
-
-    this._hitLastFrame = new Set();
-    this._hitCurrentFrame = new Set();
-    this._cursorX = -9999;
-    this._cursorY = -9999;
+  constructor(gl: WebGLRenderingContext) {
+    this._gl = gl;
+    this._surface = new Surface(gl);
+    this._textImplementation = new SDFTextImplementation(gl);
+    this._textureManager = new TextureManager(gl);
+    this._surface.useTextImplementation(this._textImplementation);
+    this._surface.useTextureManager(this._textureManager);
   }
 
-  append(child) {
-    this._roots.push(child);
-    this._renderGroup.addNode(child.view.getNode());
-    this.YGNode.insertChild(child.YGNode, this._roots.length - 1);
+  setRoot(child) {
+    this._surface.setRootNode(child);
   }
 
   update() {
-    this.YGNode.calculateLayout(Flexbox.UNDEFINED, Flexbox.UNDEFINED, Flexbox.DIRECTION_LTR);
-    for (const root of this._roots) {
-      recursiveLayout(root);
-      StackingContext.restack(root);
+    this._surface.updateGeometry();
+    if (this._surface.isDirty()) {
+      this._surface.clear();
+      this._surface.draw();
     }
-    this._renderGroup.refreshRenderOrder();
-    this._detectCurrentHits();
-  }
-
-  showCursor() {
-    return false;
   }
 
   getTextImplementation() {
@@ -63,64 +41,11 @@ export default class GLRoot {
     return this._textureManager;
   }
 
-  getRenderGroup() {
-    return this._renderGroup;
+  getSurface() {
+    return this._surface;
   }
 
-  getCurrentHitSet() {
-    return this._hitCurrentFrame;
-  }
-
-  setCursorCoordinates(x: number, y: number) {
-    this._cursorX = x;
-    this._cursorY = y;
-  }
-
-  _detectCurrentHits() {
-    const currentHits = this._hitCurrentFrame;
-    currentHits.clear();
-    const x = this._cursorX;
-    const y = this._cursorY;
-    const nodes = this._roots.slice();
-    while (nodes.length > 0) {
-      const node = nodes.shift();
-      if (node.hasCursorEvent()) {
-        if (node.view.containsPoint(x, y)) {
-          currentHits.add(node);
-        }
-      }
-      nodes.unshift.apply(nodes, node.children);
-    }
-    for (const oldHit of this._hitLastFrame) {
-      if (!currentHits.has(oldHit)) {
-        // Left oldHit
-        oldHit.fireEvent('onExit');
-      }
-    }
-    let cursor = null;
-    let cursorOrder = -1;
-    const showCursor = this.showCursor();
-    for (const newHit of currentHits) {
-      if (!this._hitLastFrame.has(newHit)) {
-        // Entered newHit
-        newHit.fireEvent('onEnter');
-      }
-      if (showCursor) {
-        const nodeRenderOrder = newHit.getRenderOrder();
-        if (nodeRenderOrder > cursorOrder) {
-          const nodeCursor = newHit.getCursor();
-          if (nodeCursor) {
-            cursor = nodeCursor;
-            cursorOrder = nodeRenderOrder;
-          }
-        }
-      }
-    }
-    if (showCursor) {
-      this.updateCursor(cursor || 'initial');
-    }
-
-    this._hitCurrentFrame = this._hitLastFrame;
-    this._hitLastFrame = currentHits;
+  getGLContext() {
+    return this._gl;
   }
 }

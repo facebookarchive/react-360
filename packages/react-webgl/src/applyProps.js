@@ -10,9 +10,10 @@
  */
 
 const EVENTS = {
-  onEnter: true,
-  onExit: true,
-  onInput: true,
+  onClick: 'click',
+  onEnter: 'enter',
+  onExit: 'exit',
+  onInput: 'input',
 };
 
 export default function applyProps(view, oldProps, newProps, dispatchers) {
@@ -24,7 +25,8 @@ export default function applyProps(view, oldProps, newProps, dispatchers) {
       continue;
     }
     if (p in EVENTS) {
-      view.setEventHandler(p, newProps[p]);
+      view.clearEventListeners(EVENTS[p]);
+      view.addEventListener(EVENTS[p], newProps[p]);
       continue;
     }
     const setter = view[`__setStyle_${p}`];

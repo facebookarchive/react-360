@@ -1,6 +1,6 @@
 {
   "name": "webgl-ui",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "2D primitives and utilities for building interfaces in WebGL",
   "license": "BSD-3-Clause",
   "repository": {

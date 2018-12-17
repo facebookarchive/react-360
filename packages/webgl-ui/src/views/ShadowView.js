@@ -62,6 +62,7 @@ const MAP_CSS_WRAP = {
 };
 
 export default class ShadowView {
+  _eventHandlers: {[event: string]: Array<any>};
   _transform: Transform;
   _transformDirty: boolean;
   children: Array<ShadowView>;
@@ -75,6 +76,7 @@ export default class ShadowView {
     this.parent = null;
     this.rootTag = 0;
     this.tag = 0;
+    this._eventHandlers = {};
     this._transformDirty = false;
     this.YGNode = Flexbox.Node.create();
   }
@@ -87,6 +89,16 @@ export default class ShadowView {
     this.children.splice(index, 0, child);
     this.YGNode.insertChild(child.YGNode, index);
     child.setParent(this);
+  }
+
+  appendChild(child: ShadowView) {
+    const count = this.getChildCount();
+    this.addChild(count, child);
+  }
+
+  insertBefore(newChild: ShadowView, existingChild: ShadowView) {
+    const insertAt = this.getIndexOf(existingChild);
+    this.addChild(insertAt < 0 ? this.getChildCount() : insertAt, newChild);
   }
 
   setParent(parent: ?ShadowView) {
@@ -134,6 +146,41 @@ export default class ShadowView {
 
   calculateLayout() {
     this.YGNode.calculateLayout(Flexbox.UNDEFINED, Flexbox.UNDEFINED, Flexbox.DIRECTION_LTR);
+  }
+
+  addEventListener(event: string, callback: any) {
+    if (!this._eventHandlers[event]) {
+      this._eventHandlers[event] = [];
+    }
+    this._eventHandlers[event].push(callback);
+  }
+
+  removeEventListener(event: string, callback: any) {
+    const handlers = this._eventHandlers[event] || [];
+    const index = handlers.indexOf(callback);
+    if (index > -1) {
+      handlers.splice(index, 1);
+    }
+    if (handlers.length === 0) {
+      delete this._eventHandlers[event];
+    }
+  }
+
+  clearEventListeners(event: string) {
+    delete this._eventHandlers[event];
+  }
+
+  dispatchEvent(event: string, payload: any) {
+    const handlers = this._eventHandlers[event];
+    if (handlers) {
+      for (const handler of handlers) {
+        handler(payload);
+      }
+    }
+  }
+
+  hasEvents() {
+    return Object.keys(this._eventHandlers).length > 0;
   }
 
   _setBorderWidth(edge: number, value: string | number) {

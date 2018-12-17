@@ -47,7 +47,10 @@ export function createInstance(
   // create view from type
   const element = Elements[type];
   const view = element.create(rootContainerInstance);
-  rootContainerInstance.getRenderGroup().addNode(view.view.getNode());
+  rootContainerInstance
+    .getSurface()
+    .getRenderGroup()
+    .addNode(view.view.getNode());
   applyProps(view, null, props, element.dispatchers);
   return view;
 }
@@ -114,7 +117,7 @@ export function appendChild(parentInstance, child) {
 }
 
 export function appendChildToContainer(parentInstance, child) {
-  parentInstance.append(child);
+  parentInstance.setRoot(child);
 }
 
 export function commitTextUpdate(textInstance, oldText, newText) {

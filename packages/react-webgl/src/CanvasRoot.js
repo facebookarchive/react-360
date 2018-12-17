@@ -9,7 +9,6 @@
  * @flow
  */
 
-import * as WebGL from 'webgl-lite';
 import GLRoot from './GLRoot';
 
 export type CanvasRootOptions = {
@@ -22,8 +21,7 @@ export default class CanvasRoot extends GLRoot {
   constructor(options: CanvasRootOptions = {}) {
     const canvas = options.canvas || document.createElement('canvas');
     const gl = canvas.getContext('webgl');
-    const renderGroup = new WebGL.RenderGroup(gl);
-    super(renderGroup);
+    super(gl);
     this._canvas = canvas;
 
     gl.enable(gl.BLEND);
@@ -33,7 +31,7 @@ export default class CanvasRoot extends GLRoot {
     const height = options.height || (options.canvas ? options.canvas.height : 300);
     this.resize(width, height);
 
-    canvas.addEventListener('mousedown', this._onInput.bind(this, 'mousedown'));
+    canvas.addEventListener('click', this._onClick);
     canvas.addEventListener('mousemove', this._onMouseMove);
     canvas.addEventListener('mouseleave', this._onMouseLeave);
   }
@@ -44,50 +42,24 @@ export default class CanvasRoot extends GLRoot {
     this._canvas.height = height * pixelRatio;
     this._canvas.style.width = width + 'px';
     this._canvas.style.height = height + 'px';
-    const renderGroup = this.getRenderGroup();
-    renderGroup.getGLContext().viewport(0, 0, width * pixelRatio, height * pixelRatio);
-    // prettier-ignore
-    renderGroup.setUniform('projectionMatrix', [
-      2 / width, 0, 0, 0,
-      0, -2 / height, 0, 0,
-      0, 0, -0.001, 0,
-      -1, 1, 0, 1,
-    ]);
+
+    this.getGLContext().viewport(0, 0, width * pixelRatio, height * pixelRatio);
+    this.getSurface().setViewport(width, height);
   }
 
   getCanvas() {
     return this._canvas;
   }
 
-  update() {
-    super.update();
-    const renderGroup = this.getRenderGroup();
-    if (renderGroup.needsRender()) {
-      const gl = renderGroup.getGLContext();
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      renderGroup.draw();
-    }
-  }
-
-  showCursor() {
-    return true;
-  }
-
-  updateCursor(cursor: string) {
-    this._canvas.style.cursor = cursor;
-  }
+  _onClick = () => {
+    this.getSurface().dispatchEvent('click');
+  };
 
   _onMouseMove = e => {
-    this.setCursorCoordinates(e.offsetX, e.offsetY);
+    this.getSurface().setCursor(e.offsetX, e.offsetY);
   };
 
   _onMouseLeave = () => {
-    this.setCursorCoordinates(-9999, -9999);
+    this.getSurface().clearCursor();
   };
-
-  _onInput(event) {
-    for (const node of this.getCurrentHitSet()) {
-      node.fireEvent('onInput', {type: event});
-    }
-  }
 }
