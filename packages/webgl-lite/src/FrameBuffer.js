@@ -38,6 +38,15 @@ export default class FrameBuffer {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  resize(width: number, height: number) {
+    this._width = width;
+    this._height = height;
+    const rawTexture = this._texture.getGLTexture();
+    const gl = this._gl;
+    gl.bindTexture(gl.TEXTURE_2D, rawTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  }
+
   release() {
     this._texture.release();
     this._gl.deleteFramebuffer(this._fb);
@@ -55,5 +64,13 @@ export default class FrameBuffer {
 
   getTexture() {
     return this._texture;
+  }
+
+  getWidth() {
+    return this._width;
+  }
+
+  getHeight() {
+    return this._height;
   }
 }

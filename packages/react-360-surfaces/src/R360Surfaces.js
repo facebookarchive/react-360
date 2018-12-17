@@ -14,6 +14,7 @@ import createSurfaceProgram from './createSurfaceProgram';
 import generateCylinderSurface from './generateCylinderSurface';
 import generateEnvironmentSphere from './generateEnvironmentSphere';
 import generateFlatSurface from './generateFlatSurface';
+import Surface from './Surface';
 
 export {
   createEnvironmentSphereProgram,
@@ -21,4 +22,5 @@ export {
   generateCylinderSurface,
   generateEnvironmentSphere,
   generateFlatSurface,
+  Surface,
 };

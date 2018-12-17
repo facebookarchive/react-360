@@ -1,5 +1,5 @@
 {
-  "name": "react-webgl-experimental",
+  "name": "react-webgl",
   "version": "0.1.0",
   "description": "Experimental React Renderer that draws 2D UI to a WebGL context",
   "license": "BSD-3-Clause",

@@ -20,7 +20,10 @@ export default function generateCylinderSurface(
   const geometry = [];
   const index = [];
   const coverage = width / density;
-  const segments = (60 * coverage) | 0;
+  let segments = (60 * coverage) | 0;
+  if (segments % 2) {
+    segments++;
+  }
   const halfHeight = (radius * Math.PI * height) / density;
   RingGeometry.addRing(geometry, coverage, radius, segments, -halfHeight, 0);
   RingGeometry.addRing(geometry, coverage, radius, segments, halfHeight, 1);
