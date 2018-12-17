@@ -13,8 +13,9 @@ import FrameBuffer from './FrameBuffer';
 import Geometry from './Geometry';
 import Node from './Node';
 import Program from './Program';
+import ProgramManager from './ProgramManager';
 import RenderGroup from './RenderGroup';
 import Texture from './Texture';
 import VertexBuffer from './VertexBuffer';
 
-export {FrameBuffer, Geometry, Node, Program, RenderGroup, Texture, VertexBuffer};
+export {FrameBuffer, Geometry, Node, Program, ProgramManager, RenderGroup, Texture, VertexBuffer};

@@ -43,6 +43,8 @@ function createProgram(gl: WebGLRenderingContext) {
   return prog;
 }
 
+const PM = new WebGL.ProgramManager(createProgram);
+
 export default class SDFTextImplementation implements TextImplementation {
   _atlases: Array<{
     image: Image,
@@ -268,7 +270,7 @@ export default class SDFTextImplementation implements TextImplementation {
   }
 
   createNode() {
-    const program = createProgram(this._gl);
+    const program = PM.getProgram(this._gl);
     const node = new WebGL.Node(this._gl, program);
     node.addAttribute('a_position');
     node.addAttribute('a_uv');

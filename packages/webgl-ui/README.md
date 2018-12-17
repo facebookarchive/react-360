@@ -11,7 +11,7 @@ The library provides the functionality to construct and compose components, and 
 
 Most interfaces begin on a `Surface`, a frame or document which organizes a tree of UI elements. It is responsible for adjusting Flexbox layout, recomputing geometries, adjusting the rendering order of elements, and handling events.
 
-To properly render the contents of a `Surface`, you'll also need to set the viewport size. The viewport is a window into the scene, and determines the size of UI elements when rendered to a canvas or texture. For example, if you wanted to fill a texture that was 400px x 600px, you would call `.viewport(400, 600)`.
+To properly render the contents of a `Surface`, you'll also need to set the viewport size. The viewport is a window into the scene, and determines the size of UI elements when rendered to a canvas or texture. For example, if you wanted to fill a texture that was 400px x 600px, you would call `.setViewport(400, 600)`.
 
 ```js
 import {Surface} from 'webgl-ui';
@@ -19,7 +19,7 @@ import {Surface} from 'webgl-ui';
 const canvas = document.getElementById('canvas');
 const gl = canvas.getContext('webgl');
 const surface = new Surface(gl);
-surface.viewport(400, 600);
+surface.setViewport(400, 600);
 ```
 
 Once a `Surface` has been constructed, you can begin adding UI elements to it. The types of elements you can create are covered below. To add a tree of elements to your `Surface`, set the root of the tree as the `Surface`'s root. Each `Surface` can only have a single root node.

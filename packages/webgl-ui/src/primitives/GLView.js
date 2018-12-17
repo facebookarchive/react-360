@@ -51,6 +51,8 @@ function createProgram(gl: WebGLRenderingContext) {
   return prog;
 }
 
+const PM = new WebGL.ProgramManager(createProgram);
+
 /**
  * Implements rectangles with border and corner radii using a SDF shader
  */
@@ -119,7 +121,7 @@ export default class GLView {
   }
 
   createProgram() {
-    return createProgram(this.gl);
+    return PM.getProgram(this.gl);
   }
 
   createGeometryVertexArray(

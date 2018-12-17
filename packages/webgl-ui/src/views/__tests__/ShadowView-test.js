@@ -47,4 +47,53 @@ describe('ShadowView', () => {
     expect(children[1].YGNode.getComputedLayout().left).toBe(200);
     expect(children[2].YGNode.getComputedLayout().left).toBe(0);
   });
+
+  test('child add and remove', () => {
+    const parent = new ShadowView();
+    const children = [new ShadowView(), new ShadowView(), new ShadowView(), new ShadowView()];
+    parent.appendChild(children[0]);
+    parent.appendChild(children[1]);
+    expect(parent.getChild(0)).toBe(children[0]);
+    expect(parent.getChild(1)).toBe(children[1]);
+    expect(parent.getChildCount()).toBe(2);
+    parent.insertBefore(children[2], children[1]);
+    expect(parent.getChild(1)).toBe(children[2]);
+    expect(parent.getChild(2)).toBe(children[1]);
+    parent.addChild(0, children[3]);
+    expect(parent.getChildCount()).toBe(4);
+    expect(parent.getChild(0)).toBe(children[3]);
+    expect(parent.getIndexOf(children[0])).toBe(1);
+    expect(parent.getIndexOf(children[1])).toBe(3);
+    expect(parent.getIndexOf(children[2])).toBe(2);
+    expect(parent.getIndexOf(children[3])).toBe(0);
+    expect(children[0].getParent()).toBe(parent);
+    expect(children[1].getParent()).toBe(parent);
+    expect(children[2].getParent()).toBe(parent);
+    expect(children[3].getParent()).toBe(parent);
+    expect(parent.getParent()).toBe(null);
+    parent.removeChild(2);
+    expect(parent.getIndexOf(children[1])).toBe(2);
+    expect(parent.getChildCount()).toBe(3);
+    expect(children[2].getParent()).toBe(null);
+  });
+
+  test('events', () => {
+    const view = new ShadowView();
+    expect(view.hasEvents()).toBe(false);
+    let callCount = 0;
+    const cb = () => {
+      callCount++;
+    };
+    view.addEventListener('click', cb);
+    expect(view.hasEvents()).toBe(true);
+    view.dispatchEvent('click');
+    expect(callCount).toBe(1);
+    view.removeEventListener('click', cb);
+    expect(view.hasEvents()).toBe(false);
+    view.dispatchEvent('click');
+    expect(callCount).toBe(1);
+    view.addEventListener('click', cb);
+    view.clearEventListeners('click');
+    expect(view.hasEvents()).toBe(false);
+  });
 });

@@ -49,7 +49,7 @@ export default class TextureManager {
     return this._gl;
   }
 
-  getTextureForURL(url: string): Promise<Texture> {
+  getTextureForURL(url: string): Texture {
     if (this._textureMap[url]) {
       // Already registered source, return the texture
       return this._textureMap[url];

@@ -29,6 +29,8 @@ function createProgram(gl: WebGLRenderingContext) {
   return prog;
 }
 
+const PM = new WebGL.ProgramManager(createProgram);
+
 const BG_RESIZE = {
   center: 'center',
   contain: 'contain',
@@ -56,7 +58,7 @@ export default class GLTexturedView extends GLView {
   }
 
   createProgram() {
-    return createProgram(this.gl);
+    return PM.getProgram(this.gl);
   }
 
   createGeometryVertexArray(
