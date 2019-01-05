@@ -1,38 +1,63 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>360 Photos and Videos · React 360</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="360 Photos and Videos · React 360"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/react-360/index.html"/><meta property="og:description" content="React 360 is optimized for the presentation of 360 (and 180) photos and videos. These are essential for creating an immersive environment, and allow you to seemingly transport your user to a virtual location. Because they are an important part of interactive 360 experiences, there are many ways to control the current background."/><meta property="og:image" content="https://facebook.github.io/react-360/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://facebook.github.io/react-360/img/docusaurus.png"/><link rel="shortcut icon" href="/react-360/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/blog/atom.xml" title="React 360 Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/blog/feed.xml" title="React 360 Blog RSS Feed"/><link rel="stylesheet" href="/react-360/css/main.css"/></head><body class="sideNavVisible doc separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/react-360/"><img class="logo" src="/react-360/img/logo.svg" alt="React 360"/><h2 class="headerTitle">React 360</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/react-360/docs/setup.html" target="_self">Docs</a></li><li class=""><a href="/react-360/docs/example-slideshow.html" target="_self">Examples</a></li><li class=""><a href="/react-360/blog" target="_self">Blog</a></li><li class=""><a href="https://github.com/facebook/react-360" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Concepts</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/setup.html">Create Your First Project</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/explore-code.html">Exploring the Code</a></li></ul></div><div class="navGroup navGroupActive"><h3>Concepts</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/what-is.html">What is React 360?</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/runtime.html">Runtime</a></li><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/react-360/docs/photos-and-videos.html">360 Photos and Videos</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/surfaces.html">Surfaces</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/objects.html">3D Objects</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/layout.html">Layout</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/audio.html">Playing Audio</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/input.html">Input Handling</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/native-modules.html">Native Modules</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/from-react-vr.html">Legacy React VR Apps</a></li></ul></div><div class="navGroup navGroupActive"><h3>Publishing</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/publish.html">Build for Production</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/static-assets.html">Static Assets</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/integrate.html">Integrate with Another Site</a></li></ul></div><div class="navGroup navGroupActive"><h3>Components</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/view.html">View</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/text.html">Text</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/image.html">Image</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/entity.html">Entity</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/vr-button.html">VrButton</a></li></ul></div><div class="navGroup navGroupActive"><h3>APIs</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/animated.html">Animated</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/async-storage.html">AsyncStorage</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/controller-info.html">ControllerInfo</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/environment.html">Environment</a></li></ul></div></div></section></div><script>
-          var toggler = document.getElementById('navToggler');
-          var nav = document.getElementById('docsNav');
-          toggler.onclick = function() {
-            nav.classList.toggle('docsSliderActive');
-          };
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/react-360/tree/master/docs/photos-and-videos.md" target="_blank" rel="noreferrer noopener">Edit</a><h1>360 Photos and Videos</h1></header><article><div><span><p>React 360 is optimized for the presentation of 360 (and 180) photos and videos. These are essential for creating an immersive environment, and allow you to seemingly transport your user to a virtual location. Because they are an important part of interactive 360 experiences, there are many ways to control the current background.</p>
-<h2><a class="anchor" aria-hidden="true" id="supported-formats"></a><a href="#supported-formats" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Supported Formats</h2>
-<h3><a class="anchor" aria-hidden="true" id="photos"></a><a href="#photos" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Photos</h3>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>360 Photos and Videos · React 360</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;React 360 is optimized for the presentation of 360 (and 180) photos and videos. These are essential for creating an immersive environment, and allow you to seemingly transport your user to a virtual location. Because they are an important part of interactive 360 experiences, there are many ways to control the current background. React360 also supports in-line flat video attached to surface.&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="360 Photos and Videos · React 360"/><meta property="og:type" content="website"/><meta property="og:url" content="https://facebook.github.io/react-360/index.html"/><meta property="og:description" content="&lt;p&gt;React 360 is optimized for the presentation of 360 (and 180) photos and videos. These are essential for creating an immersive environment, and allow you to seemingly transport your user to a virtual location. Because they are an important part of interactive 360 experiences, there are many ways to control the current background. React360 also supports in-line flat video attached to surface.&lt;/p&gt;
+"/><meta property="og:image" content="https://facebook.github.io/react-360/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://facebook.github.io/react-360/img/docusaurus.png"/><link rel="shortcut icon" href="/react-360/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://facebook.github.io/react-360/blog/atom.xml" title="React 360 Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://facebook.github.io/react-360/blog/feed.xml" title="React 360 Blog RSS Feed"/><link rel="stylesheet" href="/react-360/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/react-360/"><img class="logo" src="/react-360/img/logo.svg" alt="React 360"/><h2 class="headerTitleWithLogo">React 360</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/react-360/docs/setup.html" target="_self">Docs</a></li><li class=""><a href="/react-360/docs/example-slideshow.html" target="_self">Examples</a></li><li class=""><a href="/react-360/blog/" target="_self">Blog</a></li><li class=""><a href="https://github.com/facebook/react-360" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Concepts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/setup.html">Create Your First Project</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/explore-code.html">Exploring the Code</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Concepts</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/what-is.html">What is React 360?</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/runtime.html">Runtime</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/react-360/docs/photos-and-videos.html">360 Photos and Videos</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/surfaces.html">Surfaces</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/objects.html">3D Objects</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/layout.html">Layout</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/audio.html">Playing Audio</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/input.html">Input Handling</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/native-modules.html">Native Modules</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/from-react-vr.html">Legacy React VR Apps</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Publishing</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/publish.html">Build for Production</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/static-assets.html">Static Assets</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/integrate.html">Integrate with Another Site</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Components</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/view.html">View</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/image.html">Image</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/entity.html">Entity</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/vr-button.html">VrButton</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">APIs</h3><ul><li class="navListItem"><a class="navItem" href="/react-360/docs/animated.html">Animated</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/async-storage.html">AsyncStorage</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/controller-info.html">ControllerInfo</a></li><li class="navListItem"><a class="navItem" href="/react-360/docs/environment.html">Environment</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/react-360/tree/master/docs/photos-and-videos.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">360 Photos and Videos</h1></header><article><div><span><p>React 360 is optimized for the presentation of 360 (and 180) photos and videos. These are essential for creating an immersive environment, and allow you to seemingly transport your user to a virtual location. Because they are an important part of interactive 360 experiences, there are many ways to control the current background. React360 also supports in-line flat video attached to surface.</p>
+<h2><a class="anchor" aria-hidden="true" id="supported-formats"></a><a href="#supported-formats" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Supported Formats</h2>
+<h3><a class="anchor" aria-hidden="true" id="photos"></a><a href="#photos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Photos</h3>
 <ul>
 <li>360 mono equirectangular</li>
 <li>360 stereo equirectangular (top/bottom)</li>
 <li>180 mono equirectangular</li>
 <li>180 stereo equirectangular (top/bottom)</li>
 <li>180 stereo equirectangular (left/right)</li>
+<li>360 mono 1x6 cubic format</li>
 </ul>
-<h3><a class="anchor" aria-hidden="true" id="videos"></a><a href="#videos" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Videos</h3>
+<h3><a class="anchor" aria-hidden="true" id="videos"></a><a href="#videos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Videos</h3>
 <ul>
 <li>360 mono equirectangular</li>
 <li>360 stereo equirectangular (top/bottom)</li>
 <li>180 mono equirectangular</li>
 <li>180 stereo equirectangular (left/right)</li>
+<li>360 mono 3x2 cubic format (with 1% expansion)</li>
 </ul>
-<h2><a class="anchor" aria-hidden="true" id="displaying-panoramic-images"></a><a href="#displaying-panoramic-images" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Displaying Panoramic Images</h2>
-<h3><a class="anchor" aria-hidden="true" id="from-the-runtime-clientjs"></a><a href="#from-the-runtime-clientjs" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From the Runtime (client.js)</h3>
+<h2><a class="anchor" aria-hidden="true" id="displaying-panoramic-images"></a><a href="#displaying-panoramic-images" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Displaying Panoramic Images</h2>
+<h3><a class="anchor" aria-hidden="true" id="from-the-runtime-clientjs"></a><a href="#from-the-runtime-clientjs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From the Runtime (client.js)</h3>
 <p>If you only need to set the background once during your app's lifetime, this is the easiest way. In fact, this is how every newly-created React 360 project sets the background. In client.js, you'll find a line similar to the following:</p>
-<pre><code class="hljs css js">r360.compositor.setBackground(<span class="hljs-string">'./static_assets/360_world.jpg'</span>);
+<pre><code class="hljs css language-js">r360.compositor.setBackground(<span class="hljs-string">'./static_assets/360_world.jpg'</span>);
 </code></pre>
 <p>This immediately sets the background to a specific 180 or 360 image. This technique has the benefit of immediately fetching the image while your React bundle is downloading, so you present content to your user sooner. You can also use this to show a loading screen that is immediately replaced when your React code runs.</p>
 <p>Based on the dimensions of the image, React 360 attempts to automatically determine the format (180 or 360, mono or 3D). However, there are some configurations it can't differentiate between, so you explicitly specify the layout of your background image with a second options argument.</p>
-<pre><code class="hljs css js">r360.compositor.setBackground(<span class="hljs-string">'./static_assets/180_mono_image.jpg'</span>, {
+<pre><code class="hljs css language-js">r360.compositor.setBackground(<span class="hljs-string">'./static_assets/180_mono_image.jpg'</span>, {
   <span class="hljs-attr">format</span>: <span class="hljs-string">'2D'</span>,
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="mono-and-stereo-formats"></a><a href="#mono-and-stereo-formats" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mono and Stereo Formats</h3>
+<h3><a class="anchor" aria-hidden="true" id="mono-and-stereo-formats"></a><a href="#mono-and-stereo-formats" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mono and Stereo Formats</h3>
 <p>The currently-supported formats are:</p>
 <ul>
 <li><code>'2D'</code> - Used for mono images</li>
@@ -41,9 +66,16 @@
 <li><code>'3DLR'</code> - Used for stereo images where the left viewport is on the left half, and the right viewport is on the right</li>
 </ul>
 <p>When using a 3D background, the depth effect will only be visible when viewing in a VR headset. The left viewport will be used for desktop and mobile displays.</p>
-<h3><a class="anchor" aria-hidden="true" id="from-react"></a><a href="#from-react" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From React</h3>
+<h3><a class="anchor" aria-hidden="true" id="photo-layout-format"></a><a href="#photo-layout-format" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Photo Layout Format</h3>
+<p>For 360 image, React 360 currently support two different type of 360 photo layout encoding. React 360 will automatically detects the layout from the aspect-ratio of the image:</p>
+<ul>
+<li><strong>Equirectangular</strong>: Equirectangular photo uses equirectangular projection</li>
+<li><strong>1x6 Cubic Format</strong>: The 1x6 Cubic format is organized with 6 undistorted, perspective images on each direction in the order of <code>right, left, top, bottom, back, front</code> from top to bottom.</li>
+</ul>
+<p>Equirectangular projection is more popular and is supported by most 360 camera. Cubic format provides better render quality as it suffers less distortion, but usually need to convert from an equirectangular projection source image.</p>
+<h3><a class="anchor" aria-hidden="true" id="from-react"></a><a href="#from-react" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From React</h3>
 <p>If your background is dynamic, such as in a multi-room environment, you'll want to control it from your React application. This is possible through the Environment module.</p>
-<pre><code class="hljs css js"><span class="hljs-keyword">import</span> {Environment} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-360'</span>;
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> {Environment} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-360'</span>;
 
 <span class="hljs-comment">// Set the background to a 360 or 180 image</span>
 Environment.setBackground(
@@ -51,11 +83,21 @@ Environment.setBackground(
   {<span class="hljs-attr">format</span>: <span class="hljs-string">'2D'</span>}, <span class="hljs-comment">/* one of the formats mentioned above */</span>
 );
 </code></pre>
-<h2><a class="anchor" aria-hidden="true" id="displaying-panoramic-videos"></a><a href="#displaying-panoramic-videos" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Displaying Panoramic Videos</h2>
-<p>Video panoramas are handled in two parts: first, the creation of a Video Player, and then mapping that player to your Environment. The separation of video playback from the environment itself allows you to control the progression of video from different locations in your codebase.</p>
-<h3><a class="anchor" aria-hidden="true" id="from-the-runtime-clientjs"></a><a href="#from-the-runtime-clientjs" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From the Runtime (client.js)</h3>
+<h2><a class="anchor" aria-hidden="true" id="displaying-videos"></a><a href="#displaying-videos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Displaying Videos</h2>
+<p>Video are handled in two parts: first, the creation of a Video Player, and then mapping that player to your Environment. The separation of video playback from the environment itself allows you to control the progression of video from different locations in your codebase.</p>
+<p>Environment support two ways of rendering video:</p>
+<ul>
+<li>360 background video</li>
+<li>Flat in-line video attached to a surface</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="video-layout-format"></a><a href="#video-layout-format" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Video Layout Format</h3>
+<p>The video layout is similar as photo layout format. For 360 video, React 360 currently support <strong>Equirectangular</strong> and <strong>3x2 Cubic Format with 1% expansion</strong>.</p>
+<ul>
+<li><strong>3x2 Cubic Format with 1% expansion</strong>: Video image is divided to 3x2 image on the direction in the order of <code>right, left, top, bottom, front, back</code> from top-left to bottom-right. This format also has extra 1% expansion on the perspective projection of each image to reduce the texture rendering issue on the edge of each faces. You can try <a href="https://github.com/facebook/transform360">Transform360</a> to create 3x2 cubic format 360 video. To use 3x2 cubic format video in React 360, you need to specify video layout format <code>layout: 'CUBEMAP_32',</code> in the VideoOption.</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="from-the-runtime-clientjs-1"></a><a href="#from-the-runtime-clientjs-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From the Runtime (client.js)</h3>
 <p>The steps for video playback are very similar in both the Runtime and your React app. First, a Video Player must be created. Video Players are referenced by their unique name, which can be used from the React side to control the player after it has been created.</p>
-<pre><code class="hljs css js"><span class="hljs-comment">// Creating a Video Player</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// Creating a Video Player</span>
 <span class="hljs-keyword">const</span> player = r360.compositor.createVideoPlayer(<span class="hljs-string">'myplayer'</span>);
 <span class="hljs-comment">// Set the video to be played, and its format</span>
 player.setSource(<span class="hljs-string">'path/to/video.mp4'</span>, <span class="hljs-string">'2D'</span>);
@@ -69,47 +111,79 @@ player.setSource(<span class="hljs-string">'path/to/video.mp4'</span>, <span cla
 <li><code>setMuted(muted: boolean)</code> - determines whether the video is muted or not</li>
 <li><code>setVolume(volume: number)</code> - sets the volume of the video, on a scale from 0 to 1</li>
 <li><code>destroy()</code> - tear down the video and clean up its resources</li>
+<li><code>addEventListener(event: string, listener: VideoEventListener)</code> - add a listener to listen to video player's events</li>
+<li><code>removeEventListener(event: string, listener: VideoEventListener)</code> - remove a event listener</li>
 </ul>
 <p>Once a video player has been created and its source has been set, it can be used for your environment.</p>
-<pre><code class="hljs css js"><span class="hljs-comment">// To play a video as your background, reference it by its unique id</span>
+<p>To render a background 360 video:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// To play a video as your background, reference it by its unique id</span>
 r360.compositor.setBackgroundVideo(<span class="hljs-string">'myplayer'</span>);
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="from-react"></a><a href="#from-react" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From React</h3>
-<p>To create a Video Player from the React side, use the <code>VideoModule</code> Native Module. Again, a Player must be set up before it can be set to the Environment. Once it has been created, it can be attached to the background with the <code>Environment</code> module.</p>
-<pre><code class="hljs css js"><span class="hljs-keyword">import</span> {Environment, NativeModules, staticResourceURL} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-360'</span>;
-<span class="hljs-keyword">const</span> {VideoModule} = NativeModules;
+<p>To render a in-line flat video:</p>
+<pre><code class="hljs css language-js">r360.compositor.setScreen(
+  <span class="hljs-string">'default'</span>, <span class="hljs-comment">/* screen name */</span>
+  <span class="hljs-string">'myplayer'</span>, <span class="hljs-comment">/* player unique id */</span>
+  <span class="hljs-string">'default'</span>, <span class="hljs-comment">/* surface name */</span>
+  <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">600</span>, <span class="hljs-number">400</span> <span class="hljs-comment">/* relative position on the surface */</span>
+);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="from-react-1"></a><a href="#from-react-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From React</h3>
+<p>To create a Video Player from the React side, use the <code>VideoModule</code> Module. Again, a Player must be set up before it can be set to the Environment. Once it has been created, it can be attached to the background with the <code>Environment</code> module.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> {Environment, VideoModule, staticResourceURL} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-360'</span>;
 
 <span class="hljs-comment">// Create a player</span>
-VideoModule.createPlayer(<span class="hljs-string">'myplayer'</span>);
+<span class="hljs-keyword">const</span> player = VideoModule.createPlayer(<span class="hljs-string">'myplayer'</span>);
 <span class="hljs-comment">// Play a specific video</span>
-VideoModule.play(<span class="hljs-string">'myplayer'</span>, {
+player.play({
   <span class="hljs-attr">source</span>: {<span class="hljs-attr">url</span>: staticResourceURL(<span class="hljs-string">'path/to/video.mp4'</span>)}, <span class="hljs-comment">// provide the path to the video</span>
   stereo: <span class="hljs-string">'3DTB'</span>, <span class="hljs-comment">// optionally, supply the format of the video</span>
 });
-<span class="hljs-comment">// Display the video on the Environment</span>
-Environment.setBackgroundVideo(<span class="hljs-string">'myplayer'</span>);
+<span class="hljs-comment">// Display the background video on the Environment</span>
+Environment.setBackgroundVideo(<span class="hljs-string">'myplayer'</span>); <span class="hljs-comment">// or you can use player._player which is same value</span>
+<span class="hljs-comment">// Or, play in-line on a surface</span>
+Environment.setScreen(
+  <span class="hljs-string">'default'</span>, <span class="hljs-comment">/* screen name */</span>
+  <span class="hljs-string">'myplayer'</span>, <span class="hljs-comment">/* player unique id */</span>
+  <span class="hljs-string">'default'</span>, <span class="hljs-comment">/* surface name */</span>
+  <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">600</span>, <span class="hljs-number">400</span> <span class="hljs-comment">/* relative position on the surface */</span>
+);
 </code></pre>
 <p>You can also combine these techniques to create a video in the runtime, and layer play it from your React application.</p>
-<pre><code class="hljs css js"><span class="hljs-comment">// in client.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// in client.js</span>
 <span class="hljs-keyword">const</span> player = r360.compositor.createVideoPlayer(<span class="hljs-string">'myplayer'</span>);
 <span class="hljs-comment">// Instantiate the video, but do not play it yet</span>
 player.setSource(<span class="hljs-string">'path/to/video.mp4'</span>, <span class="hljs-string">'2D'</span>);
 </code></pre>
-<pre><code class="hljs css js"><span class="hljs-comment">// in index.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// in index.js</span>
 Environment.setBackgroundVideo(<span class="hljs-string">'myplayer'</span>);
 VideoModule.resume(<span class="hljs-string">'myplayer'</span>); <span class="hljs-comment">// Start playback</span>
 </code></pre>
-<p>The <code>VideoModule</code> Native Module exposes the following methods:</p>
+<p>The <code>VideoModule</code> provides a video player wrapper to support playing video on React side. Calling <code>const player = createPlayer(handle?: string)</code>, will return a <code>VideoPlayerInstance</code>, and <code>VideoPlayerInstance</code> provides following methods:</p>
 <ul>
-<li><code>createPlayer(handle: string)</code> - create a video player with a specific id</li>
-<li><code>destroyPlayer(handle: string)</code> - destroy the player referenced by this handle</li>
-<li><code>play(handle: string, options: VideoOptions)</code> - play a video on a specific video player. The options object can take the following keys:
+<li><code>play(options: VideoOptions)</code> - begin playback of the video. The options object can take the following keys:
 <ul>
-<li><code>source</code> - an object containing the URL of the video, in the format <code>{url: string}</code></li>
+<li><code>source</code> - The video source.</li>
+<li><code>startPosition</code>: the video will seek to this position when start playing</li>
+<li><code>autoPlay</code>: whether the video will start playing after loaded. If not, you can call <code>resume</code> to play the video later. This is useful for pre-loading video.</li>
+<li><code>layout</code> - An optional key specifying layout format. Use <code>CUBEMAP_32</code> if you want to play 3x2 cubic format video.</li>
 <li><code>stereo</code> - an optional key specifying the 2D/3D format of the video</li>
 <li><code>volume</code> - an optional key specifying the volume of the video, from 0 to 1</li>
 <li><code>muted</code> - an optional key specifying whether the video is muted</li>
 </ul></li>
+<li><code>pause()</code> - stop playback of the video, maintaining its location</li>
+<li><code>resume()</code> - resume the paused video</li>
+<li><code>seek(position: number)</code> - seek to a specific position in time, provided in ms</li>
+<li><code>setMuted(muted: boolean)</code> - determines whether the video is muted or not</li>
+<li><code>setVolume(volume: number)</code> - sets the volume of the video, on a scale from 0 to 1</li>
+<li><code>destroy()</code> - tear down the video and clean up its resources</li>
+<li><code>addEventListener(event: string, listener: VideoEventListener)</code> - add a listener to listen to video player's events, it will return a subscription for unregister</li>
+<li><code>removeSubscription(subscription: EmitterSubscription)</code> - remove a event listener using the subscription</li>
+</ul>
+<p>You can also directly use <code>VideoModule</code> Native Module with following methods:</p>
+<ul>
+<li><code>createPlayer(handle: string)</code> - create a video player with a specific id</li>
+<li><code>destroyPlayer(handle: string)</code> - destroy the player referenced by this handle</li>
+<li><code>play(handle: string, options: VideoOptions)</code> - play a video on a specific video player. The options object is the same as above.</li>
 <li><code>pause(handle: string)</code> - pause the video being played by the specific player</li>
 <li><code>resume(handle: string)</code> - resume the video being played by the specific player, if it is currently paused</li>
 <li><code>stop(handle: string)</code> - stop playback of the video on the specific player, returning its time back to 0:00</li>
@@ -120,14 +194,76 @@ VideoModule.resume(<span class="hljs-string">'myplayer'</span>); <span class="hl
 <li><code>muted</code> - an optional key specifying whether the video is muted</li>
 </ul></li>
 </ul>
-<h2><a class="anchor" aria-hidden="true" id="clearing-the-background"></a><a href="#clearing-the-background" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Clearing the Background</h2>
+<h3><a class="anchor" aria-hidden="true" id="video-events"></a><a href="#video-events" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Video Events</h3>
+<p>By calling <code>addEventListener</code> you will be able to listening to video events from React side. For example:</p>
+<pre><code class="hljs">const player = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">VideoModule</span>.</span></span>create<span class="hljs-constructor">Player('<span class="hljs-params">myplayer</span>')</span>;
+player.add<span class="hljs-constructor">EventListener('<span class="hljs-params">onVideoStatusChanged</span>', (<span class="hljs-params">event</span>: VideoStatusEvent)</span> =&gt; {
+  <span class="hljs-keyword">if</span> (event.status<span class="hljs-operator"> === </span>'ready') {
+    player.remove<span class="hljs-constructor">Subscription(<span class="hljs-params">onVideoLoadedSubscription</span>)</span>;
+    console.log('Video is ready');
+  }
+})
+</code></pre>
+<p>The VideoStatusEvent is emitted every time the video status changes, e.g paused, ended, time position update, etc. The event provides following fields:</p>
+<ul>
+<li><code>duration</code> - The total duration of the video</li>
+<li><code>error</code> - If there's an error, this will include the error message</li>
+<li><code>isBuffering</code> - Whether the video is buffering for more data</li>
+<li><code>isMuted</code> - Whether the video is muted</li>
+<li><code>volume</code> - The volume of the video</li>
+<li><code>position</code> - The time position of the video</li>
+<li><code>status</code> - Video play status, can be
+<ul>
+<li><code>closed</code>: No session.</li>
+<li><code>closing</code>: Session is being closed.</li>
+<li><code>failed</code>: Session had an error.</li>
+<li><code>finished</code>: Session has finished playing video</li>
+<li><code>paused</code>: Session is paused.</li>
+<li><code>playing</code>: Session is playing a video.</li>
+<li><code>seeking</code>: Session is seeking a position</li>
+<li><code>ready</code>: Session is ready to play a video.</li>
+<li><code>stopped</code>: Session is stopped (ready to play)</li>
+</ul></li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="video-uis"></a><a href="#video-uis" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Video UIs</h3>
+<p>An optional UI library is also provided as <code>react-360-common-ui</code>, it provides some basic UIs for Flat Video and Video Control</p>
+<p>To install it:</p>
+<ul>
+<li>Add <code>react-360-common-ui</code> as dependency in you package.json</li>
+<li>Run <code>npm install</code> or <code>yarn</code></li>
+</ul>
+<p>To use it</p>
+<pre><code class="hljs"><span class="hljs-keyword">import</span> {<span class="hljs-type">VideoPlayer</span>} from <span class="hljs-symbol">'react</span><span class="hljs-number">-360</span>-common-ui';
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VideoTest</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+  render() {
+    <span class="hljs-keyword">return</span> (
+      &lt;<span class="hljs-type">View</span> style={{flex: <span class="hljs-number">1</span>}}&gt;
+        &lt;<span class="hljs-type">VideoPlayer</span>
+          muted={<span class="hljs-literal">true</span>}
+          source={{url: staticResourceURL(<span class="hljs-symbol">'path</span>/to/video.mp4')}}
+          stereo={<span class="hljs-symbol">'2</span>D'}
+          style={{
+            width: <span class="hljs-number">600</span>,
+            height: <span class="hljs-number">400</span>,
+          }}
+        /&gt;
+      &lt;/<span class="hljs-type">View</span>&gt;
+    );
+  }
+}
+</code></pre>
+<p><code>VideoPlayer</code> is a useful react component that can render a flat video in-line and layout-ed with your other react components. And it contains a <code>VideoControl</code> component inside which can also be use separately.</p>
+<h3><a class="anchor" aria-hidden="true" id="custom-video-player"></a><a href="#custom-video-player" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom Video Player</h3>
+<p>React360 provides a default functional video player using HTML5 video element. If you want use your own version of video player to provide additional functionalities such as Mpeg-Dash, HLS, etc. You can implement your own custom video player. And add it to <code>customVideoPlayers</code> in ReactInstance's option. An example on how to use custom video players is provided <a href="/react-360/docs/example-customplayer.html">here</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="clearing-the-background"></a><a href="#clearing-the-background" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Clearing the Background</h2>
 <p>It is also possible to remove all backgrounds and fade the environment to black. From the Runtime this can be done by passing <code>null</code> to the <code>setBackground</code> method.</p>
-<pre><code class="hljs css js">r360.compositor.setBackground(<span class="hljs-literal">null</span>);
+<pre><code class="hljs css language-js">r360.compositor.setBackground(<span class="hljs-literal">null</span>);
 </code></pre>
 <p>From the React side, the <code>Environment</code> module provides a <code>clearBackground()</code> method.</p>
-<pre><code class="hljs css js"><span class="hljs-keyword">import</span> {Environment} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-360'</span>;
+<pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> {Environment} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-360'</span>;
 
 <span class="hljs-comment">// Fade to black</span>
 Environment.clearBackground();
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="runtime.html">← Runtime</a><a class="docs-next button" href="surfaces.html">Surfaces →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#supported-formats">Supported Formats</a><ul class="toc-headings"><li><a href="#photos">Photos</a></li><li><a href="#videos">Videos</a></li></ul></li><li><a href="#displaying-panoramic-images">Displaying Panoramic Images</a><ul class="toc-headings"><li><a href="#from-the-runtime-clientjs">From the Runtime (client.js)</a></li><li><a href="#mono-and-stereo-formats">Mono and Stereo Formats</a></li><li><a href="#from-react">From React</a></li></ul></li><li><a href="#displaying-panoramic-videos">Displaying Panoramic Videos</a><ul class="toc-headings"><li><a href="#from-the-runtime-clientjs">From the Runtime (client.js)</a></li><li><a href="#from-react">From React</a></li></ul></li><li><a href="#clearing-the-background">Clearing the Background</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/react-360/" class="nav-home"><img src="/react-360/img/logo.svg" alt="React 360" width="66" height="58"/></a><div><h5>Docs</h5><a href="/react-360/docs/en/setup.html">Getting Started</a><a href="/react-360/docs/en/example-slideshow.html">Examples</a></div><div><h5>More</h5><a href="/react-360/blog">Blog</a><a href="https://github.com/facebook/react-360">GitHub</a><a class="github-button" data-icon="octicon-star" data-count-href="/facebook/react-360/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/react-360/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div></body></html>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/react-360/docs/runtime.html"><span class="arrow-prev">← </span><span>Runtime</span></a><a class="docs-next button" href="/react-360/docs/surfaces.html"><span>Surfaces</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#supported-formats">Supported Formats</a><ul class="toc-headings"><li><a href="#photos">Photos</a></li><li><a href="#videos">Videos</a></li></ul></li><li><a href="#displaying-panoramic-images">Displaying Panoramic Images</a><ul class="toc-headings"><li><a href="#from-the-runtime-clientjs">From the Runtime (client.js)</a></li><li><a href="#mono-and-stereo-formats">Mono and Stereo Formats</a></li><li><a href="#photo-layout-format">Photo Layout Format</a></li><li><a href="#from-react">From React</a></li></ul></li><li><a href="#displaying-videos">Displaying Videos</a><ul class="toc-headings"><li><a href="#video-layout-format">Video Layout Format</a></li><li><a href="#from-the-runtime-clientjs-1">From the Runtime (client.js)</a></li><li><a href="#from-react-1">From React</a></li><li><a href="#video-events">Video Events</a></li><li><a href="#video-uis">Video UIs</a></li><li><a href="#custom-video-player">Custom Video Player</a></li></ul></li><li><a href="#clearing-the-background">Clearing the Background</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/react-360/" class="nav-home"><img src="/react-360/img/logo.svg" alt="React 360" width="66" height="58"/></a><div><h5>Docs</h5><a href="/react-360/docs/en/setup.html">Getting Started</a><a href="/react-360/docs/en/example-slideshow.html">Examples</a></div><div><h5>More</h5><a href="/react-360/blog">Blog</a><a href="https://github.com/facebook/react-360">GitHub</a><a class="github-button" data-icon="octicon-star" data-count-href="/facebook/react-360/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/react-360/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 Facebook Inc.</section></footer></div></body></html>
