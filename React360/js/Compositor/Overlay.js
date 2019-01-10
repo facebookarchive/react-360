@@ -139,7 +139,9 @@ export default class Overlay implements OverlayInterface {
   }
 
   enableVRButton() {
-    this._vrButton.style.display = 'block';
+    if (/Oculus/i.test(navigator.userAgent)) {
+      this._vrButton.style.display = 'block';
+    }
   }
 
   disableVRButton() {
