@@ -60,6 +60,11 @@ export default class ScrollPanCameraController implements CameraController {
     this._enabled = false;
   }
 
+  resetRotation() {
+    this._deltaPitch = 0;
+    this._deltaYaw = 0;
+  }
+
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
     if (!this._enabled) {
       return false;

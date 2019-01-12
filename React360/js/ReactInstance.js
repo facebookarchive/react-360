@@ -164,6 +164,7 @@ export default class ReactInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent, () => {
       this._cameraQuat = Object.assign({}, this._initCameraQuat);
+      this.controls.resetRotation(options.orientation);  
     });
 
     this.compositor = new Compositor(this._eventLayer, this.scene, options);
@@ -230,9 +231,9 @@ export default class ReactInstance {
     this.controls.addEventChannel(new MouseInputChannel(this._eventLayer));
     // this.controls.addEventChannel(new KeyboardInputChannel());
     //this.controls.addEventChannel(new GamepadInputChannel());
-    this.controls.addRaycaster(new ControllerRaycaster());
-    this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
-    this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
+    // this.controls.addRaycaster(new ControllerRaycaster());
+    // this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
+    // this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
   }
 
   _onResize() {

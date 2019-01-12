@@ -12,9 +12,13 @@
 import { type Quaternion, type Vec3 } from '../Types';
 import { type CameraController } from './Types';
 
-const DEFAULT_FOV = Math.PI / 6;
+const DEFAULT_FOV = Math.PI / 3;
+const TWO_PI = Math.PI * 2;
 const HALF_PI = Math.PI / 2;
 const DEFAULT_Y_ROTATION_DELATA = 0.0004;
+
+let _offsetYaw = 0;
+let _offsetPitch = 0;
 
 export default class MousePanCameraController implements CameraController {
   _deltaYaw: number;
@@ -80,7 +84,6 @@ export default class MousePanCameraController implements CameraController {
     this._lastMouseY = e.clientY;
     this._deltaPitch += deltaX / width * this._verticalFov * aspect;
     this._deltaYaw += deltaY / height * this._verticalFov;
-    this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
   }
 
   _onMouseUp() {
@@ -110,9 +113,37 @@ export default class MousePanCameraController implements CameraController {
     const deltaY = y - this._lastTouchY;
     this._lastTouchX = x;
     this._lastTouchY = y;
-    this._deltaPitch += deltaX / width * this._verticalFov * aspect;
-    this._deltaYaw += deltaY / height * this._verticalFov;
-    this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
+    let ratio = window.devicePixelRatio || 2;
+    if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+      this._deltaPitch += deltaX / width * this._verticalFov * aspect * ratio;
+      // _offsetPitch += deltaX / width * this._verticalFov * aspect * ratio;
+      // if (_offsetPitch > TWO_PI) {
+      //   _offsetPitch -= TWO_PI;
+      // }
+      // if (_offsetPitch < - TWO_PI){
+      //   _offsetPitch += TWO_PI;
+      // }
+    } else {
+      this._deltaYaw += deltaY / height * this._verticalFov * aspect;
+      _offsetYaw += deltaY / height * this._verticalFov * aspect;
+      if (_offsetYaw > HALF_PI) {
+        this._deltaYaw = 0;
+        _offsetYaw = HALF_PI;
+      }
+      if (_offsetYaw < -HALF_PI) {
+        this._deltaYaw = 0;
+        _offsetYaw = -HALF_PI;
+      }
+    }
+
+
+  }
+
+  static getOffset() {
+    return {
+      offsetYaw: _offsetYaw,
+      offsetPitch: _offsetPitch,
+    }
   }
 
   _onTouchEnd(e: TouchEvent) {
@@ -151,6 +182,11 @@ export default class MousePanCameraController implements CameraController {
     this._enabled = false;
     this._draggingMouse = false;
     this._draggingTouch = false;
+  }
+
+  resetRotation() {
+    this._deltaYaw = 0;
+    this._deltaPitch = 0;
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
