@@ -86,7 +86,6 @@ export function quaternionPremultiply(b: Quaternion, a: Quaternion) {
 
 export function setQuatFromEuler(quat: Quaternion, x: number, y: number, z: number) {
   const arr = [];
-  console.log(111)
   const cx = Math.cos(x / 2);
   const cy = Math.cos(y / 2);
   const cz = Math.cos(z / 2);
@@ -98,7 +97,6 @@ export function setQuatFromEuler(quat: Quaternion, x: number, y: number, z: numb
   arr[1] = cx * sy * cz - sx * cy * sz;
   arr[2] = cx * cy * sz - sx * sy * cz;
   arr[3] = cx * cy * cz + sx * sy * sz;
-  console.log(arr);
 }
 
 export function setQuatFromAxisAngle(quat: Quaternion, axis: Vec3, angle: number) {

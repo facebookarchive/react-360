@@ -78,7 +78,6 @@ export function setQuatFromEuler(
   y: number,
   z: number,
 ) {
-  const arr = []
   const cx = Math.cos(x / 2);
   const cy = Math.cos(y / 2);
   const cz = Math.cos(z / 2);
