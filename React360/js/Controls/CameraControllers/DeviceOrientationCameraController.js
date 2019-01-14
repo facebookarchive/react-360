@@ -127,7 +127,7 @@ export default class DeviceOrientationCameraController
     // this._offsetPitch = offsets.offsetYaw;
     if (this._offsetYawQuat == null) {
       const alphaOffset = getScreenOrientation() - alpha;
-      setQuatFromXRotation(this._offsetYawQuat, 0);
+      this._offsetYawQuat = [0, 0, 0, 1];
       this._offsetYaw = alphaOffset;
     }
     if (!this._initAlpha) {

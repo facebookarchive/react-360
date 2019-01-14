@@ -124,8 +124,8 @@ export default class MousePanCameraController implements CameraController {
       //   _offsetPitch += TWO_PI;
       // }
     } else {
-      this._deltaYaw += deltaY / height * this._verticalFov * aspect;
-      _offsetYaw += deltaY / height * this._verticalFov * aspect;
+      this._deltaYaw += deltaY / height * this._verticalFov;
+      _offsetYaw += deltaY / height * this._verticalFov;
       if (_offsetYaw > HALF_PI) {
         this._deltaYaw = 0;
         _offsetYaw = HALF_PI;
