@@ -110,7 +110,7 @@ export default class Environment {
     this._panoMesh.geometry = this._panoGeomSphere;
     this._panoMesh.rotation.y = -Math.PI / 2;
     this._panoMaterial.uniforms.arcOffset.value = 0;
-    if (is3D) {
+    if (is3D && this._options.fov.hfov !== 360) {
       this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI;
     } else {
       this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI / 2;
@@ -207,7 +207,6 @@ export default class Environment {
       }
     } else {
       if (data.format === '3DTB') {
-        console.log(222);
         this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere(true);
       } else if (data.format === '3DBT') {
