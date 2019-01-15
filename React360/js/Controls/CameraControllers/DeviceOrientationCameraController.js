@@ -119,6 +119,9 @@ export default class DeviceOrientationCameraController
 
   _onDeviceOrientation(event: DeviceOrientationEvent) {
     // const e = event.rotationRate
+    if (this._dragging) {
+      return;
+    }
     const alpha = event.alpha * DEG_TO_RAD;
     const beta = event.beta * DEG_TO_RAD;
     const gamma = event.gamma * DEG_TO_RAD;
@@ -151,7 +154,7 @@ export default class DeviceOrientationCameraController
   }
 
   _onTouchMove(e: TouchEvent) {
-    if (!this._enabled || !this._dragging) {
+    if (!this._enabled) {
       return;
     }
     const x = e.changedTouches[0].clientX;
@@ -166,7 +169,7 @@ export default class DeviceOrientationCameraController
     if (Math.abs(dx) >= Math.abs(dy)) {
       // Horizontal pan
       const devicePixelRatio = window.devicePixelRatio || 2;
-      this._offsetYaw += dx / width * this._verticalFov * aspect * devicePixelRatio;
+      this._offsetYaw += dx / width * this._verticalFov * aspect * devicePixelRatio * 2;
       if (this._offsetYaw > TWO_PI) {
         this._offsetYaw -= TWO_PI;
       } else if (this._offsetYaw < 0) {
@@ -174,7 +177,7 @@ export default class DeviceOrientationCameraController
       }
     } else {
       // Vertical pan
-      this._offsetPitch += dy / height * this._verticalFov;
+      this._offsetPitch += dy / height * this._verticalFov * 2;
       if (this._offsetPitch > HALF_PI) {
         this._offsetPitch = HALF_PI;
       } else if (this._offsetPitch < -HALF_PI) {

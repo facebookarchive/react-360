@@ -64,7 +64,6 @@ export default class Environment {
     if (options.uv) {
 
       const {phiStart, phiLength, thetaStart, thetaLength} = options.uv;
-
       this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16, phiStart, phiLength, thetaStart, thetaLength);
       this._panoGeomHemisphere = new THREE.SphereGeometry(
         1000,
@@ -87,7 +86,12 @@ export default class Environment {
       color: '#ffffff',
       side: THREE.DoubleSide,
     });
-    this._panoMaterial.useUV = 0;
+    if (options.uv) {
+      this._panoMaterial.useUV = true;
+    } else {
+      this._panoMaterial.useUV = 0;
+    }
+
     this._panoMesh = new THREE.Mesh(this._panoGeomSphere, this._panoMaterial);
     this._panoMesh.visible = false;
     this._panoMesh.scale.set(-1, 1, 1);
@@ -121,6 +125,8 @@ export default class Environment {
   _setPanoGeometryToHemisphere() {
     this._panoMesh.geometry = this._panoGeomHemisphere;
     this._panoMesh.rotation.y = Math.PI;
+    this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
+    this._panoMaterial.uniforms.arcLengthReciprocal.value =  1 / Math.PI;
     if (this._options.fov && this._options.fov.hfov * 1 === 180) {
       this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
       this._panoMaterial.uniforms.arcLengthReciprocal.value =  1 / Math.PI;
@@ -176,6 +182,7 @@ export default class Environment {
     this._panoMaterial.map = data.tex;
     const width = data.width;
     const height = data.height;
+
     if (width === height) {
       // 1:1 ratio, 180 mono or top/bottom 360 3D
       if (data.format === '3DTB') {
@@ -186,6 +193,10 @@ export default class Environment {
         // 360 top-bottom 3D
         this._panoEyeOffsets = [[0, 0.5, 1, 0.5], [0, 0, 1, 0.5]];
         this._setPanoGeometryToSphere(true);
+      } else if (data.format === '3DLR') {
+        // 180 side-by-side 3D
+        this._panoEyeOffsets = [[0.5, 0, 0.5, 1],[0, 0, 0.5, 1]];
+        this._setPanoGeometryToHemisphere();
       } else {
         // assume 180 mono
         this._panoEyeOffsets = [[0, 0, 1, 1]];

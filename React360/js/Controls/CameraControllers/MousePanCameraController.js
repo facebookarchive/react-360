@@ -115,7 +115,7 @@ export default class MousePanCameraController implements CameraController {
     this._lastTouchY = y;
     let ratio = window.devicePixelRatio || 2;
     if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-      this._deltaPitch += deltaX / width * this._verticalFov * aspect * ratio;
+      this._deltaPitch += deltaX / width * this._verticalFov * aspect * ratio * 2;
       // _offsetPitch += deltaX / width * this._verticalFov * aspect * ratio;
       // if (_offsetPitch > TWO_PI) {
       //   _offsetPitch -= TWO_PI;
@@ -124,8 +124,8 @@ export default class MousePanCameraController implements CameraController {
       //   _offsetPitch += TWO_PI;
       // }
     } else {
-      this._deltaYaw += deltaY / height * this._verticalFov;
-      _offsetYaw += deltaY / height * this._verticalFov;
+      this._deltaYaw += deltaY / height * this._verticalFov * 2;
+      _offsetYaw += deltaY / height * this._verticalFov * 2;
       if (_offsetYaw > HALF_PI) {
         this._deltaYaw = 0;
         _offsetYaw = HALF_PI;
