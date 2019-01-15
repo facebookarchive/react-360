@@ -124,10 +124,9 @@ export default class Environment {
 
   _setPanoGeometryToHemisphere() {
     this._panoMesh.geometry = this._panoGeomHemisphere;
-    this._panoMesh.rotation.y = Math.PI;
-    this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
-    this._panoMaterial.uniforms.arcLengthReciprocal.value =  1 / Math.PI;
+    // this._panoMesh.rotation.y = Math.PI;
     if (this._options.fov && this._options.fov.hfov * 1 === 180) {
+      this._panoMesh.rotation.y = Math.PI;
       this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
       this._panoMaterial.uniforms.arcLengthReciprocal.value =  1 / Math.PI;
       // const {phiStart, phiLength, thetaStart, thetaLength} = this._options.uv;
@@ -182,7 +181,6 @@ export default class Environment {
     this._panoMaterial.map = data.tex;
     const width = data.width;
     const height = data.height;
-
     if (width === height) {
       // 1:1 ratio, 180 mono or top/bottom 360 3D
       if (data.format === '3DTB') {
@@ -295,7 +293,9 @@ export default class Environment {
       ? this._videoPlayers.getPlayer(handle)
       : null;
     const loader = player
-      ? player.load().then(data => ({ ...data, src: handle }))
+      ? player.load().then((data) => {
+        return { ...data, src: handle }
+      })
       : null;
     return this._setBackground(loader, handle, options.transition);
   }

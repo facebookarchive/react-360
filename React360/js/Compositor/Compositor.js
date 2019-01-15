@@ -73,6 +73,7 @@ export default class Compositor {
       this._videoPlayers,
       options
     );
+
     const panoNode = this._environment.getPanoNode();
     scene.add(panoNode);
 
