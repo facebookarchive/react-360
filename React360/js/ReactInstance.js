@@ -164,7 +164,7 @@ export default class ReactInstance {
     this.controls = new Controls();
     this.overlay = options.customOverlay || new Overlay(parent, () => {
       this._cameraQuat = Object.assign({}, this._initCameraQuat);
-      this.controls.resetRotation(options.orientation);  
+      this.controls.resetRotation(options.orientation);
     });
 
     this.compositor = new Compositor(this._eventLayer, this.scene, options);
@@ -238,9 +238,9 @@ export default class ReactInstance {
 
   _onResize() {
     const display = this.vrState.getCurrentDisplay();
-    if (display && display.isPresenting) {
-      return;
-    }
+    // if (display && display.isPresenting) {
+    //   return;
+    // }
     this._needsResize = true;
   }
 

@@ -64,23 +64,23 @@ export default class Environment {
     if (options.uv) {
 
       const {phiStart, phiLength, thetaStart, thetaLength} = options.uv;
-      this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16, phiStart, phiLength, thetaStart, thetaLength);
+      this._panoGeomSphere = new THREE.SphereGeometry(1000, 200, 200, phiStart, phiLength, thetaStart, thetaLength);
       this._panoGeomHemisphere = new THREE.SphereGeometry(
         1000,
-        16,
-        16,
+        200,
+        200,
         0,
         phiLength,
       );
     } else {
       this._panoGeomHemisphere = new THREE.SphereGeometry(
         1000,
-        16,
-        16,
+        200,
+        200,
         0,
         Math.PI,
       );
-      this._panoGeomSphere = new THREE.SphereGeometry(1000, 16, 16);
+      this._panoGeomSphere = new THREE.SphereGeometry(1000, 200, 200);
     }
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#ffffff',
@@ -102,7 +102,9 @@ export default class Environment {
         if (hfov === 360) {
           hfov = 180;
         }
-        this._panoMesh.scale.set(-1, vfov / hfov, 1);
+        if (vfov !== 90) {
+          this._panoMesh.scale.set(-1, vfov / hfov, 1);
+        }
       }
     }
     this._panoMesh.rotation.y = -Math.PI / 2;
