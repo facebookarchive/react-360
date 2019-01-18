@@ -99,10 +99,43 @@ export default class ControllerRaycaster implements Raycaster {
     return Infinity;
   }
 
+  _isGamepadActive(gamepad: Gamepad) {
+    const buttons = gamepad.buttons;
+    for (let btn = 0; btn < buttons.length; btn++) {
+      const pressed =
+        typeof buttons[btn] === 'object' ? buttons[btn].pressed : buttons[btn] === 1.0;
+      if (pressed) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  _tryUpdateGamepad() {
+    const gamepads = getGamepads();
+    if (this._gamepadIndex > 0 && this._isGamepadActive(gamepads[this._gamepadIndex])) {
+      return;
+    }
+    for (let id = 0; id < gamepads.length; id++) {
+      if (id !== this._gamepadIndex) {
+        const gamepad = gamepads[id];
+        if (gamepad && gamepad.pose && this._isGamepadActive(gamepad)) {
+          this._setGamepad(gamepad);
+          return;
+        }
+      }
+    }
+  }
+
   fillDirection(direction: Vec3): boolean {
     if (!this._enabled) {
       return false;
     }
+    // Try update the active gamepad.
+    // If current gamepad is not active and another gamepad
+    // is active, use the new active gamepad.
+    this._tryUpdateGamepad();
+
     if (!this._gamepadID) {
       return false;
     }
