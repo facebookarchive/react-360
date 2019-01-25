@@ -69,8 +69,10 @@ export default class Environment {
         1000,
         200,
         200,
-        0,
+        phiStart,
         phiLength,
+        thetaStart,
+        thetaLength,
       );
     } else {
       this._panoGeomHemisphere = new THREE.SphereGeometry(
@@ -103,7 +105,7 @@ export default class Environment {
           hfov = 180;
         }
         if (vfov !== 90) {
-          this._panoMesh.scale.set(-1, vfov / hfov, 1);
+          // this._panoMesh.scale.set(-1, vfov / hfov, 1);
         }
       }
     }
@@ -128,7 +130,7 @@ export default class Environment {
     this._panoMesh.geometry = this._panoGeomHemisphere;
     // this._panoMesh.rotation.y = Math.PI;
     if (this._options.fov && this._options.fov.hfov * 1 === 180) {
-      this._panoMesh.rotation.y = Math.PI;
+      // this._panoMesh.rotation.y = Math.PI;
       this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
       this._panoMaterial.uniforms.arcLengthReciprocal.value =  1 / Math.PI;
       // const {phiStart, phiLength, thetaStart, thetaLength} = this._options.uv;
