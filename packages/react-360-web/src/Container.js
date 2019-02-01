@@ -11,14 +11,27 @@
 
 import {Controls, MouseRaycaster, ScrollPanCameraController, type Ray} from 'react-360-controls';
 import {Environment, Surface} from 'react-360-surfaces';
+import VRState from 'vr-state';
 import * as WebGL from 'webgl-lite';
 import * as GLUI from 'webgl-ui';
+import Overlay, {type OverlayInterface} from './Overlay';
+import WebVRCameraController from './WebVRCameraController';
 
 type ContainerOptions = {
   fullscreen?: boolean,
   height?: number,
   width?: number,
 };
+
+type AnimationFrameData =
+  | {
+      id: number,
+      vr: true,
+    }
+  | {
+      id: AnimationFrameID,
+      vr: false,
+    };
 
 // Preallocated array for intersection detection
 const intersect = [0, 0];
@@ -37,16 +50,21 @@ export default class Container {
   controls: Controls;
   environment: Environment;
   group: WebGL.RenderGroup;
+  overlay: OverlayInterface;
+  vrState: VRState;
   _canvas: HTMLCanvasElement;
-  _gl: WebGLRenderingContext;
+  _frameData: ?VRFrameData;
   _eventLayer: HTMLElement;
+  _gl: WebGLRenderingContext;
   _height: number;
   _lastFrameStart: number;
   _looping: boolean;
   _needsResize: boolean;
+  _nextFrame: null | AnimationFrameData;
   _rays: Array<Ray>;
   _surfaces: {[name: string]: Surface};
   _width: number;
+  _wrapper: HTMLElement;
 
   constructor(options: ContainerOptions = {}) {
     this._canvas = document.createElement('canvas');
@@ -60,12 +78,11 @@ export default class Container {
     this._eventLayer.appendChild(this._canvas);
     this._lastFrameStart = 0;
     this._looping = false;
+    this._nextFrame = null;
     this._rays = [];
     this._surfaces = {};
-
-    this.controls.addCameraController(new ScrollPanCameraController(this._eventLayer));
-    this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
-    this.group.setUniform('viewMatrix', this.controls.getCameraViewMatrix());
+    this._wrapper = document.createElement('div');
+    this._wrapper.appendChild(this._eventLayer);
 
     let width = options.width || 300;
     let height = options.height || 300;
@@ -83,6 +100,34 @@ export default class Container {
         }
       });
     }
+
+    this.overlay = new Overlay();
+    this._wrapper.appendChild(this.overlay.getDOMElement());
+
+    this.vrState = new VRState();
+    if ('VRFrameData' in window) {
+      this._frameData = new VRFrameData();
+      const vrCameraController = new WebVRCameraController(this._frameData);
+      this.controls.addCameraController(vrCameraController);
+
+      this.vrState.onDisplayChange(display => {
+        if (display) {
+          this.overlay.setVRButtonState(true, 'View in VR', this.enterVR);
+        } else {
+          this.overlay.setVRButtonState(false, 'No Headset', null);
+        }
+        vrCameraController.setDisplay(display);
+      });
+      this.vrState.onExit(() => {
+        this._needsResize = true;
+      });
+      this.vrState.onActivate(display => {
+        this.enterVR();
+      });
+    }
+
+    this.controls.addCameraController(new ScrollPanCameraController(this._eventLayer));
+    this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
   }
 
   /**
@@ -142,13 +187,14 @@ export default class Container {
     this.controls.updateCamera();
     this.controls.fillRays(this._rays);
     const cameraPos = this.controls.getCameraPosition();
+    const cameraQuat = this.controls.getCameraQuaternion();
     for (const ray of this._rays) {
       if (!ray.hasAbsoluteCoordinates) {
         // Place the ray relative to camera space
         ray.origin[0] += cameraPos[0];
         ray.origin[1] += cameraPos[1];
         ray.origin[2] += cameraPos[2];
-        GLUI.Math.rotateByQuaternion(ray.direction, this.controls.getCameraQuaternion());
+        GLUI.Math.rotateByQuaternion(ray.direction, cameraQuat);
       }
       intersect[0] = 0;
       intersect[1] = 0;
@@ -167,17 +213,59 @@ export default class Container {
       surface.getReactRoot().update();
     }
 
-    this.group.setUniform('viewMatrix', this.controls.getCameraViewMatrix());
-    if (this.group.needsRender()) {
+    this.overlay.setCameraRotation(cameraQuat);
+
+    if (this.vrState.isPresenting() && this._frameData) {
       const gl = this._gl;
+      const canvas = this._canvas;
+      const frameData = this._frameData;
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+      const display = this.vrState.getCurrentDisplay();
+      gl.viewport(0, 0, canvas.width * 0.5, canvas.height);
+      this.group.setUniform('projectionMatrix', frameData.leftProjectionMatrix);
+      this.group.setUniform('viewMatrix', frameData.leftViewMatrix);
       this.group.draw();
-    }
 
-    if (this._looping) {
-      requestAnimationFrame(this.frame);
+      gl.viewport(canvas.width * 0.5, 0, canvas.width * 0.5, canvas.height);
+      this.group.setUniform('projectionMatrix', frameData.rightProjectionMatrix);
+      this.group.setUniform('viewMatrix', frameData.rightViewMatrix);
+      this.group.draw();
+
+      display.submitFrame();
+      if (this._looping) {
+        if (this._nextFrame) {
+          const nextFrame: any = this._nextFrame;
+          nextFrame.vr = true;
+          nextFrame.id = display.requestAnimationFrame(this.frame);
+        } else {
+          this._nextFrame = {
+            vr: true,
+            id: display.requestAnimationFrame(this.frame),
+          };
+        }
+      }
+    } else {
+      this.group.setUniform('viewMatrix', this.controls.getCameraViewMatrix());
+      if (this.group.needsRender()) {
+        const gl = this._gl;
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        this.group.draw();
+      }
+      if (this._looping) {
+        if (this._nextFrame) {
+          const nextFrame: any = this._nextFrame;
+          nextFrame.vr = false;
+          nextFrame.id = self.requestAnimationFrame(this.frame);
+        } else {
+          this._nextFrame = {
+            vr: false,
+            id: self.requestAnimationFrame(this.frame),
+          };
+        }
+      }
     }
   };
 
@@ -185,8 +273,11 @@ export default class Container {
    * Begin drawing the scene and collecting input
    */
   start() {
+    if (this._looping) {
+      return;
+    }
     this._looping = true;
-    requestAnimationFrame(this.frame);
+    self.requestAnimationFrame(this.frame);
   }
 
   /**
@@ -194,18 +285,30 @@ export default class Container {
    */
   stop() {
     this._looping = false;
+    const nextFrame = this._nextFrame;
+    if (nextFrame) {
+      const display = this.vrState.getCurrentDisplay();
+      if (display && display.isPresenting) {
+        if (nextFrame.vr) {
+          display.cancelAnimationFrame(nextFrame.id);
+        }
+      } else if (!nextFrame.vr) {
+        cancelAnimationFrame(nextFrame.id);
+      }
+      this._nextFrame = null;
+    }
   }
 
   /**
    * Update the size of the mounted canvas element
    */
-  resize(w: number, h: number) {
+  resize(w: number, h: number, dpr: number = window.devicePixelRatio) {
     this._width = w;
     this._height = h;
     this._canvas.style.width = w + 'px';
     this._canvas.style.height = h + 'px';
-    const width = w * window.devicePixelRatio;
-    const height = h * window.devicePixelRatio;
+    const width = w * dpr;
+    const height = h * dpr;
     this._canvas.width = width;
     this._canvas.height = height;
     this._gl.viewport(0, 0, width, height);
@@ -228,7 +331,7 @@ export default class Container {
    * in the HTML document.
    */
   getDOMElement() {
-    return this._eventLayer;
+    return this._wrapper;
   }
 
   /**
@@ -244,6 +347,35 @@ export default class Container {
   getGLContext() {
     return this._gl;
   }
+
+  /**
+   * Attempt to enter VR presentation mode
+   */
+  enterVR = () => {
+    const display = this.vrState.getCurrentDisplay();
+    if (!display || display.isPresenting) {
+      return;
+    }
+    display
+      .requestPresent([
+        {
+          source: this._canvas,
+        },
+      ])
+      .then(() => {
+        const leftParams = display.getEyeParameters('left');
+        const rightParams = display.getEyeParameters('right');
+        const oldWidth = this._width;
+        const oldHeight = this._height;
+        this.resize(
+          leftParams.renderWidth + rightParams.renderWidth,
+          Math.min(leftParams.renderHeight, rightParams.renderHeight),
+          1
+        );
+        this._width = oldWidth;
+        this._height = oldHeight;
+      });
+  };
 
   _onResize = () => {
     this._width = window.innerWidth;

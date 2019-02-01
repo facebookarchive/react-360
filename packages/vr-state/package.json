@@ -1,0 +1,31 @@
+{
+  "name": "vr-state",
+  "version": "0.1.0",
+  "description": "Simplified state management for connected WebVR displays",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git"
+  },
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "files": [
+    "dist/",
+    "index.js",
+    "LICENSE",
+    "PATENTS",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "webgl-lite": "~0.0.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.1.2",
+    "@babel/core": "7.1.2",
+    "@babel/plugin-proposal-class-properties": "7.2.1",
+    "@babel/plugin-transform-flow-strip-types": "7.0.0"
+  },
+  "scripts": {
+    "build": "babel src --out-dir dist --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
+  }
+}
