@@ -9,7 +9,16 @@
  * @flow
  */
 
-import {Controls, MouseRaycaster, ScrollPanCameraController, type Ray} from 'react-360-controls';
+import {
+  ControllerRaycaster,
+  Controls,
+  DeviceOrientationCameraController,
+  MousePanCameraController,
+  MouseRaycaster,
+  ScrollPanCameraController,
+  TouchRaycaster,
+  type Ray,
+} from 'react-360-controls';
 import {Environment, Surface} from 'react-360-surfaces';
 import VRState from 'vr-state';
 import * as WebGL from 'webgl-lite';
@@ -127,7 +136,11 @@ export default class Container {
     }
 
     this.controls.addCameraController(new ScrollPanCameraController(this._eventLayer));
+    this.controls.addCameraController(new DeviceOrientationCameraController(this._eventLayer));
+    this.controls.addCameraController(new MousePanCameraController(this._eventLayer));
+    this.controls.addRaycaster(new ControllerRaycaster());
     this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
+    this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
   }
 
   /**

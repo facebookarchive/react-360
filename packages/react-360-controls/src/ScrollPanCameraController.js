@@ -11,7 +11,7 @@
 
 import {type Quaternion, type Vec3, type CameraController} from './ControlsTypes';
 
-const DEFAULT_FOV = Math.PI / 6;
+const DEFAULT_FOV = Math.PI / 3;
 const HALF_PI = Math.PI / 2;
 
 export default class ScrollPanCameraController implements CameraController {

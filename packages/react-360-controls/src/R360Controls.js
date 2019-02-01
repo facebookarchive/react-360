@@ -9,8 +9,20 @@
  * @flow
  */
 
+import ControllerRaycaster from './ControllerRaycaster';
 import Controls from './Controls';
+import DeviceOrientationCameraController from './DeviceOrientationCameraController';
+import MousePanCameraController from './MousePanCameraController';
 import MouseRaycaster from './MouseRaycaster';
 import ScrollPanCameraController from './ScrollPanCameraController';
+import TouchRaycaster from './TouchRaycaster';
 
-export {Controls, MouseRaycaster, ScrollPanCameraController};
+export {
+  ControllerRaycaster,
+  Controls,
+  DeviceOrientationCameraController,
+  MousePanCameraController,
+  MouseRaycaster,
+  ScrollPanCameraController,
+  TouchRaycaster,
+};
