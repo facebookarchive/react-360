@@ -345,6 +345,23 @@ export default class GLView {
     return ((this._worldTransform.slice(): any): Transform);
   }
 
+  getLocalOffsetCoordinates(coord: [number, number], x: number, y: number) {
+    // D is the vector from the top-left corner to the point
+    const Dx = x - this._intersectTest[0][0];
+    const Dy = y - this._intersectTest[0][1];
+    // T is the vector from the top-left corner to the top-right corner
+    const Tx = this._intersectTest[1][0] - this._intersectTest[0][0];
+    const Ty = this._intersectTest[1][1] - this._intersectTest[0][1];
+    const t = Math.sqrt(Tx * Tx + Ty * Ty);
+    // S is the vector from the top-left corner to the bottom-left corner
+    const Sx = this._intersectTest[2][0] - this._intersectTest[0][0];
+    const Sy = this._intersectTest[2][1] - this._intersectTest[0][1];
+    const s = Math.sqrt(Sx * Sx + Sy * Sy);
+
+    coord[0] = (Dx * Tx + Dy * Ty) / t;
+    coord[1] = (Dx * Sx + Dy * Sy) / s;
+  }
+
   setBackgroundColor(color: number) {
     this._bgColor = color;
     this._node.setUniform('u_bgcolor', [
@@ -419,11 +436,11 @@ export default class GLView {
     this._height = height;
     this._geometryDirty = true;
     this._intersectTest[0][0] = -width / 2;
-    this._intersectTest[0][1] = height / 2;
+    this._intersectTest[0][1] = -height / 2;
     this._intersectTest[1][0] = width / 2;
-    this._intersectTest[1][1] = height / 2;
+    this._intersectTest[1][1] = -height / 2;
     this._intersectTest[2][0] = -width / 2;
-    this._intersectTest[2][1] = -height / 2;
+    this._intersectTest[2][1] = height / 2;
   }
 
   setGeometryDirty(dirty: boolean) {
@@ -481,11 +498,11 @@ export default class GLView {
       this._node.setUniform('u_transform', this._worldTransform.slice());
 
       this._intersectTest[0][0] = -this._width / 2;
-      this._intersectTest[0][1] = this._height / 2;
+      this._intersectTest[0][1] = -this._height / 2;
       this._intersectTest[1][0] = this._width / 2;
-      this._intersectTest[1][1] = this._height / 2;
+      this._intersectTest[1][1] = -this._height / 2;
       this._intersectTest[2][0] = -this._width / 2;
-      this._intersectTest[2][1] = -this._height / 2;
+      this._intersectTest[2][1] = this._height / 2;
       for (let i = 0; i < 3; i++) {
         const point = this._intersectTest[i];
         const px = point[0];

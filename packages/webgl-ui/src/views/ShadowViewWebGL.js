@@ -17,6 +17,7 @@ import * as Flexbox from '../vendor/Yoga.bundle';
 import ShadowView, {type Dispatcher} from './ShadowView';
 import recursiveLayout from '../recursiveLayout';
 import colorStringToARGB from '../colorStringToARGB';
+import type {RenderGroup} from 'webgl-lite';
 
 type LayoutHook = (number, {height: number, width: number, x: number, y: number}) => mixed;
 
@@ -53,9 +54,8 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     super.addChild(index, child);
     if (child instanceof ShadowViewWebGL) {
       const node = this.view.getNode();
-      const childNode = child.view.getNode();
-      if (node.renderGroup && !childNode.renderGroup) {
-        node.renderGroup.addNode(childNode);
+      if (node.renderGroup) {
+        child.setRenderGroup(node.renderGroup);
       }
       child.setParentTransform(this.view.getWorldTransform());
     } else {
@@ -81,6 +81,20 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
     for (const child of this.children) {
       // $FlowFixMe
       child.removeFromRenderGroup();
+    }
+  }
+
+  setRenderGroup(rg: RenderGroup) {
+    const node = this.view.getNode();
+    if (node.renderGroup !== rg) {
+      if (node.renderGroup) {
+        node.renderGroup.removeNode(node);
+      }
+      rg.addNode(node);
+      for (const child of this.children) {
+        // $FlowFixMe
+        child.setRenderGroup(rg);
+      }
     }
   }
 
@@ -125,10 +139,10 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
       childrenNeedUpdate = true;
     }
 
-    if (this._transformDirty) {
-      this.view.setLocalTransform(this._transform);
+    if (this.isTransformDirty()) {
+      this.view.setLocalTransform(this.getTransform());
       childrenNeedUpdate = true;
-      this._transformDirty = false;
+      this.setTransformDirty(false);
     }
 
     if (this._borderRadiusDirty) {
@@ -190,6 +204,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
 
   setParentTransform(transform: Transform) {
     this.view.setParentTransform(transform);
+    this.setTransformDirty(true);
   }
 
   getCursor(): ?string {

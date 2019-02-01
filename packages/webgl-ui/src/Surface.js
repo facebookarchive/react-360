@@ -15,6 +15,7 @@ import type ShadowViewWebGL from './views/ShadowViewWebGL';
 import * as Flexbox from './vendor/Yoga.bundle';
 import Image from './views/Image';
 import RawText from './views/RawText';
+import SurfaceView from './views/SurfaceView';
 import Text from './views/Text';
 import View from './views/View';
 import {restack} from './StackingContext';
@@ -116,6 +117,9 @@ export default class Surface {
   dispatchEvent(event: string, payload: any) {
     for (const hit of this._hitCurrentFrame) {
       hit.dispatchEvent(event, payload);
+      if (hit instanceof SurfaceView) {
+        hit.surface.dispatchEvent(event, payload);
+      }
     }
   }
 
@@ -204,11 +208,14 @@ export default class Surface {
       const nodes = [rootNode];
       while (nodes.length > 0) {
         const node = nodes.shift();
-        if (node.hasEvents()) {
+        if (node.hasEvents() || node instanceof SurfaceView) {
           // $FlowFixMe
           if (node.view.containsPoint(x, y)) {
             // $FlowFixMe
             currentHits.add(node);
+            if (node instanceof SurfaceView) {
+              node.setParentCursor(x, y);
+            }
           }
         }
         nodes.unshift.apply(nodes, node.children);
@@ -218,6 +225,9 @@ export default class Surface {
       if (!currentHits.has(oldHit)) {
         // Left oldHit
         oldHit.dispatchEvent('exit');
+        if (oldHit instanceof SurfaceView) {
+          oldHit.setParentCursor(null, null);
+        }
       }
     }
     for (const newHit of currentHits) {

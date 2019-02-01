@@ -77,6 +77,7 @@ export default class ShadowView {
     this.rootTag = 0;
     this.tag = 0;
     this._eventHandlers = {};
+    this._transform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     this._transformDirty = false;
     this.YGNode = Flexbox.Node.create();
   }
@@ -181,6 +182,18 @@ export default class ShadowView {
 
   hasEvents() {
     return Object.keys(this._eventHandlers).length > 0;
+  }
+
+  isTransformDirty() {
+    return this._transformDirty;
+  }
+
+  getTransform() {
+    return this._transform;
+  }
+
+  setTransformDirty(flag: boolean) {
+    this._transformDirty = flag;
   }
 
   _setBorderWidth(edge: number, value: string | number) {
