@@ -69,11 +69,15 @@ export default class Surface {
   _reactRoot: any;
   _rotationInverse: Array<number>;
 
+  static DEFAULT_DENSITY = DEFAULT_DENSITY;
+  static DEFAULT_RADIUS = DEFAULT_RADIUS;
+  static DEFAULT_SHAPE = SurfaceShape.Cylinder;
+
   constructor(
     gl: WebGLRenderingContext,
     width: number,
     height: number,
-    shape: ShapeType = 'Cylinder'
+    shape: ShapeType = SurfaceShape.Cylinder
   ) {
     this._width = width;
     this._height = height;
