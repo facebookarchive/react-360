@@ -77,6 +77,12 @@ export default class RCTText extends ShadowViewWebGL<GLView> {
     this._textDirty = true;
   }
 
+  __setStyle_fontFamily(family: string) {
+    this._text.setFontFamily(family);
+    this.YGNode.markDirty();
+    this._geometryDirty = true;
+  }
+
   __setStyle_fontSize(size: number) {
     if (size == null) {
       size = 20;

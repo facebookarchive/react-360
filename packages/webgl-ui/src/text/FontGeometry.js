@@ -25,6 +25,7 @@ export type Align$Values = 'auto' | 'left' | 'right' | 'center' | 'justify';
 
 export type FontOptions = {
   align?: Align$Values,
+  family?: string,
   size?: number,
   weight?: number,
 };
@@ -51,7 +52,7 @@ export default class FontGeometry {
     options: FontOptions = {}
   ) {
     this._align = options.align || Align.auto;
-    this._fontFamily = '';
+    this._fontFamily = options.family || '';
     this._geometryDirty = true;
     this._impl = impl;
     this._infoDirty = false;
@@ -106,6 +107,11 @@ export default class FontGeometry {
 
   setAlignWidth(width: number | void) {
     this._alignWidth = width;
+  }
+
+  setFontFamily(family: string) {
+    this._fontFamily = family;
+    this._infoDirty = true;
   }
 
   setLineHeight(height: number) {

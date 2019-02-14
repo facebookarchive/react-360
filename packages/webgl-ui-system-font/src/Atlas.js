@@ -33,6 +33,7 @@ type UV = [number, number, number, number]; // x, y, width, height
 export default class Atlas {
   _canvas: HTMLCanvasElement;
   _context: CanvasRenderingContext2D;
+  _density: number;
   _fontFamily: string;
   _fontSize: number;
   _glyphs: GlyphMap;
@@ -49,6 +50,7 @@ export default class Atlas {
     fontSize: number = 20,
     fontFamily: string = 'sans-serif'
   ) {
+    this._density = Math.floor(window.devicePixelRatio || 1);
     this._width = width;
     this._height = height;
     this._fontSize = fontSize;
@@ -57,12 +59,12 @@ export default class Atlas {
     this._root = new AtlasNode(0, 0, width, height);
 
     this._canvas = document.createElement('canvas');
-    this._canvas.width = width;
-    this._canvas.height = height;
+    this._canvas.width = width * this._density;
+    this._canvas.height = height * this._density;
     this._context = this._canvas.getContext('2d');
-    this._context.clearRect(0, 0, width, height);
+    this._context.clearRect(0, 0, width * this._density, height * this._density);
     this._context.fillStyle = '#fff';
-    this._context.font = `${fontSize}px ${fontFamily}`;
+    this._context.font = `${fontSize * this._density}px ${fontFamily}`;
 
     this._measure = new FontMeasure(fontSize, fontFamily);
 
@@ -75,20 +77,25 @@ export default class Atlas {
   }
 
   expand() {
-    const image = this._context.getImageData(0, 0, this._width, this._height);
+    const image = this._context.getImageData(
+      0,
+      0,
+      this._width * this._density,
+      this._height * this._density
+    );
     const nextWidth = this._width * 2;
     const nextHeight = this._height * 2;
     if (nextWidth > 1024 || nextHeight > 1024) {
       throw new Error('Cannot make the font atlas any bigger');
     }
     this._root.resize(nextWidth, nextHeight);
-    this._canvas.width = nextWidth;
-    this._canvas.height = nextHeight;
+    this._canvas.width = nextWidth * this._density;
+    this._canvas.height = nextHeight * this._density;
     this._width = nextWidth;
     this._height = nextHeight;
     this._context.putImageData(image, 0, 0);
     this._context.fillStyle = '#fff';
-    this._context.font = `${this._fontSize}px ${this._fontFamily}`;
+    this._context.font = `${this._fontSize * this._density}px ${this._fontFamily}`;
     this._texture.setSource(this._canvas);
   }
 
@@ -104,17 +111,17 @@ export default class Atlas {
     // Find free space in the atlas for our new glyph
     const neededWidth = metrics.width;
     const neededHeight = metrics.ascend + metrics.descend;
-    let location = this._root.insert(neededWidth, neededHeight);
-    while (!location) {
+    let loc = this._root.insert(neededWidth, neededHeight);
+    while (!loc) {
       // Can't fit the rectangle, we need to expand the atlas
       this.expand();
-      location = this._root.insert(neededWidth, neededHeight);
+      loc = this._root.insert(neededWidth, neededHeight);
     }
-    location.key = glyph;
+    loc.key = glyph;
     // Draw the glyph to the atlas. Baseline is location-top-left + ascend
-    this._context.fillText(glyph, location.x, location.y + metrics.ascend);
+    this._context.fillText(glyph, loc.x * this._density, (loc.y + metrics.ascend) * this._density);
     this._glyphs[glyph] = {
-      location,
+      location: loc,
       metrics,
     };
     return true;
@@ -134,7 +141,12 @@ export default class Atlas {
       return [0, 0, 0, 0];
     }
     const {location} = data;
-    return [location.x, location.y, location.width, location.height];
+    return [
+      location.x * this._density,
+      location.y * this._density,
+      location.width * this._density,
+      location.height * this._density,
+    ];
   }
 
   getWidth(): number {

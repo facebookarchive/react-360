@@ -1,30 +1,22 @@
 {
-  "name": "react-webgl",
+  "name": "webgl-ui-sdf-font",
   "version": "0.1.0",
-  "description": "Experimental React Renderer that draws 2D UI to a WebGL context",
+  "description": "Font implementation for webgl-ui using SDF fonts",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/react-360.git"
+    "url": "https://github.com/facebook/react-360.git",
+    "directory": "packages/webgl-ui-sdf-font"
   },
   "bugs": "https://github.com/facebook/react-360/issues",
   "files": [
     "dist/",
-    "index.js",
-    "LICENSE",
-    "PATENTS",
-    "package.json",
-    "README.md"
+    "index.js"
   ],
-  "dependencies": {
-    "react-reconciler": "0.15.0",
-    "webgl-ui": "~0.1.2",
-    "webgl-ui-system-font": "~0.1.0"
-  },
   "devDependencies": {
     "@babel/cli": "7.1.2",
     "@babel/core": "7.1.2",
-    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.2.1",
     "@babel/plugin-transform-flow-strip-types": "7.0.0"
   },
   "scripts": {

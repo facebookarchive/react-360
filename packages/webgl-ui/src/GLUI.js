@@ -15,7 +15,6 @@ import TextureManager from './TextureManager';
 import GLTexturedView from './primitives/GLTexturedView';
 import GLView from './primitives/GLView';
 import FontGeometry from './text/FontGeometry';
-import SDFTextImplementation from './text/Implementations/SDFTextImplementation';
 import Image from './views/Image';
 import RawText from './views/RawText';
 import ShadowView from './views/ShadowView';
@@ -38,7 +37,6 @@ export {
   GLTexturedView,
   GLView,
   FontGeometry,
-  SDFTextImplementation,
   Image,
   RawText,
   ShadowView,

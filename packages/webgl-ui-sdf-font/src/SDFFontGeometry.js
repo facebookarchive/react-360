@@ -9,8 +9,7 @@
  * @flow
  */
 
-import FontGeometry from '../FontGeometry';
-import type SDFTextImplementation from './SDFTextImplementation';
+import {FontGeometry, type SDFTextImplementation} from 'webgl-ui';
 
 export default class SDFFontGeometry extends FontGeometry {
   _center: number;

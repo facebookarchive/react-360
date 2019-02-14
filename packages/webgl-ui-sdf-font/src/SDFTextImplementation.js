@@ -9,11 +9,11 @@
  * @flow
  */
 
-import type {GlyphRun, TextImplementation, TextRenderInfo} from '../TextTypes';
 import {DEFAULT_FONT_TEXTURE, DEFAULT_FONT_JSON} from './SDFDefaultFont';
 import SDFFontGeometry from './SDFFontGeometry';
 import {VERT_SHADER, FRAG_SHADER} from './SDFTextShaders';
 import * as WebGL from 'webgl-lite';
+import type {GlyphRun, TextImplementation, TextRenderInfo} from 'webgl-ui';
 
 type GlyphData = {
   AdvanceX: number,

@@ -9,13 +9,14 @@
  * @flow
  */
 
-import {SDFTextImplementation, Surface, TextureManager} from 'webgl-ui';
+import {Surface, TextureManager, type TextImplementation} from 'webgl-ui';
+import {FontImplementation} from 'webgl-ui-system-font';
 
 export default class GLRoot {
-  constructor(gl: WebGLRenderingContext) {
+  constructor(gl: WebGLRenderingContext, text?: TextImplementation) {
     this._gl = gl;
     this._surface = new Surface(gl);
-    this._textImplementation = new SDFTextImplementation(gl);
+    this._textImplementation = text || new FontImplementation(gl);
     this._textureManager = new TextureManager(gl);
     this._surface.useTextImplementation(this._textImplementation);
     this._surface.useTextureManager(this._textureManager);
