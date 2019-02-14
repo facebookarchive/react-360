@@ -25,7 +25,7 @@ export default class CanvasRoot extends GLRoot {
     this._canvas = canvas;
 
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     const width = options.width || (options.canvas ? options.canvas.width : 300);
     const height = options.height || (options.canvas ? options.canvas.height : 300);
