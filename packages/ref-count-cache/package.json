@@ -1,0 +1,25 @@
+{
+  "name": "ref-count-cache",
+  "version": "0.1.0",
+  "description": "Caching for external resources that tracks which objects are currently referenced",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git",
+    "directory": "packages/ref-count-cache"
+  },
+  "files": [
+    "dist/",
+    "index.js",
+    "PATENTS"
+  ],
+  "devDependencies": {
+    "@babel/cli": "7.1.2",
+    "@babel/core": "7.1.2",
+    "@babel/plugin-proposal-class-properties": "7.2.1",
+    "@babel/plugin-transform-flow-strip-types": "7.0.0"
+  },
+  "scripts": {
+    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
+  }
+}
