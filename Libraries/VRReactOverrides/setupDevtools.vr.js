@@ -65,16 +65,33 @@ if (__DEV__) {
     const NativeModules = require('NativeModules');
     const {UIManager} = NativeModules;
     let currentHighlight = null;
-    agent.sub('highlight', ({node}) => {
-      UIManager.setBoundingBoxVisible(node, true);
-      currentHighlight = node;
-    });
-    agent.sub('hideHighlight', () => {
-      if (currentHighlight !== null) {
-        UIManager.setBoundingBoxVisible(currentHighlight, false);
-      }
-      currentHighlight = null;
-    });
+    const ReactNativeComponentTree = require('ReactNativeComponentTree');
+      agent.on('highlight', ({node}) => {
+        if (typeof node !== 'number') {
+          if (typeof node._nativeTag === 'number') {
+            node = node._nativeTag;
+          } else {
+            return;
+          }
+        }
+        currentHighlight = node;
+        if (UIManager.setBoundingBoxVisible) {
+          UIManager.setBoundingBoxVisible(node, true);
+        }
+      });
+
+      const hideHighlight = () => {
+        if (currentHighlight) {
+          if (UIManager.setBoundingBoxVisible) {
+            UIManager.setBoundingBoxVisible(currentHighlight, false);
+          }
+          currentHighlight = null;
+        }
+      };
+
+      agent.on('hideHighlight', hideHighlight);
+
+      agent.on('shutdown', hideHighlight);
   });
   global.registerDevtoolsPlugin = register;
 }
