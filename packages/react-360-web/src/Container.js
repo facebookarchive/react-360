@@ -20,6 +20,7 @@ import {
   type Ray,
 } from 'react-360-controls';
 import {Environment, Surface} from 'react-360-surfaces';
+import {AudioManager} from 'vr-audio';
 import VRState from 'vr-state';
 import * as WebGL from 'webgl-lite';
 import * as GLUI from 'webgl-ui';
@@ -45,8 +46,11 @@ type AnimationFrameData =
 // Preallocated array for intersection detection
 const intersect = [0, 0];
 
-// Events to add to the
-const EVENTS = ['click'];
+// Events to trigger the click event, will eventually need to be replaced with
+// onInput / VrButton
+const CLICK_EVENTS = ['click', 'touchstart'];
+// Events that count as user interaction for the initialization of media
+const USER_INTERACTION = ['click', 'touchstart', 'keydown'];
 
 /**
  * A Container handles all of the setup and rendering for a full React 360
@@ -56,6 +60,7 @@ const EVENTS = ['click'];
  * and raycasters.
  */
 export default class Container {
+  audio: AudioManager;
   controls: Controls;
   environment: Environment;
   group: WebGL.RenderGroup;
@@ -68,6 +73,7 @@ export default class Container {
   _height: number;
   _lastFrameStart: number;
   _looping: boolean;
+  _mediaInit: () => void;
   _needsResize: boolean;
   _nextFrame: null | AnimationFrameData;
   _rays: Array<Ray>;
@@ -102,12 +108,19 @@ export default class Container {
     }
     this.resize(width, height);
 
-    for (const event of EVENTS) {
+    this._mediaInit = () => {
+      this.audio.initializeAudioContext();
+      for (const event of USER_INTERACTION) {
+        this._eventLayer.removeEventListener(event, this._mediaInit);
+      }
+    };
+    for (const event of CLICK_EVENTS) {
       this._eventLayer.addEventListener(event, () => {
         for (const s in this._surfaces) {
-          this._surfaces[s].getReactRoot().dispatchEvent(event);
+          this._surfaces[s].getReactRoot().dispatchEvent('click');
         }
       });
+      this._eventLayer.addEventListener(event, this._mediaInit);
     }
 
     this.overlay = new Overlay();
@@ -141,6 +154,8 @@ export default class Container {
     this.controls.addRaycaster(new ControllerRaycaster());
     this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
+
+    this.audio = new AudioManager();
   }
 
   /**
@@ -187,8 +202,7 @@ export default class Container {
     if (this._lastFrameStart === 0) {
       this._lastFrameStart = frameStart;
     }
-    // Uncomment when we have a use for delta. Until then, lint complains
-    // const delta = Math.max(0, Math.min(frameStart - this._lastFrameStart, 100));
+    const delta = Math.max(0, Math.min(frameStart - this._lastFrameStart, 100));
     this._lastFrameStart = frameStart;
 
     if (this._needsResize) {
@@ -225,6 +239,9 @@ export default class Container {
       const surface = this._surfaces[s];
       surface.getReactRoot().update();
     }
+
+    this.audio.setViewParameters(cameraPos, cameraQuat);
+    this.audio.frame(delta);
 
     this.overlay.setCameraRotation(cameraQuat);
 
