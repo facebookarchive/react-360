@@ -114,14 +114,32 @@ export default class Container {
         this._eventLayer.removeEventListener(event, this._mediaInit);
       }
     };
+    for (const event of USER_INTERACTION) {
+      this._eventLayer.addEventListener(event, this._mediaInit);
+    }
     for (const event of CLICK_EVENTS) {
       this._eventLayer.addEventListener(event, () => {
         for (const s in this._surfaces) {
           this._surfaces[s].getReactRoot().dispatchEvent('click');
         }
       });
-      this._eventLayer.addEventListener(event, this._mediaInit);
     }
+    this._eventLayer.addEventListener('mousedown', () => {
+      for (const s in this._surfaces) {
+        this._surfaces[s].getReactRoot().dispatchEvent('input', {
+          buttonClass: 'confirm',
+          action: 'down',
+        });
+      }
+    });
+    this._eventLayer.addEventListener('mouseup', () => {
+      for (const s in this._surfaces) {
+        this._surfaces[s].getReactRoot().dispatchEvent('input', {
+          buttonClass: 'confirm',
+          action: 'up',
+        });
+      }
+    });
 
     this.overlay = new Overlay();
     this._wrapper.appendChild(this.overlay.getDOMElement());
