@@ -24,16 +24,28 @@ export default function applyProps(view, oldProps, newProps, dispatchers) {
     if (oldProps != null && oldProps[p] === newProps[p]) {
       continue;
     }
+    if (p === 'style') {
+      const styles = newProps[p];
+      for (const s in styles) {
+        const setter = view[`__setStyle_${s}`];
+        if (typeof setter === 'function') {
+          setter.call(view, styles[s]);
+        }
+      }
+      continue;
+    }
     if (p in EVENTS) {
       view.clearEventListeners(EVENTS[p]);
       view.addEventListener(EVENTS[p], newProps[p]);
       continue;
     }
+    if (p in dispatchers) {
+      dispatchers[p].call(view, newProps[p]);
+      continue;
+    }
     const setter = view[`__setStyle_${p}`];
     if (typeof setter === 'function') {
       setter.call(view, newProps[p]);
-    } else if (p in dispatchers) {
-      dispatchers[p].call(view, newProps[p]);
     } else {
       console.error('unknown prop', p);
     }

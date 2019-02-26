@@ -127,9 +127,12 @@ export default class Surface {
    * Set the current cursor coordinates, used for updating hit sets and
    * triggering enter and exit events
    */
-  setCursor(x: number, y: number) {
+  setCursor(x: number, y: number, forceHitDetection?: boolean) {
     this._cursorX = x;
     this._cursorY = y;
+    if (forceHitDetection) {
+      this._detectCurrentHits();
+    }
   }
 
   /**
@@ -199,8 +202,10 @@ export default class Surface {
   }
 
   _detectCurrentHits() {
-    const currentHits = this._hitCurrentFrame;
+    const currentHits = this._hitLastFrame;
     currentHits.clear();
+    this._hitLastFrame = this._hitCurrentFrame;
+    this._hitCurrentFrame = currentHits;
     const x = this._cursorX;
     const y = this._cursorY;
     const rootNode = this._rootNode;
@@ -236,8 +241,5 @@ export default class Surface {
         newHit.dispatchEvent('enter');
       }
     }
-
-    this._hitCurrentFrame = this._hitLastFrame;
-    this._hitLastFrame = currentHits;
   }
 }

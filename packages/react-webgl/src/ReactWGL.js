@@ -13,6 +13,8 @@ import Reconciler from 'react-reconciler';
 import * as HostConfig from './HostConfig';
 import GLRoot from './GLRoot';
 import CanvasRoot from './CanvasRoot';
+import Pressable from './Pressable.react';
+import {Image, Text, Quad, View} from './Primitives';
 import RenderTargetRoot from './RenderTargetRoot';
 
 const Renderer = Reconciler(HostConfig);
@@ -31,9 +33,4 @@ Renderer.injectIntoDevTools({
   rendererPackageName: 'react-webgl',
 });
 
-export const Image = 'image';
-export const Text = 'text';
-export const Quad = 'quad';
-export const View = 'quad';
-
-export {CanvasRoot, GLRoot, RenderTargetRoot};
+export {CanvasRoot, GLRoot, RenderTargetRoot, Image, Text, Quad, View, Pressable};

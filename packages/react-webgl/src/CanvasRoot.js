@@ -34,6 +34,11 @@ export default class CanvasRoot extends GLRoot {
     canvas.addEventListener('click', this._onClick);
     canvas.addEventListener('mousemove', this._onMouseMove);
     canvas.addEventListener('mouseleave', this._onMouseLeave);
+    canvas.addEventListener('mousedown', this._onPressIn);
+    canvas.addEventListener('mouseup', this._onPressOut);
+    canvas.addEventListener('touchstart', this._onTouchStart);
+    canvas.addEventListener('touchend', this._onPressOut);
+    canvas.addEventListener('touchmove', this._onTouchMove);
   }
 
   resize(width: number, height: number) {
@@ -51,8 +56,55 @@ export default class CanvasRoot extends GLRoot {
     return this._canvas;
   }
 
+  _setCursorFromTouch(e: TouchEvent, forceHitDetection?: boolean) {
+    if (!e.touches) {
+      return;
+    }
+    const touch = e.touches[0];
+    if (!touch) {
+      return;
+    }
+    let offsetTop = 0;
+    let offsetLeft = 0;
+    let offsetTarget = e.target;
+    while (offsetTarget != null) {
+      offsetTop += offsetTarget.offsetTop;
+      offsetLeft += offsetTarget.offsetLeft;
+      offsetTarget = offsetTarget.offsetTarget;
+    }
+    this.getSurface().setCursor(
+      touch.clientX - offsetLeft,
+      touch.clientY - offsetTop,
+      !!forceHitDetection
+    );
+  }
+
   _onClick = () => {
     this.getSurface().dispatchEvent('click');
+  };
+
+  _onPressIn = () => {
+    this.getSurface().dispatchEvent('input', {
+      buttonClass: 'confirm',
+      action: 'down',
+    });
+  };
+
+  _onPressOut = () => {
+    this.getSurface().dispatchEvent('input', {
+      buttonClass: 'confirm',
+      action: 'up',
+    });
+  };
+
+  _onTouchStart = e => {
+    this._setCursorFromTouch(e, true);
+    this._onPressIn();
+    e.preventDefault();
+  };
+
+  _onTouchMove = e => {
+    this._setCursorFromTouch(e, false);
   };
 
   _onMouseMove = e => {
