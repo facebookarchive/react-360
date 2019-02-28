@@ -9,9 +9,11 @@
  * @flow
  */
 
+import * as THREE from 'three';
 import {rotateByQuaternion} from '../../Utils/Math';
 import {type Quaternion, type Vec3} from '../Types';
 import {type Raycaster} from './Types';
+import {createControllerMesh} from '../Utils/ControllerRenderer';
 
 const TYPE = 'controller';
 
@@ -35,11 +37,19 @@ export default class ControllerRaycaster implements Raycaster {
   _enabled: boolean;
   _gamepadID: null | string;
   _gamepadIndex: number;
+  _scene: THREE.Scene;
+  _mesh: THREE.Mesh;
+  _rayRenderingEnabled: boolean;
 
-  constructor() {
+  constructor(scene: THREE.Scene) {
     this._enabled = true;
     this._gamepadID = null;
     this._gamepadIndex = -1;
+    this._scene = scene;
+    this._mesh = createControllerMesh('#fff');
+    this._mesh.visible = false;
+    this._rayRenderingEnabled = true;
+    this._scene.add(this._mesh);
 
     const initialGamepads = getGamepads();
     // Iterate backwards to pick up the "newest" controller first
@@ -127,7 +137,13 @@ export default class ControllerRaycaster implements Raycaster {
     }
   }
 
+  setRayRenderingEnabled(enabled: boolean) {
+    this._rayRenderingEnabled = enabled;
+  }
+
   fillDirection(direction: Vec3): boolean {
+    // Assume not controller provide orientation, set ray mesh invisible.
+    this._mesh.visible = false;
     if (!this._enabled) {
       return false;
     }
@@ -151,6 +167,12 @@ export default class ControllerRaycaster implements Raycaster {
     direction[1] = 0;
     direction[2] = -1;
     rotateByQuaternion(direction, orientation);
+
+    this._mesh.quaternion.set(orientation[0], orientation[1], orientation[2], orientation[3]);
+    if (this._rayRenderingEnabled) {
+      // if a ray is provided, set ray mesh to visible.
+      this._mesh.visible = true;
+    }
     return true;
   }
 
@@ -180,6 +202,8 @@ export default class ControllerRaycaster implements Raycaster {
     origin[0] = position[0];
     origin[1] = position[1];
     origin[2] = position[2];
+
+    this._mesh.position.set(position[0], position[1], position[2]);
     return true;
   }
 

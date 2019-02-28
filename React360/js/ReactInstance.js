@@ -205,7 +205,7 @@ export default class ReactInstance {
     this.controls.addEventChannel(new TouchInputChannel(this._eventLayer));
     this.controls.addEventChannel(new KeyboardInputChannel());
     this.controls.addEventChannel(new GamepadInputChannel());
-    this.controls.addRaycaster(new ControllerRaycaster());
+    this.controls.addRaycaster(new ControllerRaycaster(this.scene));
     this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
   }
