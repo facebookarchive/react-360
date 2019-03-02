@@ -10,7 +10,6 @@
  */
 
 import {
-  ControllerRaycaster,
   Controls,
   DeviceOrientationCameraController,
   MousePanCameraController,
@@ -21,9 +20,12 @@ import {
 } from 'react-360-controls';
 import {Environment, Surface} from 'react-360-surfaces';
 import {AudioManager} from 'vr-audio';
+import VRInputSource from 'vr-input-source';
 import VRState from 'vr-state';
 import * as WebGL from 'webgl-lite';
 import * as GLUI from 'webgl-ui';
+import ControllerModel from './controller/ControllerModel';
+import ControllerRaycaster from './controller/ControllerRaycaster';
 import Overlay, {type OverlayInterface} from './Overlay';
 import WebVRCameraController from './WebVRCameraController';
 
@@ -61,11 +63,13 @@ const USER_INTERACTION = ['click', 'touchstart', 'keydown'];
  */
 export default class Container {
   audio: AudioManager;
+  controllerModel: ControllerModel;
   controls: Controls;
   environment: Environment;
   group: WebGL.RenderGroup;
   overlay: OverlayInterface;
   vrState: VRState;
+  vrInputSource: VRInputSource;
   _canvas: HTMLCanvasElement;
   _frameData: ?VRFrameData;
   _eventLayer: HTMLElement;
@@ -99,6 +103,9 @@ export default class Container {
     this._surfaces = {};
     this._wrapper = document.createElement('div');
     this._wrapper.appendChild(this._eventLayer);
+
+    this.vrInputSource = new VRInputSource();
+    this.controllerModel = new ControllerModel(this.group, this.vrInputSource);
 
     let width = options.width || 300;
     let height = options.height || 300;
@@ -141,6 +148,22 @@ export default class Container {
         });
       }
     });
+    this.vrInputSource.addEventListener('selectstart', () => {
+      for (const s in this._surfaces) {
+        this._surfaces[s].getReactRoot().dispatchEvent('input', {
+          buttonClass: 'confirm',
+          action: 'down',
+        });
+      }
+    });
+    this.vrInputSource.addEventListener('selectend', () => {
+      for (const s in this._surfaces) {
+        this._surfaces[s].getReactRoot().dispatchEvent('input', {
+          buttonClass: 'confirm',
+          action: 'up',
+        });
+      }
+    });
 
     this.overlay = new Overlay();
     this._wrapper.appendChild(this.overlay.getDOMElement());
@@ -170,7 +193,7 @@ export default class Container {
     this.controls.addCameraController(new ScrollPanCameraController(this._eventLayer));
     this.controls.addCameraController(new DeviceOrientationCameraController(this._eventLayer));
     this.controls.addCameraController(new MousePanCameraController(this._eventLayer));
-    this.controls.addRaycaster(new ControllerRaycaster());
+    this.controls.addRaycaster(new ControllerRaycaster(this.vrInputSource));
     this.controls.addRaycaster(new MouseRaycaster(this._eventLayer));
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
 
@@ -197,6 +220,7 @@ export default class Container {
   addSurface(name: string, surface: Surface) {
     this._surfaces[name] = surface;
     this.group.addNode(surface.getNode());
+    this.group.refreshRenderOrder();
   }
 
   /**
@@ -228,6 +252,9 @@ export default class Container {
       this.resize(this._width, this._height);
       this._needsResize = false;
     }
+
+    this.vrInputSource.update();
+    this.controllerModel.update();
 
     this._rays.length = 0;
     this.controls.updateCamera();
@@ -271,7 +298,9 @@ export default class Container {
       const canvas = this._canvas;
       const frameData = this._frameData;
       gl.enable(gl.BLEND);
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.enable(gl.DEPTH_TEST);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       const display = this.vrState.getCurrentDisplay();
       gl.viewport(0, 0, canvas.width * 0.5, canvas.height);
       this.group.setUniform('projectionMatrix', frameData.leftProjectionMatrix);
@@ -301,8 +330,9 @@ export default class Container {
       if (this.group.needsRender()) {
         const gl = this._gl;
         gl.enable(gl.BLEND);
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.enable(gl.DEPTH_TEST);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.group.draw();
       }
       if (this._looping) {

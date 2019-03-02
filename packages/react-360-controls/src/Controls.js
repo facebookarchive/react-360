@@ -130,6 +130,7 @@ export default class Controls {
         rayObject.drawsCursor = caster.drawsCursor();
         rayObject.hasAbsoluteCoordinates = caster.hasAbsoluteCoordinates();
         queue.push(rayObject);
+        return;
       }
     }
   }

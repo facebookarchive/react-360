@@ -187,6 +187,7 @@ export default class Surface {
    * Clear the pixels of the current draw context
    */
   clear() {
+    this._gl.clearColor(1, 1, 1, 0);
     this._gl.clear(this._gl.COLOR_BUFFER_BIT);
   }
 
@@ -194,6 +195,9 @@ export default class Surface {
    * Draw the scene, if it's dirty
    */
   draw() {
+    const gl = this._gl;
+    gl.disable(gl.DEPTH_TEST);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     this._renderGroup.draw();
   }
 
