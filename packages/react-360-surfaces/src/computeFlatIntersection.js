@@ -12,7 +12,7 @@
 const TWO_PI = Math.PI * 2;
 
 export default function computeFlatIntersection(
-  intersection: [number, number],
+  intersection: [number, number, number],
   origin: [number, number, number],
   direction: [number, number, number],
   width: number,
@@ -24,9 +24,10 @@ export default function computeFlatIntersection(
   const dx = -direction[0];
   const dy = -direction[1];
   const dz = direction[2];
-  const intX = (distToSurface * dx) / dz + origin[0];
-  const intY = (distToSurface * dy) / dz + origin[1];
+  const intX = (distToSurface * dx) / dz;
+  const intY = (distToSurface * dy) / dz;
   const surfaceScale = (radius * TWO_PI) / density;
-  intersection[0] = (intX + (surfaceScale * width) / 2) / surfaceScale;
-  intersection[1] = ((surfaceScale * height) / 2 - intY) / surfaceScale;
+  intersection[0] = (intX + origin[0] + (surfaceScale * width) / 2) / surfaceScale;
+  intersection[1] = ((surfaceScale * height) / 2 - intY - origin[1]) / surfaceScale;
+  intersection[2] = Math.sqrt(distToSurface * distToSurface + intX * intX + intY * intY);
 }

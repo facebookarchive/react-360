@@ -12,7 +12,7 @@
 const TWO_PI = Math.PI * 2;
 
 export default function computeCylinderIntersection(
-  intersection: [number, number],
+  intersection: [number, number, number],
   origin: [number, number, number],
   direction: [number, number, number],
   width: number,
@@ -40,7 +40,12 @@ export default function computeCylinderIntersection(
 
   const fx = ox - radius * Math.sin(offset);
   const fz = -oz + radius * Math.cos(offset);
-  const intY = (Math.sqrt(fx * fx + fz * fz) * dy) / Math.sqrt(dx * dx + dz * dz) + oy;
+  const dFxz = Math.sqrt(fx * fx + fz * fz);
+  const intY = (dFxz * dy) / Math.sqrt(dx * dx + dz * dz);
   intersection[0] = intX;
-  intersection[1] = -intY / ((radius * TWO_PI) / density) + height / 2;
+  intersection[1] = -(intY + oy) / ((radius * TWO_PI) / density) + height / 2;
+
+  // compute distance from ray origin to surface
+  const dist = Math.sqrt(dFxz * dFxz + intY * intY);
+  intersection[2] = dist;
 }

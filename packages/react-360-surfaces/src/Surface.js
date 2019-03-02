@@ -189,7 +189,7 @@ export default class Surface {
    * intersection with the surface, relative to the top-left corner
    */
   computeIntersection(
-    intersection: [number, number],
+    intersection: [number, number, number],
     origin: [number, number, number],
     direction: [number, number, number]
   ) {

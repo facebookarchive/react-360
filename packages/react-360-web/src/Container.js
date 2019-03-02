@@ -25,6 +25,7 @@ import VRState from 'vr-state';
 import * as WebGL from 'webgl-lite';
 import * as GLUI from 'webgl-ui';
 import ControllerModel from './controller/ControllerModel';
+import CursorModel from './controller/CursorModel';
 import ControllerRaycaster from './controller/ControllerRaycaster';
 import Overlay, {type OverlayInterface} from './Overlay';
 import WebVRCameraController from './WebVRCameraController';
@@ -46,7 +47,7 @@ type AnimationFrameData =
     };
 
 // Preallocated array for intersection detection
-const intersect = [0, 0];
+const intersect = [0, 0, 0];
 
 // Events to trigger the click event, will eventually need to be replaced with
 // onInput / VrButton
@@ -64,6 +65,7 @@ const USER_INTERACTION = ['click', 'touchstart', 'keydown'];
 export default class Container {
   audio: AudioManager;
   controllerModel: ControllerModel;
+  cursorModel: CursorModel;
   controls: Controls;
   environment: Environment;
   group: WebGL.RenderGroup;
@@ -106,6 +108,7 @@ export default class Container {
 
     this.vrInputSource = new VRInputSource();
     this.controllerModel = new ControllerModel(this.group, this.vrInputSource);
+    this.cursorModel = new CursorModel(this.group);
 
     let width = options.width || 300;
     let height = options.height || 300;
@@ -271,13 +274,38 @@ export default class Container {
       }
       intersect[0] = 0;
       intersect[1] = 0;
+      intersect[2] = 0;
+      let showCursor = false;
       for (const s in this._surfaces) {
         const surface = this._surfaces[s];
         if (surface.computeIntersection(intersect, ray.origin, ray.direction)) {
           surface.getReactRoot().setCursor(intersect[0], intersect[1]);
+          showCursor = showCursor || ray.drawsCursor;
+          if (showCursor) {
+            // Using distance from the ray origin to the surface (intersect[2]),
+            // compute the cursor's position in space
+            const cursorPosition = [ray.direction[0], ray.direction[1], ray.direction[2]];
+            const cursorMag = Math.sqrt(
+              cursorPosition[0] * cursorPosition[0] +
+                cursorPosition[1] * cursorPosition[1] +
+                cursorPosition[2] * cursorPosition[2]
+            );
+            cursorPosition[0] *= (intersect[2] / cursorMag) * 0.99;
+            cursorPosition[1] *= (intersect[2] / cursorMag) * 0.99;
+            cursorPosition[2] *= (intersect[2] / cursorMag) * 0.99;
+            cursorPosition[0] += ray.origin[0];
+            cursorPosition[1] += ray.origin[1];
+            cursorPosition[2] += ray.origin[2];
+            this.cursorModel.setTransform(cursorPosition, cameraQuat);
+          }
         } else {
           surface.getReactRoot().clearCursor();
         }
+      }
+      if (showCursor) {
+        this.cursorModel.show();
+      } else {
+        this.cursorModel.hide();
       }
     }
 
@@ -459,6 +487,9 @@ export default class Container {
   };
 
   _onResize = () => {
+    if (this.vrState.isPresenting()) {
+      return;
+    }
     this._width = window.innerWidth;
     this._height = window.innerHeight;
     this._needsResize = true;
