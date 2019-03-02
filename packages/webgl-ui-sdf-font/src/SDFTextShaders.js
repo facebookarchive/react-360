@@ -12,11 +12,9 @@
 export const VERT_SHADER = `
 attribute vec2 a_position;
 attribute vec2 a_uv;
-attribute vec4 a_color;
 attribute float a_center;
 
 varying vec2 v_uv;
-varying vec4 v_color;
 varying float v_center;
 
 uniform mat4 u_transform;
@@ -24,7 +22,6 @@ uniform mat4 projectionMatrix;
 
 void main() {
   v_uv = a_uv;
-  v_color = a_color;
   v_center = a_center;
   gl_Position = projectionMatrix * u_transform * vec4(a_position * vec2(1, -1), 0, 1.0);
 }
@@ -36,9 +33,9 @@ export const FRAG_SHADER = `
 precision mediump float;
 
 varying vec2 v_uv;
-varying vec4 v_color;
 varying float v_center;
 
+uniform vec4 u_color;
 uniform sampler2D u_texture;
 
 void main() {
@@ -50,7 +47,7 @@ void main() {
   float colorMax = v_center + dd;
 
   float value = (clamp(distance, colorMin, colorMax) - colorMin) / max(0.00001, colorMax - colorMin);
-  float premultAlphaValue = value * v_color.w;
-  gl_FragColor = vec4(premultAlphaValue, premultAlphaValue, premultAlphaValue, value) * v_color;
+  float premultAlphaValue = value * u_color.w;
+  gl_FragColor = vec4(premultAlphaValue, premultAlphaValue, premultAlphaValue, value) * u_color;
 }
 `;

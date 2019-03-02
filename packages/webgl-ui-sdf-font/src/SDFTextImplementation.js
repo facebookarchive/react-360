@@ -28,7 +28,6 @@ type SDFFont = {
   NaturalHeight: number,
 };
 
-const COLOR_MARKER = 0;
 const FALLBACK_CODE = 42;
 
 function createProgram(gl: WebGLRenderingContext) {
@@ -38,6 +37,7 @@ function createProgram(gl: WebGLRenderingContext) {
     .addShader(FRAG_SHADER, gl.FRAGMENT_SHADER)
     .compile()
     .setUniformDefaults({
+      u_color: [0, 0, 0, 1],
       u_transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     });
   return prog;
@@ -85,12 +85,7 @@ export default class SDFTextImplementation implements TextImplementation {
       });
   }
 
-  extractGlyphs(
-    fontName: string,
-    size: number,
-    text: string,
-    color: number = 0xff000000
-  ): GlyphRun {
+  extractGlyphs(fontName: string, size: number, text: string): GlyphRun {
     const run = {
       glyphs: [],
       maxAscend: 0,
@@ -98,20 +93,10 @@ export default class SDFTextImplementation implements TextImplementation {
       totalWidth: 0,
     };
 
-    let currentColor = color;
     const fallback = this._fonts[0].CharMap[FALLBACK_CODE];
     const fontCount = this._fonts.length;
     for (let i = 0, length = text.length; i < length; i++) {
       const charCode = text.charCodeAt(i);
-      if (charCode === COLOR_MARKER) {
-        currentColor =
-          0xff000000 |
-          ((text.charCodeAt(i + 1) & 0xff) << 16) |
-          ((text.charCodeAt(i + 2) & 0xff) << 8) |
-          (text.charCodeAt(i + 3) & 0xff);
-        i += 4;
-        continue;
-      }
       let fontIndex = 0;
       let data = this._fonts[fontIndex].CharMap[charCode];
       while (!data && fontIndex < fontCount - 1) {
@@ -143,7 +128,6 @@ export default class SDFTextImplementation implements TextImplementation {
           scale,
         },
         code: text[i],
-        color: currentColor,
         metrics: {
           ascend,
           descend,
@@ -168,15 +152,18 @@ export default class SDFTextImplementation implements TextImplementation {
         width = lineWidth;
       }
     }
-    const buffer = new ArrayBuffer(count * 4 * 24);
+    const lineHeight = params.lineHeight || Math.ceil(info.size * 1.2);
+    const buffer = new ArrayBuffer(count * 4 * 20);
     const floatBuffer = new Float32Array(buffer);
-    const uintBuffer = new Uint8Array(buffer);
     const index = [];
     let y = 0;
 
     let vertIndex = 0;
     for (let i = 0; i < info.lines.length; i++) {
       const line = info.lines[i];
+      const verticalLead = (lineHeight - line.maxAscend) / 2;
+      const baseline = y - verticalLead - line.maxAscend;
+
       const glyphs = line.glyphs;
       let x = 0;
       if (align === 'right') {
@@ -196,11 +183,11 @@ export default class SDFTextImplementation implements TextImplementation {
         const t1 = (attr.Y + attr.Height) / attr.NaturalHeight;
 
         const left = x + attr.BearingX * attr.scale;
-        const top = y - info.size + metrics.ascend;
+        const top = baseline + metrics.ascend;
         const right = x + (attr.BearingX + attr.Width) * attr.scale;
-        const bottom = y - info.size - metrics.descend;
+        const bottom = baseline - metrics.descend;
 
-        const floatStart = vertIndex * 6;
+        const floatStart = vertIndex * 5;
         // top left
         floatBuffer[floatStart] = left;
         floatBuffer[floatStart + 1] = top;
@@ -208,46 +195,23 @@ export default class SDFTextImplementation implements TextImplementation {
         floatBuffer[floatStart + 3] = t0;
         floatBuffer[floatStart + 4] = center;
         // bottom left
-        floatBuffer[floatStart + 6] = left;
-        floatBuffer[floatStart + 7] = bottom;
-        floatBuffer[floatStart + 8] = s0;
-        floatBuffer[floatStart + 9] = t1;
-        floatBuffer[floatStart + 10] = center;
+        floatBuffer[floatStart + 5] = left;
+        floatBuffer[floatStart + 6] = bottom;
+        floatBuffer[floatStart + 7] = s0;
+        floatBuffer[floatStart + 8] = t1;
+        floatBuffer[floatStart + 9] = center;
         // top right
-        floatBuffer[floatStart + 12] = right;
-        floatBuffer[floatStart + 13] = top;
-        floatBuffer[floatStart + 14] = s1;
-        floatBuffer[floatStart + 15] = t0;
-        floatBuffer[floatStart + 16] = center;
+        floatBuffer[floatStart + 10] = right;
+        floatBuffer[floatStart + 11] = top;
+        floatBuffer[floatStart + 12] = s1;
+        floatBuffer[floatStart + 13] = t0;
+        floatBuffer[floatStart + 14] = center;
         // bottom right
-        floatBuffer[floatStart + 18] = right;
-        floatBuffer[floatStart + 19] = bottom;
-        floatBuffer[floatStart + 20] = s1;
-        floatBuffer[floatStart + 21] = t1;
-        floatBuffer[floatStart + 22] = center;
-
-        const uintStart = floatStart * 4;
-        const color = glyph.color;
-        const red = (color >>> 16) & 0xff;
-        const green = (color >>> 8) & 0xff;
-        const blue = color & 0xff;
-        const alpha = (color >>> 24) & 0xff;
-        uintBuffer[uintStart + 20] = red;
-        uintBuffer[uintStart + 21] = green;
-        uintBuffer[uintStart + 22] = blue;
-        uintBuffer[uintStart + 23] = alpha;
-        uintBuffer[uintStart + 44] = red;
-        uintBuffer[uintStart + 45] = green;
-        uintBuffer[uintStart + 46] = blue;
-        uintBuffer[uintStart + 47] = alpha;
-        uintBuffer[uintStart + 68] = red;
-        uintBuffer[uintStart + 69] = green;
-        uintBuffer[uintStart + 70] = blue;
-        uintBuffer[uintStart + 71] = alpha;
-        uintBuffer[uintStart + 92] = red;
-        uintBuffer[uintStart + 93] = green;
-        uintBuffer[uintStart + 94] = blue;
-        uintBuffer[uintStart + 95] = alpha;
+        floatBuffer[floatStart + 15] = right;
+        floatBuffer[floatStart + 16] = bottom;
+        floatBuffer[floatStart + 17] = s1;
+        floatBuffer[floatStart + 18] = t1;
+        floatBuffer[floatStart + 19] = center;
 
         // prettier-ignore
         index.push(
@@ -259,7 +223,7 @@ export default class SDFTextImplementation implements TextImplementation {
 
         x += metrics.width;
       }
-      y -= info.size;
+      y -= lineHeight;
     }
 
     node.geometry.bufferData(buffer);
@@ -275,7 +239,6 @@ export default class SDFTextImplementation implements TextImplementation {
     node.addAttribute('a_position');
     node.addAttribute('a_uv');
     node.addAttribute('a_center');
-    node.addAttribute('a_color', true);
     return node;
   }
 

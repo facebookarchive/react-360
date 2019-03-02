@@ -10,9 +10,11 @@
  */
 
 import GLRoot from './GLRoot';
+import type {TextImplementation} from 'webgl-ui';
 
 export type CanvasRootOptions = {
   canvas?: HTMLCanvasElement,
+  text?: TextImplementation,
   height?: number,
   width?: number,
 };
@@ -21,7 +23,7 @@ export default class CanvasRoot extends GLRoot {
   constructor(options: CanvasRootOptions = {}) {
     const canvas = options.canvas || document.createElement('canvas');
     const gl = canvas.getContext('webgl');
-    super(gl);
+    super(gl, options.text);
     this._canvas = canvas;
 
     gl.enable(gl.BLEND);

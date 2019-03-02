@@ -72,6 +72,9 @@ export default class Node {
    */
   setRenderGroup(rg: ?RenderGroup) {
     this.renderGroup = rg;
+    if (!rg) {
+      return;
+    }
     for (const name in this.uniforms) {
       const uniform = this.uniforms[name];
       if (uniform instanceof Texture) {

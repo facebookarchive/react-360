@@ -11,7 +11,7 @@
 
 import type {TextImplementation, TextRenderInfo} from './TextTypes';
 import wrapText from './wrapText';
-import * as WebGL from 'webgl-lite';
+import type {Node} from 'webgl-lite';
 
 export const Align = {
   auto: 'left',
@@ -26,6 +26,7 @@ export type Align$Values = 'auto' | 'left' | 'right' | 'center' | 'justify';
 export type FontOptions = {
   align?: Align$Values,
   family?: string,
+  lineHeight?: number,
   size?: number,
   weight?: number,
 };
@@ -39,9 +40,9 @@ export default class FontGeometry {
   _impl: TextImplementation;
   _info: TextRenderInfo; // Layout information
   _infoDirty: boolean; // Tracks whether layout information is dirty
-  _lineHeight: number; // Distance from one baseline to the next
+  _lineHeight: ?number; // Requested line height
   _maxWidth: void | number; // Maximum width the text can fill before breaking
-  _node: WebGL.Node;
+  _node: Node;
   _size: number; // Font size, in pixels
   _text: string; // Text string to display
 
@@ -58,7 +59,7 @@ export default class FontGeometry {
     this._infoDirty = false;
     this._maxWidth = undefined;
     this._size = options.size || 20;
-    this._lineHeight = Math.ceil(this._size * 1.4);
+    this._lineHeight = options.lineHeight || null;
     this._text = text;
 
     this._info = wrapText(this._impl, this._fontFamily, this._size, this._text);
@@ -72,6 +73,7 @@ export default class FontGeometry {
     return {
       align: this._align,
       alignWidth: this._alignWidth,
+      lineHeight: this._lineHeight,
     };
   }
 
@@ -89,11 +91,16 @@ export default class FontGeometry {
 
   getHeight() {
     const lines = this._info.lines;
-    return this._lineHeight * lines.length;
+    const lineHeight = this._lineHeight == null ? Math.ceil(this._size * 1.2) : this._lineHeight;
+    return lineHeight * lines.length;
   }
 
   getNode() {
     return this._node;
+  }
+
+  getSize() {
+    return this._size;
   }
 
   markGeometryDirty() {
@@ -109,12 +116,22 @@ export default class FontGeometry {
     this._alignWidth = width;
   }
 
+  setColor(color: number) {
+    const colorVec4 = [
+      ((color >> 16) & 0xff) / 255,
+      ((color >> 8) & 0xff) / 255,
+      (color & 0xff) / 255,
+      ((color >> 24) & 0xff) / 255,
+    ];
+    this._node.setUniform('u_color', colorVec4);
+  }
+
   setFontFamily(family: string) {
     this._fontFamily = family;
     this._infoDirty = true;
   }
 
-  setLineHeight(height: number) {
+  setLineHeight(height: ?number) {
     if (this._lineHeight !== height) {
       this._infoDirty = true;
     }
