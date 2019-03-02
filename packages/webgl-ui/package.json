@@ -19,12 +19,6 @@
   "dependencies": {
     "webgl-lite": "~0.0.1"
   },
-  "devDependencies": {
-    "@babel/cli": "7.1.2",
-    "@babel/core": "7.1.2",
-    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
-    "@babel/plugin-transform-flow-strip-types": "7.0.0"
-  },
   "scripts": {
     "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-object-rest-spread"
   }

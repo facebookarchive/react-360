@@ -20,6 +20,9 @@
     "README.md",
     "scripts"
   ],
+  "workspaces": [
+    "packages/*"
+  ],
   "peerDependencies": {
     "react": "~16.0.0",
     "react-native": "0.49.5"
@@ -44,7 +47,14 @@
     "react-native": "0.55.4",
     "three": "^0.87.0",
     "three-gltf2-loader": "~1.2.0",
-    "yoga-layout": "1.9.3"
+    "yoga-layout": "1.9.3",
+
+    "@babel/cli": "7.2.3",
+    "@babel/core": "7.3.3",
+    "@babel/plugin-proposal-class-properties": "7.3.3",
+    "@babel/plugin-proposal-object-rest-spread": "7.3.2",
+    "@babel/plugin-transform-flow-strip-types": "7.2.3",
+    "@babel/preset-react": "7.0.0"
   },
   "scripts": {
     "flow": "flow",

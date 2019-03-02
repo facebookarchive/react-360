@@ -17,17 +17,11 @@
     "README.md"
   ],
   "dependencies": {
-    "react-reconciler": "0.15.0",
+    "react-reconciler": "0.19.1",
     "webgl-ui": "~0.1.2",
     "webgl-ui-system-font": "~0.1.0"
   },
-  "devDependencies": {
-    "@babel/cli": "7.1.2",
-    "@babel/core": "7.1.2",
-    "@babel/plugin-proposal-class-properties": "7.0.0",
-    "@babel/plugin-transform-flow-strip-types": "7.0.0"
-  },
   "scripts": {
-    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
+    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --presets=@babel/preset-react --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
   }
 }
