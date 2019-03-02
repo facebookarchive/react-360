@@ -14,8 +14,6 @@ import {type Quaternion, type Vec3, type CameraController} from './ControlsTypes
 const DEFAULT_FOV = Math.PI / 3;
 const HALF_PI = Math.PI / 2;
 
-window.TOTALX = 0;
-
 export default class MousePanCameraController implements CameraController {
   _deltaYaw: number;
   _deltaPitch: number;
@@ -159,9 +157,6 @@ export default class MousePanCameraController implements CameraController {
     rotation[1] = y3;
     rotation[2] = z3;
     rotation[3] = w3;
-
-    window.TOTALX += this._deltaPitch;
-    console.log(window.TOTALX);
 
     this._deltaPitch = 0;
     this._deltaYaw = 0;

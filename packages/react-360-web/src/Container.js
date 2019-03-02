@@ -83,7 +83,8 @@ export default class Container {
 
   constructor(options: ContainerOptions = {}) {
     this._canvas = document.createElement('canvas');
-    const gl = this._canvas.getContext('webgl');
+    this._canvas.style.backgroundColor = '#000000';
+    const gl = this._canvas.getContext('webgl', {xrCompatible: true, alpha: false});
     this._gl = gl;
     this.group = new WebGL.RenderGroup(gl);
     this.environment = new Environment(gl);
@@ -260,6 +261,8 @@ export default class Container {
 
     this.audio.setViewParameters(cameraPos, cameraQuat);
     this.audio.frame(delta);
+
+    this.environment.frame();
 
     this.overlay.setCameraRotation(cameraQuat);
 
