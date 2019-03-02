@@ -83,14 +83,14 @@ export default class GLTexturedView extends GLView {
       1.0,
     ];
     const texY = [
-      1.0,
-      (height - tl) / height,
-      (height - tr) / height,
-      (height - half) / height,
-      half / height,
-      bl / height,
-      br / height,
       0,
+      tl / height,
+      tr / height,
+      half / height,
+      (height - half) / height,
+      (height - bl) / height,
+      (height - br) / height,
+      1.0,
     ];
     if (this._bgTextureHeight > 0 && this._bgTextureWidth > 0) {
       let scaleX = 1.0;

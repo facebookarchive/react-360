@@ -17,21 +17,35 @@ const PROTOCOL = /^([a-zA-Z]+):/;
 
 function loadTextureFromURL(gl, url): Texture {
   const tex = new Texture(gl);
-  if (typeof self.createImageBitmap === 'function') {
-    fetch(url)
-      .then(response => response.blob())
-      .then(blob => self.createImageBitmap(blob, {imageOrientation: 'flipY'}))
-      .then(imageBitmap => {
-        tex.setSource(imageBitmap);
-      });
-    return tex;
-  }
-  const img = new Image();
-  img.onload = () => {
-    tex.setSource(img);
-  };
-  img.src = url;
+  const imageRequest =
+    typeof self.createImageBitmap === 'function'
+      ? new Promise((resolve, reject) => {
+          fetch(url, {mode: 'cors'})
+            .then(response => response.blob())
+            .then(blob => {
+              return self.createImageBitmap(blob);
+            })
+            .then(resolve, err => {
+              // Network or bitmap error occurred, try img fallback
+              resolve(imgPromise(url));
+            });
+        })
+      : imgPromise(url);
+  imageRequest.then(image => {
+    tex.setSource(image);
+  });
   return tex;
+}
+
+function imgPromise(src): Promise<Image> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => {
+      resolve(img);
+    };
+    img.src = src;
+  });
 }
 
 export default class TextureManager {

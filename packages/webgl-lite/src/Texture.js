@@ -73,7 +73,7 @@ export default class Texture {
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        new Uint8Array([1, 0, 0, 255])
+        new Uint8Array([0, 0, 0, 0])
       );
     }
   }
@@ -112,7 +112,7 @@ export default class Texture {
       this._width = source.width;
       this._height = source.height;
     } else if (source instanceof HTMLVideoElement) {
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
       this._width = source.videoWidth;
       this._height = source.videoHeight;
@@ -134,8 +134,10 @@ export default class Texture {
     if (source) {
       gl.bindTexture(gl.TEXTURE_2D, this._texture);
       if (source instanceof HTMLCanvasElement) {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, source);
       } else if (source instanceof HTMLVideoElement) {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, source);
       }
     }
