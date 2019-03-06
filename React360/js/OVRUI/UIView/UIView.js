@@ -372,6 +372,7 @@ UIView.prototype = Object.assign(Object.create(THREE.Object3D.prototype), {
     this.borderMaterial.opacity = opacity * this.borderOpacity;
     this.imageMaterial.opacity = opacity * this.imageOpacity;
     this.textMesh.opacity = opacity;
+    this.raycastDisabled = (opacity * this.opacity) === 0;
   },
 
   setFrame: function(x, y, width, height, animator) {
