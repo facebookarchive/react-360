@@ -24,6 +24,17 @@ Finally, the starter project immediately adds a 360 background photo. This part 
 
 This is the web page you load when viewing your application. All it does is provide a point to mount your JavaScript code. This is intentional. Most functionality is left out of HTML, so that you can easily integrate your React 360 application into server-render pages or existing web apps.
 
+### `NonBlobBridge.js`
+
+This is the bridge code to start react-360 executor. It runs a bridge in web worker to handle messages sending between `client.js` and `index.js`. Generally you don't need to touch any code in this file.
+
+**Important**
+
+`NonBlobBridge.js` doesn't exist in `react-360`(< 1.1.1), we were using an inline blob URL as the bridge code. But this may cause a security issue in the Chrome Browser that makes your app not work when hosted in a high secured CDN server. If you are using `react-360-cli`(>= 1.1.1), it will automatically use `NonBlobBridge.js` in the new project. If you have project created via `react-360-cli`(< 1.1.1), upgrading your `react-360` and `react-360-web` version won't break your app, and you can run the following code to migrate to use `NonBlobBridge.js`:
+```
+node node_modules/react-360/scripts/install-bridge.js
+```
+
 ## Exploring the Starter Project
 
 Digging into `index.js`, we can see how the contents viewed on your screen are composed in React code. If you're not yet familiar with how React works, you should first read through the documentation at https://reactjs.org/.
