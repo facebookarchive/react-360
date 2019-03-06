@@ -491,6 +491,22 @@ export default class ShadowView {
     }
   }
 
+  setNativeProps(props: Object) {
+    // Only used for animation, so we currently only support setting styles
+    const {style} = props;
+    if (!style) {
+      return;
+    }
+    for (const prop in style) {
+      // $FlowFixMe - indexed property
+      const setter = this[`__setStyle_${prop}`];
+      if (typeof setter === 'function') {
+        continue;
+      }
+      setter.call(this, style[prop]);
+    }
+  }
+
   static registerBindings(dispatch: Dispatcher) {
     // No-op
   }

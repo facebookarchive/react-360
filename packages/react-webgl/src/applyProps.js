@@ -9,6 +9,9 @@
  * @flow
  */
 
+import areStylePropsEqual from './StyleSheet/areStylePropsEqual';
+import flattenStyle from './StyleSheet/flattenStyle';
+
 const EVENTS = {
   onClick: 'click',
   onEnter: 'enter',
@@ -25,11 +28,16 @@ export default function applyProps(view, oldProps, newProps, dispatchers) {
       continue;
     }
     if (p === 'style') {
+      const oldStyles = oldProps ? oldProps.style : null;
       const styles = newProps[p];
-      for (const s in styles) {
+      if (areStylePropsEqual(oldStyles, styles)) {
+        continue;
+      }
+      const flattened = flattenStyle(styles);
+      for (const s in flattened) {
         const setter = view[`__setStyle_${s}`];
         if (typeof setter === 'function') {
-          setter.call(view, styles[s]);
+          setter.call(view, flattened[s]);
         }
       }
       continue;
