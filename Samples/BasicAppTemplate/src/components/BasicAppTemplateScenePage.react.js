@@ -148,13 +148,14 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderRadius: 10,
     height: 60,
-    padding: 20,
+    paddingHorizontal: 20,
     margin: 20,
   },
   listText: {
     fontSize: 50,
     color: 'black',
     textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 

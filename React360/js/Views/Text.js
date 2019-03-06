@@ -249,6 +249,8 @@ export default class RCTText extends RCTBaseView {
    */
   measure(width: number, widthMeasureMode: number, height: number, heightMeasureMode: number): any {
     const text = this.getText(this.style._textColor || 0xffffffff);
+    let textWidth = 0;
+    let textHeight = 0;
     if (text) {
       if (
         widthMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY ||
@@ -268,25 +270,31 @@ export default class RCTText extends RCTBaseView {
           wordWrapped = text;
         }
         const dim = SDFFont.measureText(this.guiSys.font, wordWrapped, this._fontSize);
-        if (widthMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY) {
-          width = dim.maxWidth;
-        }
-        if (heightMeasureMode !== Flexbox.MEASURE_MODE_EXACTLY) {
-          height = dim.maxHeight;
-        }
+        textWidth = dim.maxWidth;
+        textHeight = dim.maxHeight;
         // as we can vary between spaces this is a reasonable way to determine a snapping value
         // to ensure we don't have rounding issues when computing text dimensions
         const snap = this._fontSize / 100;
-        width = snapUp(width, snap);
-        height = snapUp(height, snap);
+        textWidth = snapUp(textWidth, snap);
+        textHeight = snapUp(textHeight, snap);
       }
-    } else {
-      width = width || 0;
-      height = height || 0;
     }
+
+    if (widthMeasureMode === Flexbox.CSS_MEASURE_MODE_UNDEFINED || textWidth < 0) {
+      textWidth = width;
+    } else if (widthMeasureMode == Flexbox.MEASURE_MODE_EXACTLY || isNaN(width)) {
+      width = textWidth;
+    }
+
+    if (heightMeasureMode === Flexbox.CSS_MEASURE_MODE_UNDEFINED || textHeight < 0) {
+      textHeight = height;
+    } else if (heightMeasureMode == Flexbox.MEASURE_MODE_EXACTLY|| isNaN(height)) {
+      height = textHeight;
+    }
+
     return {
-      width: width,
-      height: height,
+      width: Math.min(width, textWidth),
+      height: Math.min(height, textHeight),
     };
   }
 
