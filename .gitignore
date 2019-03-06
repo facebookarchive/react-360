@@ -9,3 +9,4 @@ website/translated_docs
 website/build
 website/yarn.lock
 website/node_modules
+Samples/*/NonBlobBridge.js

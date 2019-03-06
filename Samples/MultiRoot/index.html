@@ -10,7 +10,10 @@
     <script>
       React360.init(
         'index.bundle?platform=vr&dev=true',
-        document.getElementById('container')
+        document.getElementById('container'),
+        {
+          bridgeFile: 'NonBlobBridge.js',
+        }
       );
     </script>
   </body>
