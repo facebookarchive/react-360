@@ -14,6 +14,7 @@ import Location from '../Compositor/Location';
 import Surface from '../Compositor/Surface';
 import type ReactExecutor from '../Executor/ReactExecutor';
 import ReactExecutorWebWorker from '../Executor/ReactExecutorWebWorker';
+import ReactExecutorNonBlobWebWorker from '../Executor/ReactExecutorNonBlobWebWorker';
 import {type Quaternion, type Ray, type Vec3} from '../Controls/Types';
 import {type InputEvent} from '../Controls/InputChannels/Types';
 import type Module from '../Modules/Module';
@@ -40,6 +41,7 @@ export type RuntimeOptions = {
   assetRoot?: string,
   customViews?: Array<CustomView>,
   executor?: ReactExecutor,
+  bridgeFile?: string,
   nativeModules?: Array<Module | NativeModuleInitializer>,
 };
 
@@ -110,9 +112,11 @@ export default class Runtime {
     }
     this.executor =
       options.executor ||
-      new ReactExecutorWebWorker({
-        enableDevTools,
-      });
+      (options.bridgeFile
+        ? new ReactExecutorNonBlobWebWorker(options.bridgeFile, {enableDevTools})
+        : new ReactExecutorWebWorker({
+            enableDevTools,
+          }));
 
     this.guiSys = new GuiSys(scene, {});
     this.context = new ReactNativeContext(this.guiSys, this.executor, {

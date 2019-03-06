@@ -64,6 +64,7 @@ type AppearanceState = {
 
 export type React360Options = {
   assetRoot?: string,
+  bridgeFile?: string,
   customOverlay?: OverlayInterface,
   customViews?: Array<CustomView>,
   executor?: ReactExecutor,
@@ -168,6 +169,7 @@ export default class ReactInstance {
     this._assetRoot = assetRoot;
     const runtimeOptions = {
       assetRoot: assetRoot,
+      bridgeFile: options.bridgeFile,
       customViews: options.customViews || [],
       executor: options.executor,
       nativeModules: [
