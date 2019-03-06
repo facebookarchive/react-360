@@ -25,6 +25,7 @@ module.exports = config => ({
         'index.bundle?platform=vr&dev=true',
         document.getElementById('container'),
         {
+          bridgeFile: 'NonBlobBridge.js',
           assetRoot: 'static_assets/',
         }
       );

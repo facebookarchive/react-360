@@ -42,10 +42,36 @@ function getOpenSSLConfig(projectDir) {
   };
 }
 
+function checkBridge(projectDir) {
+  console.log("Checking bridge file setting...")
+  const indexPath = path.resolve(projectDir, 'index.html');
+  let contents = null
+  try {
+    contents = fs.readFileSync(indexPath, 'utf8');
+  } catch (e) {
+    console.log("Can't find index.html, skip the bridge file setting...");
+    return;
+  }
+  if (contents.indexOf('bridgeFile') < 0) {
+    console.log("Not using bridge file, skip the bridge file setting...");
+    return;
+  }
+
+  const bridgetPath = path.resolve(projectDir, 'NonBlobBridge.js');
+  if (fs.existsSync(bridgetPath)) {
+    console.log("Bridge file already set.");
+  } else {
+    require('./install-bridge');
+    console.log("Bridge file copied.");
+  }
+}
+
 function runPackager() {
   const projectDir =
     process.env.PROJECT_LOCATION || path.resolve('');
 
+  checkBridge(projectDir);
+  
   const options = {};
   const args = process.argv.slice(2);
   let protocol = "http";

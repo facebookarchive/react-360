@@ -26,8 +26,8 @@ module.exports = config => ({
     "react": "16.3.2",
     "react-native": "~0.55.4",
     "three": "^0.87.0",
-    "react-360": "~1.0.0",
-    "react-360-web": "~1.0.0"
+    "react-360": "~1.1.0",
+    "react-360-web": "~1.1.0"
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",

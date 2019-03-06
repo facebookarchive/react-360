@@ -8,6 +8,7 @@
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const projectPaths = require('./project-paths');
 
 const args = process.argv.slice(2);
 
@@ -103,37 +104,47 @@ function updateHTML(root, output, assetRoot) {
   return writeErrors;
 }
 
-function hasPackage(dir) {
-  const packagePath = path.join(dir, 'package.json');
+function copyBridgeFile(root, output) {
+  // default value;
+  let bridgeFile = 'NonBlobBridge.js';
+
+  // Try find it from index.html
+  const indexPath = path.join(root, 'index.html');
+  let contents = null;
   try {
-    fs.statSync(packagePath);
+    contents = fs.readFileSync(indexPath, 'utf8');
   } catch (e) {
-    return false;
+    return [
+      'Could not find index.html. You will need to manually copy the bridge file to right path.',
+    ];
   }
-  const pkg = require(packagePath);
-  if (pkg && pkg.dependencies && pkg.dependencies['react-360']) {
-    return true;
+  var found = contents.match(/bridgeFile\: \'[A-Za-z0-9]+\.[A-Za-z0-9]+\'/);
+  if (found.length > 0) {
+    bridgeFile = found[0].substring(13, found[0].length - 1);
   }
-  return false;
+
+  const bridgeFilePath = path.join(root, bridgeFile);
+  if (!fs.existsSync(bridgeFilePath)) {
+    return [
+      `Could not find the bridge file in ${bridgeFilePath}. You will need to manually copy the bridge file to right path.`,
+    ];
+  }
+
+  const outputPath = path.join(output, bridgeFile);
+  try {
+    fs.copyFileSync(bridgeFilePath, outputPath);
+  } catch (e) {
+    return [`Unable to copy ${bridgeFilePath} to ${outputPath}`];
+  }
+  return [];
 }
 
-function findProjectDir(dir) {
-  while (!hasPackage(dir)) {
-    const next = path.join(dir, '..');
-    if (dir === next) {
-      console.log('Could not find a React 360 project directory');
-      process.exit(1);
-    }
-    dir = path.join(dir, '..');
-  }
-  return dir;
+const {projectDir, buildDir} = projectPaths;
+
+if (projectDir === undefined) {
+  console.log('Could not find a React 360 project directory');
+  process.exit(1);
 }
-
-// Allow overriding the project location with an env variable
-const projectDir =
-  process.env.PROJECT_LOCATION || findProjectDir(process.cwd());
-
-const buildDir = path.join(projectDir, 'build');
 
 new Promise((resolve, reject) => {
   try {
@@ -172,7 +183,11 @@ new Promise((resolve, reject) => {
         'They can be found at ' +
         path.resolve(projectDir, 'build'),
     );
-    const errors = updateHTML(projectDir, path.resolve(projectDir, 'build'), customAssetRoot);
+    let errors = updateHTML(projectDir, path.resolve(projectDir, 'build'), customAssetRoot);
+    if (errors.length) {
+      errors.forEach(err => console.log(' ** ', err));
+    }
+    errors = copyBridgeFile(projectDir, path.resolve(projectDir, 'build'));
     if (errors.length) {
       errors.forEach(err => console.log(' ** ', err));
     }
