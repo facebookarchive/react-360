@@ -9,6 +9,7 @@
  * @flow
  */
 
+import getExtension from './getExtension';
 import VideoPlayer from './VideoPlayer';
 import type {VideoPlayerImplementation} from './VideoTypes';
 import {type TextureManager} from 'webgl-ui';
@@ -61,17 +62,19 @@ export default class VideoManager {
     this._playerImplementations.push(impl);
   }
 
-  createPlayerImplementation(src: string) {
-    const ext = src.substr(src.lastIndexOf('.') + 1);
-    for (const Impl of this._playerImplementations) {
-      // $FlowFixMe - no support for statics
-      const supported = Impl.getSupportedFormats();
-      if (supported.indexOf(ext) > -1) {
-        // $FlowFixMe - can't instantiate an interface
-        return new Impl(this._textureManager.getGLContext());
+  createPlayerImplementation(sources: Array<string>) {
+    for (const src of sources) {
+      const ext = getExtension(src);
+      for (const Impl of this._playerImplementations) {
+        // $FlowFixMe - no support for statics
+        const supported = Impl.getSupportedFormats();
+        if (supported.indexOf(ext) > -1) {
+          // $FlowFixMe - can't instantiate an interface
+          return new Impl(this._textureManager.getGLContext());
+        }
       }
     }
-    throw new Error(`No registered player supports ${ext} files.`);
+    throw new Error('No registered player supports any of these files.');
   }
 
   update() {

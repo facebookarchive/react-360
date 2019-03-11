@@ -83,11 +83,12 @@ export default class VideoPlayer {
     this._impl.setMuted(muted);
   }
 
-  setSource(url: string, format?: string) {
+  setSource(url: string | Array<string>, format?: string) {
     // From extension, try to determine player
-    const impl = this._manager.createPlayerImplementation(url);
+    const sources = Array.isArray(url) ? url : [url];
+    const impl = this._manager.createPlayerImplementation(sources);
     this._impl = impl;
-    impl.setSource(url, format);
+    impl.setSource(sources, format);
   }
 
   setVolume(vol: number) {

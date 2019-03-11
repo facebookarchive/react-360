@@ -10,8 +10,9 @@
  */
 
 import * as WebGL from 'webgl-lite';
+import getExtension from '../getExtension';
 
-import type {TextureMetadata, VideoPlayerImplementation} from '../VideoTypes';
+import type {VideoPlayerImplementation} from '../VideoTypes';
 
 const FORMATS = {
   ogg: 'video/ogg; codecs="theora, vorbis"',
@@ -39,7 +40,6 @@ function fillSupportCache() {
 export default class BrowserVideoImplementation implements VideoPlayerImplementation {
   _element: HTMLVideoElement;
   _gl: WebGLRenderingContext;
-  _load: ?Promise<TextureMetadata>;
   _loop: boolean;
   _playing: boolean;
   _ready: boolean;
@@ -60,7 +60,6 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
       document.body.appendChild(this._element);
     }
     this._ready = false;
-    this._load = null;
     this._loop = false;
 
     this._element.addEventListener('ended', this._onEnded);
@@ -75,9 +74,23 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
     }
   };
 
-  setSource(src: string, format?: string) {
+  setSource(src: string | Array<string>, format?: string) {
+    let source = '';
+    if (Array.isArray(src)) {
+      const supported = this.constructor.getSupportedFormats();
+      for (const s of src) {
+        if (!source) {
+          const ext = getExtension(s);
+          if (supported.indexOf(ext) > -1) {
+            source = s;
+          }
+        }
+      }
+    } else {
+      source = src;
+    }
     this._ready = false;
-    this._element.src = src;
+    this._element.src = source;
     this._element.load();
     this._element.addEventListener('canplay', () => {
       this._ready = true;
