@@ -93,8 +93,7 @@ export default class Container {
     const gl = this._canvas.getContext('webgl', {xrCompatible: true, alpha: false});
     this._gl = gl;
     this.group = new WebGL.RenderGroup(gl);
-    this.environment = new Environment(gl);
-    this.group.addNode(this.environment.getNode());
+    this.environment = new Environment(gl, this.group);
     this.controls = new Controls();
     this._eventLayer = document.createElement('div');
     this._eventLayer.appendChild(this._canvas);
@@ -333,11 +332,13 @@ export default class Container {
       gl.viewport(0, 0, canvas.width * 0.5, canvas.height);
       this.group.setUniform('projectionMatrix', frameData.leftProjectionMatrix);
       this.group.setUniform('viewMatrix', frameData.leftViewMatrix);
+      this.group.setUniform('ViewID', 0); // Future multiview flag
       this.group.draw();
 
       gl.viewport(canvas.width * 0.5, 0, canvas.width * 0.5, canvas.height);
       this.group.setUniform('projectionMatrix', frameData.rightProjectionMatrix);
       this.group.setUniform('viewMatrix', frameData.rightViewMatrix);
+      this.group.setUniform('ViewID', 1); // Future multiview flag
       this.group.draw();
 
       display.submitFrame();
@@ -354,6 +355,7 @@ export default class Container {
         }
       }
     } else {
+      this.group.setUniform('ViewID', 0);
       this.group.setUniform('viewMatrix', this.controls.getCameraViewMatrix());
       if (this.group.needsRender()) {
         const gl = this._gl;

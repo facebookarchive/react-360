@@ -43,6 +43,8 @@ export default function createUniformSetter(
       return gl.uniformMatrix4fv.bind(gl, loc, false);
     case gl.SAMPLER_2D:
       return gl.uniform1i.bind(gl, loc);
+    case gl.SAMPLER_CUBE:
+      return gl.uniform1i.bind(gl, loc);
     default:
       return function() {
         throw new Error('This uniform type is not supported');

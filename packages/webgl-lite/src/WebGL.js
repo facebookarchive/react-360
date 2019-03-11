@@ -9,6 +9,7 @@
  * @flow
  */
 
+import CubemapTexture from './CubemapTexture';
 import FrameBuffer from './FrameBuffer';
 import Geometry from './Geometry';
 import Node from './Node';
@@ -18,4 +19,14 @@ import RenderGroup from './RenderGroup';
 import Texture from './Texture';
 import VertexBuffer from './VertexBuffer';
 
-export {FrameBuffer, Geometry, Node, Program, ProgramManager, RenderGroup, Texture, VertexBuffer};
+export {
+  CubemapTexture,
+  FrameBuffer,
+  Geometry,
+  Node,
+  Program,
+  ProgramManager,
+  RenderGroup,
+  Texture,
+  VertexBuffer,
+};

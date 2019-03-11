@@ -9,6 +9,7 @@
  * @flow
  */
 
+import CubemapTexture from './CubemapTexture';
 import Geometry from './Geometry';
 import type Program from './Program';
 import type RenderGroup from './RenderGroup';
@@ -25,6 +26,7 @@ export default class Node {
   renderGroup: ?RenderGroup;
   renderOrder: number;
   uniforms: Object;
+  visible: boolean;
 
   constructor(gl: WebGLRenderingContext, program: Program) {
     this._gl = gl;
@@ -33,6 +35,7 @@ export default class Node {
     this.renderGroup = null;
     this.renderOrder = 1;
     this.uniforms = {};
+    this.visible = true;
   }
 
   /**
@@ -50,7 +53,7 @@ export default class Node {
     this.uniforms[name] = value;
     if (this.renderGroup) {
       this.renderGroup.setNeedsRender(true);
-      if (value instanceof Texture) {
+      if (value instanceof Texture || value instanceof CubemapTexture) {
         value.addRenderGroup(this.renderGroup);
       }
     }
@@ -105,12 +108,19 @@ export default class Node {
     }
   }
 
+  setVisible(visible: boolean) {
+    this.visible = visible;
+  }
+
   /**
    * Use the associated geometry and shaders to draw the object.
    * For uniforms, the Node first looks at locally stored values. If no value
    * is stored, it looks to the Program to fetch a default.
    */
   draw() {
+    if (!this.visible) {
+      return;
+    }
     let texSlot = 0;
     const program = this.program;
     const renderGroup = this.renderGroup;
@@ -130,6 +140,10 @@ export default class Node {
       } else if (Array.isArray(value) || value instanceof Float32Array) {
         program.getUniform(name).set(value);
       } else if (value instanceof Texture) {
+        value.bindToSlot(texSlot);
+        program.getUniform(name).set(texSlot);
+        texSlot++;
+      } else if (value instanceof CubemapTexture) {
         value.bindToSlot(texSlot);
         program.getUniform(name).set(texSlot);
         texSlot++;
