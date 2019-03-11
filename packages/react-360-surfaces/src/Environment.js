@@ -77,7 +77,7 @@ export default class Environment {
   _rg: WebGL.RenderGroup;
   // fading values
   _bgFormat: ?string;
-  _bgTransition: ?Promise<Image | ImageBitmap | Array<Image | ImageBitmap>>;
+  _bgTransition: ?Promise<null | Image | ImageBitmap | Array<Image | ImageBitmap>>;
   _fadeTransition: Transition;
   _fadeValue: TransitionValue;
 
@@ -141,14 +141,18 @@ export default class Environment {
   setSource(url: string | Array<string>, options?: SourceOptions = {}) {
     if (Array.isArray(url)) {
       this._bgTransition = Promise.all(url.map(u => loadImageFromURL(u)));
+    } else if (url == null) {
+      this._bgTransition = Promise.resolve(null);
     } else {
       this._bgTransition = loadImageFromURL(url);
     }
     this._bgFormat = options.format;
     this._bgTransition.then(img => {
       if (!this._fadeValue.isActive()) {
-        this._updateTexture(img, options.format);
-        this._fadeValue.setValue(0);
+        if (img != null) {
+          this._updateTexture(img, options.format);
+          this._fadeValue.setValue(0);
+        }
         this._bgTransition = null;
       }
     });
@@ -179,8 +183,10 @@ export default class Environment {
     } else {
       if (this._bgTransition) {
         this._bgTransition.then(img => {
-          this._updateTexture(img, this._bgFormat || '');
-          this._fadeValue.setValue(0);
+          if (img != null) {
+            this._updateTexture(img, this._bgFormat || '');
+            this._fadeValue.setValue(0);
+          }
           this._bgTransition = null;
         });
       }

@@ -9,6 +9,8 @@
  * @flow
  */
 
+import DeviceEventEmitter from './DeviceEventEmitter';
+
 type Module = any;
 type ModuleClass = Class<Module>;
 export type ModuleMap = {[name: string]: Module};
@@ -30,11 +32,12 @@ function register(name: string, module: ModuleClass) {
  * Create a new instance of native modules. This may be necessary when multiple
  * React 360 instances using Native Modules exist in the same JS application
  */
-function createNativeModules(container: any): ModuleMap {
+function createNativeModules(container: any, emitter: DeviceEventEmitter): ModuleMap {
   const modules = {};
   for (const name in registry) {
-    modules[name] = new registry[name](container);
+    modules[name] = new registry[name](container, emitter);
   }
+  modules.DeviceEventEmitter = emitter;
   return modules;
 }
 
@@ -49,7 +52,8 @@ function createNativeModules(container: any): ModuleMap {
  */
 const NativeModules = {
   init(container: any) {
-    const modules = createNativeModules(container);
+    const emitter = new DeviceEventEmitter();
+    const modules = createNativeModules(container, emitter);
     for (const name in modules) {
       NativeModules[name] = modules[name];
     }

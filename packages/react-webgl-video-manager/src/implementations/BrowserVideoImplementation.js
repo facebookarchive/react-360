@@ -42,6 +42,7 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
   _load: ?Promise<TextureMetadata>;
   _loop: boolean;
   _playing: boolean;
+  _ready: boolean;
   _texture: WebGL.Texture;
 
   constructor(gl: WebGLRenderingContext) {
@@ -58,6 +59,7 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
     if (document.body) {
       document.body.appendChild(this._element);
     }
+    this._ready = false;
     this._load = null;
     this._loop = false;
 
@@ -74,10 +76,15 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
   };
 
   setSource(src: string, format?: string) {
+    this._ready = false;
     this._element.src = src;
     this._element.load();
     this._element.addEventListener('canplay', () => {
+      this._ready = true;
       this._texture.setSource(this._element);
+      if (this._playing) {
+        this._element.play();
+      }
     });
   }
 
@@ -86,7 +93,7 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
   }
 
   update() {
-    if (this._playing) {
+    if (this._ready && this._playing) {
       this._texture.update();
     }
   }
@@ -104,12 +111,16 @@ export default class BrowserVideoImplementation implements VideoPlayerImplementa
   }
 
   play() {
-    this._element.play();
+    if (this._ready) {
+      this._element.play();
+    }
     this._playing = true;
   }
 
   pause() {
-    this._element.pause();
+    if (this._ready) {
+      this._element.pause();
+    }
     this._playing = false;
   }
 

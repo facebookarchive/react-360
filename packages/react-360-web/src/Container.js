@@ -234,6 +234,15 @@ export default class Container {
   }
 
   /**
+   * Shortcut method for creating a surface, then adding it with a unique name
+   */
+  createSurface(name: string, width: number, height: number) {
+    const surface = new Surface(this._gl, width, height);
+    this.addSurface(name, surface);
+    return surface;
+  }
+
+  /**
    * Remove an existing Surface from the scene, as identified by its unique name
    */
   removeSurface(name: string) {
