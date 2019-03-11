@@ -45,6 +45,7 @@ export default class SurfaceView extends ShadowViewWebGL<GLTexturedView> {
 
     this.fb.getTexture().update();
 
+    this.view.setFlipVertical(true);
     this.view.setBackgroundImage(this.fb.getTexture());
 
     this._contentTransform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];

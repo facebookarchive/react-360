@@ -44,6 +44,7 @@ export default class GLTexturedView extends GLView {
   _bgResize: ResizeMode;
   _bgTextureHeight: number;
   _bgTextureWidth: number;
+  _flipVertical: boolean;
   _tintColor: number;
 
   constructor(gl: WebGLRenderingContext) {
@@ -53,6 +54,7 @@ export default class GLTexturedView extends GLView {
     this._bgTextureWidth = 0;
     this._bgResize = 'stretch';
     this._tintColor = 0xffffffff;
+    this._flipVertical = false;
 
     this.getNode().addAttribute('a_uv');
   }
@@ -92,6 +94,11 @@ export default class GLTexturedView extends GLView {
       (height - br) / height,
       1.0,
     ];
+    if (this._flipVertical) {
+      for (let i = 0; i < texY.length; i++) {
+        texY[i] = 1 - texY[i];
+      }
+    }
     if (this._bgTextureHeight > 0 && this._bgTextureWidth > 0) {
       let scaleX = 1.0;
       let scaleY = 1.0;
@@ -227,5 +234,9 @@ export default class GLTexturedView extends GLView {
       ((color >>> 8) & 0xff) / 255,
       (color & 0xff) / 255,
     ]);
+  }
+
+  setFlipVertical(flag: boolean) {
+    this._flipVertical = !!flag;
   }
 }
