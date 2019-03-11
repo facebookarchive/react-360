@@ -34,6 +34,11 @@ export default class GLRoot {
     }
   }
 
+  useTextureManager(tm: TextureManager) {
+    this._textureManager = tm;
+    this._surface.useTextureManager(tm);
+  }
+
   getTextImplementation() {
     return this._textImplementation;
   }

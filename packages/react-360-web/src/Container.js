@@ -19,6 +19,7 @@ import {
   type Ray,
 } from 'react-360-controls';
 import {Environment, Surface} from 'react-360-surfaces';
+import {VideoManager, BrowserVideoImplementation} from 'react-webgl-video-manager';
 import {AudioManager} from 'vr-audio';
 import VRInputSource from 'vr-input-source';
 import VRState from 'vr-state';
@@ -70,6 +71,7 @@ export default class Container {
   environment: Environment;
   group: WebGL.RenderGroup;
   overlay: OverlayInterface;
+  video: VideoManager;
   vrState: VRState;
   vrInputSource: VRInputSource;
   _canvas: HTMLCanvasElement;
@@ -83,6 +85,7 @@ export default class Container {
   _needsResize: boolean;
   _nextFrame: null | AnimationFrameData;
   _rays: Array<Ray>;
+  _sharedTextureManager: GLUI.TextureManager;
   _surfaces: {[name: string]: Surface};
   _width: number;
   _wrapper: HTMLElement;
@@ -92,6 +95,7 @@ export default class Container {
     this._canvas.style.backgroundColor = '#000000';
     const gl = this._canvas.getContext('webgl', {xrCompatible: true, alpha: false});
     this._gl = gl;
+    this._sharedTextureManager = new GLUI.TextureManager(gl);
     this.group = new WebGL.RenderGroup(gl);
     this.environment = new Environment(gl, this.group);
     this.controls = new Controls();
@@ -200,6 +204,8 @@ export default class Container {
     this.controls.addRaycaster(new TouchRaycaster(this._eventLayer));
 
     this.audio = new AudioManager();
+    this.video = new VideoManager(this._sharedTextureManager);
+    this.video.registerPlayerImplementation(BrowserVideoImplementation);
   }
 
   /**
@@ -210,6 +216,7 @@ export default class Container {
   getDefaultSurface() {
     if (!this._surfaces.default) {
       const surface = new Surface(this._gl, 1000, 600);
+      surface.getReactRoot().useTextureManager(this._sharedTextureManager);
       this.addSurface('default', surface);
     }
     return this._surfaces.default;
@@ -221,6 +228,7 @@ export default class Container {
    */
   addSurface(name: string, surface: Surface) {
     this._surfaces[name] = surface;
+    surface.getReactRoot().useTextureManager(this._sharedTextureManager);
     this.group.addNode(surface.getNode());
     this.group.refreshRenderOrder();
   }
@@ -315,6 +323,7 @@ export default class Container {
 
     this.audio.setViewParameters(cameraPos, cameraQuat);
     this.audio.frame(delta);
+    this.video.update();
 
     this.environment.frame();
 

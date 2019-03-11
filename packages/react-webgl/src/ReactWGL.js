@@ -17,6 +17,7 @@ import Pressable from './Pressable.react';
 import {Image, Text, Quad, View} from './Primitives';
 import RenderTargetRoot from './RenderTargetRoot';
 import StyleSheet from './StyleSheet/StyleSheet';
+import Video from './Video.react';
 
 const Renderer = Reconciler(HostConfig);
 
@@ -34,4 +35,15 @@ Renderer.injectIntoDevTools({
   rendererPackageName: 'react-webgl',
 });
 
-export {CanvasRoot, GLRoot, RenderTargetRoot, StyleSheet, Image, Text, Quad, View, Pressable};
+export {
+  CanvasRoot,
+  GLRoot,
+  RenderTargetRoot,
+  StyleSheet,
+  Image,
+  Text,
+  Quad,
+  Video,
+  View,
+  Pressable,
+};
