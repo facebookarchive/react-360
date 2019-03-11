@@ -80,7 +80,7 @@ void main() {
   sample.a = alpha;
 
   vec4 color = mix(sample, u_bordercolor, clamp(dist + u_stroke, 0., 1.));
-  float opacity = clamp(0.6 - dist, 0., 1.);
-  gl_FragColor = vec4(color.rgb, color.a * opacity * u_opacity);
+  float opacity = clamp(0.6 - dist, 0., 1.) * color.a * u_opacity;
+  gl_FragColor = vec4(color.r * opacity, color.g * opacity, color.b * opacity, opacity);
 }
 `;

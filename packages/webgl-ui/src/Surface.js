@@ -197,7 +197,7 @@ export default class Surface {
   draw() {
     const gl = this._gl;
     gl.disable(gl.DEPTH_TEST);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     this._renderGroup.draw();
   }
 

@@ -22,7 +22,8 @@ export type CanvasRootOptions = {
 export default class CanvasRoot extends GLRoot {
   constructor(options: CanvasRootOptions = {}) {
     const canvas = options.canvas || document.createElement('canvas');
-    const gl = canvas.getContext('webgl');
+    canvas.style.backgroundColor = 'transparent';
+    const gl = canvas.getContext('webgl', {alpha: true, premultipliedAlpha: false});
     super(gl, options.text);
     this._canvas = canvas;
 

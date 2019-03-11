@@ -28,7 +28,7 @@ export default class GLRoot {
 
   update() {
     this._surface.updateGeometry();
-    if (this._surface.isDirty()) {
+    if (true || this._surface.isDirty()) {
       this._surface.clear();
       this._surface.draw();
     }
