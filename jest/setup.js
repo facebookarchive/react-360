@@ -26,6 +26,7 @@ jest
   .mock('Scene', () => mockComponent('Scene'))
   .mock('Sound', () => mockComponent('Sound'))
   .mock('Sphere', () => mockComponent('Sphere'))
+  .mock('Ring', () => mockComponent('Ring'))
   .mock('SpotLight', () => mockComponent('SpotLight'))
   .mock('Video', () => mockComponent('Video'));
 

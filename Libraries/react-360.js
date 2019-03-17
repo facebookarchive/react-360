@@ -50,6 +50,9 @@ const React360 = {
   get Sphere() {
     return require('Sphere');
   },
+  get Ring() {
+    return require('Ring');
+  },
   get DirectionalLight() {
     return require('DirectionalLight');
   },
