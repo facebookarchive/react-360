@@ -2,6 +2,7 @@
 // If you want to modify your application's content, start in "index.js"
 
 import {ReactInstance} from 'react-360-web';
+import RCTWorkInProgressSurface from './RCTWorkInProgressSurface'
 
 function init(bundle, parent, options = {}) {
 
@@ -17,8 +18,17 @@ function init(bundle, parent, options = {}) {
   const r360 = new ReactInstance(bundle, parent, {
     // Add custom options here
     fullScreen: true,
+    customViews: [
+      {
+        // Add custom native view "RCTSurface" to support surface control
+        name: 'RCTWorkInProgressSurface',
+        view: RCTWorkInProgressSurface,
+      },
+    ],
     ...options,
   });
+
+  RCTWorkInProgressSurface.__reactInstance = r360;
 
   // Render your app content to the default cylinder surface
   r360.renderToSurface(

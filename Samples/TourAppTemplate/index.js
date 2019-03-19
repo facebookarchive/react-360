@@ -12,6 +12,7 @@ import {
 import TourNavButton from 'TourNavButton.react';
 import TourInfoButton from 'TourInfoButton.react';
 import TourLoadingSpinner from 'TourLoadingSpinner.react';
+import TourHotspot from 'TourHotspot.react';
 
 const AudioModule = NativeModules.AudioModule;
 const ENV_TRANSITION_TIME = 1000;
@@ -76,7 +77,18 @@ class TourAppTemplate extends React.Component {
     }
 
     if (nextLocationId !== locationId && this._loadingTimeout == null) {
-      Environment.setBackgroundImage(asset(data.photos[nextLocationId].uri), {format: '2D', transition: ENV_TRANSITION_TIME});
+      const nextPhotoData = (nextLocationId && data.photos[nextLocationId]) || null;
+      const nextRotation =
+        data.firstPhotoRotation + ((nextPhotoData && nextPhotoData.rotationOffset) || 0);
+      Environment.setBackgroundImage(
+        asset(data.photos[nextLocationId].uri),
+        {
+          format: '2D',
+          transition: ENV_TRANSITION_TIME,
+          // rotate the background image to the rotation offset so we are smoothly
+          // transiting from one to another
+          rotateTransform: [{rotateY: `${-nextRotation}deg`}],
+        });
       this._loadingTimeout = setTimeout(() => {
         this._loadingTimeout = null;
         this.setState({
@@ -87,7 +99,7 @@ class TourAppTemplate extends React.Component {
     }
 
     return (
-    <View style={styles.panel}>
+    <View>
       {tooltips &&
         tooltips.map((tooltip, index) => {
           // Iterate through items related to this location, creating either
@@ -95,36 +107,43 @@ class TourAppTemplate extends React.Component {
           // change the current location in the tour.
           if (tooltip.type) {
             return (
-              <TourInfoButton
+              // Rotate the hotspot surface to the right hotspot position
+              // We centered the view so the hotspot icon is on the right position
+              <TourHotspot
                 key={index}
-                onEnterSound={asset(soundEffects.navButton.onEnter.uri)}
-                source={asset('info_icon.png')}
-                tooltip={tooltip}
-              />
+                rotationY={tooltip.rotationY + rotation}>
+                <TourInfoButton
+                  onEnterSound={asset(soundEffects.navButton.onEnter.uri)}
+                  source={asset('info_icon.png')}
+                  tooltip={tooltip}
+                />
+              </TourHotspot>
             );
           }
           return (
-            <TourNavButton
+            // Rotate the hotspot surface to the right hotspot position
+            // We centered the view so the hotspot icon is on the right position
+            <TourHotspot
               key={tooltip.linkedPhotoId}
-              isLoading={isLoading}
-              onClickSound={asset(soundEffects.navButton.onClick.uri)}
-              onEnterSound={asset(soundEffects.navButton.onEnter.uri)}
-              onInput={() => {
-                // Update nextLocationId, not locationId, so tooltips match
-                // the currently visible pano; pano will update locationId
-                // after loading the new image.
-                this.setState({
-                  nextLocationId: tooltip.linkedPhotoId,
-                });
-              }}
-              source={asset(data.nav_icon)}
-              textLabel={tooltip.text}
-            />
+              rotationY={tooltip.rotationY + rotation}>
+              <TourNavButton
+                isLoading={isLoading}
+                onClickSound={asset(soundEffects.navButton.onClick.uri)}
+                onEnterSound={asset(soundEffects.navButton.onEnter.uri)}
+                onInput={() => {
+                  // Update nextLocationId, not locationId, so tooltips match
+                  // the currently visible pano; pano will update locationId
+                  // after loading the new image.
+                  this.setState({
+                    nextLocationId: tooltip.linkedPhotoId,
+                  });
+                }}
+                source={asset(data.nav_icon)}
+                textLabel={tooltip.text}
+              />
+            </TourHotspot>
           );
         })}
-        {locationId == null &&
-          // Show a spinner while first pano is loading.
-          <TourLoadingSpinner style={styles.spinner} />}
       </View>
     );
   }
@@ -132,13 +151,6 @@ class TourAppTemplate extends React.Component {
 
 // defining StyleSheet
 const styles = StyleSheet.create({
-  panel: {
-    width: 1000,
-    height: 600,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
   spinner: {
     width: 50,
     height: 50,
