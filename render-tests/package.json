@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "puppeteer": "1.12.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/webpack",
+    "test": "node scripts/test.js"
+  }
+}

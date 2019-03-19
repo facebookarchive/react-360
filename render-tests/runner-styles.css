@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#invalid-test {
+  display: none;
+  font-size: 30px;
+  font-weight: 400;
+  text-align: center;
+}
+
+#error {
+  background-color: #cc0000;
+  color: #ffffff;
+  font-family: monospace;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  line-height: 20px;
+  display: none;
+}
