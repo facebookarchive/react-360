@@ -116,6 +116,7 @@ export default class RCTBaseView {
   style: any;
   tag: number;
   rootTag: number;
+  isRoot: boolean;
   surfaceName: ?string;
   interactableCount: number;
   inSurfaceContext: boolean;
@@ -144,6 +145,7 @@ export default class RCTBaseView {
     this.UIManager = null;
     this.tag = 0;
     this.rootTag = 0;
+    this.isRoot = false;
     this.surfaceName = null;
     this.children = [];
     this.parent = null;
@@ -376,6 +378,13 @@ export default class RCTBaseView {
       view.isDirty = true;
       view = view.getParent();
     }
+  }
+
+  getViewRootID(): ?string {
+    if (!this.surfaceName && this.parent) {
+      this.surfaceName = this.parent.getViewRootID();
+    }
+    return this.surfaceName;
   }
 
   /**

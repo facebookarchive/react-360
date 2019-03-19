@@ -492,6 +492,7 @@ export default class UIManager extends Module {
     if (inSurfaceContext) {
       view.inSurfaceContext = true;
     }
+    view.isRoot = true;
     this._rootViews[String(tag)] = view;
     this._guiSys.add(view.view, container);
   }
@@ -768,7 +769,7 @@ export default class UIManager extends Module {
     let y = 0;
     const w = view.YGNode.getComputedWidth();
     const h = view.YGNode.getComputedHeight();
-    while (view) {
+    while (view && !view.isRoot) {
       x +=
         view.YGNode.getComputedLeft() -
         view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
@@ -891,15 +892,15 @@ export default class UIManager extends Module {
   $getViewRootID(reactTag: number, success: number, error: number) {
     let view = this._views[String(reactTag)];
     if (!view) {
-      this._rnctx.invokeCallback(error, [`Failed to get surfaceID, view doesn't exist.`]);
+      this._rnctx.invokeCallback(error, [`Failed to get rootID, view doesn't exist.`]);
       return;
     }
-    const rootView = this.getViewForTag(view.rootTag);
-    if (!rootView) {
-      this._rnctx.invokeCallback(error, [`Failed to get surfaceID, root view doesn't exist.`]);
+    const rootID = view.getViewRootID();
+    if (!rootID) {
+      this._rnctx.invokeCallback(error, [`Failed to get rootID.`]);
       return;
     }
-    this._rnctx.invokeCallback(success, [rootView.surfaceName]);
+    this._rnctx.invokeCallback(success, [rootID]);
   }
 
   /**
