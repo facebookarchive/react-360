@@ -194,6 +194,7 @@ export default class ControllerRaycaster implements Raycaster {
     if (!pose.position) {
       if (pose.orientation) {
         basicArmModel(origin, (pose.orientation: any), gamepad.hand);
+        this._mesh.position.set(origin[0], origin[1], origin[2]);
         return true;
       }
       return false;
@@ -203,7 +204,7 @@ export default class ControllerRaycaster implements Raycaster {
     origin[1] = position[1];
     origin[2] = position[2];
 
-    this._mesh.position.set(position[0], position[1], position[2]);
+    this._mesh.position.set(origin[0], origin[1], origin[2]);
     return true;
   }
 
