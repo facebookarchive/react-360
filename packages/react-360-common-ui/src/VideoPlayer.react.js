@@ -205,7 +205,7 @@ class VideoPlayer extends React.PureComponent<Props, State> {
       } else {
         Environment.setScreen(
           this.props.screenId,
-          this._player._player,
+          null,
           this.state.surface,
           x,
           y,
@@ -222,7 +222,7 @@ class VideoPlayer extends React.PureComponent<Props, State> {
         onEnter={showCallback}
         onClick={showCallback}
         onLayout={this._setVideoBound}
-        style={[{justifyContent: 'flex-end', alignItems: 'center'}, this.props.style]}>
+        style={[{justifyContent: 'flex-end', alignItems: 'center', opacity: this.props.visible ? 1.0 : 0.0}, this.props.style]}>
         {this.props.showControl && (
           <VideoControl
             onEnter={this._onControlEnter}
