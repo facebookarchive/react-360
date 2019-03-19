@@ -91,6 +91,7 @@ class VideoPlayer extends React.PureComponent<Props, State> {
   _player: VideoPlayerInstance;
   _playingSource: ?Source;
   _controlFadeTimeout: ?TimeoutID = null;
+  _unmounted: boolean = false;
 
   constructor(props: Props) {
     super(props);
@@ -110,9 +111,11 @@ class VideoPlayer extends React.PureComponent<Props, State> {
   componentDidMount() {
     const tag = findNodeHandle(this);
     UIManager.getViewRootID(tag).then(surface => {
-      this.setState({
-        surface: surface,
-      });
+      if (!this._unmounted) {
+        this.setState({
+          surface: surface,
+        });
+      }
     });
     this._updateVideo(this.props);
     this.props.onPlayerCreated && this.props.onPlayerCreated(this._player);
@@ -120,7 +123,20 @@ class VideoPlayer extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
+    this._cancelFadeVideoControl();
+    if (this.state.surface) {
+      Environment.setScreen(
+        this.props.screenId,
+        null,
+        this.state.surface,
+        0,
+        0,
+        1,
+        1,
+      );
+    }
     this._player.destroy();
+    this._unmounted = true;
   }
 
   _cancelFadeVideoControl = () => {
@@ -183,9 +199,11 @@ class VideoPlayer extends React.PureComponent<Props, State> {
   _setVideoBound = () => {
     const tag = findNodeHandle(this);
     UIManager.measureInWindow(tag, (x, y, width, height) => {
-      this.setState({
-        videoBound: {x: x, y: y, width: width, height: height},
-      });
+      if (!this._unmounted) {
+        this.setState({
+          videoBound: {x: x, y: y, width: width, height: height},
+        });
+      }
     });
   };
 
