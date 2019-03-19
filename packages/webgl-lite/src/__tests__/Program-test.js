@@ -19,7 +19,7 @@ describe('Program', () => {
     prog.addShader('more code', 0, ['FOO', 'BAR']);
     expect(prog._shaders[1].code).toBe('#define FOO\n#define BAR\nmore code');
 
-    prog.addShader('#version es 300\n\nfancy code', 0, ['IMAGE']);
+    prog.addShader('#version 300 es\n\nfancy code', 0, ['IMAGE']);
     expect(prog._shaders[2].code).toBe('#version 300 es\n#define IMAGE\n\nfancy code');
   });
 });

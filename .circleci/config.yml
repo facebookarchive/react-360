@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  test-unit:
+    working-directory: ~/react-360
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn test
