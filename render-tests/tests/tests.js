@@ -12,4 +12,12 @@ module.exports = {
     test: () => require('./test-basicgl').default,
     capture: {x: 0, y: 0, width: 300, height: 300},
   },
+  geometry: {
+    test: () => require('./test-geometry').default,
+    capture: {x: 0, y: 0, width: 300, height: 300},
+  },
+  views: {
+    test: () => require('./test-views').default,
+    capture: {x: 0, y: 0, width: 300, height: 300},
+  },
 };

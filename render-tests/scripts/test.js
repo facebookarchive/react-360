@@ -13,6 +13,7 @@ const puppeteer = require('puppeteer');
 const tests = require('../tests/tests');
 
 const host = process.env.RENDER_TEST_HOST || 'localhost:4444';
+const rawMode = process.argv[2] || 'compare';
 
 function ensureDir(dir) {
   try {
@@ -26,24 +27,32 @@ function ensureDir(dir) {
 
 async function snapshotTest(page, test, options) {
   const url = `http://${host}/runner.html?${test}`;
-  console.log(`Running test ${test} [${url}]`);
+  console.log(`  Running test ${test} [${url}]`);
   await page.goto(url);
   if (options.capture) {
-    const dir = path.join(__dirname, '..', '__glsnapshots__');
+    const dir =
+      options.rawMode === 'update'
+        ? path.join(__dirname, '..', '__glsnapshots__')
+        : path.join(__dirname, '..', 'capture');
     ensureDir(dir);
     await page.screenshot({path: path.join(dir, test + '.png'), clip: options.capture});
   }
 }
 
 async function runTests() {
-  console.log('Launching browser...');
+  console.log('Running Visual Tests');
+  if (rawMode === 'update') {
+    console.log('  Updating snapshots on this test run');
+  }
+  console.log('  Launching browser...');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   for (const t in tests) {
-    await snapshotTest(page, t, tests[t]);
+    await snapshotTest(page, t, {...tests[t], rawMode});
   }
-  console.log('Ran all tests. Closing headless browser');
+  console.log('  Closing headless browser');
   await browser.close();
+  console.log('Ran all tests.');
 }
 
 runTests();

@@ -21,6 +21,7 @@ module.exports = {
   resolve: {
     alias: {
       'webgl-lite': path.resolve(PACKAGES_DIR, 'webgl-lite'),
+      'webgl-ui': path.resolve(PACKAGES_DIR, 'webgl-ui'),
     },
   },
 };
