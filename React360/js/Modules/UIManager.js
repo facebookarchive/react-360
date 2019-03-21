@@ -761,23 +761,17 @@ export default class UIManager extends Module {
    */
   measureInWindow(reactTag: number, callback: number) {
     let view = this._views[String(reactTag)];
-    if (!view) {
+    if (!view || !view.view) {
       this._rnctx.invokeCallback(callback, []);
       return;
     }
-    let x = 0;
-    let y = 0;
-    const w = view.YGNode.getComputedWidth();
-    const h = view.YGNode.getComputedHeight();
-    while (view && !view.isRoot) {
-      x +=
-        view.YGNode.getComputedLeft() -
-        view.YGNode.getComputedWidth() * view.style.layoutOrigin[0];
-      y +=
-        view.YGNode.getComputedTop() -
-        view.YGNode.getComputedHeight() * view.style.layoutOrigin[1];
-      view = view.getParent();
-    }
+    const uiView = view.view;
+    const bounds = new THREE.Box3();
+    bounds.setFromObject(uiView);
+    const x = bounds.min.x;
+    const y = bounds.min.y;
+    const w = bounds.max.x - bounds.min.x;
+    const h = bounds.max.y - bounds.min.y;
     this._rnctx.invokeCallback(callback, [x, y, w, h]);
   }
 
