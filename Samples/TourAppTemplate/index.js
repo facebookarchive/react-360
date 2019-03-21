@@ -13,6 +13,16 @@ import TourNavButton from 'TourNavButton.react';
 import TourInfoButton from 'TourInfoButton.react';
 import TourLoadingSpinner from 'TourLoadingSpinner.react';
 import TourHotspot from 'TourHotspot.react';
+import TourCylinderHotspot from 'TourCylinderHotspot.react';
+
+const Hotspot = (props) => {
+  const {useDynamicSurface, mainSurfaceWidth, ...otherProps} = props;
+  if (useDynamicSurface) {
+    return <TourHotspot {...otherProps} />
+  } else {
+    return <TourCylinderHotspot {...otherProps} mainSurfaceWidth={mainSurfaceWidth} />
+  }
+};
 
 const AudioModule = NativeModules.AudioModule;
 const ENV_TRANSITION_TIME = 1000;
@@ -57,6 +67,7 @@ class TourAppTemplate extends React.Component {
       return null;
     }
 
+    const {useDynamicSurface, mainSurfaceWidth, mainSurfaceHeight} = this.props;
     const {locationId, nextLocationId, data} = this.state;
     const photoData = (locationId && data.photos[locationId]) || null;
     const tooltips = (photoData && photoData.tooltips) || null;
@@ -99,9 +110,17 @@ class TourAppTemplate extends React.Component {
     }
 
     return (
-    <View>
+    <View style={{
+      width: mainSurfaceWidth,
+      height: mainSurfaceHeight,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
       {tooltips &&
         tooltips.map((tooltip, index) => {
+          let rotationY = tooltip.rotationY + rotation;
+          rotationY = (rotationY + 360) % 360; 
+          const showOnLeft = !useDynamicSurface && rotationY > 180 && rotationY < 210;
           // Iterate through items related to this location, creating either
           // info buttons, which show tooltip on hover, or nav buttons, which
           // change the current location in the tour.
@@ -109,23 +128,28 @@ class TourAppTemplate extends React.Component {
             return (
               // Rotate the hotspot surface to the right hotspot position
               // We centered the view so the hotspot icon is on the right position
-              <TourHotspot
+              <Hotspot
                 key={index}
-                rotationY={tooltip.rotationY + rotation}>
+                useDynamicSurface={useDynamicSurface}
+                mainSurfaceWidth={mainSurfaceWidth}
+                rotationY={rotationY}>
                 <TourInfoButton
                   onEnterSound={asset(soundEffects.navButton.onEnter.uri)}
+                  showOnLeft={showOnLeft}
                   source={asset('info_icon.png')}
                   tooltip={tooltip}
                 />
-              </TourHotspot>
+              </Hotspot>
             );
           }
           return (
             // Rotate the hotspot surface to the right hotspot position
             // We centered the view so the hotspot icon is on the right position
-            <TourHotspot
+            <Hotspot
               key={tooltip.linkedPhotoId}
-              rotationY={tooltip.rotationY + rotation}>
+              useDynamicSurface={useDynamicSurface}
+              mainSurfaceWidth={mainSurfaceWidth}
+              rotationY={rotationY}>
               <TourNavButton
                 isLoading={isLoading}
                 onClickSound={asset(soundEffects.navButton.onClick.uri)}
@@ -138,10 +162,11 @@ class TourAppTemplate extends React.Component {
                     nextLocationId: tooltip.linkedPhotoId,
                   });
                 }}
+                showOnLeft={showOnLeft}
                 source={asset(data.nav_icon)}
                 textLabel={tooltip.text}
               />
-            </TourHotspot>
+            </Hotspot>
           );
         })}
       </View>

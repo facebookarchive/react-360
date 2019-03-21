@@ -29,6 +29,7 @@ class TourNavButton extends React.Component {
     onInput: null,
     scaleFactor: 1.5,
     textLabel: 'go',
+    showOnLeft: false,
   };
 
   constructor(props) {
@@ -106,6 +107,7 @@ class TourNavButton extends React.Component {
       onLongClickSound,
       isLoading,
       source,
+      showOnLeft,
       textLabel,
     } = this.props;
     const outerWidth = size * scaleFactor;
@@ -168,8 +170,8 @@ class TourNavButton extends React.Component {
                 fontSize: size * 0.7, 
                 height: size, 
                 top: (outerWidth - size) / 2,
-                left: outerWidth + 10,
-              }
+              },
+              showOnLeft ? {right: outerWidth + 10} : {left: outerWidth + 10},
             ]}>
             {textLabel}
           </Text>}

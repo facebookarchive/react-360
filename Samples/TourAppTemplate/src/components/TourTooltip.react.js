@@ -72,7 +72,7 @@ class PanelImageTooltip extends React.Component {
 
     return (
       <View
-        style={styles.panelTooltipContainer}>
+        style={styles.panelTooltipContainer, {width: tooltip.width}}>
         <Image
           style={[
             styles.panelTooltipImage,

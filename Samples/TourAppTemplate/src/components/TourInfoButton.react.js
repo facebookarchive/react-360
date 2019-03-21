@@ -18,6 +18,7 @@ class TourInfoButton extends React.Component {
     height: 60,
     onInput: null,
     width: 60,
+    showOnLeft: false,
   };
 
   constructor(props) {
@@ -54,6 +55,7 @@ class TourInfoButton extends React.Component {
       onExitSound,
       onLongClickSound,
       source,
+      showOnLeft,
       tooltip,
     } = this.props;
     return (
@@ -70,6 +72,7 @@ class TourInfoButton extends React.Component {
             height: height,
             width: width,
             flexDirection: 'row',
+            alignItems: 'center',
           }}
           onEnter={this._fadeIn}
           source={source}>
@@ -77,12 +80,16 @@ class TourInfoButton extends React.Component {
             // Use animation on opacity to fade in/out the tooltip
             // When opacity is 0, the tooltip is invisible, and 
             // also not interactable.
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              opacity: this.state.opacityAnim,
-              paddingLeft: 80,
-            }}
+            style={[
+              {
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                opacity: this.state.opacityAnim,
+                position: 'absolute',
+              },
+              showOnLeft ? {right: 80} : {left: 80},
+            ]}
             onEnter={this.state.hasFocus ? this._fadeIn : undefined}>
             <TourTooltip tooltip={tooltip} visible={this.state.hasFocus} />
           </Animated.View>
