@@ -32,11 +32,11 @@ function sizeof(gl: WebGLRenderingContext, type: number) {
 }
 
 type AttributeInfo = {
-  length: number,
   loc: number,
   normalize: boolean,
   offset: number,
   size: number,
+  stride: number,
   type: number,
 };
 
@@ -49,6 +49,7 @@ type Options = {
 export type AttributeOptions = {
   normalize?: boolean,
   offset?: number,
+  stride?: number,
 };
 
 /**
@@ -103,12 +104,12 @@ export default class Geometry {
     const {size, type} = getAttributeSizeAndType(gl, attr, normalize);
     const length = sizeof(gl, type);
     this._attributes.push({
-      length,
       loc: attr.location,
       size,
       type,
       normalize: normalize,
       offset: options.offset != null ? options.offset : this._totalByteLength,
+      stride: options.stride != null ? options.stride : length * size,
     });
     this._totalByteLength += length * size;
   }
@@ -183,7 +184,7 @@ export default class Geometry {
         attr.size,
         attr.type,
         !!attr.normalize,
-        this._interleaved ? this._totalByteLength : attr.length * attr.size,
+        this._interleaved ? this._totalByteLength : attr.stride,
         attr.offset
       );
     }
@@ -201,7 +202,7 @@ export default class Geometry {
    * current GL context. We only support drawing triangles.
    */
   draw() {
-    if (this._dataLength % this._totalByteLength !== 0) {
+    if (this._interleaved && this._dataLength % this._totalByteLength !== 0) {
       console.warn(
         'Geometry buffer length is not perfectly divisible by stride. This can cause unintended errors'
       );
