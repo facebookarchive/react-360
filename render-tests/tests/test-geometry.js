@@ -46,12 +46,12 @@ export default function test(container) {
     .addShader(VERT, gl.VERTEX_SHADER)
     .addShader(FRAG, gl.FRAGMENT_SHADER)
     .compile();
-  const node = new WebGL.Node(gl, prog);
-  node.addAttribute('a_position');
-  node.addAttribute('a_color', true);
-  const buffer = new ArrayBuffer(4 * 3 * 3);
-  const floatBuffer = new Float32Array(buffer);
-  const uintBuffer = new Uint8Array(buffer);
+  const interleaved = new WebGL.Node(gl, prog);
+  interleaved.addAttribute('a_position');
+  interleaved.addAttribute('a_color', {normalize: true});
+  let buffer = new ArrayBuffer(4 * 3 * 3);
+  let floatBuffer = new Float32Array(buffer);
+  let uintBuffer = new Uint8Array(buffer);
   floatBuffer[0] = -0.5;
   floatBuffer[1] = -0.5;
   uintBuffer[8] = 255;
@@ -70,12 +70,40 @@ export default function test(container) {
   uintBuffer[33] = 0;
   uintBuffer[34] = 255;
   uintBuffer[35] = 255;
-  node.bufferData(buffer);
+  interleaved.bufferData(buffer);
+
+  const linear = new WebGL.Node(gl, prog, {interleaved: false});
+  linear.addAttribute('a_position');
+  linear.addAttribute('a_color', {normalize: true, offset: 24});
+  buffer = new ArrayBuffer(4 * 3 * 3);
+  floatBuffer = new Float32Array(buffer);
+  uintBuffer = new Uint8Array(buffer, 24);
+  floatBuffer[0] = -0.5;
+  floatBuffer[1] = -0.5;
+  floatBuffer[2] = 0.5;
+  floatBuffer[3] = -0.5;
+  floatBuffer[4] = 0.5;
+  floatBuffer[5] = 0.5;
+  uintBuffer[0] = 0;
+  uintBuffer[1] = 255;
+  uintBuffer[2] = 255;
+  uintBuffer[3] = 255;
+  uintBuffer[4] = 0;
+  uintBuffer[5] = 255;
+  uintBuffer[6] = 255;
+  uintBuffer[7] = 255;
+  uintBuffer[8] = 0;
+  uintBuffer[9] = 255;
+  uintBuffer[10] = 255;
+  uintBuffer[11] = 255;
+  linear.bufferData(buffer);
+
   prog.use();
-  node.draw();
+  interleaved.draw();
+  linear.draw();
 
   const pixelData = getPixelData(gl);
   assertColorEqual(pixelData.getPixel(10, 10), [0, 0, 0, 255]);
   assertColorEqual(pixelData.getPixel(100, 100), [255, 0, 255, 255]);
-  assertColorEqual(pixelData.getPixel(200, 200), [0, 0, 0, 255]);
+  assertColorEqual(pixelData.getPixel(200, 200), [0, 255, 255, 255]);
 }

@@ -10,10 +10,14 @@
  */
 
 import CubemapTexture from './CubemapTexture';
-import Geometry from './Geometry';
+import Geometry, {type AttributeOptions} from './Geometry';
 import type Program from './Program';
 import type RenderGroup from './RenderGroup';
 import Texture from './Texture';
+
+type Options = {
+  interleaved?: boolean,
+};
 
 /**
  * Node provides a convenient container for a geometry, a shader program, and a
@@ -28,9 +32,9 @@ export default class Node {
   uniforms: Object;
   visible: boolean;
 
-  constructor(gl: WebGLRenderingContext, program: Program) {
+  constructor(gl: WebGLRenderingContext, program: Program, options: Options = {}) {
     this._gl = gl;
-    this.geometry = new Geometry(gl);
+    this.geometry = new Geometry(gl, {interleaved: options.interleaved !== false});
     this.program = program;
     this.renderGroup = null;
     this.renderOrder = 1;
@@ -41,7 +45,7 @@ export default class Node {
   /**
    * Register an attribute with the underlying geometry
    */
-  addAttribute(attr: string, normalize: boolean = false) {
+  addAttribute(attr: string, normalize?: AttributeOptions) {
     this.geometry.addAttribute(this.program.getAttribute(attr), normalize);
     return this;
   }

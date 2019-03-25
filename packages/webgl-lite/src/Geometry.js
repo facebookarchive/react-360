@@ -32,6 +32,7 @@ function sizeof(gl: WebGLRenderingContext, type: number) {
 }
 
 type AttributeInfo = {
+  length: number,
   loc: number,
   normalize: boolean,
   offset: number,
@@ -41,9 +42,24 @@ type AttributeInfo = {
 
 type WebGLVertexArrayObject = any;
 
+type Options = {
+  interleaved?: boolean,
+};
+
+export type AttributeOptions = {
+  normalize?: boolean,
+  offset?: number,
+};
+
 /**
  * Buffered geometry primitive, designed to support interleaved and indexed
  * vertex arrays.
+ *
+ * By default, geometries are interleaved. The attributes for a single vertex
+ * come directly after each other in the data buffer. If you want to use a
+ * buffer where each attribute is by itself - ie, the buffer contains all
+ * positions, then all normals, then all colors - you can initialize a geometry
+ * with `interleaved` set to false.
  */
 export default class Geometry {
   _attributes: Array<AttributeInfo>;
@@ -54,10 +70,11 @@ export default class Geometry {
   _indexBuffer: ?IndexBuffer;
   _indexArray: ?Uint16Array;
   _indexCount: number;
-  _stride: number;
+  _interleaved: boolean;
+  _totalByteLength: number;
   _vertexArray: ?WebGLVertexArrayObject;
 
-  constructor(gl: WebGLRenderingContext) {
+  constructor(gl: WebGLRenderingContext, options: Options = {}) {
     this._attributes = [];
     this._buffer = new VertexBuffer(gl);
     this._data = null;
@@ -65,8 +82,9 @@ export default class Geometry {
     this._indexBuffer = null;
     this._indexArray = null;
     this._indexCount = 0;
+    this._interleaved = options.interleaved !== false;
     this._gl = gl;
-    this._stride = 0;
+    this._totalByteLength = 0;
   }
 
   /**
@@ -79,18 +97,20 @@ export default class Geometry {
    * to automatically calculate the stride and offset for each attribute,
    * so that you don't need to compute that when binding to the attribute.
    */
-  addAttribute(attr: Attribute, normalize: boolean = false) {
+  addAttribute(attr: Attribute, options: AttributeOptions = {}) {
     const gl = this._gl;
+    const normalize = !!options.normalize;
     const {size, type} = getAttributeSizeAndType(gl, attr, normalize);
     const length = sizeof(gl, type);
     this._attributes.push({
+      length,
       loc: attr.location,
       size,
       type,
-      normalize,
-      offset: this._stride,
+      normalize: normalize,
+      offset: options.offset != null ? options.offset : this._totalByteLength,
     });
-    this._stride += length * size;
+    this._totalByteLength += length * size;
   }
 
   /**
@@ -163,7 +183,7 @@ export default class Geometry {
         attr.size,
         attr.type,
         !!attr.normalize,
-        this._stride,
+        this._interleaved ? this._totalByteLength : attr.length * attr.size,
         attr.offset
       );
     }
@@ -181,7 +201,7 @@ export default class Geometry {
    * current GL context. We only support drawing triangles.
    */
   draw() {
-    if (this._dataLength % this._stride !== 0) {
+    if (this._dataLength % this._totalByteLength !== 0) {
       console.warn(
         'Geometry buffer length is not perfectly divisible by stride. This can cause unintended errors'
       );
@@ -194,7 +214,7 @@ export default class Geometry {
     if (this._indexArray) {
       gl.drawElements(gl.TRIANGLES, this._indexCount, gl.UNSIGNED_SHORT, 0);
     } else {
-      const count = this._dataLength / this._stride;
+      const count = this._dataLength / this._totalByteLength;
       gl.drawArrays(gl.TRIANGLES, 0, count);
     }
     if (this._vertexArray) {
