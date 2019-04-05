@@ -49,8 +49,8 @@ import {Location} from 'react-360-web';
 const location = new Location([0, -1, -2]);
 
 // Render to this location
-vr.renderToLocation(
-  vr.createRoot('My3DView'),
+r360.renderToLocation(
+  r360.createRoot('My3DView'),
   location,
 );
 ```
