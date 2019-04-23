@@ -543,13 +543,20 @@ export default class ShadowView {
       return;
     }
     let initial = 0;
-    switch (name) {
-      case 'height':
-        initial = this._layoutHeight;
-        break;
-      case 'width':
-        initial = this._layoutWidth;
-        break;
+    if (this._transitions[name]) {
+      if (this._transitions[name].getTransition().equals(transition)) {
+        return;
+      }
+      initial = this._transitions[name].getValue();
+    } else {
+      switch (name) {
+        case 'height':
+          initial = this._layoutHeight;
+          break;
+        case 'width':
+          initial = this._layoutWidth;
+          break;
+      }
     }
     const value = new TransitionValue(transition, initial);
     this._transitions[name] = value;

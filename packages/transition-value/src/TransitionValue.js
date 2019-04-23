@@ -44,6 +44,10 @@ export default class TransitionValue {
     this._transitionStart = 0;
   }
 
+  getTransition(): Transition {
+    return this._transition;
+  }
+
   setTransition(t: Transition) {
     this._transition = t;
     this._transitionStart = 0;

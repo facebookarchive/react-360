@@ -39,4 +39,13 @@ export default class Transition {
     }
     return this._fn((ms - this._delay) / this._duration);
   }
+
+  equals(other: ?Transition) {
+    if (!other) {
+      return false;
+    }
+    return (
+      other._delay === this._delay && other._duration === this._duration && other._fn === this._fn
+    );
+  }
 }

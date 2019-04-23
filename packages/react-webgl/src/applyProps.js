@@ -42,6 +42,19 @@ export default function applyProps(view, oldProps, newProps, dispatchers) {
       }
       continue;
     }
+    if (p === 'transition') {
+      const oldTransitions = oldProps ? oldProps.transition : null;
+      const transitions = newProps[p];
+      for (const old in oldTransitions) {
+        if (!(old in transitions)) {
+          view.setTransition(old, null);
+        }
+      }
+      for (const name in transitions) {
+        view.setTransition(name, transitions[name]);
+      }
+      continue;
+    }
     if (p in EVENTS) {
       view.clearEventListeners(EVENTS[p]);
       view.addEventListener(EVENTS[p], newProps[p]);
