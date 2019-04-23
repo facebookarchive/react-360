@@ -29,8 +29,15 @@ export default class TransitionValue {
   }
 
   isActive(): boolean {
+    return this._transitionStart > 0;
+  }
+
+  isComplete(): boolean {
+    if (this._transitionStart === 0) {
+      return true;
+    }
     const totalTime = this._transition.getDelay() + this._transition.getDuration();
-    return totalTime > Date.now() - this._transitionStart;
+    return totalTime < Date.now() - this._transitionStart;
   }
 
   cancelTransition() {
@@ -55,6 +62,13 @@ export default class TransitionValue {
   }
 
   getValue(): number {
+    if (!this.isActive()) {
+      return this._finalValue;
+    }
+    if (this.isComplete()) {
+      this._transitionStart = 0;
+      return this._finalValue;
+    }
     const delta = Date.now() - this._transitionStart;
     const intervalValue = this._transition.getValueAtTime(delta);
     const start = this._currentValue;

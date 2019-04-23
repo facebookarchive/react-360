@@ -107,6 +107,7 @@ export default class ShadowViewWebGL<T: GLViewCompatible> extends ShadowView {
   }
 
   presentLayout() {
+    this.evaluateActiveTransitions();
     let childrenNeedUpdate = false;
     if (this.YGNode.getHasNewLayout()) {
       this.YGNode.setHasNewLayout(false);

@@ -13,6 +13,7 @@
 
 import * as Flexbox from '../vendor/Yoga.bundle';
 import type {Transform} from '../Math';
+import {TransitionValue, type Transition} from 'transition-value';
 
 export type Dispatcher = {[prop: string]: (any) => mixed};
 
@@ -61,10 +62,18 @@ const MAP_CSS_WRAP = {
   wrap: Flexbox.WRAP_WRAP,
 };
 
+const LAYOUT_TRANSITIONS = {
+  height: true,
+  width: true,
+};
+
 export default class ShadowView {
   _eventHandlers: {[event: string]: Array<any>};
+  _layoutHeight: number;
+  _layoutWidth: number;
   _transform: Transform;
   _transformDirty: boolean;
+  _transitions: {[style: string]: TransitionValue};
   children: Array<ShadowView>;
   parent: ?ShadowView;
   rootTag: number;
@@ -77,8 +86,11 @@ export default class ShadowView {
     this.rootTag = 0;
     this.tag = 0;
     this._eventHandlers = {};
+    this._layoutWidth = 0;
+    this._layoutHeight = 0;
     this._transform = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     this._transformDirty = false;
+    this._transitions = {};
     this.YGNode = Flexbox.Node.create();
   }
 
@@ -194,6 +206,22 @@ export default class ShadowView {
 
   setTransformDirty(flag: boolean) {
     this._transformDirty = flag;
+  }
+
+  evaluateActiveTransitions() {
+    for (const t in this._transitions) {
+      const value = this._transitions[t];
+      if (!value.isActive()) {
+        continue;
+      }
+      if (t in LAYOUT_TRANSITIONS) {
+        // $FlowFixMe - Cannot safely index class
+        const setter = this['__setLayout_' + t];
+        if (setter) {
+          setter.call(this, value.getValue());
+        }
+      }
+    }
   }
 
   _setBorderWidth(edge: number, value: string | number) {
@@ -339,8 +367,17 @@ export default class ShadowView {
     if (typeof value === 'string') {
       this.YGNode.setHeightPercent(parseFloat(value));
     } else {
-      this.YGNode.setHeight(value);
+      if (this._transitions.height) {
+        this._transitions.height.setValue(value);
+      } else {
+        this._layoutHeight = value;
+        this.__setLayout_height(value);
+      }
     }
+  }
+
+  __setLayout_height(value: number) {
+    this.YGNode.setHeight(value);
   }
 
   __setStyle_justifyContent(value: $Keys<typeof MAP_CSS_JUSTIFY>): void {
@@ -487,8 +524,35 @@ export default class ShadowView {
     if (typeof value === 'string') {
       this.YGNode.setWidthPercent(parseFloat(value));
     } else {
-      this.YGNode.setWidth(value);
+      if (this._transitions.width) {
+        this._transitions.width.setValue(value);
+      } else {
+        this._layoutWidth = value;
+        this.__setLayout_width(value);
+      }
     }
+  }
+
+  __setLayout_width(value: number) {
+    this.YGNode.setWidth(value);
+  }
+
+  setTransition(name: string, transition: Transition) {
+    if (transition == null) {
+      delete this._transitions[name];
+      return;
+    }
+    let initial = 0;
+    switch (name) {
+      case 'height':
+        initial = this._layoutHeight;
+        break;
+      case 'width':
+        initial = this._layoutWidth;
+        break;
+    }
+    const value = new TransitionValue(transition, initial);
+    this._transitions[name] = value;
   }
 
   setNativeProps(props: Object) {
