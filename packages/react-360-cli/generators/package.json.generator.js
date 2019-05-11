@@ -18,6 +18,7 @@ module.exports = config => ({
   "scripts": {
     "start": "node node_modules/react-360/scripts/packager.js",
     "bundle": "node node_modules/react-360/scripts/bundle.js",
+    "build": "node node_modules/react-360/scripts/bundle.js && node node_modules/react-360/scripts/copy-assets.js",
     "open": "node -e \\"require('xopen')('http://localhost:8081/index.html')\\"",
     "devtools": "react-devtools",
     "test": "jest"
