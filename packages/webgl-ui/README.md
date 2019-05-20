@@ -125,7 +125,7 @@ CSS counterparts. Flexbox layout, borders, corner radii, font size, image resize
 To set the style 'foo' on a view, you would call `view.__setStyle__foo(newValue)`.
 
 > The `__setStyle_X` format may look odd, but it's designed to be
-> unique and avoid conflict with
+> unique and avoid conflict with any other member method names
 
 We provide a utility function for setting a bunch of styles at once:
 

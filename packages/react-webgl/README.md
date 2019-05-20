@@ -9,6 +9,9 @@ React WebGL is built on top of `webgl-ui`, a set of primitives that provide
 flexible configuration and layout of 2D interfaces in WebGL. It contains its
 own shaders and transformation logic, all drawn using a lightweight WebGL library.
 
+React WebGL takes advantage of the reusable React architecture introduced in
+React 16. With it, components can hook directly
+
 ## Core Components
 
 React WebGL comes with three core primitives. While this may not seem like much,
@@ -16,11 +19,11 @@ it's enough to create a wide range of interfaces and applications. They are
 nearly identical to the React Primitives first established by React Native:
 `View`, `Text`, and `Image`.
 
-### View / Quad
+### View
 
-View (or Quad) is a style-able rectangle that can be used for both layout and
-rendering of boxes and borders. It supports Flexbox layout, and most CSS styling
-properties, passed directly as props.
+View is a style-able rectangle that can be used for both layout and rendering of
+boxes and borders. It supports Flexbox layout, and most CSS styling properties,
+passed directly as props.
 
 ```js
 import {View} from 'react-webgl';
