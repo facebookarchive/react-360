@@ -39,7 +39,7 @@ void main() {
 `;
 
 export const FRAG_SHADER = `
-precision mediump float;
+precision highp float;
 
 uniform float u_stroke;
 uniform vec4 u_bgcolor;
@@ -76,7 +76,9 @@ void main() {
   vec4 grad_color = mix(u_gradientstart, u_gradientend, grad_distance + 0.5);
   float alpha = clamp(sample.a + grad_color.a, 0., 1.);
   // Blend the gradient color into the underlying bg color or image
-  sample.rgb = mix(sample.rgb, grad_color.rgb, grad_color.a / alpha);
+  if (alpha > 0.0) {
+    sample.rgb = mix(sample.rgb, grad_color.rgb, grad_color.a / alpha);
+  }
   sample.a = alpha;
 
   vec4 color = mix(sample, u_bordercolor, clamp(dist + u_stroke, 0., 1.));
