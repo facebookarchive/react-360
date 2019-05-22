@@ -8,7 +8,7 @@
  *
  * @flow
  */
-import * as THREE from 'three';
+
 import {
   quaternionMultiply,
   quaternionPremultiply,
@@ -16,17 +16,15 @@ import {
   setQuatFromXRotation,
   setQuatFromYRotation,
   setQuatFromZRotation,
-} from '../../Renderer/Math';
+} from '../../Utils/Math';
 import {type Quaternion, type Vec3} from '../Types';
 import {type CameraController} from './Types';
-import MousePanCameraController from './MousePanCameraController';
 
-const DEFAULT_FOV = Math.PI / 3;
+const DEFAULT_FOV = Math.PI / 6;
 const DEG_TO_RAD = Math.PI / 180;
 const HALF_PI = Math.PI / 2;
 const TWO_PI = Math.PI * 2;
 const SCREEN_ROTATION = [-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)];
-
 
 type DeviceOrientationEvent = {
   absolute: boolean,
@@ -36,8 +34,7 @@ type DeviceOrientationEvent = {
 };
 
 function getScreenOrientation(): number {
-  const orientation =
-    screen.orientation || screen.mozOrientation || screen.msOrientation || {};
+  const orientation = screen.orientation || screen.mozOrientation || screen.msOrientation || {};
   const angle = orientation.angle || window.orientation || 0;
   return ((angle: any): number) * DEG_TO_RAD;
 }
@@ -57,12 +54,9 @@ function isSupported() {
  * Additionally, it listens to touches, and updates an orientation offset
  * based on those touches.
  */
-export default class DeviceOrientationCameraController
-  implements CameraController {
+export default class DeviceOrientationCameraController implements CameraController {
   _alpha: null | number;
   _beta: null | number;
-  _initAlpha: null | number;
-  _initBeta: null | number;
   _dragging: boolean;
   _enabled: boolean;
   _frame: HTMLElement;
@@ -118,25 +112,13 @@ export default class DeviceOrientationCameraController
   }
 
   _onDeviceOrientation(event: DeviceOrientationEvent) {
-    // const e = event.rotationRate
-    if (this._dragging) {
-      return;
-    }
     const alpha = event.alpha * DEG_TO_RAD;
     const beta = event.beta * DEG_TO_RAD;
     const gamma = event.gamma * DEG_TO_RAD;
-    // const offsets = MousePanCameraController.getOffset();
-    // this._offsetYaw = offsets.offsetPitch;
-    // this._offsetPitch = offsets.offsetYaw;
     if (this._offsetYawQuat == null) {
       const alphaOffset = getScreenOrientation() - alpha;
       this._offsetYawQuat = [0, 0, 0, 1];
       this._offsetYaw = alphaOffset;
-    }
-    if (!this._initAlpha) {
-      this._initAlpha = alpha;
-      this._initBeta = beta;
-      this._initGamma= gamma;
     }
     this._alpha = alpha;
     this._beta = beta;
@@ -154,7 +136,7 @@ export default class DeviceOrientationCameraController
   }
 
   _onTouchMove(e: TouchEvent) {
-    if (!this._enabled) {
+    if (!this._enabled || !this._dragging) {
       return;
     }
     const x = e.changedTouches[0].clientX;
@@ -169,7 +151,7 @@ export default class DeviceOrientationCameraController
     if (Math.abs(dx) >= Math.abs(dy)) {
       // Horizontal pan
       const devicePixelRatio = window.devicePixelRatio || 2;
-      this._offsetYaw += dx / width * this._verticalFov * aspect * devicePixelRatio * 2;
+      this._offsetYaw += (dx / width) * this._verticalFov * devicePixelRatio * aspect * 2;
       if (this._offsetYaw > TWO_PI) {
         this._offsetYaw -= TWO_PI;
       } else if (this._offsetYaw < 0) {
@@ -177,7 +159,7 @@ export default class DeviceOrientationCameraController
       }
     } else {
       // Vertical pan
-      this._offsetPitch += dy / height * this._verticalFov * 2;
+      this._offsetPitch += (dy / height) * this._verticalFov * 2;
       if (this._offsetPitch > HALF_PI) {
         this._offsetPitch = HALF_PI;
       } else if (this._offsetPitch < -HALF_PI) {
@@ -213,7 +195,6 @@ export default class DeviceOrientationCameraController
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
-
     if (!this._enabled) {
       return false;
     }
@@ -221,6 +202,7 @@ export default class DeviceOrientationCameraController
     const alpha = this._alpha;
     const beta = this._beta;
     const gamma = this._gamma;
+
     if (alpha == null || beta == null || gamma == null) {
       // No device orientation event has been received yet
       return false;
@@ -235,9 +217,6 @@ export default class DeviceOrientationCameraController
       quaternionPremultiply(rotation, yawQuat);
     }
     quaternionMultiply(rotation, this._screenOrientation);
-    // this._alpha = null;
-    // this._beta = null;
-    // this._gamma = null;
     return true;
   }
 }

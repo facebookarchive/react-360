@@ -14,10 +14,11 @@ import { type Quaternion, type Ray, type Vec3 } from '../Controls/Types';
 import createRemoteImageManager from '../Utils/createRemoteImageManager';
 import type ResourceManager from '../Utils/ResourceManager';
 import Cursor from './Cursor';
-import Environment, { type PanoOptions } from './Environment/Environment';
+import Environment, { type PanoOptions, type UV } from './Environment/Environment';
 import Surface from './Surface';
 import type { VideoPlayer } from './Video/Types';
 import VideoPlayerManager from './Video/VideoPlayerManager';
+
 
 const LEFT = 'left';
 const RIGHT = 'right';
@@ -86,6 +87,10 @@ export default class Compositor {
 
   setCursorVisibility(vis: string) {
     this._cursorVisibility = vis;
+  }
+
+  setUV(uv: UV) {
+    this._environment.setUV(uv);
   }
 
   setBackground(src: string, options: PanoOptions = {}): Promise<void> {
@@ -198,6 +203,10 @@ export default class Compositor {
     const cameraToCursorY = origin[1] + direction[1] * depth;
     const cameraToCursorZ = origin[2] + direction[2] * depth;
     this._cursor.setPosition(cameraToCursorX, cameraToCursorY, cameraToCursorZ);
+  }
+
+  dispose() {
+    this._environment.dispose();
   }
 
   render(position: Vec3, quat: Quaternion, renderer) {

@@ -22,6 +22,20 @@ export type PanoOptions = {
   transition?: number,
 };
 
+export type UV = {
+  phiStart: number,
+  phiLength: number,
+  thetaStart: number,
+  thetaLength: number,
+};
+
+const DEFAULT_SPHERE_GEOMETRY = {
+  radius: 1000,
+  widthSegs: 50,
+  heightSegs: 50,
+}
+
+
 /**
  * Promise-ify image loading, used as a backup when no TextureManager is used
  */
@@ -59,30 +73,42 @@ export default class Environment {
   constructor(rm: ?ResourceManager<Image>, videoPlayers: ?VideoPlayerManager, options: object) {
     this._resourceManager = rm;
     this._videoPlayers = videoPlayers;
-    this._options = options;
+    this._options = Object.assign(DEFAULT_SPHERE_GEOMETRY, options);
     // Objects for panorama management
     if (options.uv) {
 
       const {phiStart, phiLength, thetaStart, thetaLength} = options.uv;
-      this._panoGeomSphere = new THREE.SphereGeometry(1000, 200, 200, phiStart, phiLength, thetaStart, thetaLength);
-      this._panoGeomHemisphere = new THREE.SphereGeometry(
-        1000,
-        200,
-        200,
+      this._panoGeomSphere = new THREE.SphereGeometry(
+        this._options.radius,
+        this._options.widthSegs,
+        this._options.heightSegs,
         phiStart,
         phiLength,
         thetaStart,
-        thetaLength,
+        thetaLength
+      );
+      this._panoGeomHemisphere = new THREE.SphereGeometry(
+        this._options.radius,
+        this._options.widthSegs,
+        this._options.heightSegs,
+        phiStart,
+        phiLength,
+        thetaStart,
+        thetaLength
       );
     } else {
       this._panoGeomHemisphere = new THREE.SphereGeometry(
-        1000,
-        200,
-        200,
+        this._options.radius,
+        this._options.widthSegs,
+        this._options.heightSegs,
         0,
         Math.PI,
       );
-      this._panoGeomSphere = new THREE.SphereGeometry(1000, 200, 200);
+      this._panoGeomSphere = new THREE.SphereGeometry(
+        this._options.radius,
+        this._options.widthSegs,
+        this._options.heightSegs,
+      );
     }
     this._panoMaterial = new StereoBasicTextureMaterial({
       color: '#ffffff',
@@ -97,18 +123,18 @@ export default class Environment {
     this._panoMesh = new THREE.Mesh(this._panoGeomSphere, this._panoMaterial);
     this._panoMesh.visible = false;
     this._panoMesh.scale.set(-1, 1, 1);
-    if (options.uv) {
-      let hfov = options.fov.hfov;
-      const vfov = options.fov.vfov;
-      if (options.fov.vfov < 180 ) {
-        if (hfov === 360) {
-          hfov = 180;
-        }
-        if (vfov !== 90) {
-          // this._panoMesh.scale.set(-1, vfov / hfov, 1);
-        }
-      }
-    }
+    // if (options.uv) {
+    //   let hfov = options.fov.hfov;
+    //   const vfov = options.fov.vfov;
+    //   if (options.fov.vfov < 180) {
+    //     if (hfov === 360) {
+    //       hfov = 180;
+    //     }
+    //     if (vfov !== 90) {
+    //       // this._panoMesh.scale.set(-1, vfov / hfov, 1);
+    //     }
+    //   }
+    // }
     this._panoMesh.rotation.y = -Math.PI / 2;
     this._panoEyeOffsets = [[0, 0, 1, 1]];
     this._panoTransition = 0;
@@ -132,16 +158,7 @@ export default class Environment {
     if (this._options.fov && this._options.fov.hfov * 1 === 180) {
       // this._panoMesh.rotation.y = Math.PI;
       this._panoMaterial.uniforms.arcOffset.value = Math.PI / 2;
-      this._panoMaterial.uniforms.arcLengthReciprocal.value =  1 / Math.PI;
-      // const {phiStart, phiLength, thetaStart, thetaLength} = this._options.uv;
-      // this._panoGeomHemisphere = new THREE.SphereGeometry(
-      //   1000,
-      //   16,
-      //   16,
-      //   0,
-      //   phiLength
-      // );
-
+      this._panoMaterial.uniforms.arcLengthReciprocal.value = 1 / Math.PI;
     }
     this._panoMesh.needsUpdate = true;
   }
@@ -177,12 +194,22 @@ export default class Environment {
   }
 
   _updateTexture(data: TextureMetadata) {
+    if (!this._textureData) {
+        this._textureData = data;
+    }
     if (data.src !== this._panoSource) {
       // a new image has started loading
       return;
     }
     this._panoMesh.visible = true;
     this._panoMaterial.map = data.tex;
+    this._setPanoSphere(data);
+    this._panoMaterial.needsUpdate = true;
+
+  }
+
+  _setPanoSphere(data) {
+
     const width = data.width;
     const height = data.height;
     if (width === height) {
@@ -229,9 +256,13 @@ export default class Environment {
         // 180 side-by-side 3D
         this._panoEyeOffsets = [[0.5, 0, 0.5, 1],[0, 0, 0.5, 1]];
         this._setPanoGeometryToHemisphere();
+      } else {
+        // assume 360 mono
+        this._panoEyeOffsets = [[0, 0, 1, 1]];
+        this._setPanoGeometryToSphere();
       }
     }
-    this._panoMaterial.needsUpdate = true;
+
   }
 
   getPanoNode(): THREE.Mesh {
@@ -265,6 +296,31 @@ export default class Environment {
     });
   }
 
+  setUV(uv: UV) {
+    const {phiStart, phiLength, thetaStart, thetaLength} = uv;
+    this._panoGeomSphere = new THREE.SphereGeometry(
+      1000,
+      200,
+      200,
+      phiStart,
+      phiLength,
+      thetaStart,
+      thetaLength
+    );
+    this._panoGeomHemisphere = new THREE.SphereGeometry(
+      1000,
+      200,
+      200,
+      phiStart,
+      phiLength,
+      thetaStart,
+      thetaLength
+    );
+    this._panoMaterial.useUV = true;
+    this._setPanoSphere(this._textureData);
+
+  }
+
   globeOnUpdate(camera) {
     const projScreenMatrix = new THREE.Matrix4();
     const modelViewMatrix = new THREE.Matrix4();
@@ -293,12 +349,16 @@ export default class Environment {
   }
 
   setVideoSource(handle: string, options: PanoOptions = {}) {
+    // console.log(options);
     const player = this._videoPlayers
       ? this._videoPlayers.getPlayer(handle)
       : null;
+    this._handel = handle;
     const loader = player
       ? player.load().then((data) => {
-        return { ...data, src: handle }
+        const mergeData = Object.assign(data, options);
+        // console.log(mergeData);
+        return { ...mergeData, src: handle }
       })
       : null;
     return this._setBackground(loader, handle, options.transition);
@@ -309,6 +369,15 @@ export default class Environment {
       this._panoMaterial.uniforms.stereoOffsetRepeat.value = this._panoEyeOffsets[1];
     } else {
       this._panoMaterial.uniforms.stereoOffsetRepeat.value = this._panoEyeOffsets[0];
+    }
+  }
+
+  dispose() {
+    try {
+      this._panoMesh.geometry.dispose();
+      this._panoMaterial.dispose();
+    } catch (err) {
+      consolee.error(err);
     }
   }
 

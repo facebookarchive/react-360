@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -85,18 +86,16 @@ export function quaternionPremultiply(b: Quaternion, a: Quaternion) {
 }
 
 export function setQuatFromEuler(quat: Quaternion, x: number, y: number, z: number) {
-  const arr = [];
   const cx = Math.cos(x / 2);
   const cy = Math.cos(y / 2);
   const cz = Math.cos(z / 2);
   const sx = Math.sin(x / 2);
   const sy = Math.sin(y / 2);
   const sz = Math.sin(z / 2);
-
-  arr[0] = sx * cy * cz + cx * sy * sz;
-  arr[1] = cx * sy * cz - sx * cy * sz;
-  arr[2] = cx * cy * sz - sx * sy * cz;
-  arr[3] = cx * cy * cz + sx * sy * sz;
+  quat[0] = sx * cy * cz + cx * sy * sz;
+  quat[1] = cx * sy * cz - sx * cy * sz;
+  quat[2] = cx * cy * sz - sx * sy * cz;
+  quat[3] = cx * cy * cz + sx * sy * sz;
 }
 
 export function setQuatFromAxisAngle(quat: Quaternion, axis: Vec3, angle: number) {

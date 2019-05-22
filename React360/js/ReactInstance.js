@@ -30,7 +30,7 @@ import ControllerRaycaster from './Controls/Raycasters/ControllerRaycaster';
 import MouseRaycaster from './Controls/Raycasters/MouseRaycaster';
 import TouchRaycaster from './Controls/Raycasters/TouchRaycaster';
 import type ReactExecutor from './Executor/ReactExecutor';
-import { isMobileBrowser } from './Utils/util';
+import { isOculus } from './Utils/util';
 // import AudioModule from './Modules/AudioModule';
 // import EnvironmentModule from './Modules/EnvironmentModule';
 // import VideoModule from './Modules/VideoModule';
@@ -136,7 +136,7 @@ export default class ReactInstance {
     this._parent = parent;
     this._rays = [];
     this._frameData = null;
-    if ('VRFrameData' in window && !isMobileBrowser()) {
+    if ('VRFrameData' in window && isOculus()) {
       this._frameData = new VRFrameData();
     }
     this._looping = false;
@@ -153,7 +153,6 @@ export default class ReactInstance {
       parent.style.width = '100%';
       parent.style.height = `100%`;
       window.addEventListener('resize', this._onResize);
-
     }
 
     this._eventLayer = document.createElement('div');
@@ -273,6 +272,7 @@ export default class ReactInstance {
     if (this._needsResize) {
       const height = this._parent.clientHeight;
       const width = this._parent.clientWidth;
+      // console.log(this._parent.clientHeight);
       // this._parent.style.height = `${height}px`;
       this.resize(width, height);
       this._needsResize = false;
@@ -296,6 +296,7 @@ export default class ReactInstance {
       this._cameraQuat[2] = 0;
       this._cameraQuat[3] = 1;
     } else if (display && display.isPresenting && frameData) {
+      // console.log(display);
       display.getFrameData(frameData);
       // Fill camera properties from frameData
       const pose = frameData.pose;
@@ -607,4 +608,5 @@ export default class ReactInstance {
       this._cameraQuat = [quat.x, quat.y, quat.z, quat.w];
     }
   }
+
 }
