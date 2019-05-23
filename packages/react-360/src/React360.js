@@ -8,7 +8,8 @@
  */
 
 import * as Animated from 'animated-react-webgl';
+import {Surface} from 'react-360-surfaces';
 import {View, Text, Image, Pressable, StyleSheet, Video} from 'react-webgl';
 import Container from './Container';
 
-export {Animated, Container, Image, Pressable, StyleSheet, Text, Video, View};
+export {Animated, Container, Image, Pressable, StyleSheet, Surface, Text, Video, View};

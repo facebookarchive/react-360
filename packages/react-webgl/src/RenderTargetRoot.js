@@ -11,10 +11,12 @@
 
 import * as WebGL from 'webgl-lite';
 import GLRoot from './GLRoot';
+import type {TextImplementation} from 'webgl-ui';
 
 export type RenderTargetRootOptions = {
-  height: number,
-  width: number,
+  height?: number,
+  width?: number,
+  text?: TextImplementation,
 };
 
 /**
@@ -23,7 +25,7 @@ export type RenderTargetRootOptions = {
  */
 export default class RenderTargetRoot extends GLRoot {
   constructor(gl: WebGLRenderingContext, options: RenderTargetRootOptions = {}) {
-    super(gl);
+    super(gl, options.text);
     const width = options.width || 0;
     const height = options.height || 0;
     this._fb = new WebGL.FrameBuffer(gl, width, height);

@@ -11,14 +11,14 @@
 
 import * as ReactWebGL from 'react-webgl';
 import * as WebGL from 'webgl-lite';
-import {Math as GLMath} from 'webgl-ui';
+import {Math as GLMath, type TextImplementation} from 'webgl-ui';
 import computeCylinderIntersection from './computeCylinderIntersection';
 import computeFlatIntersection from './computeFlatIntersection';
 import createSurfaceProgram from './createSurfaceProgram';
 import generateCylinderSurface from './generateCylinderSurface';
 import generateFlatSurface from './generateFlatSurface';
 
-type ShapeType = 'Cylinder' | 'Flat';
+export type ShapeType = 'Cylinder' | 'Flat';
 
 export const SurfaceShape = {
   Cylinder: 'Cylinder',
@@ -77,7 +77,8 @@ export default class Surface {
     gl: WebGLRenderingContext,
     width: number,
     height: number,
-    shape: ShapeType = SurfaceShape.Cylinder
+    shape: ShapeType = SurfaceShape.Cylinder,
+    text: ?TextImplementation
   ) {
     this._width = width;
     this._height = height;
@@ -91,7 +92,7 @@ export default class Surface {
     this._node = new WebGL.Node(gl, prog);
     this._node.addAttribute('a_position');
     this._node.addAttribute('a_uv');
-    this._reactRoot = new ReactWebGL.RenderTargetRoot(gl, {width, height});
+    this._reactRoot = new ReactWebGL.RenderTargetRoot(gl, {width, height, text});
     this._node.setUniform('u_texture', this._reactRoot.getFrameBuffer().getTexture());
     // prettier-ignore
     this._node.setUniform('u_transform', [
