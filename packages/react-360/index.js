@@ -7,6 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-const R360Web = require('./dist/R360Web');
+const React360 = require('./dist/React360');
 
-module.exports = R360Web;
+module.exports = React360;

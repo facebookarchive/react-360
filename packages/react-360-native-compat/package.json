@@ -1,22 +1,18 @@
 {
-  "name": "react-360-surfaces",
+  "name": "react-360-native-compat",
   "version": "0.3.0",
-  "description": "Surfaces for drawing and interacting with React WebGL contexts in 3D space",
+  "description": "Compatibility layer for native and legacy React 360 APIs",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/react-360.git",
-    "directory": "packages/react-360-surfaces"
+    "directory": "packages/react-360-native-compat"
   },
   "bugs": "https://github.com/facebook/react-360/issues",
   "files": [
     "dist/",
     "index.js"
   ],
-  "dependencies": {
-    "react-webgl": "~0.3.0",
-    "transition-value": "~0.1.0"
-  },
   "scripts": {
     "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
   }

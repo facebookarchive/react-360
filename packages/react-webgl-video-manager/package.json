@@ -1,6 +1,6 @@
 {
   "name": "react-webgl-video-manager",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Centralized video playback controls for applications built on top of React WebGL",
   "license": "BSD-3-Clause",
   "repository": {

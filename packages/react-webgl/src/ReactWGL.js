@@ -30,8 +30,8 @@ export function render(element, container, callback) {
 
 Renderer.injectIntoDevTools({
   findFiberByHostInstance: Renderer.findHostInstance,
-  bundleType: __DEV__ ? 1 : 0,
-  version: '16.5.2',
+  bundleType: self.__DEV__ ? 1 : 0,
+  version: '16.8.6',
   rendererPackageName: 'react-webgl',
 });
 

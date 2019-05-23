@@ -1,4 +1,22 @@
 {
   "name": "react-360-controls",
-  "version": "0.0.1"
+  "version": "0.3.0",
+  "description": "Camera control and input schemes for React 360",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git",
+    "directory": "packages/react-360-controls"
+  },
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "files": [
+    "dist/",
+    "index.js"
+  ],
+  "dependencies": {
+    "webgl-ui": "~0.3.0"
+  },
+  "scripts": {
+    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
+  }
 }

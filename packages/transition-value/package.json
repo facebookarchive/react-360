@@ -1,3 +1,18 @@
 {
-  "name": "transition-value"
+  "name": "transition-value",
+  "version": "0.1.0",
+  "description": "Values that change over time with tweening functions",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git",
+    "directory": "packages/transition-value"
+  },
+  "files": [
+    "dist/",
+    "index.js"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "animated-react-webgl",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "RN Animated target for React WebGL",
   "dependencies": {
     "animated": "0.2.2"

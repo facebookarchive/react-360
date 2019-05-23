@@ -1,5 +1,5 @@
 {
-  "name": "webgl-lite",
+  "name": "webgl-lite-gltf",
   "version": "0.0.1",
   "description": "glTF v2 renderer for the webgl-lite library",
   "license": "BSD-3-Clause",
@@ -11,8 +11,7 @@
   "bugs": "https://github.com/facebook/react-360/issues",
   "files": [
     "dist/",
-    "index.js",
-    "package.json"
+    "index.js"
   ],
   "scripts": {
     "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types"

@@ -571,7 +571,7 @@ export default class ShadowView {
     for (const prop in style) {
       // $FlowFixMe - indexed property
       const setter = this[`__setStyle_${prop}`];
-      if (typeof setter === 'function') {
+      if (typeof setter !== 'function') {
         continue;
       }
       setter.call(this, style[prop]);

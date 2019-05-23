@@ -7,6 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import Container from './Container';
+const NativeCompat = require('./dist/NativeCompat');
 
-export {Container};
+module.exports = NativeCompat;

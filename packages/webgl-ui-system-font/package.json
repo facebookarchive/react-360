@@ -1,6 +1,6 @@
 {
   "name": "webgl-ui-system-font",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Font implementation for webgl-ui using system fonts",
   "license": "BSD-3-Clause",
   "repository": {

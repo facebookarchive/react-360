@@ -1,6 +1,6 @@
 {
   "name": "vr-audio",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Positional audio implementation for WebVR / WebXR applications",
   "license": "BSD-3-Clause",
   "repository": {

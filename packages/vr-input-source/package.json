@@ -1,3 +1,19 @@
 {
-  "name": "vr-input-source"
+  "name": "vr-input-source",
+  "version": "0.3.0",
+  "description": "Gamepad input collection for WebVR applications",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/react-360.git",
+    "directory": "packages/vr-input-source"
+  },
+  "bugs": "https://github.com/facebook/react-360/issues",
+  "files": [
+    "dist/",
+    "index.js"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist --plugins=@babel/plugin-transform-flow-strip-types,@babel/plugin-proposal-class-properties"
+  }
 }

@@ -9,7 +9,7 @@
  * @flow
  */
 
-import type {Environment} from 'react-360-web-exp';
+import type {Environment} from 'react-360-next';
 
 type SceneDef =
   | {type: 'black'}

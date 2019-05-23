@@ -1,17 +1,17 @@
 {
   "name": "webgl-lite",
-  "version": "0.0.2",
+  "version": "0.3.0",
   "description": "Basic resource management for WebGL and WebGL2",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/react-360.git"
+    "url": "https://github.com/facebook/react-360.git",
+    "directory": "packages/webgl-lite"
   },
   "bugs": "https://github.com/facebook/react-360/issues",
   "files": [
     "dist/",
-    "index.js",
-    "package.json"
+    "index.js"
   ],
   "scripts": {
     "build": "babel src --out-dir dist --ignore \"src/**/__tests__/*.js\" --plugins=@babel/plugin-transform-flow-strip-types"
