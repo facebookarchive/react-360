@@ -95,6 +95,13 @@ export default class Controls {
     }
   }
 
+  resetRotation(rotation) {
+    for (let i = 0; i < this.cameraControllers.length; i++) {
+      const controller = this.cameraControllers[i];
+      controller.resetRotation();
+    }
+  }
+
   fillCameraProperties(position: Vec3, rotation: Quaternion) {
     for (let i = 0; i < this.cameraControllers.length; i++) {
       const controller = this.cameraControllers[i];

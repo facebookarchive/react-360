@@ -1,8 +1,7 @@
 import isMobile from 'ismobilejs';
 
 const ocbReg = /oculus/i;
-const mobileVR = /Mobile\sVR/i
-
+const mobileVR = /Mobile\sVR/i;
 
 export function isMobileBrowser():boolean {
   const ua = navigator.userAgent.toLowerCase();
@@ -10,4 +9,9 @@ export function isMobileBrowser():boolean {
     return false;
   }
   return isMobile.any;
+}
+
+export function isOculus():boolean {
+  const ua = navigator.userAgent.toLowerCase();
+  return ocbReg.test(ua);
 }

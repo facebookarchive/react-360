@@ -44,9 +44,9 @@ export default class VRState {
       'vrdisplaypresentchange',
       this.onDisplayPresentChange,
     );
-    if (typeof navigator.getVRDisplays === 'function') {
+    if (typeof navigator.getVRDisplays === 'function' && /Oculus/i.test(navigator.userAgent)) {
       navigator.getVRDisplays().then(displays => {
-        if (displays.length) {
+        if (displays.length && displays[0].getFrameData) {
           this.setCurrentDisplay(displays[0]);
         } else if (displays.length === 0) {
           const effect = new MobileVREffect(this.glRenderer);

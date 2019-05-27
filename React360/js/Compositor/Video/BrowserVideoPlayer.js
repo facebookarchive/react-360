@@ -54,6 +54,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
     this._element.setAttribute('playsinline', 'playsinline');
     this._element.setAttribute('webkit-playsinline', 'webkit-playsinline');
     this._element.crossOrigin = 'anonymous';
+    this._errorCount = 0;
     this._texture = null;
     if (document.body) {
       document.body.appendChild(this._element);
@@ -89,6 +90,7 @@ export default class BrowserVideoPlayer implements VideoPlayer {
         tex.minFilter = THREE.LinearFilter;
         tex.magFilter = THREE.LinearFilter;
         this._texture = tex;
+        this._errorCount = 0;
         resolve({
           format: format || '2D',
           height,
@@ -97,11 +99,20 @@ export default class BrowserVideoPlayer implements VideoPlayer {
           width,
         });
       });
-      this._element.addEventListener('error', () => {
+      this._element.addEventListener('error', (err) => {
         if (closed) {
           return;
         }
-        closed = true;
+        this._errorCount +=1;
+
+        if (this._errorCount > 1) {
+          closed = true;
+        }
+        // FB 浏览器的自动播放 promise error 不用截获
+        const ua = navigator.userAgent;
+        if (/android/i.test(ua) && /FBA[NV]/.test(ua) && this._errorCount <= 1) {
+          return;
+        }
         const error = this._element.error;
         reject(new Error(error ? error.message : 'Unknown media error'));
       });

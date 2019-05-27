@@ -15,6 +15,8 @@ import {type CameraController} from './Types';
 const DEFAULT_FOV = Math.PI / 6;
 const HALF_PI = Math.PI / 2;
 
+let _offsetYaw = 0;
+
 export default class ScrollPanCameraController implements CameraController {
   _deltaYaw: number;
   _deltaPitch: number;
@@ -46,9 +48,20 @@ export default class ScrollPanCameraController implements CameraController {
     const aspect = width / height;
     const deltaX = e.deltaX;
     const deltaY = e.deltaY;
+    const devicePixelRatio = window.devicePixelRatio || 2;
     this._deltaPitch += deltaX / width * this._verticalFov * aspect;
     this._deltaYaw += deltaY / height * this._verticalFov;
-    this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
+    // this._deltaYaw = Math.max(-HALF_PI, Math.min(HALF_PI, this._deltaYaw));
+    _offsetYaw += deltaY / height * this._verticalFov * 2;
+    if (_offsetYaw > HALF_PI) {
+      this._deltaYaw = 0;
+      _offsetYaw = HALF_PI;
+    }
+    if (_offsetYaw < -HALF_PI) {
+      this._deltaYaw = 0;
+      _offsetYaw = -HALF_PI;
+    }
+
     e.preventDefault();
   }
 
@@ -58,6 +71,11 @@ export default class ScrollPanCameraController implements CameraController {
 
   disable() {
     this._enabled = false;
+  }
+
+  resetRotation() {
+    this._deltaPitch = 0;
+    this._deltaYaw = 0;
   }
 
   fillCameraProperties(position: Vec3, rotation: Quaternion): boolean {
