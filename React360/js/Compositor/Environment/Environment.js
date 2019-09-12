@@ -89,7 +89,7 @@ export default class Environment {
     this._panoMesh.scale.set(-1, 1, 1);
     this._applyPanoRotation();
     this._panoEyeOffsets = [[0, 0, 1, 1]];
-    this._panoFade = new Fader();
+    this._panoFade = new Fader(0);
     this._screens = {default: null};
   }
 
