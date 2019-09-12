@@ -211,12 +211,26 @@ export default class Environment {
     return this._panoMesh;
   }
 
+  _setBackgroundImmediate(
+      data: ?TextureMetadata,
+      duration: ?number,
+      fadeLevel: ?number,
+      rotateTransform?: Array<number>
+  ) {
+    this._setRotateTransform(rotateTransform);
+    this._panoFade.fadeImmediate({
+      targetLevel: fadeLevel,
+      duration: duration,
+    });
+    this._updateTexture(data);
+  }
+
   _setBackground(
-    loader: ?Promise<TextureMetadata>,
-    id: ?string,
-    transitionTime: ?number,
-    targetFadeLevel: ?number,
-    rotateTransform?: Array<number>
+      loader: ?Promise<TextureMetadata>,
+      id: ?string,
+      transitionTime: ?number,
+      targetFadeLevel: ?number,
+      rotateTransform?: Array<number>
   ): Promise<void> {
     this._panoSource = id;
     const duration = typeof transitionTime === 'number' ? transitionTime : 500;
@@ -231,12 +245,12 @@ export default class Environment {
             return;
           }
           this._panoLoad.then(data => {
-            this._setRotateTransform(rotateTransform);
-            this._panoFade.fadeImmediate({
-              targetLevel: fadeLevel,
-              duration: duration,
-            });
-            this._updateTexture(data);
+            this._setBackgroundImmediate(
+                data,
+                duration,
+                fadeLevel,
+                rotateTransform
+            );
           });
         },
       });
@@ -247,7 +261,12 @@ export default class Environment {
     return loader.then(data => {
       if (!duration) {
         this._panoLoad = null;
-        return this._updateTexture(data);
+        this._setBackgroundImmediate(
+            data,
+            duration,
+            fadeLevel,
+            rotateTransform
+        );
       }
       // Fade is still in progress
       return Promise.resolve();
