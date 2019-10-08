@@ -16,7 +16,7 @@
     "react-360-controls": "~0.3.0",
     "react-360-surfaces": "~0.3.0",
     "react-webgl": "~0.3.0",
-    "react-webgl-video-manageer": "~0.3.0",
+    "react-webgl-video-manager": "~0.3.0",
     "vr-audio": "~0.3.0",
     "vr-input-source": "~0.3.0",
     "vr-state": "~0.3.0",
