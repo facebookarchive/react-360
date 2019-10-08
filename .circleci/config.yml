@@ -1,10 +1,25 @@
 version: 2
 jobs:
+  build:
+    working_directory: ~/react-360
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn build
   test-unit:
-    working-directory: ~/react-360
+    working_directory: ~/react-360
     docker:
       - image: circleci/node:10
     steps:
       - checkout
       - run: yarn
       - run: yarn test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test-unit
