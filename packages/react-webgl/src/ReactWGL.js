@@ -21,7 +21,7 @@ import Video from './Video.react';
 
 const Renderer = Reconciler(HostConfig);
 
-export function render(element, container, callback) {
+export function render(element: Element, container, callback) {
   if (!container.__rootContainer) {
     container.__rootContainer = Renderer.createContainer(container, false);
   }

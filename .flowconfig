@@ -1,16 +1,11 @@
 [ignore]
-.*/Libraries/.*
 .*/docs/.*
-.*/EndToEnd/.*
-.*/jest/.*
 .*/website/.*
 .*/__tests__/.*
+<PROJECT_ROOT>/addons/.*
 <PROJECT_ROOT>/node_modules/.*
-<PROJECT_ROOT>/packages/react-webgl/.*
-<PROJECT_ROOT>/packages/react-webgl-video-manager/.*
-<PROJECT_ROOT>/packages/webgl-lite/.*
-<PROJECT_ROOT>/packages/webgl-ui/.*
-<PROJECT_ROOT>/packages/react-360-common-ui/.*
+<PROJECT_ROOT>/Libraries/.*
+<PROJECT_ROOT>/React360/.*
 
 [include]
 
@@ -21,7 +16,3 @@ defs/
 emoji=true
 
 module.ignore_non_literal_requires=true
-module.name_mapper='^ovrui$' -> '<PROJECT_ROOT>/OVRUI/src/OVRUI.js'
-
-[version]
-0.63.1

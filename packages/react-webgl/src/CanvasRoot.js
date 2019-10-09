@@ -20,10 +20,15 @@ export type CanvasRootOptions = {
 };
 
 export default class CanvasRoot extends GLRoot {
+  _canvas: HTMLCanvasElement;
+
   constructor(options: CanvasRootOptions = {}) {
     const canvas = options.canvas || document.createElement('canvas');
     canvas.style.backgroundColor = 'transparent';
     const gl = canvas.getContext('webgl', {alpha: true, premultipliedAlpha: false});
+    if (gl == null) {
+      throw new Error('Unable to construct WebGL context');
+    }
     super(gl, options.text);
     this._canvas = canvas;
 
@@ -100,17 +105,17 @@ export default class CanvasRoot extends GLRoot {
     });
   };
 
-  _onTouchStart = e => {
+  _onTouchStart = (e: TouchEvent) => {
     this._setCursorFromTouch(e, true);
     this._onPressIn();
     e.preventDefault();
   };
 
-  _onTouchMove = e => {
+  _onTouchMove = (e: TouchEvent) => {
     this._setCursorFromTouch(e, false);
   };
 
-  _onMouseMove = e => {
+  _onMouseMove = (e: MouseEvent) => {
     this.getSurface().setCursor(e.offsetX, e.offsetY);
   };
 
