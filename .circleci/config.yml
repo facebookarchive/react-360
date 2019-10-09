@@ -30,8 +30,8 @@ workflows:
     jobs:
       - build
       - test-unit:
-        requires:
-          - build
+          requires:
+            - build
       - render-tests:
-        requires:
-          - build
+          requires:
+            - build
