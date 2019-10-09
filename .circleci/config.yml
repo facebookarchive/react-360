@@ -8,12 +8,21 @@ jobs:
       - checkout
       - run: yarn
       - run: yarn build
+  flow:
+    working_directory: ~/react-360
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn flow
   test-unit:
     working_directory: ~/react-360
     docker:
       - image: circleci/node:10
     steps:
       - checkout
+      - run: yarn
       - run: yarn test
   render-tests:
     working_directory: ~/react-360/render-tests
@@ -35,3 +44,4 @@ workflows:
       - render-tests:
           requires:
             - build
+      - flow
