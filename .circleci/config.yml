@@ -23,6 +23,7 @@ jobs:
     steps:
       - checkout
       - run: yarn
+      - run: yarn build
       - run: yarn test
   render-tests:
     working_directory: ~/react-360/render-tests
