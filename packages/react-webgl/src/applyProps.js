@@ -19,7 +19,7 @@ const EVENTS = {
   onInput: 'input',
 };
 
-export default function applyProps(view, oldProps, newProps, dispatchers) {
+export default function applyProps(view: any, oldProps: Object, newProps: Object, dispatchers: {[string]: (any, any) => void}) {
   for (const p in newProps) {
     if (p === 'children') {
       continue;

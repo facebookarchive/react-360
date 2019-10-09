@@ -11,11 +11,13 @@
     "@babel/plugin-transform-flow-strip-types": "7.2.3",
     "@babel/plugin-transform-modules-commonjs": "7.2.0",
     "@babel/preset-react": "7.0.0",
+    "flow-bin": "^0.109.0",
     "jest": "^24.9.0",
     "lerna": "3.16.4"
   },
   "scripts": {
     "build": "lerna run build",
+    "flow": "flow",
     "test": "jest"
   }
 }

@@ -94,6 +94,10 @@ export default class Container {
     this._canvas = document.createElement('canvas');
     this._canvas.style.backgroundColor = '#000000';
     const gl = this._canvas.getContext('webgl', {xrCompatible: true, alpha: false});
+    if (gl == null) {
+      throw new Error('Unable to construct WebGL context');
+    }
+    // $FlowFixMe: Flow thinks gl might be a canvas 2d context?
     this._gl = gl;
     this._sharedTextureManager = new GLUI.TextureManager(gl);
     this.group = new WebGL.RenderGroup(gl);

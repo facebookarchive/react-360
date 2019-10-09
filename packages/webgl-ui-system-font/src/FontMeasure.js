@@ -59,7 +59,11 @@ export default class FontMeasure {
     this._lineMetrics.appendChild(this._lineOne);
     this._lineMetrics.appendChild(document.createElement('br'));
     this._lineMetrics.appendChild(this._lineTwo);
-    document.body.appendChild(this._lineMetrics);
+    const body = document.body;
+    if (body == null) {
+      throw new Error('Cannot measure font metrics without a valid document body');
+    }
+    body.appendChild(this._lineMetrics);
   }
 
   measureGlyph(glyph: string) {

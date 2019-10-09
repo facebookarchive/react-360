@@ -24,6 +24,8 @@ export type RenderTargetRootOptions = {
  * which can then be used in a larger WebGL scene.
  */
 export default class RenderTargetRoot extends GLRoot {
+  _fb: WebGL.FrameBuffer;
+
   constructor(gl: WebGLRenderingContext, options: RenderTargetRootOptions = {}) {
     super(gl, options.text);
     const width = options.width || 0;

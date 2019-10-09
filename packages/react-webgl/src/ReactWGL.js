@@ -9,6 +9,7 @@
  * @flow
  */
 
+// $FlowFixMe
 import Reconciler from 'react-reconciler';
 import * as HostConfig from './HostConfig';
 import GLRoot from './GLRoot';
@@ -21,7 +22,7 @@ import Video from './Video.react';
 
 const Renderer = Reconciler(HostConfig);
 
-export function render(element, container, callback) {
+export function render(element: Element, container: any, callback: any) {
   if (!container.__rootContainer) {
     container.__rootContainer = Renderer.createContainer(container, false);
   }

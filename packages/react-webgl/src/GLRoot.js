@@ -9,10 +9,15 @@
  * @flow
  */
 
-import {Surface, TextureManager, type TextImplementation} from 'webgl-ui';
+import {Surface, TextureManager, type ShadowViewWebGL, type TextImplementation} from 'webgl-ui';
 import {FontImplementation} from 'webgl-ui-system-font';
 
 export default class GLRoot {
+  _gl: WebGLRenderingContext;
+  _surface: Surface;
+  _textImplementation: TextImplementation;
+  _textureManager: TextureManager;
+
   constructor(gl: WebGLRenderingContext, text?: TextImplementation) {
     this._gl = gl;
     this._surface = new Surface(gl);
@@ -22,7 +27,7 @@ export default class GLRoot {
     this._surface.useTextureManager(this._textureManager);
   }
 
-  setRoot(child) {
+  setRoot(child: ShadowViewWebGL<*>) {
     this._surface.setRootNode(child);
   }
 

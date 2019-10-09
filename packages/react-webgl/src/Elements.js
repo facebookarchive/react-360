@@ -9,10 +9,12 @@
  * @flow
  */
 
+import type GLRoot from './GLRoot';
+
 import {Image, Text, View} from 'webgl-ui';
 
 export const quad = {
-  create: root => root.getSurface().createView(),
+  create: (root: GLRoot) => root.getSurface().createView(),
   dispatchers: (() => {
     const d = {};
     View.registerBindings(d);
@@ -21,7 +23,7 @@ export const quad = {
 };
 
 export const text = {
-  create: root => root.getSurface().createText(),
+  create: (root: GLRoot) => root.getSurface().createText(),
   dispatchers: (() => {
     const d = {};
     Text.registerBindings(d);
@@ -30,7 +32,7 @@ export const text = {
 };
 
 export const image = {
-  create: root => root.getSurface().createImage(),
+  create: (root: GLRoot) => root.getSurface().createImage(),
   dispatchers: (() => {
     const d = {};
     Image.registerBindings(d);
