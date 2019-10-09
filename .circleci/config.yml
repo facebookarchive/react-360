@@ -14,12 +14,24 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
-      - run: yarn
       - run: yarn test
+  render-tests:
+    working_directory: ~/react-360/render-tests
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn build
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - test-unit
+      - test-unit:
+        requires:
+          - build
+      - render-tests:
+        requires:
+          - build
