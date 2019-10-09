@@ -34,10 +34,12 @@ type State = {|
   pressed: boolean,
 |};
 
+type Event = {buttonClass?: string, action?: 'up' | 'down'};
+
 export default class Pressable extends React.PureComponent<Props, State> {
   state = {hovered: false, pressed: false};
 
-  _onInput = event => {
+  _onInput = (event: Event) => {
     if (event.buttonClass !== 'confirm') {
       return;
     }

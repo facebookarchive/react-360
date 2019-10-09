@@ -97,6 +97,7 @@ export default class Container {
     if (gl == null) {
       throw new Error('Unable to construct WebGL context');
     }
+    // $FlowFixMe: Flow thinks gl might be a canvas 2d context?
     this._gl = gl;
     this._sharedTextureManager = new GLUI.TextureManager(gl);
     this.group = new WebGL.RenderGroup(gl);

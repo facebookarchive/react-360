@@ -76,8 +76,11 @@ export default class CanvasRoot extends GLRoot {
     let offsetLeft = 0;
     let offsetTarget = e.target;
     while (offsetTarget != null) {
+      // $FlowFixMe
       offsetTop += offsetTarget.offsetTop;
+      // $FlowFixMe
       offsetLeft += offsetTarget.offsetLeft;
+      // $FlowFixMe
       offsetTarget = offsetTarget.offsetTarget;
     }
     this.getSurface().setCursor(
