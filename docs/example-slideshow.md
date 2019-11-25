@@ -1,6 +1,6 @@
 ---
 id: example-slideshow
-title: Example: 360 Slideshow
+title: "Example: 360 Slideshow"
 sidebar_label: 360 Slideshow
 ---
 

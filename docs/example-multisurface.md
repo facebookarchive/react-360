@@ -1,6 +1,6 @@
 ---
 id: example-multisurface
-title: Example: Multi-Surface and 3D
+title: "Example: Multi-Surface and 3D"
 sidebar_label: Multi-Surface and 3D
 ---
 

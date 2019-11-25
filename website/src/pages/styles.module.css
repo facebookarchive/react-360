@@ -1,0 +1,93 @@
+/**
+ * Copyright (c) 2017-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sections {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1023px) {
+  .sections {
+    flex-direction: column-reverse;
+  }
+}
+
+.splashImage {
+  height: 300px;
+}
+
+@media only screen and (max-width: 1023px) {
+  .splashImage {
+    margin-bottom: 30px;
+  }
+}
+
+.button {
+  margin: 0 1rem;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureBlock {
+  text-align: center;
+}
+
+.featureImage {
+  margin-bottom: 20px;
+  max-width: 80px;
+}
+
+.mountWrapper {
+  margin: 0 auto;
+  max-width: 1100px;
+  padding: 0 1rem 2rem;
+}
+
+.mountExample {
+  display: block;
+  height: 600px;
+  width: 800px;
+  margin: 0 auto;
+}
+
+
+@media only screen and (max-width: 1023px) {
+  .mountExample {
+    width: 100%;
+  }
+}

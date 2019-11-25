@@ -9,4 +9,6 @@ website/translated_docs
 website/build
 website/yarn.lock
 website/node_modules
+website/.docusaurus
+website/.cache-loader
 Samples/*/NonBlobBridge.js

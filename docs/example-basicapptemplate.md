@@ -1,6 +1,6 @@
 ---
 id: example-basicapptemplate
-title: Example: Basic App Template
+title: "Example: Basic App Template"
 sidebar_label: Basic App Template
 ---
 

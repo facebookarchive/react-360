@@ -1,6 +1,6 @@
 ---
 id: example-customplayer
-title: Example: Custom Player
+title: "Example: Custom Player"
 sidebar_label: Custom Player
 ---
 

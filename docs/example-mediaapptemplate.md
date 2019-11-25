@@ -1,6 +1,6 @@
 ---
 id: example-mediaapptemplate
-title: Example: Media App Template
+title: "Example: Media App Template"
 sidebar_label: Media App Template
 ---
 

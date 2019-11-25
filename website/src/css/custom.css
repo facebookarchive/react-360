@@ -1,0 +1,14 @@
+/**
+ * /src/css/custom.css
+ * You can override the default Infima variables here.
+ * Note: this is not a complete list of --ifm- variables.
+ */
+:root {
+  --ifm-color-primary: #2341c8;
+  --ifm-color-primary-dark: #142da8;
+  --ifm-color-primary-darker: #071e75;
+  --ifm-color-primary-darkest: #000e33;
+  --ifm-color-primary-light: #3860d8;
+  --ifm-color-primary-lighter: #4d81d9;
+  --ifm-color-primary-lightest: #639dda;
+}

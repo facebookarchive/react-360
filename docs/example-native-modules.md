@@ -1,6 +1,6 @@
 ---
 id: example-native-modules
-title: Example: Native Modules
+title: "Example: Native Modules"
 sidebar_label: Native Modules
 ---
 
