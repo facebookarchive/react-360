@@ -4,6 +4,8 @@ title: 3D Objects
 sidebar_label: 3D Objects
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 React 360 applications are not restricted to 2D panels in space – you can also bring in 3D elements. Pre-built objects that have been created in 3D modeling or sculpting software can be brought into your application. React 360 intentionally does not contain primitive elements like boxes and spheres – instead, it is designed to import prepared objects. You can build larger scenes from these elements.
 
 ## Entity
@@ -21,7 +23,7 @@ To bring 3D objects into your scene, you can use the `<Entity>` component. Entit
 <Entity source={{obj: asset('myModel.obj'), mtl: asset('myModel.mtl')}} />
 ```
 
-You can set the position of an Entity relative to its parent with the `transform` style attribute, as described [here](/react-360/docs/layout.html).
+You can set the position of an Entity relative to its parent with the `transform` style attribute, as described <a href={useBaseUrl("/docs/layout")}>here</a>.
 
 ## Locations
 

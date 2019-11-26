@@ -4,13 +4,15 @@ title: Runtime
 sidebar_label: Runtime
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 ## What is the Runtime?
 
 Each React 360 application is made up of two pieces: your React application, and the code that turns your React components into 3D elements on the screen. We refer to this second piece as the “runtime.” This division of roles is borrowed directly from React Native, and is employed for very similar reasons.
 
 We separate your app code from the rendering code for one key purpose: web browsers are single-threaded, and any blocking behavior in the app could cause rendering to stall. This is especially problematic for users viewing your 360 experience on a VR headset, where significant rendering latency can break the sense of immersion. By running your app code in a separate context, we allow the rendering loop to consistently update at a high frame rate.
 
-When your React code creates new elements, it instructs the runtime to add them to the 3D scene. When the user provides input, it is passed back to React as an event. The two pieces cooperate to create one cohesive system. If you want to pass other data between the systems, you can rely on [Native Modules](/react-360/docs/native-modules.html).
+When your React code creates new elements, it instructs the runtime to add them to the 3D scene. When the user provides input, it is passed back to React as an event. The two pieces cooperate to create one cohesive system. If you want to pass other data between the systems, you can rely on <a href={useBaseUrl("/docs/native-modules")}>Native Modules</a>.
 
 ## Executors
 

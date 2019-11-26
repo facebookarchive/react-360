@@ -100,7 +100,7 @@ const Index = () => {
         )}
         <div className={classnames("container", styles.mountWrapper)}>
           <iframe
-            src="/react-360/sample/index.html"
+            src={useBaseUrl("/sample/index.html")}
             className={styles.mountExample}
           />
         </div>

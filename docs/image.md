@@ -4,6 +4,8 @@ title: Image
 sidebar_label: Image
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 A React component for displaying 2D images on a surface. Image sources can be externally-hosted resources, or referenced from your `static_assets` directory and hosted alongside your app.
 
 ```js
@@ -39,9 +41,9 @@ Invoked when the Image begins fetching a new source
 
 ### `source: {uri: string}`
 
-`uri` is a string representing the URI for the image, which could be an absolute or relative HTTP path. In the case of assets that you host alongside your app, it is recommended you import them using the [`asset()` helper](static-assets.md#referencing-static-assets), which generates the source object for you.
+`uri` is a string representing the URI for the image, which could be an absolute or relative HTTP path. In the case of assets that you host alongside your app, it is recommended you import them using the <a href={useBaseUrl("/docs/static-assets#referencing-static-assets")}>`asset()` helper</a>, which generates the source object for you.
 
 ### `style? Style | Object`
 
- - **[View Styles...](view.md#style-style-object)**
+ - **<a href={useBaseUrl("/docs/view#style-style-object")}>View Styles...</a>**
  - **tintColor** `color`

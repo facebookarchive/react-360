@@ -4,13 +4,15 @@ title: Layout in 2D and 3D
 sidebar_label: Layout
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 ## Layout in 2D Surfaces
 
 Within the context of 2D surfaces, React 360 uses a layout technique called Flexbox. This constraint-based system of layout was originally developed for the web, but its power and ability to represent many different layout types lends itself to the declarative nature of React. It was adopted by React Native, from which React 360 borrows its implementation. The React Native documentation covers these topics well, and should be used to understand how to [size your objects](http://facebook.github.io/react-native/docs/height-and-width.html) and [lay them out in 2D space](http://facebook.github.io/react-native/docs/flexbox.html).
 
 ## Layout in 3D Space
 
-When mounting to a [Location](/react-360/docs/objects.html#locations) instead of a Surface, React 360 switches to a three-dimensional, meter based coordinate system. This is typical of 3D modeling programs and game engines – once you switch to placing objects into physical space, you need to use a phyically-based measurement system.
+When mounting to a <a href={useBaseUrl("/docs/objects#locations")}>Location</a> instead of a Surface, React 360 switches to a three-dimensional, meter based coordinate system. This is typical of 3D modeling programs and game engines – once you switch to placing objects into physical space, you need to use a phyically-based measurement system.
 
 In this coordinate system, there are three axes: the x axis points towards the right of the user, the y axis points upwards, and the z axis points behind the user. Placement of 3D objects is done through the `transform` style attribute, which takes an array of transformations that are applied to the object. You can translate and rotate an object in 3D space with the following options:
 

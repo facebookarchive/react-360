@@ -4,6 +4,8 @@ title: "Example: Basic App Template"
 sidebar_label: Basic App Template
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 `BasicAppTemplate` is a sample app code template for anyone to start building an app with React360.
 There are also inline comments to guide how each part of the sample code works.
 This Template includes:
@@ -12,7 +14,7 @@ This Template includes:
 - Basic Environment(photo/video) control.
 - Basic UI Animation.
 
-![Basic App Template Example](/react-360/img/example-basicapptemplate.jpg)
+<img src={useBaseUrl("/img/example-basicapptemplate.jpg")} alt="Basic App Template Example"/>
 
 ## Exploring the Sample
 

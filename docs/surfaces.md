@@ -4,6 +4,8 @@ title: Surfaces
 sidebar_label: Surfaces
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 Surfaces allow you to add 2D interfaces in 3D space, letting you work in pixels instead of physical dimensions. They are optimized for legibility, and rely on the same principles that Oculus uses for its user interfaces. Surfaces are defined in terms of the height and width of their pixel content, as well as the density of those pixels in physical space. React 360 takes all of this information and produces a 3D object with the appropriate dimensions. Currently there are two different shapes of Surfaces: Cylinder and Flat.
 
 ## Cylinder Surface
@@ -140,7 +142,7 @@ r360.renderToSurface(
 );
 ```
 
-In this setup, how do you share data between the different React components? They run in a shared JavaScript environment, so any global store (such as Redux) is shared between all components. You can use this technique to synchronize data between different 2D and 3D aspects of your app. A version of this is demonstrated in the [multi-surface example](/react-360/docs/example-multisurface.html).
+In this setup, how do you share data between the different React components? They run in a shared JavaScript environment, so any global store (such as Redux) is shared between all components. You can use this technique to synchronize data between different 2D and 3D aspects of your app. A version of this is demonstrated in the <a href={useBaseUrl("/docs/example-multisurface")}>multi-surface example</a>.
 
 ## Detaching a surface
 

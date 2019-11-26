@@ -4,7 +4,9 @@ title: Entity
 sidebar_label: Entity
 ---
 
-Entity allows you to render 3D objects, as described in the [3D Object documentation](objects.md). At the moment, React 360 supports Wavefront OBJ files and GLTF files. The external resource (or resources) containing the model's information are provided using a `source` attribute, which is an object of key-value pairs mapping resource types to their locations.
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+Entity allows you to render 3D objects, as described in the <a href={useBaseUrl("/docs/objects")}>3D Object documentation</a>. At the moment, React 360 supports Wavefront OBJ files and GLTF files. The external resource (or resources) containing the model's information are provided using a `source` attribute, which is an object of key-value pairs mapping resource types to their locations.
 
 The following properties are currently supported:
  - `obj` - Location of an OBJ-formatted model

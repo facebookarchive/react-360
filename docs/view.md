@@ -4,6 +4,8 @@ title: View
 sidebar_label: View
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 The most fundamental component for building a UI, View is a container that supports layout with Flexbox, appearance styling, and input events. In 2D space, View is a box for spacing elements, or creating borders and background colors. In 3D space, View is used for grouping Entities or other Views, applying transforms in 3D space.
 
 This example creates a View that wraps two colored boxes and a text component in a row with padding.
@@ -38,7 +40,7 @@ Invoked when a cursor stops intersecting with the view
 
 ### `onInput?: function`
 
-Invoked when a user presses an input button while the cursor is over the view. More on this in the [Input Handling docs](input.md).
+Invoked when a user presses an input button while the cursor is over the view. More on this in the <a href={useBaseUrl("/docs/input")}>Input Handling docs</a>.
 
 ### `pointerEvents?: 'box-none' | 'none' | 'box-only' | 'auto'`
 

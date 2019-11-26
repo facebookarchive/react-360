@@ -4,6 +4,8 @@ title: Setting up Tools, and Creating Your First Project
 sidebar_label: Create Your First Project
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 This guide will help you install the tools necessary for creating your first interactive experience with React 360. 
 
 Before getting started, you'll need to install Node.js. While React 360 runs in your web browser, the build pipeline that bundles up your code relies on Node.
@@ -40,5 +42,5 @@ npm start
 
 The server will inspect your project and gather all the data it needs to serve up your JavaScript files. To see your project, open your web browser and navigate to http://localhost:8081/index.html. It may take some time to load at first – the bundler is doing some initial crawling of the filesystem. After the first load, successive loads are much faster, even when you change your code. You can watch the progress in the terminal where you started your server, and once the app has loaded you should see something like this in your browser:
 
-![Starter Project](/react-360/img/starter_project.jpg)
+<img alt="Starter Project" src={useBaseUrl("/img/starter_project.jpg")} />
 
