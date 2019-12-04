@@ -39,6 +39,7 @@ import type {CustomView} from './Modules/UIManager';
 import Runtime, {type NativeModuleInitializer} from './Runtime/Runtime';
 import {rotateByQuaternion} from './Utils/Math';
 import EventEmitter from 'eventemitter3';
+import type {AngleMouse} from "./Controls/Types";
 
 type Root = {
   initialProps: Object,
@@ -114,6 +115,8 @@ export default class ReactInstance {
   scene: THREE.Scene;
   vrState: VRState;
   eventEmitter: EventEmitter;
+  _lastDirection:[number, number, number] = [0,0,0];
+  angleMouse: AngleMouse;
 
   /**
    * Create a new instance of a React 360 app, given a path to the React 360 JS
@@ -304,6 +307,13 @@ export default class ReactInstance {
           ray.origin[1] += this._cameraPosition[1];
           ray.origin[2] += this._cameraPosition[2];
           rotateByQuaternion(ray.direction, this._cameraQuat);
+          if (this._lastDirection[0] !== ray.direction[0] || this._lastDirection[1] !== ray.direction[1] || this._lastDirection[2] !== ray.direction[2]) {
+            const [cx, cy, cz] = ray.direction;
+            const horizAngle = Math.atan2(cx, -cz);
+            const vertAngle = Math.asin(cy / Math.sqrt(cx* cx + cy* cy + cz * cz));
+            this.angleMouse = {horizAngle, vertAngle};
+            this._lastDirection = JSON.parse(JSON.stringify(ray.direction));
+          }
         }
       }
     }

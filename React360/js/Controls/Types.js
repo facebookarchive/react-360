@@ -29,3 +29,7 @@ export type Ray = {
   origin: [number, number, number],
   type: string,
 };
+export type AngleMouse = {
+  horizAngle: number,
+  vertAngle: number
+};
