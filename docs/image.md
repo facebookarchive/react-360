@@ -5,8 +5,11 @@ sidebar_label: Image
 ---
 
 A React component for displaying 2D images on a surface. Image sources can be externally-hosted resources, or referenced from your `static_assets` directory and hosted alongside your app.
+For images referenced from your `static_assets` directory, you will need to import `asset` from `react-360`
 
 ```js
+import { asset } from 'react-360';
+
 renderImages() {
   return (
     <View>
