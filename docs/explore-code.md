@@ -51,7 +51,7 @@ Text is for drawing characters to the screen. If you're creating a 2D UI, this i
 
 ### Styling Content
 
-The next block of code creates the styles applied to the code above. `StyleSheet` is a concept taken directly from [React Native](http://facebook.github.io/react-native/docs/style.html). React 360 supports the same style attributes as React Native, and its documentations should be used to understand the available options. The fields of the `style` object created at the bottom are referenced directly in the React code.
+The next block of code creates the styles applied to the code above. `StyleSheet` is a concept taken directly from [React Native](https://reactnative.dev/docs/style.html). React 360 supports the same style attributes as React Native, and its documentations should be used to understand the available options. The fields of the `style` object created at the bottom are referenced directly in the React code.
 
 ### Exposing the React Component
 
