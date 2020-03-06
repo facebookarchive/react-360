@@ -31,7 +31,7 @@ class BasicAppTemplateInfoButton extends React.Component {
   };
 
   // This component has example to show how animation works
-  // You can check the doc: https://facebook.github.io/react-native/docs/0.49/animated#docsNav
+  // You can check the doc: https://reactnative.dev/docs/0.49/animated#docsNav
   constructor(props) {
     super(props);
     this.state = {
