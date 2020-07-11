@@ -13,7 +13,7 @@
     "@babel/preset-react": "7.0.0",
     "flow-bin": "^0.109.0",
     "jest": "^24.9.0",
-    "lerna": "3.16.4"
+    "lerna": "^3.22.1"
   },
   "scripts": {
     "build": "lerna run build",
