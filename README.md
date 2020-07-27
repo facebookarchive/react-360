@@ -49,6 +49,6 @@ For more information about contributing to React 360, see our [Contributor Guide
 
 React 360 is [BSD licensed](./LICENSE). We also provide an additional [patent grant](./PATENTS).
 
-React documentation is [Creative Commons licensed](./LICENSE-docs).
+React documentation is [Creative Commons licensed](./LICENSE-docs)
 
-Examples provided in this repository and in the documentation are [separately licensed](./LICENSE-examples).
+Examples provided in this repository and in the documentation are [separately licensed](./LICENSE-examples)
