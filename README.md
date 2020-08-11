@@ -2,6 +2,11 @@
 
 React 360 is a framework for the creation of interactive 360 experiences that run in your web browser. It pairs modern APIs like WebGL and WebVR with the declarative power of React, producing applications that can be consumed through a variety of devices. Leveraging web technologies and the existing React ecosystem, React 360 aims to simplify the construction of cross-platform 360 experiences.
 
+## Documentation
+  * <a href="https://facebook.github.io/react-360/docs/setup.html">Official documentation</a> <br>
+  * <a href="https://facebook.github.io/react-360/">Examples</a> <br>
+  
+  
 ## Getting Started
 
 We've designed the React 360 developer experience to get your first project up and running in only a few minutes. Before installing the developer tools, you'll need to make sure that you have two prerequisites installed:
