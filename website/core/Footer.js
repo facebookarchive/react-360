@@ -59,17 +59,6 @@ class Footer extends React.Component {
               />
             </span>
           </div>
-          {/* <a
-              className="github-button"
-              href={this.props.config.repoUrl}
-              data-icon="octicon-star"
-              data-count-href="/facebook/react-360/stargazers"
-              data-show-count={true}
-              data-count-aria-label="# stargazers on GitHub"
-              aria-label="Star this project on GitHub"
-            >
-              Star
-            </a> */}
         </section>
 
         <a
