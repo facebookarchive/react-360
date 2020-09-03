@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "puppeteer": "1.12.2"
+    "puppeteer": "5.2.1"
   },
   "devDependencies": {
     "webpack": "^4.29.6",
