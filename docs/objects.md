@@ -65,4 +65,4 @@ new Location([0, 0, -2], [0, Math.PI / 2, 0]);
 
 ### Moving Locations
 
-Locations are intended to be movable. This allows you to creat effects like scenes whose origin moves in a pre-defined pattern, or follows a constantly-updated value like the position of a VR controller. This can be done with the `setWorldPosition(x, y, z)` and `setWorldRotation(x, y, z)` methods, which update the parameters provided at construction time. Using these, you can change the position of your 3D scene efficiently, without making a pass through your React code.
+Locations are intended to be movable. This allows you to create effects like scenes whose origin moves in a pre-defined pattern, or follows a constantly-updated value like the position of a VR controller. This can be done with the `setWorldPosition(x, y, z)` and `setWorldRotation(x, y, z)` methods, which update the parameters provided at construction time. Using these, you can change the position of your 3D scene efficiently, without making a pass through your React code.
