@@ -141,13 +141,13 @@ r360.compositor.setScreen(
 To create a Video Player from the React side, use the `VideoModule` Module. Again, a Player must be set up before it can be set to the Environment. Once it has been created, it can be attached to the background with the `Environment` module.
 
 ```js
-import {Environment, VideoModule, staticResourceURL} from 'react-360';
+import {Environment, VideoModule, staticAssetURL} from 'react-360';
 
 // Create a player
 const player = VideoModule.createPlayer('myplayer');
 // Play a specific video
 player.play({
-  source: {url: staticResourceURL('path/to/video.mp4')}, // provide the path to the video
+  source: {url: staticAssetURL('path/to/video.mp4')}, // provide the path to the video
   stereo: '3DTB', // optionally, supply the format of the video
 });
 // Display the background video on the Environment
@@ -191,7 +191,7 @@ The `VideoModule` provides a video player wrapper to support playing video on Re
  - `setMuted(muted: boolean)` - determines whether the video is muted or not
  - `setVolume(volume: number)` - sets the volume of the video, on a scale from 0 to 1
  - `destroy()` - tear down the video and clean up its resources
- - `addEventListener(event: string, listener: VideoEventListener)` - add a listener to listen to video player's events, it will return a subscription for unregister
+ - `addListener(event: string, listener: VideoEventListener)` - add a listener to listen to video player's events, it will return a subscription for unregister
  - `removeSubscription(subscription: EmitterSubscription)` - remove a event listener using the subscription
 
 You can also directly use `VideoModule` Native Module with following methods:
@@ -209,11 +209,11 @@ You can also directly use `VideoModule` Native Module with following methods:
 
 ### Video Events
 
-By calling `addEventListener` you will be able to listening to video events from React side. For example:
+By calling `addListener` you will be able to listening to video events from React side. For example:
 
 ```
 const player = VideoModule.createPlayer('myplayer');
-player.addEventListener('onVideoStatusChanged', (event: VideoStatusEvent) => {
+player.addListener('onVideoStatusChanged', (event: VideoStatusEvent) => {
   if (event.status === 'ready') {
     player.removeSubscription(onVideoLoadedSubscription);
     console.log('Video is ready');
@@ -257,7 +257,7 @@ class VideoTest extends Component {
       <View style={{flex: 1}}>
         <VideoPlayer
           muted={true}
-          source={{url: staticResourceURL('path/to/video.mp4')}}
+          source={{url: staticAssetURL('path/to/video.mp4')}}
           stereo={'2D'}
           style={{
             width: 600,
