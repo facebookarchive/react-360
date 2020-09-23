@@ -71,6 +71,11 @@ const siteConfig = {
   ogImage: 'img/docusaurus.png',
   twitterImage: 'img/docusaurus.png',
 
+  algolia: {
+    apiKey: 'react-360',
+    indexName: '8dbd2b892f17a933cf0bcf499cc7038a',
+  },
+
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
   //   repoUrl: 'https://github.com/facebook/test-site',
