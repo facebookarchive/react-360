@@ -161,7 +161,7 @@ Environment.setScreen(
 );
 ```
 
-You can also combine these techniques to create a video in the runtime, and layer play it from your React application.
+You can also combine these techniques to create a video in the runtime, and later play it from your React application.
 
 ```js
 // in client.js
