@@ -37,7 +37,7 @@ When the server has booted, you can access your application by navigating to `ht
 
 If you encounter a bug with React 360, let us know. Search the existing issues and try to make sure your problem doesn't already exist before opening a new issue. It's helpful if you include the version of React 360, Browser, and OS you're using. Please include a stack trace and reduced repro case where appropriate.
 
-React 360 is open source software, and we welcome contribution from the wider community. If you are able to fix your bug, or find a way to fix another existing issue, we encourage you to submit a PR to address it.
+React 360 is open source software, and we welcome contributions from the wider community. If you can fix your bug, or find a way to fix another existing issue, we encourage you to submit a PR to address it.
 
 If you find a documentation typo, please don't file an issue – just create a pull request containing the fix and we will pull it into the documentation.
 
@@ -51,4 +51,4 @@ React 360 is [BSD licensed](./LICENSE). We also provide an additional [patent gr
 
 React documentation is [Creative Commons licensed](./LICENSE-docs).
 
-Examples provided in this repository and in the documentation are [separately licensed](./LICENSE-examples).
+Examples provided in this repository and the documentation are [separately licensed](./LICENSE-examples).
