@@ -209,7 +209,7 @@ You can also directly use `VideoModule` Native Module with following methods:
 
 ### Video Events
 
-By calling `addEventListener` you will be able to listening to video events from React side. For example:
+By calling `addEventListener` you will be able to listen to video events from React side. For example:
 
 ```
 const player = VideoModule.createPlayer('myplayer');
