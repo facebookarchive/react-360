@@ -33,6 +33,33 @@ where `PROJECT_NAME` is the name of your new application. Once it's been created
 
 When the server has booted, you can access your application by navigating to `http://localhost:8081/` in your web browser. Your application's code can be found in `index.js`, and you can learn more about available framework features by diving into our documentation.
 
+## bug Fixes
+many of the new users are facing starting project issue ex:- https://github.com/facebook/react-360/issues/828
+so we have to update dependencies currently manually 
+go to this folder `node_modules/metro/src/blacklist.js`
+And replace the below code
+```js
+var sharedBlacklist = [
+/node_modules[/\\]react[/\\]dist[/\\].*/,
+
+/website\/node_modules\/.*/,
+
+/heapCapture\/bundle\.js/,
+
+/.*\/__tests__\/.*/];
+```
+with
+```js
+var sharedBlacklist = [ /node_modules[\/\\]react[\/\\]dist[\/\\].*/, 
+
+/website\/node_modules\/.*/,
+
+/heapCapture\/bundle\.js/,
+
+/.*\/__tests__\/.*/ ];
+```
+then your good to go do `npm start` and build some cool projects.
+
 ## Opening Issues
 
 If you encounter a bug with React 360, let us know. Search the existing issues and try to make sure your problem doesn't already exist before opening a new issue. It's helpful if you include the version of React 360, Browser, and OS you're using. Please include a stack trace and reduced repro case where appropriate.
