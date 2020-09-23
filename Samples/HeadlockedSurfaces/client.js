@@ -1,4 +1,5 @@
-import {Math as VRMath, ReactInstance, Surface} from 'react-360-web';
+import {ReactInstance, Surface} from 'react-360-web';
+import { Math as GLMath } from "webgl-ui";
 
 function init(bundle, parent, options = {}) {
   const horizontalPanel = new Surface(300, 300, Surface.SurfaceShape.Flat);
@@ -7,6 +8,7 @@ function init(bundle, parent, options = {}) {
   horizontalPanel.setAngle(0, -0.5);
 
   const cameraDirection = [0, 0, -1];
+  const { rotateByQuaternion } = GLMath;
 
   const r360 = new ReactInstance(bundle, parent, {
     fullScreen: true,
@@ -17,7 +19,7 @@ function init(bundle, parent, options = {}) {
       cameraDirection[2] = -1;
       // cameraDirection will point out from the view of the camera,
       // we can use it to compute surface angles
-      VRMath.rotateByQuaternion(cameraDirection, cameraQuat);
+      rotateByQuaternion(cameraDirection, cameraQuat);
       const cx = cameraDirection[0];
       const cy = cameraDirection[1];
       const cz = cameraDirection[2];
