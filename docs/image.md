@@ -7,6 +7,12 @@ sidebar_label: Image
 A React component for displaying 2D images on a surface. Image sources can be externally-hosted resources, or referenced from your `static_assets` directory and hosted alongside your app.
 
 ```js
+import {
+  asset,
+  View,
+  Image,
+} from 'react-360';
+
 renderImages() {
   return (
     <View>
@@ -18,6 +24,8 @@ renderImages() {
 ```
 
 Images will not automatically size based on their contents, because that blocks layout on a network request. In order for Images to render, they must have their shape explicitly declared, either through `width` and `height` styles, or Flexbox properties.
+
+Ensuring that the image is not distorted by stretching requires us to appropriately set the `width` and `height` preserving the original aspect ratio of the image.
 
 ## Props
 
