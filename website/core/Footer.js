@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const React = require('react');
+const React = require("react");
 
 class Footer extends React.Component {
   docUrl(doc, language) {
     const baseUrl = this.props.config.baseUrl;
-    return baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
+    return baseUrl + "docs/" + (language ? language + "/" : "") + doc;
   }
 
   pageUrl(doc, language) {
     const baseUrl = this.props.config.baseUrl;
-    return baseUrl + (language ? language + '/' : '') + doc;
+    return baseUrl + (language ? language + "/" : "") + doc;
   }
 
   render() {
@@ -35,27 +35,29 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('setup.html', this.props.language)}>
+            <a href={this.docUrl("setup.html", this.props.language)}>
               Getting Started
             </a>
-            <a href={this.docUrl('example-slideshow.html', this.props.language)}>
+            <a
+              href={this.docUrl("example-slideshow.html", this.props.language)}
+            >
               Examples
             </a>
           </div>
           <div>
             <h5>More</h5>
-            <a href={this.props.config.baseUrl + 'blog'}>Blog</a>
+            <a href={this.props.config.baseUrl + "blog"}>Blog</a>
             <a href="https://github.com/facebook/react-360">GitHub</a>
-            <a
-              className="github-button"
-              href={this.props.config.repoUrl}
-              data-icon="octicon-star"
-              data-count-href="/facebook/react-360/stargazers"
-              data-show-count={true}
-              data-count-aria-label="# stargazers on GitHub"
-              aria-label="Star this project on GitHub">
-              Star
-            </a>
+            <span className="index-ctas-github-button">
+              <iframe
+                src="https://ghbtns.com/github-btn.html?user=facebook&amp;repo=react-360&amp;type=star&amp;count=true&amp;size=large"
+                frameBorder={0}
+                scrolling={0}
+                width={160}
+                height={30}
+                title="GitHub Stars"
+              />
+            </span>
           </div>
         </section>
 
@@ -63,9 +65,10 @@ class Footer extends React.Component {
           href="https://code.facebook.com/projects/"
           target="_blank"
           rel="noreferrer noopener"
-          className="fbOpenSource">
+          className="fbOpenSource"
+        >
           <img
-            src={this.props.config.baseUrl + 'img/oss_logo.png'}
+            src={this.props.config.baseUrl + "img/oss_logo.png"}
             alt="Facebook Open Source"
             width="170"
             height="45"
