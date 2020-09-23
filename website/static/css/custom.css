@@ -1,4 +1,18 @@
 /* your custom css */
+.announcement {
+  background-color: #20232a;
+  color: #fff;
+  font-weight: bold;
+  font-size: 24px;
+  padding: 48px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.announcement-inner {
+  margin: 0 auto;
+  max-width: 768px;
+}
 
 .splash_sections {
   display: flex;
@@ -31,10 +45,14 @@
   margin: 0 auto;
 }
 
-p a, article a {
+p a,
+article a {
   color: #0880fa;
 }
 
+a {
+  color: #0880fa;
+}
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }
 
