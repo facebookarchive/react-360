@@ -202,7 +202,7 @@ You can also directly use `VideoModule` Native Module with following methods:
  - `pause(handle: string)` - pause the video being played by the specific player
  - `resume(handle: string)` - resume the video being played by the specific player, if it is currently paused
  - `stop(handle: string)` - stop playback of the video on the specific player, returning its time back to 0:00
- - `seek(handle: string, timeMs: number)` - move playback of the video on the referenced player to a specific time
+ - `seek(handle: string, time: number)` - move playback of the video on the referenced player to a specific time (in seconds)
  - `setParams(handle: string, options: VideoPlayOptions)` - set the playback options for a specific video player. The options object can take the following keys:
    - `volume` - an optional key specifying the volume of the video, from 0 to 1
    - `muted` - an optional key specifying whether the video is muted
