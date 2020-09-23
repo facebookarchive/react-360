@@ -6,7 +6,7 @@ sidebar_label: Layout
 
 ## Layout in 2D Surfaces
 
-Within the context of 2D surfaces, React 360 uses a layout technique called Flexbox. This constraint-based system of layout was originally developed for the web, but its power and ability to represent many different layout types lends itself to the declarative nature of React. It was adopted by React Native, from which React 360 borrows its implementation. The React Native documentation covers these topics well, and should be used to understand how to [size your objects](http://facebook.github.io/react-native/docs/height-and-width.html) and [lay them out in 2D space](http://facebook.github.io/react-native/docs/flexbox.html).
+Within the context of 2D surfaces, React 360 uses a layout technique called Flexbox. This constraint-based system of layout was originally developed for the web, but its power and ability to represent many different layout types lends itself to the declarative nature of React. It was adopted by React Native, from which React 360 borrows its implementation. The React Native documentation covers these topics well, and should be used to understand how to [size your objects](https://reactnative.dev/docs/height-and-width.html) and [lay them out in 2D space](https://reactnative.dev/docs/flexbox.html).
 
 ## Layout in 3D Space
 
