@@ -4,6 +4,8 @@ title: What is React 360?
 sidebar_label: What is React 360?
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 ## About React 360
 
 React 360 is a framework for the creation of 3D and VR user interfaces. Built on top of React – a library designed to simplify the creation of complex UI – React 360 allows you to use familiar tools and concepts to create immersive 360 content on the web.
@@ -18,7 +20,7 @@ React 360 is about bringing interactivity into 360 spaces. Applications that com
 
 In early 2017, Facebook and Oculus released a JavaScript library called “React VR,” which was designed for the creation of 3D and VR experiences in the web browser. At the same time, Oculus began using a native C++ version of the framework to build its own first-party apps. Over time, the APIs of the two projects diverged as we addressed the different needs of the frameworks. To avoid confusion between the two systems, the open source framework has been renamed “React 360,” which better reflects its use case: the creation of immersive 360 experiences that can be consumed across PC, Mobile, and VR devices.
 
-If you previously used React VR, you should find React 360 to be very similar. We've simplified a lot of the more common workflows, such as placing 2D UI elements in 3D space, and optimized performance for these use cases. If you want to migrate a legacy React VR app over to use the new tools, follow [this guide](/react-360/docs/from-react-vr.html).
+If you previously used React VR, you should find React 360 to be very similar. We've simplified a lot of the more common workflows, such as placing 2D UI elements in 3D space, and optimized performance for these use cases. If you want to migrate a legacy React VR app over to use the new tools, follow <a href={useBaseUrl("/docs/from-react-vr")}>this guide</a>.
 
 ### How is React 360 Different from A-Frame?
 

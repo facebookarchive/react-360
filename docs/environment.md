@@ -4,7 +4,9 @@ title: Environment
 sidebar_label: Environment
 ---
 
-Environment is used to change the background of the scene, as described in the [360 photo and video documentation](photos-and-videos.md).
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+Environment is used to change the background of the scene, as described in the <a href={useBaseUrl("/docs/photos-and-videos")}>360 photo and video documentation</a>.
 
 ```js
 Environment.setBackgroundImage(asset('city-pano.jpg'), {

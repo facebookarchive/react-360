@@ -4,13 +4,15 @@ title: Native Modules
 sidebar_label: Native Modules
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 Native Modules provide the ability for React code to call back into your runtime, and provide functionality that's only available in the main browser environment. Examples include storing values between loads, requesting information about connected controllers, or manipulating the rendered environment.
 
 ## Custom Native Modules
 
 ### Creating New Native Modules
 
-Native Modules are created in your runtime code (client.js), and need to be registered at startup time before React can use them. A sample application demonstrating the many uses of Native Modules is [available here](/react-360/docs/example-native-modules.html). Each aspect of Native Modules will be described below.
+Native Modules are created in your runtime code (client.js), and need to be registered at startup time before React can use them. A sample application demonstrating the many uses of Native Modules is <a href={useBaseUrl("/docs/example-native-modules")}>available here</a>. Each aspect of Native Modules will be described below.
 
 To create a Native Module, you need to extend `Module` and register it at initialization time.
 

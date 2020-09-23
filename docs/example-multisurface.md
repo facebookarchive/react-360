@@ -1,12 +1,14 @@
 ---
 id: example-multisurface
-title: Example: Multi-Surface and 3D
+title: "Example: Multi-Surface and 3D"
 sidebar_label: Multi-Surface and 3D
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 A demonstration of how to build React 360 applications that share code across multiple 2D panels and 3D roots. It combines fetching from the Google Poly API with a demonstration of basic 3D rendering.
 
-![Multi-Surface Example](/react-360/img/example_multisurface.jpg)
+<img src={useBaseUrl("/img/example_multisurface.jpg")} alt="Multi-Surface Example"/>
 
 ## Exploring the Sample
 

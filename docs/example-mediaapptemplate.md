@@ -1,8 +1,10 @@
 ---
 id: example-mediaapptemplate
-title: Example: Media App Template
+title: "Example: Media App Template"
 sidebar_label: Media App Template
 ---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 `MediaAppTemplate` is a sample app code template for anyone want to build a heavily media
 based app using React360.
@@ -14,7 +16,7 @@ This Template includes:
 - Controlling Environment transition
 - Multiple Surfaces control
 
-![Media App Template Example](/react-360/img/example-mediaapptemplate.jpg)
+<img src={useBaseUrl("/img/example-mediaapptemplate.jpg")} alt="Media App Template Example"/>
 
 ## Exploring the Sample
 
@@ -30,7 +32,7 @@ Four React Components are used in this sample:
  - `src/MediaAppTemplateInfoButton.react.js`: A simple button provide example on how to handle user interaction, sound effect and animation.
  - `src/MediaAppTemplateSubtitleText.react.js`: A simple text showing the subtitles.
  - `src/MediaAppTemplateScenePage.react.js`: A component provide example on how to control environment on React side. It also provides example on how to reload 360 photo and videos.
- - `src/MediaAppTemplateVideoScreen.react.js`: A component provide example on how to play flat in-line video and layout it with other React component. You can also use [video uis](http://localhost:3000/react-360/docs/photos-and-videos.html#video-uis) instead.
+ - `src/MediaAppTemplateVideoScreen.react.js`: A component provide example on how to play flat in-line video and layout it with other React component. You can also use <a href={useBaseUrl("/docs/photos-and-videos#video-uis")}>video uis</a> instead.
 
 ## Further Extensions
 

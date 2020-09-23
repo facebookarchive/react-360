@@ -4,6 +4,8 @@ title: Exploring the Code
 sidebar_label: Exploring the Code
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 ## The Parts of your Project
 
 When you open up the directory containing your project, you'll see a few files already created for you. We'll explore what each file does, and how it fits into the whole.
@@ -14,7 +16,7 @@ This is the main code of your application, it is where all of your React code li
 
 ### `client.js`
 
-This is the code that connects your browser to your React application – the [Runtime](/react-360/docs/runtime.html). This file does three things. First, it creates a new instance of React 360, loading your React code and attaching it to a specific place in the DOM. This is also where your application can pass a variety of initialization options, which will be discussed later.
+This is the code that connects your browser to your React application – the <a href={useBaseUrl("/docs/runtime")}>Runtime</a>. This file does three things. First, it creates a new instance of React 360, loading your React code and attaching it to a specific place in the DOM. This is also where your application can pass a variety of initialization options, which will be discussed later.
 
 Next, the file actually places your React code into the scene. The mount point declared in `index.js` is attached to the Default Surface of your app – a cylindrical layer on which a 2D UI can be placed.
 
@@ -41,7 +43,7 @@ Digging into `index.js`, we can see how the contents viewed on your screen are c
 
 ### `View` and `Text`
 
-`index.js` is split into a few distinct sections. The main piece creates a new React component that is used as the top-level element of your app. It contains two `<View>` elements, and a `<Text>` element. The first View fills the entire panel, which has a default size of 1000px x 600px. These Surfaces can be [configured into multiple sizes and shapes](/react-360/docs/surfaces.html). The second View provides a border and background for the text it contains. The innermost Text element turns a string into characters rendered on the screen, welcoming you to React 360 for the first time.
+`index.js` is split into a few distinct sections. The main piece creates a new React component that is used as the top-level element of your app. It contains two `<View>` elements, and a `<Text>` element. The first View fills the entire panel, which has a default size of 1000px x 600px. These Surfaces can be <a href={useBaseUrl("/docs/surfaces")}>configured into multiple sizes and shapes</a>. The second View provides a border and background for the text it contains. The innermost Text element turns a string into characters rendered on the screen, welcoming you to React 360 for the first time.
 
 At this point, you can change the contents of `<Text>` to your own message. Change the `'Welcome to React 360'` string to something else, save the file, and refresh the web page to see your changes.
 

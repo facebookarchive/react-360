@@ -1,15 +1,17 @@
 ---
 id: example-customplayer
-title: Example: Custom Player
+title: "Example: Custom Player"
 sidebar_label: Custom Player
 ---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 `CustomPlayerSample` is a sample code for using custom video player with `react-360`. Generally what you need to is simply
   - Write a custom video player implement VideoPlayerImplementaion, you can simply extend `BrowserVideoPlayer` to reuse most of the video control codes.
   - Add your custom video players as `customVideoPlayers` option when initializing ReactInstance.
   - The Video module in `react-360` will choose in the order of custom players to find the first player that supports the fileFormat of video source.
 
-![Custom Player](/react-360/img/example-customplayer.jpg)
+<img src={useBaseUrl("/img/example-customplayer.jpg")} alt="Custom Player"/>
 
 ## Exploring the Sample
 

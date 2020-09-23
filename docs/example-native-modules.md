@@ -1,8 +1,10 @@
 ---
 id: example-native-modules
-title: Example: Native Modules
+title: "Example: Native Modules"
 sidebar_label: Native Modules
 ---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 A demonstration of how to pass data back and forth between the main window and your React code using Native Modules.
 
@@ -12,7 +14,7 @@ The code for this sample is found [here](https://github.com/facebook/react-360/t
 
 ## The Code
 
-The sample Native Module is found at `BrowserInfoModule.js`. It demonstrates the different ways to communicate between the main window to React, as described in the [Native Module documentation](/react-360/docs/native-modules.html).
+The sample Native Module is found at `BrowserInfoModule.js`. It demonstrates the different ways to communicate between the main window to React, as described in the <a href={useBaseUrl("/docs/native-modules")}>Native Module documentation</a>.
 
 The first field is the user agent string, a constant that is generated when the module is constructed, and attached to the `userAgent` property of the module. When the module is registered, this value is passed directly over to React; any future changes to this value will not be seen on the React side.
 

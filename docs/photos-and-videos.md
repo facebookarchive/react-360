@@ -4,6 +4,8 @@ title: 360 Photos and Videos
 sidebar_label: 360 Photos and Videos
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 React 360 is optimized for the presentation of 360 (and 180) photos and videos. These are essential for creating an immersive environment, and allow you to seemingly transport your user to a virtual location. Because they are an important part of interactive 360 experiences, there are many ways to control the current background. React360 also supports in-line flat video attached to surface.
 
 ## Supported Formats
@@ -274,7 +276,7 @@ class VideoTest extends Component {
 
 ### Custom Video Player
 
-React360 provides a default functional video player using HTML5 video element. If you want use your own version of video player to provide additional functionalities such as Mpeg-Dash, HLS, etc. You can implement your own custom video player. And add it to `customVideoPlayers` in ReactInstance's option. An example on how to use custom video players is provided [here](example-customplayer.md).
+React360 provides a default functional video player using HTML5 video element. If you want use your own version of video player to provide additional functionalities such as Mpeg-Dash, HLS, etc. You can implement your own custom video player. And add it to `customVideoPlayers` in ReactInstance's option. An example on how to use custom video players is provided <a href={useBaseUrl("/docs/example-customplayer")} >here</a>.
 
 ## Clearing the Background
 
