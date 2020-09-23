@@ -211,7 +211,7 @@ export default class BrowserVideoPlayer implements VideoPlayerImplementation {
   }
 
   setLoop(loop: boolean) {
-    this._element.loop = true;
+    this._element.loop = loop ? true : null;
   }
 
   play() {
