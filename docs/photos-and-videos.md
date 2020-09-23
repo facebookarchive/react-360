@@ -58,12 +58,12 @@ When using a 3D background, the depth effect will only be visible when viewing i
 
 ### Photo Layout Format
 
-For 360 image, React 360 currently support two different type of 360 photo layout encoding. React 360 will automatically detects the layout from the aspect-ratio of the image:
+For 360 image, React 360 currently supports two different types of 360 photo layout encoding. React 360 will automatically detect the layout from the aspect-ratio of the image:
 
  - **Equirectangular**: Equirectangular photo uses equirectangular projection
  - **1x6 Cubic Format**: The 1x6 Cubic format is organized with 6 undistorted, perspective images on each direction in the order of `right, left, top, bottom, back, front` from top to bottom. 
 
- Equirectangular projection is more popular and is supported by most 360 camera. Cubic format provides better render quality as it suffers less distortion, but usually need to convert from an equirectangular projection source image. 
+ Equirectangular projection is more popular and is supported by most 360 cameras. Cubic format provides better render quality as it suffers less distortion, but usually need to convert from an equirectangular projection source image. 
 
 ### From React
 
