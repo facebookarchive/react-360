@@ -73,7 +73,7 @@ If your background is dynamic, such as in a multi-room environment, you'll want 
 import {Environment} from 'react-360';
 
 // Set the background to a 360 or 180 image
-Environment.setBackground(
+Environment.setBackgroundImage(
   asset('path/to/image.jpg'),
   {format: '2D'}, /* one of the formats mentioned above */
 );
