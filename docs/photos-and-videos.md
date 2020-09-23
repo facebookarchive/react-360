@@ -70,7 +70,7 @@ For 360 image, React 360 currently support two different type of 360 photo layou
 If your background is dynamic, such as in a multi-room environment, you'll want to control it from your React application. This is possible through the Environment module.
 
 ```js
-import {Environment} from 'react-360';
+import {asset, Environment} from 'react-360';
 
 // Set the background to a 360 or 180 image
 Environment.setBackground(
