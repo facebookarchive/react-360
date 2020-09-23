@@ -6,7 +6,7 @@ sidebar_label: Create Your First Project
 
 This guide will help you install the tools necessary for creating your first interactive experience with React 360. 
 
-Before getting started, you'll need to install Node.js. While React 360 runs in your web browser, the build pipeline that bundles up your code relies on Node.
+Before getting started, you'll need to install Node.js.React 360 runs in your web browser but the build pipeline that bundles up your code relies on Node.
 
  * **Mac:** On Mac, we recommend installing Node.js through [Homebrew](http://brew.sh/).
  * **Windows:** Get the Windows installer from the [nodejs.org download page](https://nodejs.org/en/download/).
