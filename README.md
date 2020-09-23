@@ -1,4 +1,5 @@
 # React 360 [![npm version](https://badge.fury.io/js/react-360.svg)](https://badge.fury.io/js/react-360) [![Circle CI](https://circleci.com/gh/facebook/react-360.svg?style=shield)](https://circleci.com/gh/facebook/react-360)
+<img src="./website/static/img/logo.svg" alt="React 360 Logo" align="right" width="20%"/>
 
 React 360 is a framework for the creation of interactive 360 experiences that run in your web browser. It pairs modern APIs like WebGL and WebVR with the declarative power of React, producing applications that can be consumed through a variety of devices. Leveraging web technologies and the existing React ecosystem, React 360 aims to simplify the construction of cross-platform 360 experiences.
 
