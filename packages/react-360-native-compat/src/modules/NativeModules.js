@@ -58,6 +58,10 @@ const NativeModules = {
       NativeModules[name] = modules[name];
     }
   },
+  
+  getControllers() {
+    console.log('need further fix');
+  },
 
   createNativeModules,
   register,
