@@ -109,6 +109,10 @@
         "title": "Surfaces",
         "sidebar_label": "Surfaces"
       },
+      "text": {
+        "title": "Text",
+        "sidebar_label": "Text"
+      },
       "view": {
         "title": "View",
         "sidebar_label": "View"
