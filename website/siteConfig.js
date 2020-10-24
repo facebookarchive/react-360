@@ -71,9 +71,8 @@ const siteConfig = {
   ogImage: 'img/docusaurus.png',
   twitterImage: 'img/docusaurus.png',
 
-  // You may provide arbitrary config keys to be used as needed by your
-  // template. For example, if you need your repo's URL...
-  //   repoUrl: 'https://github.com/facebook/test-site',
+  // This repoUrl info is used in /core/Footer.js and pages/en/users.js
+  repoUrl: 'https://github.com/facebook/react-360',
 };
 
 module.exports = siteConfig;
