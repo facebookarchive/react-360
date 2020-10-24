@@ -45,7 +45,7 @@ class Footer extends React.Component {
           <div>
             <h5>More</h5>
             <a href={this.props.config.baseUrl + 'blog'}>Blog</a>
-            <a href="https://github.com/facebook/react-360">GitHub</a>
+            <a href={this.props.config.repoUrl} target="_blank" rel="noreferrer noopener">GitHub</a>
             <a
               className="github-button"
               href={this.props.config.repoUrl}
@@ -53,7 +53,9 @@ class Footer extends React.Component {
               data-count-href="/facebook/react-360/stargazers"
               data-show-count={true}
               data-count-aria-label="# stargazers on GitHub"
-              aria-label="Star this project on GitHub">
+              aria-label="Star this project on GitHub"
+              target="_blank"
+              rel="noreferrer noopener">
               Star
             </a>
           </div>
