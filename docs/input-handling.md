@@ -10,7 +10,7 @@ Your users consume your experience through a variety of devices, each with its o
 
 The most common way for your user to interact with your app is through pressing a physical button: a keyboard key, a mouse click, a gamepad button, or something similar. React 360 is designed to collect input from a wide range of devices and send it to your React code in an easy-to-use format. When you create a new React 360 app, it is already configured to collect input from a mouse, a touchscreen, a keyboard, or a gamepad. To start handling events in React, add an onInput callback to one of your components. When the cursor is over your component and the user triggers an input event, it will be sent to that callback.
 
-```js
+```
 <View onInput={e => {
   const event = e.nativeEvent; // Extract the value from the runtime
   // event contains the actual event payload, as well as information on
@@ -30,7 +30,7 @@ Out of the box, React 360 supports collecting inputs from four common interfaces
 
 If you wanted to capture every time a confirm button was pressed down, it would be implemented as follows:
 
-```js
+```
 onInput={e => {
   const inputEvent = e.nativeEvent.inputEvent;
   if (inputEvent.action === 'down' && inputEvent.buttonClass === 'confirm') {

@@ -24,12 +24,13 @@ Web Workers are a modern browser feature that allows code to run outside of the 
 
 There may be times when your environment does not support Web Workers. While this is unlikely, we provide a workaround that simulates a separate execution environment via an `<iframe>`. To use this instead of a Web Worker, initialize a `ReactExecutorIframe` and supply it at initialization time.
 
-```js
+```
 import {ReactExecutorIframe} from 'react-360-web';
 
 const r360 = new ReactInstance(bundle, parent, {
   executor: new ReactExecutorIframe(),
   ...options,
 });
+
 ```
 

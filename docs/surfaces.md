@@ -10,7 +10,7 @@ Surfaces allow you to add 2D interfaces in 3D space, letting you work in pixels 
 
 A Cylinder Surface takes your 2D content and projects it onto the inside of a cylinder with a 4 meter radius. A cylinder is great for displaying 2D content, because no matter which way you turn, you are always looking at the content straight-on.
 
-```js
+```
 // To construct a new Cylinder Surface in your app runtime:
 import {Surface} from 'react-360-web';
 const myCylinderSurface = new Surface(
@@ -28,7 +28,7 @@ We recommend that you use a maximum Cylinder height of 720 – anything beyond t
 
 A Flat Surface places your 2D interface on a flat plane in space, like a virtual screen. Though a Cylinder Surface is always positioned in front of the user, a Flat Surface can be moved around in space – this is useful for scenarios where you want to have multiple panels arranged around the user, like a multi-monitor setup in virtual space.
 
-```js
+```
 // To construct a new Flat Surface in your app runtime:
 import {Surface} from 'react-360-web';
 const myFlatSurface = new Surface(
@@ -44,7 +44,7 @@ Flat Surfaces are positioned on the outside of an imaginary sphere, 4 meters in 
  - `roll` - Rotate the surface itself
 The `roll` angle is optional, only use it if you have specific requirement such as making a billboard surface.
 
-```js
+```
 // To rotate a panel 90 degrees to your left:
 leftPanel.setAngle(
   -Math.PI / 2, /* yaw angle */
@@ -76,7 +76,7 @@ You can also use pass in a Quaternion of camera to re-center the surface on the 
  - `yaw-pitch` - match both yaw and pitch angle of camera
  - `all` - match all angles of the camera
 
-```js
+```
 const cameraQuat = r360.getCameraQuaternion();
 subtitleSurface.recenter(cameraQuat, 'all');
 ```
@@ -85,13 +85,13 @@ subtitleSurface.recenter(cameraQuat, 'all');
 
 Surfaces are used to render the 2D interfaces of your app into 3D space. To attach a React component to a Surface, it must be registered with the AppRegistry. If you look at the bottom of your `index.js` file, you'll find a line that looks like the following:
 
-```js
+```
 AppRegistry.registerComponent('MyAppName', () => MyAppName);
 ```
 
 This tells the runtime that your component can be identified by this string ID. The corresponding code that attaches your React component to an application surface is found in `client.js`.
 
-```js
+```
 r360.renderToSurface(
   r360.createRoot('MyAppName'),
   r360.getDefaultSurface(),
@@ -118,7 +118,7 @@ s.resize(200, 200);
 
 There are times when you'll want to add multiple surfaces to your app, such as having a series of flat panels arranged around the user. If you register multiple React components with the AppRegistry, you can attach each one to a different surface. You can also mount multiple copies of the same component to different surfaces – useful when the rendering logic is identical, but the initial properties passed to each surface are different.
 
-```js
+```
 // Mounting different components to different surfaces
 r360.renderToSurface(
   r360.createRoot('ComponentOne'),
@@ -146,7 +146,7 @@ In this setup, how do you share data between the different React components? The
 
 You can detach the rendering of a root view from a surface:
 
-```js
+```
 // When calling renderToSurface, it will return a tag for the root view
 const root1 = r360.renderToSurface(
   r360.createRoot('Root1'),
