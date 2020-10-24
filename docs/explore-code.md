@@ -31,7 +31,8 @@ This is the bridge code to start react-360 executor. It runs a bridge in web wor
 **Important**
 
 `NonBlobBridge.js` doesn't exist in `react-360`(< 1.1.1), we were using an inline blob URL as the bridge code. But this may cause a security issue in the Chrome Browser that makes your app not work when hosted in a high secured CDN server. If you are using `react-360-cli`(>= 1.1.1), it will automatically use `NonBlobBridge.js` in the new project. If you have project created via `react-360-cli`(< 1.1.1), upgrading your `react-360` and `react-360-web` version won't break your app, and you can run the following code to migrate to use `NonBlobBridge.js`:
-```
+
+```bash
 node node_modules/react-360/scripts/install-bridge.js
 ```
 

@@ -63,7 +63,7 @@ For 360 image, React 360 currently support two different type of 360 photo layou
  - **Equirectangular**: Equirectangular photo uses equirectangular projection
  - **1x6 Cubic Format**: The 1x6 Cubic format is organized with 6 undistorted, perspective images on each direction in the order of `right, left, top, bottom, back, front` from top to bottom. 
 
- Equirectangular projection is more popular and is supported by most 360 camera. Cubic format provides better render quality as it suffers less distortion, but usually need to convert from an equirectangular projection source image. 
+ Equirectangular projection is more popular and is supported by most 360 camera. The Cubic format provides better render quality as it suffers less distortion, but usually need to convert from an equirectangular projection source image. 
 
 ### From React
 
@@ -81,7 +81,7 @@ Environment.setBackground(
 
 ## Displaying Videos
 
-Video are handled in two parts: first, the creation of a Video Player, and then mapping that player to your Environment. The separation of video playback from the environment itself allows you to control the progression of video from different locations in your codebase.
+Video is handled in two parts: first, the creation of a Video Player, and then mapping that player to your Environment. The separation of video playback from the environment itself allows you to control the progression of video from different locations in your codebase.
 
 Environment support two ways of rendering video:
  - 360 background video
@@ -91,7 +91,7 @@ Environment support two ways of rendering video:
 
 The video layout is similar as photo layout format. For 360 video, React 360 currently support **Equirectangular** and **3x2 Cubic Format with 1% expansion**.
 
- - **3x2 Cubic Format with 1% expansion**: Video image is divided to 3x2 image on the direction in the order of `right, left, top, bottom, front, back` from top-left to bottom-right. This format also has extra 1% expansion on the perspective projection of each image to reduce the texture rendering issue on the edge of each faces. You can try [Transform360](https://github.com/facebook/transform360) to create 3x2 cubic format 360 video. To use 3x2 cubic format video in React 360, you need to specify video layout format `layout: 'CUBEMAP_32',` in the VideoOption.
+ - **3x2 Cubic Format with 1% expansion**: The video image is divided into 3x2 image on the direction in the order of `right, left, top, bottom, front, back` from top-left to bottom-right. This format also has an extra 1% expansion on the perspective projection of each image to reduce the texture rendering issue on the edge of each faces. You can try [Transform360](https://github.com/facebook/transform360) to create 3x2 cubic format 360 video. To use 3x2 cubic format video in React 360, you need to specify video layout format `layout: 'CUBEMAP_32',` in the VideoOption.
 
 ### From the Runtime (client.js)
 
